@@ -88,11 +88,6 @@ in
       fsType = "none";
       options = [ "bind" ];
     };
-    "${my_vars.dirs.home}/Pictures/Camera" = {
-      device = "${my_vars.dirs.sync}/YuYuM/Camera";
-      fsType = "none";
-      options = [ "bind" ];
-    };
     "${my_vars.dirs.credentials-target}" = {
       device = "${my_vars.dirs.credentials-source-server}";
       fsType = "none";
