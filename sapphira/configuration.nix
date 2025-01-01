@@ -51,7 +51,7 @@ in
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg ${my_vars.this-admin}@${my_vars.this-host}"
         ];
-        initialPassword = "4343";
+        initialPassword = "1234";
         extraGroups = [
           "wheel"
           "networkmanager"
