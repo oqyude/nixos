@@ -42,14 +42,14 @@ in
     users = {
       root = {
         openssh.authorizedKeys.keys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPhxTIqodDYFpXbl12Qe/Sc1PIhsjBrOja+5z3FB/VgF root@yuyus"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPhxTIqodDYFpXbl12Qe/Sc1PIhsjBrOja+5z3FB/VgF root@${my_vars.this-host}"
         ];
       };
-      yuyus = {
+      "${my_vars.this-admin}" = {
         isNormalUser = true;
-        description = "YuYuS";
+        description = "Admin";
         openssh.authorizedKeys.keys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg yuyus@yuyus"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg ${my_vars.this-admin}@${my_vars.this-host}"
         ];
         initialPassword = "4343";
         extraGroups = [
@@ -63,8 +63,6 @@ in
 
   environment = {
     systemPackages = with pkgs; [
-      #bash-completion
-      #nix-bash-completions
       acl
       btop # tty
       efibootmgr # Info
@@ -83,11 +81,11 @@ in
   };
 
   fileSystems = {
-    "${my_vars.dirs.sync}/Symlinks/VY" = {
-      device = "${my_vars.dirs.user}/Vaults/My/Общие/VY";
-      fsType = "none";
-      options = [ "bind" ];
-    };
+    #"${my_vars.dirs.sync}/Symlinks/VY" = {
+    #  device = "${my_vars.dirs.user}/Vaults/My/Общие/VY";
+    #  fsType = "none";
+    #  options = [ "bind" ];
+    #};
     "${my_vars.dirs.credentials-target}" = {
       device = "${my_vars.dirs.credentials-source-server}";
       fsType = "none";
@@ -215,7 +213,7 @@ in
           "path" = "/etc/nixos";
           "browseable" = "yes";
           "read only" = "no";
-          "valid users" = "root yuyus";
+          "valid users" = "root oqyude";
           "guest ok" = "no";
           "writable" = "yes";
           "create mask" = 644;
@@ -227,7 +225,7 @@ in
           "path" = "/";
           "browseable" = "yes";
           "read only" = "no";
-          "valid users" = "root yuyus";
+          "valid users" = "root oqyude";
           "guest ok" = "no";
           "writable" = "yes";
           #"create mask" = 0644;
@@ -239,12 +237,12 @@ in
           "path" = "/mnt/server";
           "browseable" = "yes";
           "read only" = "no";
-          "valid users" = "root yuyus";
+          "valid users" = "root oqyude";
           "guest ok" = "no";
           "writable" = "yes";
           "create mask" = 775;
           "directory mask" = 775;
-          "force user" = "yuyus";
+          "force user" = "oqyude";
           "force group" = "users";
         };
       };
@@ -252,7 +250,7 @@ in
     calibre-web = {
       enable = true;
       group = "users";
-      user = "yuyus";
+      user = "${my_vars.this-admin}";
       #dataDir = "${my_vars.dirs.home}";
       options = {
         calibreLibrary = "${my_vars.dirs.user}/Library";
@@ -272,7 +270,7 @@ in
           type = "ed25519";
         }
         {
-          path = "/etc/ssh/keys/yuyus";
+          path = "/etc/ssh/keys/${my_vars.this-admin}";
           type = "ed25519";
         }
       ];
@@ -301,10 +299,10 @@ in
       enable = true;
       systemService = true;
       guiAddress = "0.0.0.0:8384";
-      configDir = "${my_vars.dirs.programs}/Syncthing/YuYuS";
+      configDir = "${my_vars.dirs.programs}/Syncthing/${my_vars.this-host}";
       dataDir = "${my_vars.dirs.home}";
       group = "users";
-      user = "yuyus";
+      user = "${my_vars.this-admin}";
     };
     tailscale.enable = true;
     sing-box = {
@@ -479,18 +477,6 @@ in
             }
             {
               process_name = [
-                "syncthing.exe"
-                "kdeconnectd.exe"
-                "kdeconnect-indicator.exe"
-                "kdeconnect-app.exe"
-                ".tailscaled.exe"
-                "tailscale-ipn.exe"
-                "RvControlSvc.exe"
-                "RvRvpnGui.exe"
-                "svchost.exe"
-                "rdpclip.exe"
-                "Discovery.exe"
-                "transmission-qt.exe"
               ];
               outbound = "bypass";
             }
@@ -506,7 +492,7 @@ in
     acme = {
       #acceptTerms = true;
       #defaults = {
-      #  email = "yuyus@example.com";
+      #  email = "${my_vars.this-host}@example.com";
       #};
       #certs = {
       #  "${config.services.nextcloud.hostName}".group = "nextcloud";

@@ -1,5 +1,6 @@
 rec {
-  this-host = "yuyus";
+  this-host = "sapphira";
+  this-admin = "oqyude";
   dirs = rec {
     user-home = "/home/${this-host}";
     home = "/mnt/server";
