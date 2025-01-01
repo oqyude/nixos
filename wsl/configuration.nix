@@ -6,7 +6,7 @@
 }:
 
 let
-  this-host = "yuyu-wsl";
+  this-host = "wsl";
 in
 {
   nix.nixPath = [
