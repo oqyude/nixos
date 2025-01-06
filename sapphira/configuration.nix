@@ -159,7 +159,7 @@ in
     auto-cpufreq.enable = true;
     throttled.enable = true;
     nginx = {
-      enable = true;
+      enable = false;
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       recommendedProxySettings = true;
@@ -168,12 +168,6 @@ in
         "localhost:10000" = {
           forceSSL = false;
           enableACME = false;
-          #locations = {
-          # "/" = {
-          #   proxyPass = "https://100.64.0.0:10000";
-          #   proxyWebsockets = true;
-          #  };
-          #};
           listen = [
             {
               addr = "100.64.0.0";
