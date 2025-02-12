@@ -8,11 +8,9 @@ rec {
     sync = "${home}/Sync";
     shared = "${structure}/Shared";
     storage = "${shared}/Storage";
-    deploy = "${shared}/Deploy";
-    user = "${structure}/User";
     programs = "${storage}/Programs";
     settings = "${storage}/Settings";
-    nixos = "${deploy}/NixOS";
+    calibre-library = "${home}/Library";
     nextcloud-source = "${home}/Nextcloud";
     nextcloud-target = "/var/lib/nextcloud";
     credentials-source-server = "${home}/Credentials/.server";

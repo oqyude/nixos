@@ -247,7 +247,7 @@ in
       user = "${my_vars.this-admin}";
       #dataDir = "${my_vars.dirs.home}";
       options = {
-        calibreLibrary = "${my_vars.dirs.user}/Library";
+        calibreLibrary = "${my_vars.dirs.calibre-library}";
         enableBookUploading = true;
         enableKepubify = false;
       };
