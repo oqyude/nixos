@@ -4,12 +4,8 @@ rec {
   dirs = rec {
     user-home = "/home/${this-host}";
     home = "/mnt/server";
-    structure = "${home}/Structure";
     sync = "${home}/Sync";
-    shared = "${structure}/Shared";
-    storage = "${shared}/Storage";
-    programs = "${storage}/Programs";
-    settings = "${storage}/Settings";
+    storage = "${home}/Storage";
     calibre-library = "${home}/Library";
     nextcloud-source = "${home}/Nextcloud";
     nextcloud-target = "/var/lib/nextcloud";

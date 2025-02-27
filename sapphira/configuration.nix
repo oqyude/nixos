@@ -293,7 +293,7 @@ in
       enable = true;
       systemService = true;
       guiAddress = "0.0.0.0:8384";
-      configDir = "${my_vars.dirs.programs}/Syncthing/${my_vars.this-host}";
+      configDir = "${my_vars.dirs.storage}/Syncthing/${my_vars.this-host}";
       dataDir = "${my_vars.dirs.home}";
       group = "users";
       user = "${my_vars.this-admin}";
