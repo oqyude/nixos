@@ -2,7 +2,7 @@ rec {
   this-host = "sapphira";
   this-admin = "oqyude";
   dirs = rec {
-    user-home = "/home/${this-host}";
+    user-home = "/home/${this-admin}";
     home = "/mnt/server";
     sync = "${home}/Sync";
     storage = "${home}/Storage";
