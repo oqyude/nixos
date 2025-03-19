@@ -2,32 +2,46 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
-
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
+
+let
+  my_vars = import ./my_vars.nix;
+in
+{
+
+  imports = [
+    ./hardware-configuration.nix
+  ];
+
+  nix = {
+    nixPath = [
+      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+      "nixos-config=/etc/nixos/${my_vars.this-host}/configuration.nix"
+      "/nix/var/nix/profiles/per-user/root/channels"
     ];
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [ "nix-command" ];
+    };
+  };
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [
+    "openssl-1.1.1w"
+  ];
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  networking.hostName = "atoridu"; # Define your hostname.
+  networking.hostName = "${my_vars.this-host}";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
   time.timeZone = "Europe/Moscow";
 
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
@@ -42,65 +56,95 @@
     LC_TIME = "ru_RU.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
-  
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
-  #services.xserver.displayManager.gdm.enable = false;
-  #services.xserver.desktopManager.gnome.enable = false;
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
-  # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
-  };
-
-  services.libinput = {
-  enable = true;
-  mouse = {
-    accelProfile = "flat";
-  };
-  touchpad = {
-    accelProfile = "flat";
+  services = {
+    xserver = {
+      enable = true;
+      videoDrivers = [
+        "amdgpu"
+        "nvidia"
+      ];
+      xkb = {
+        layout = "us";
+        variant = "";
+      };
+    };
+    pulseaudio.enable = lib.mkForce false;
+    displayManager.sddm.enable = true;
+    desktopManager.plasma6.enable = true;
+    #     displayManager.defaultSession = "plasma";
+    printing.enable = true;
+    libinput = {
+      enable = true;
+      mouse = {
+        accelProfile = "flat";
+      };
+      touchpad = {
+        accelProfile = "flat";
+      };
+    };
+    syncthing = {
+      enable = true;
+      systemService = true;
+      configDir = "${my_vars.dirs.storage}/Syncthing/${my_vars.this-host}";
+      dataDir = "${my_vars.dirs.home}";
+      group = "users";
+      user = "${my_vars.this-admin}";
+    };
+    tailscale.enable = true;
+    pipewire = {
+      enable = true;
+      systemWide = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      #jack.enable = false;
     };
   };
 
-  users.users.oqyude = {
-    isNormalUser = true;
-    description = "Jor Oqyude";
-    extraGroups = [ "networkmanager" "wheel" ];
+  security = {
+    sudo.wheelNeedsPassword = false;
+    rtkit.enable = true;
   };
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+  users = {
+    defaultUserShell = pkgs.zsh;
+    users = {
+      "${my_vars.this-admin}" = {
+        isNormalUser = true;
+        description = "Jor Oqyude";
+        initialPassword = "1234";
+        extraGroups = [
+          "networkmanager"
+          "wheel"
+          "pipewire"
+        ];
+        packages = with pkgs; [
+          solaar
+          logiops
+          ludusavi
+          keepassxc
+          obsidian
+          _64gram
+          reaper
+        ];
+      };
+    };
+  };
 
   environment.systemPackages = with pkgs; [
-    nh
-    keepassxc
+    easyeffects
+    btop
+    lf
+    mc
+    fastfetch
     brave
     localsend
+    nixfmt-rfc-style
+    yazi
+    smartmontools
+    iptables
+    eza
+    gparted
   ];
 
   programs = {
@@ -108,14 +152,55 @@
       enable = true;
       config = {
         user = {
-            defaultBranch = "main";
+          name = "oqyude";
+          email = "oqyude@gmail.com";
         };
       };
     };
     lazygit.enable = true;
+    nh.enable = true;
+    nix-ld = {
+      enable = false;
+      libraries = with pkgs; [
+      ];
+    };
+    zsh = {
+      enable = true;
+      enableCompletion = true;
+      enableBashCompletion = true;
+      syntaxHighlighting.enable = true;
+      zsh-autoenv.enable = true;
+      loginShellInit = "cd /etc/nixos && clear && fastfetch";
+      ohMyZsh = {
+        enable = true;
+        theme = "robbyrussell";
+      };
+    };
+    tuxclocker = {
+      enable = true;
+      enableAMD = true;
+      useUnfree = true;
+    };
+    steam.enable = true;
   };
 
-  # Some programs need SUID wrappers, can be configured further or are
+  systemd = {
+    network.wait-online.enable = false;
+    services = {
+      base-start = {
+        path = [ "/run/current-system/sw" ]; # Запуск в текущей системе
+        script = ''
+          nixfmt /etc/nixos
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+        };
+        wantedBy = [ "multi-user.target" ];
+      };
+    };
+  };
+
   # started in user sessions.
   # programs.mtr.enable = true;
   # programs.gnupg.agent = {
