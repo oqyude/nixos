@@ -99,6 +99,7 @@ in
       pulse.enable = true;
       #jack.enable = false;
     };
+    thermald.enable = true;
   };
 
   security = {
@@ -132,6 +133,8 @@ in
   };
 
   environment.systemPackages = with pkgs; [
+    bluez
+    usbutils
     easyeffects
     btop
     lf

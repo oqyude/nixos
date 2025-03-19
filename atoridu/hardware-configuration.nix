@@ -22,29 +22,36 @@
     "uas"
     "sd_mod"
   ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
-  boot.extraModulePackages = [ ];
-  #boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot = {
+    initrd.kernelModules = [ ];
+    kernelModules = [ "kvm-amd" ];
+    extraModulePackages = [ ];
+    #kernelPackages = pkgs.linuxPackages_latest;
+    loader.systemd-boot.enable = true;
+    loader.efi.canTouchEfiVariables = true;
+  };
 
-  hardware.alsa.enable = false;
-
-  hardware.nvidia = {
-    open = true;
-    powerManagement = {
-      enable = true;
-      finegrained = true; # maybe comment this out idk what it does
-    };
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-    nvidiaPersistenced = true;
-    modesetting.enable = true;
-    prime = {
-      offload.enable = true;
-      #sync.enable = true;
-      amdgpuBusId = "PCI:5:0:0";
-      nvidiaBusId = "PCI:1:0:0";
+  hardware = {
+    graphics.enable = true;
+    bluetooth.enable = true;
+    alsa.enable = false;
+    nvidia = {
+      open = true;
+      dynamicBoost.enable = true;
+      nvidiaSettings = true;
+      powerManagement = {
+        enable = true;
+        finegrained = false; # maybe comment this out idk what it does
+      };
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      nvidiaPersistenced = true;
+      modesetting.enable = true;
+      prime = {
+        offload.enable = false;
+        sync.enable = true;
+        amdgpuBusId = "PCI:5:0:0";
+        nvidiaBusId = "PCI:1:0:0";
+      };
     };
   };
 
