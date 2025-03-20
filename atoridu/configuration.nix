@@ -30,30 +30,33 @@ in
       experimental-features = [ "nix-command" ];
     };
   };
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.permittedInsecurePackages = [
-    "openssl-1.1.1w"
-  ];
 
-  networking.hostName = "${my_vars.this-host}";
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  nixpkgs.config = {
+    allowUnfree = true;
+    permittedInsecurePackages = [
+      "openssl-1.1.1w"
+    ];
+  };
 
-  networking.networkmanager.enable = true;
+  networking = {
+    hostName = "${my_vars.this-host}";
+    networkmanager.enable = true;
+  };
 
   time.timeZone = "Europe/Moscow";
-
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "ru_RU.UTF-8";
-    LC_IDENTIFICATION = "ru_RU.UTF-8";
-    LC_MEASUREMENT = "ru_RU.UTF-8";
-    LC_MONETARY = "ru_RU.UTF-8";
-    LC_NAME = "ru_RU.UTF-8";
-    LC_NUMERIC = "ru_RU.UTF-8";
-    LC_PAPER = "ru_RU.UTF-8";
-    LC_TELEPHONE = "ru_RU.UTF-8";
-    LC_TIME = "ru_RU.UTF-8";
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "ru_RU.UTF-8";
+      LC_IDENTIFICATION = "ru_RU.UTF-8";
+      LC_MEASUREMENT = "ru_RU.UTF-8";
+      LC_MONETARY = "ru_RU.UTF-8";
+      LC_NAME = "ru_RU.UTF-8";
+      LC_NUMERIC = "ru_RU.UTF-8";
+      LC_PAPER = "ru_RU.UTF-8";
+      LC_TELEPHONE = "ru_RU.UTF-8";
+      LC_TIME = "ru_RU.UTF-8";
+    };
   };
 
   services = {
@@ -62,6 +65,7 @@ in
       videoDrivers = [
         "amdgpu"
         "nvidia"
+        "intel"
       ];
       xkb = {
         layout = "us";
@@ -69,7 +73,10 @@ in
       };
     };
     pulseaudio.enable = lib.mkForce false;
-    displayManager.sddm.enable = true;
+    displayManager.sddm = {
+      enable = true;
+      wayland.compositor = "kwin";
+    };
     desktopManager.plasma6.enable = true;
     #     displayManager.defaultSession = "plasma";
     printing.enable = true;
