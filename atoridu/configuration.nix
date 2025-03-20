@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 {
   config,
   lib,
@@ -41,6 +37,7 @@ in
   networking = {
     hostName = "${my_vars.this-host}";
     networkmanager.enable = true;
+    firewall.enable = false;
   };
 
   time.timeZone = "Europe/Moscow";
@@ -78,7 +75,7 @@ in
       wayland.compositor = "kwin";
     };
     desktopManager.plasma6.enable = true;
-    #     displayManager.defaultSession = "plasma";
+    displayManager.defaultSession = "plasma";
     printing.enable = true;
     libinput = {
       enable = true;
@@ -104,7 +101,7 @@ in
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
-      #jack.enable = false;
+      jack.enable = true;
     };
     thermald.enable = true;
   };
@@ -127,13 +124,13 @@ in
           "pipewire"
         ];
         packages = with pkgs; [
-          solaar
+          _64gram
+          keepassxc
           logiops
           ludusavi
-          keepassxc
           obsidian
-          _64gram
           reaper
+          solaar
         ];
       };
     };
@@ -141,20 +138,21 @@ in
 
   environment.systemPackages = with pkgs; [
     bluez
-    usbutils
-    easyeffects
-    btop
-    lf
-    mc
-    fastfetch
     brave
-    localsend
-    nixfmt-rfc-style
-    yazi
-    smartmontools
-    iptables
+    btop
+    easyeffects
     eza
+    fastfetch
     gparted
+    iptables
+    lf
+    localsend
+    mc
+    nixfmt-rfc-style
+    pciutils
+    smartmontools
+    usbutils
+    yazi
   ];
 
   programs = {
@@ -222,8 +220,6 @@ in
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
-
-  networking.firewall.enable = false;
 
   system.stateVersion = "24.11";
 
