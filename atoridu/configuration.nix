@@ -7,7 +7,9 @@
 }:
 
 let
+  # My Lines
   my_vars = import ./my_vars.nix;
+  home-manager = builtins.fetchTarball https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz;
 in
 {
 
@@ -56,61 +58,6 @@ in
     };
   };
 
-  services = {
-    xserver = {
-      enable = true;
-      videoDrivers = [
-        "amdgpu"
-        "nvidia"
-        "intel"
-      ];
-      xkb = {
-        layout = "us";
-        variant = "";
-      };
-    };
-    pulseaudio.enable = lib.mkForce false;
-    displayManager.sddm = {
-      enable = true;
-      wayland.compositor = "kwin";
-    };
-    desktopManager.plasma6.enable = true;
-    displayManager.defaultSession = "plasma";
-    printing.enable = true;
-    libinput = {
-      enable = true;
-      mouse = {
-        accelProfile = "flat";
-      };
-      touchpad = {
-        accelProfile = "flat";
-      };
-    };
-    syncthing = {
-      enable = true;
-      systemService = true;
-      configDir = "${my_vars.dirs.storage}/Syncthing/${my_vars.this-host}";
-      dataDir = "${my_vars.dirs.home}";
-      group = "users";
-      user = "${my_vars.this-admin}";
-    };
-    tailscale.enable = true;
-    pipewire = {
-      enable = true;
-      systemWide = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      jack.enable = true;
-    };
-    thermald.enable = true;
-  };
-
-  security = {
-    sudo.wheelNeedsPassword = false;
-    rtkit.enable = true;
-  };
-
   users = {
     defaultUserShell = pkgs.zsh;
     users = {
@@ -124,6 +71,11 @@ in
           "pipewire"
         ];
         packages = with pkgs; [
+          nekoray
+          vesktop
+          discord
+          discordo
+          mangohud
           _64gram
           keepassxc
           logiops
@@ -137,6 +89,14 @@ in
   };
 
   environment.systemPackages = with pkgs; [
+    # Net
+    curl
+    ipset
+    iptables
+    nftables
+
+    # Other
+    whitesur-kde
     bluez
     brave
     btop
@@ -144,7 +104,6 @@ in
     eza
     fastfetch
     gparted
-    iptables
     lf
     localsend
     mc
@@ -190,6 +149,77 @@ in
       useUnfree = true;
     };
     steam.enable = true;
+  };
+
+  services = {
+    xserver = {
+      enable = true;
+      videoDrivers = [
+        "amdgpu"
+        "nvidia"
+        #"intel"
+      ];
+      xkb = {
+        layout = "us";
+        variant = "";
+      };
+    };
+    pulseaudio.enable = lib.mkForce false;
+    displayManager = {
+      defaultSession = "plasma";
+      sddm = {
+        enable = true;
+        wayland.compositor = "kwin";
+      };
+    };
+    desktopManager.plasma6.enable = true;
+    printing.enable = true;
+    libinput = {
+      enable = true;
+      mouse = {
+        accelProfile = "flat";
+      };
+      touchpad = {
+        accelProfile = "flat";
+      };
+    };
+    syncthing = {
+      enable = true;
+      systemService = true;
+      configDir = "${my_vars.dirs.storage}/Syncthing/${my_vars.this-host}";
+      dataDir = "${my_vars.dirs.home}";
+      group = "users";
+      user = "${my_vars.this-admin}";
+    };
+    tailscale.enable = true;
+    pipewire = {
+      enable = true;
+      systemWide = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      jack.enable = true;
+    };
+    thermald.enable = true;
+    #resolved.enable = true;
+    #cron.enable = true;
+  };
+
+  security = {
+    sudo.wheelNeedsPassword = false;
+    rtkit.enable = true;
+    polkit = {
+      enable = true;
+      extraConfig = ''
+        polkit.addRule(function(action, subject) {
+            if ((action.id == "org.gnome.gparted" || // Для гнома
+                action.id == "org.freedesktop.policykit.exec") && // Для запуска Nekoray
+                subject.isInGroup("wheel")){ // Операции sudo
+                return polkit.Result.YES;
+            }
+        });
+      '';
+    };
   };
 
   systemd = {
