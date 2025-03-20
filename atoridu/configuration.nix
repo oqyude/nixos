@@ -9,12 +9,13 @@
 let
   # My Lines
   my_vars = import ./my_vars.nix;
-  home-manager = builtins.fetchTarball https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz;
+  home-manager = builtins.fetchTarball https://github.com/nix-community/home-manager/archive/master.tar.gz;
 in
 {
 
   imports = [
     ./hardware-configuration.nix
+    (import "${home-manager}/nixos")
   ];
 
   nix = {
