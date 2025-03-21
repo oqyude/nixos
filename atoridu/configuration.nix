@@ -85,7 +85,6 @@ in
           _64gram
           keepassxc
           logiops
-          ludusavi
           obsidian
           reaper
           transmission_4-qt
@@ -96,30 +95,49 @@ in
     };
   };
 
-  environment.systemPackages = with pkgs; [
-    # Net
-    curl
-    ipset
-    iptables
-    nftables
+  environment = {
+    sessionVariables = {
+      WINEPREFIX = "$HOME/.wine64";
+      WINEARCH = "win64";
+    };
+    systemPackages = with pkgs; [
+      # Net
+      curl
+      ipset
+      iptables
+      nftables
 
-    # Other
-    kdePackages.filelight
-    whitesur-kde
-    brave
-    easyeffects
-    eza
-    fastfetch
-    gparted
-    lf
-    localsend
-    mc
-    nixfmt-rfc-style
-    pciutils
-    smartmontools
-    usbutils
-    yazi
-  ];
+      # Wine
+      wineWowPackages.stagingFull
+      winetricks
+      dxvk
+
+      # Audio
+      wineasio
+      yabridge
+      yabridgectl
+
+      # Other
+      playonlinux
+      gamescope
+      ludusavi
+      kdePackages.filelight
+      whitesur-kde
+      brave
+      easyeffects
+      eza
+      fastfetch
+      gparted
+      lf
+      localsend
+      mc
+      nixfmt-rfc-style
+      pciutils
+      smartmontools
+      usbutils
+      yazi
+    ];
+  };
 
   programs = {
     git = {

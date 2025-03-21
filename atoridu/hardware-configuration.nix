@@ -35,6 +35,7 @@
 
   hardware = {
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    #cpu.intel.updateMicrocode = config.hardware.enableRedistributableFirmware;
     graphics = {
       enable = true;
       #extraPackages = with pkgs; [ vaapiIntel intel-media-driver ];
@@ -55,7 +56,7 @@
       prime = {
         offload.enable = true;
         sync.enable = false;
-        amdgpuBusId = "PCI:5:0:0";
+        amdgpuBusId = "PCI:6:0:0";
         nvidiaBusId = "PCI:1:0:0";
       };
     };
@@ -73,6 +74,10 @@
         "fmask=0077"
         "dmask=0077"
       ];
+    };
+    "/mnt/sound" = {
+      device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
+      fsType = "ntfs3";
     };
   };
 
