@@ -9,7 +9,7 @@
 let
   # My Lines
   my_vars = import ./my_vars.nix;
-  home-manager = builtins.fetchTarball https://github.com/nix-community/home-manager/archive/master.tar.gz;
+  home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz";
 in
 {
 
@@ -72,6 +72,7 @@ in
           "pipewire"
         ];
         packages = with pkgs; [
+          vlc
           nekoray
           vesktop
           discord
@@ -97,6 +98,7 @@ in
     nftables
 
     # Other
+    #kdePackages.dragon
     whitesur-kde
     bluez
     brave
