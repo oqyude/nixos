@@ -36,12 +36,12 @@ in
 
   environment.systemPackages = with pkgs; [
     btop
-    fastfetch
-    nixfmt-rfc-style
-    yazi
-    lf
     eza
+    fastfetch
+    lf
+    nixfmt-rfc-style
     nodePackages.prettier
+    yazi
     yq-go
   ];
 

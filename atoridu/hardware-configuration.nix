@@ -46,7 +46,7 @@
       nvidiaSettings = true;
       powerManagement = {
         enable = true;
-        finegrained = false; # maybe comment this out idk what it does
+        finegrained = true; # maybe comment this out idk what it does
       };
       package = config.boot.kernelPackages.nvidiaPackages.stable;
       nvidiaPersistenced = true;

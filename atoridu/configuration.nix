@@ -204,6 +204,8 @@ in
       jack.enable = true;
     };
     thermald.enable = true;
+    earlyoom.enable = true;
+    preload.enable = true;
     #resolved.enable = true;
     #cron.enable = true;
   };
