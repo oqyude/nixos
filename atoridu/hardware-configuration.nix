@@ -29,6 +29,7 @@
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
+      timeout = 3;
     };
   };
 
@@ -46,7 +47,7 @@
       nvidiaSettings = true;
       powerManagement = {
         enable = true;
-        finegrained = true; # maybe comment this out idk what it does
+        finegrained = false; # maybe comment this out idk what it does
       };
       package = config.boot.kernelPackages.nvidiaPackages.stable;
       nvidiaPersistenced = true;

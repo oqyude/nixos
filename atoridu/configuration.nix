@@ -72,11 +72,15 @@ in
           "pipewire"
         ];
         packages = with pkgs; [
-          vlc
+          # Workflow
+          pdfarranger
+          libreoffice-qt6
+
+          vlc # Видео
+          gramps # Генеалогическое древо
+          stretchly
           nekoray
-          vesktop
           discord
-          discordo
           mangohud
           _64gram
           keepassxc
@@ -84,7 +88,9 @@ in
           ludusavi
           obsidian
           reaper
-          solaar
+          transmission_4-qt
+          lutris
+          gamehub
         ];
       };
     };
@@ -98,11 +104,9 @@ in
     nftables
 
     # Other
-    #kdePackages.dragon
+    kdePackages.filelight
     whitesur-kde
-    bluez
     brave
-    btop
     easyeffects
     eza
     fastfetch
@@ -243,6 +247,8 @@ in
       };
     };
   };
+
+  # Oqyulink
 
   # started in user sessions.
   # programs.mtr.enable = true;
