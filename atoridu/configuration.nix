@@ -59,6 +59,14 @@ in
     };
   };
 
+#   home-manager.users."${my_vars.this-admin}" = { pkgs, ... }: {
+#     home = {
+#       packages = [ pkgs.atool pkgs.httpie ];
+#       stateVersion = "24.11";
+#     };
+#     programs.zsh.enable = true;
+#   };
+
   users = {
     defaultUserShell = pkgs.zsh;
     users = {
@@ -70,6 +78,7 @@ in
           "networkmanager"
           "wheel"
           "pipewire"
+          "gamemode"
         ];
         packages = with pkgs; [
           # Workflow
@@ -168,6 +177,7 @@ in
         theme = "robbyrussell";
       };
     };
+    gamemode.enable = true;
     tuxclocker = {
       enable = true;
       enableAMD = true;
@@ -194,7 +204,10 @@ in
       defaultSession = "plasma";
       sddm = {
         enable = true;
-        wayland.compositor = "kwin";
+        wayland = {
+          enable = true;
+          compositor = "kwin";
+        };
       };
     };
     desktopManager.plasma6.enable = true;
