@@ -12,6 +12,7 @@
   ];
 
   boot = {
+    kernelPackages = pkgs.linuxPackages_xanmod_latest; # linuxPackages_zen
     initrd = {
       kernelModules = [ ];
       availableKernelModules = [
@@ -34,6 +35,12 @@
   };
 
   hardware = {
+    logitech = {
+      wireless = {
+        enable = true;
+        enableGraphical = true;
+      };
+    };
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     #cpu.intel.updateMicrocode = config.hardware.enableRedistributableFirmware;
     graphics = {
@@ -54,7 +61,10 @@
       nvidiaPersistenced = true;
       modesetting.enable = true;
       prime = {
-        offload.enable = true;
+        offload = {
+          enable = true;
+          enableOffloadCmd = true;
+        };
         sync.enable = false;
         amdgpuBusId = "PCI:6:0:0";
         nvidiaBusId = "PCI:1:0:0";

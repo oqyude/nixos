@@ -59,13 +59,13 @@ in
     };
   };
 
-#   home-manager.users."${my_vars.this-admin}" = { pkgs, ... }: {
-#     home = {
-#       packages = [ pkgs.atool pkgs.httpie ];
-#       stateVersion = "24.11";
-#     };
-#     programs.zsh.enable = true;
-#   };
+  #   home-manager.users."${my_vars.this-admin}" = { pkgs, ... }: {
+  #     home = {
+  #       packages = [ pkgs.atool pkgs.httpie ];
+  #       stateVersion = "24.11";
+  #     };
+  #     programs.zsh.enable = true;
+  #   };
 
   users = {
     defaultUserShell = pkgs.zsh;
@@ -93,7 +93,6 @@ in
           mangohud
           _64gram
           keepassxc
-          logiops
           obsidian
           reaper
           transmission_4-qt
@@ -127,24 +126,19 @@ in
       yabridgectl
 
       # Other
-      playonlinux
-      gamescope
       ludusavi
       kdePackages.filelight
       whitesur-kde
       brave
       easyeffects
-      eza
       fastfetch
       gparted
-      lf
       localsend
       mc
       nixfmt-rfc-style
       pciutils
       smartmontools
       usbutils
-      yazi
     ];
   };
 
@@ -183,7 +177,13 @@ in
       enableAMD = true;
       useUnfree = true;
     };
-    steam.enable = true;
+    steam = {
+      enable = true;
+      gamescopeSession.enable = true;
+    };
+    gamescope = {
+      enable = true;
+    };
   };
 
   services = {
