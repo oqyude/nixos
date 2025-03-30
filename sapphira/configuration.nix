@@ -6,12 +6,12 @@
   ...
 }:
 let
-  my_vars = import ./my_vars.nix;
+  my-vars = import ./vars.nix;
 in
 {
   nix.nixPath = [
     "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-    "nixos-config=/etc/nixos/${my_vars.this-host}/configuration.nix"
+    "nixos-config=/etc/nixos/${my-vars.this-host}/configuration.nix"
     "/nix/var/nix/profiles/per-user/root/channels"
   ];
 
@@ -42,14 +42,14 @@ in
     users = {
       root = {
         openssh.authorizedKeys.keys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPhxTIqodDYFpXbl12Qe/Sc1PIhsjBrOja+5z3FB/VgF root@${my_vars.this-host}"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPhxTIqodDYFpXbl12Qe/Sc1PIhsjBrOja+5z3FB/VgF root@${my-vars.this-host}"
         ];
       };
-      "${my_vars.this-admin}" = {
+      "${my-vars.this-admin}" = {
         isNormalUser = true;
         description = "Admin";
         openssh.authorizedKeys.keys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg ${my_vars.this-admin}@${my_vars.this-host}"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg ${my-vars.this-admin}@${my-vars.this-host}"
         ];
         initialPassword = "1234";
         extraGroups = [
@@ -81,18 +81,18 @@ in
   };
 
   fileSystems = {
-    #"${my_vars.dirs.sync}/Symlinks/VY" = {
-    #  device = "${my_vars.dirs.user}/Vaults/My/Общие/VY";
+    #"${my-vars.dirs.sync}/Symlinks/VY" = {
+    #  device = "${my-vars.dirs.user}/Vaults/My/Общие/VY";
     #  fsType = "none";
     #  options = [ "bind" ];
     #};
-    "${my_vars.dirs.credentials-target}" = {
-      device = "${my_vars.dirs.credentials-source-server}";
+    "${my-vars.dirs.credentials-target}" = {
+      device = "${my-vars.dirs.credentials-source-server}";
       fsType = "none";
       options = [ "bind" ];
     };
-    #"${my_vars.dirs.nextcloud-target}" = {
-    #  device = "${my_vars.dirs.nextcloud-source}";
+    #"${my-vars.dirs.nextcloud-target}" = {
+    #  device = "${my-vars.dirs.nextcloud-source}";
     #  fsType = "ext4";
     #  options = [ "bind" ];
     #};
@@ -110,7 +110,7 @@ in
         #dbhost = "/run/postgresql";
         dbname = "nextcloud";
         adminuser = "root";
-        adminpassFile = "${my_vars.dirs.credentials-target}/nextcloud/admin-pass.txt";
+        adminpassFile = "${my-vars.dirs.credentials-target}/nextcloud/admin-pass.txt";
       };
       settings = {
         appstoreEnable = false;
@@ -244,10 +244,10 @@ in
     calibre-web = {
       enable = true;
       group = "users";
-      user = "${my_vars.this-admin}";
-      #dataDir = "${my_vars.dirs.home}";
+      user = "${my-vars.this-admin}";
+      #dataDir = "${my-vars.dirs.home}";
       options = {
-        calibreLibrary = "${my_vars.dirs.calibre-library}";
+        calibreLibrary = "${my-vars.dirs.calibre-library}";
         enableBookUploading = true;
         enableKepubify = false;
       };
@@ -264,7 +264,7 @@ in
           type = "ed25519";
         }
         {
-          path = "/etc/ssh/keys/${my_vars.this-admin}";
+          path = "/etc/ssh/keys/${my-vars.this-admin}";
           type = "ed25519";
         }
       ];
@@ -276,12 +276,12 @@ in
     };
     transmission = {
       enable = true;
-      credentialsFile = "${my_vars.dirs.credentials-target}/transmission/settings.json";
+      credentialsFile = "${my-vars.dirs.credentials-target}/transmission/settings.json";
       openRPCPort = true;
       package = pkgs.transmission_4;
       settings = {
-        download-dir = "${my_vars.dirs.home}/Downloads";
-        incomplete-dir = "${my_vars.dirs.home}/Downloads/Temp";
+        download-dir = "${my-vars.dirs.home}/Downloads";
+        incomplete-dir = "${my-vars.dirs.home}/Downloads/Temp";
         incomplete-dir-enabled = true;
         rpc-bind-address = "0.0.0.0";
         rpc-port = 9091;
@@ -293,10 +293,10 @@ in
       enable = true;
       systemService = true;
       guiAddress = "0.0.0.0:8384";
-      configDir = "${my_vars.dirs.storage}/Syncthing/${my_vars.this-host}";
-      dataDir = "${my_vars.dirs.home}";
+      configDir = "${my-vars.dirs.storage}/Syncthing/${my-vars.this-host}";
+      dataDir = "${my-vars.dirs.home}";
       group = "users";
-      user = "${my_vars.this-admin}";
+      user = "${my-vars.this-admin}";
     };
     tailscale.enable = true;
   };
@@ -305,7 +305,7 @@ in
     #     acme = {
     #       acceptTerms = true;
     #       defaults = {
-    #        email = "${my_vars.this-host}@example.com";
+    #        email = "${my-vars.this-host}@example.com";
     #       };
     #       certs = {
     #        "${config.services.nextcloud.hostName}".group = "nextcloud";
@@ -367,7 +367,7 @@ in
   };
 
   networking = {
-    hostName = "${my_vars.this-host}";
+    hostName = "${my-vars.this-host}";
     networkmanager.enable = true;
     firewall.enable = false;
     useDHCP = lib.mkDefault true;
