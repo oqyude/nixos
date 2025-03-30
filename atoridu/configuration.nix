@@ -10,22 +10,12 @@
 let
   # My Lines
   my-vars = import ./vars.nix;
-
   home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz";
-
-  # Platform
-  gpuUsbDriverId = "0000:01:00.0"; # lspci -nnv -D     find the gpu related id not managed by vfio
-  platform-cpu = "amd";
-  vfioIds = [
-    "10de:25a2"
-    "10de:2291"
-  ];
 in
 {
 
   imports = [
-    #./hardware-configuration.nix
-    (import "${home-manager}/nixos")
+    #(import "${home-manager}/nixos")
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
@@ -43,19 +33,19 @@ in
       ];
     };
     kernelModules = [
-      "kvm-${platform-cpu}"
+      "kvm-${my-vars.platform.cpu}"
       "vfio"
       "vfio-pci"
       "vfio_iommu_type1"
       "vfio_virqfd"
     ];
     kernelParams = [
-      "${platform-cpu}_iommu=on"
+      "${my-vars.platform.cpu}_iommu=on"
       "iommu=pt"
       "kvm.ignore_msrs=1"
-      #("vfio-pci.ids=" + builtins.concatStringsSep "," vfioIds)
+      #("vfio-pci.ids=" + builtins.concatStringsSep "," my-vars.platform.vfioIds)
     ];
-    #extraModprobeConfig = "options vfio-pci ids=${builtins.concatStringsSep "," vfioIds}";
+    #extraModprobeConfig = "options vfio-pci ids=${builtins.concatStringsSep "," my-vars.platform.vfioIds}";
     extraModulePackages = [ ];
     loader = {
       systemd-boot.enable = true;
@@ -71,7 +61,7 @@ in
         enableGraphical = true;
       };
     };
-    cpu."${platform-cpu}".updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    cpu."${my-vars.platform.cpu}".updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     graphics = {
       enable = true;
     };
@@ -94,7 +84,7 @@ in
           enableOffloadCmd = true;
         };
         sync.enable = false;
-        "${platform-cpu}gpuBusId" = "PCI:6:0:0";
+        "${my-vars.platform.cpu}gpuBusId" = "PCI:6:0:0";
         nvidiaBusId = "PCI:1:0:0";
       };
     };
@@ -130,8 +120,6 @@ in
     { device = "/dev/disk/by-uuid/d89bccd2-0672-4855-9d87-40e2688cdec4"; }
   ];
 
-  networking.useDHCP = lib.mkDefault true;
-
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   nix = {
     nixPath = [
@@ -156,6 +144,7 @@ in
     hostName = "${my-vars.this-host}";
     networkmanager.enable = true;
     firewall.enable = false;
+    useDHCP = lib.mkDefault true;
   };
 
   time.timeZone = "Europe/Moscow";
@@ -196,7 +185,7 @@ in
           libreoffice-qt6
 
           vlc # Видео
-          gramps # Генеалогическое древо
+          gramps # Genealogy
           stretchly
           nekoray
           discord
@@ -302,6 +291,13 @@ in
       ohMyZsh = {
         enable = true;
         theme = "robbyrussell";
+      };
+      shellAliases = {
+        l = "ls -l";
+
+        # ssh
+        sr = "ssh sapphira-root";
+        srt = "ssh sapphira-root-t";
       };
     };
     gamemode.enable = true;
