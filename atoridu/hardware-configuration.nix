@@ -24,8 +24,17 @@
         "sd_mod"
       ];
     };
-    kernelModules = [ "kvm-amd" "vfio-pci" "vfio_virqfd" "vfio" "vfio_iommu_type1" ];
-    kernelParams = [ "amd_iommu=on" "iommu=pt" ];
+    kernelModules = [
+      "kvm-amd"
+      "vfio-pci"
+      "vfio_virqfd"
+      "vfio"
+      "vfio_iommu_type1"
+    ];
+    kernelParams = [
+      "amd_iommu=on"
+      "iommu=pt"
+    ];
     extraModulePackages = [ ];
     loader = {
       systemd-boot.enable = true;

@@ -59,14 +59,6 @@ in
     };
   };
 
-  #   home-manager.users."${my_vars.this-admin}" = { pkgs, ... }: {
-  #     home = {
-  #       packages = [ pkgs.atool pkgs.httpie ];
-  #       stateVersion = "24.11";
-  #     };
-  #     programs.zsh.enable = true;
-  #   };
-
   users = {
     defaultUserShell = pkgs.zsh;
     users = {
@@ -141,6 +133,7 @@ in
       pciutils
       smartmontools
       usbutils
+      btop
 
       # Windows virtualisation
       spice
@@ -153,7 +146,18 @@ in
     ];
   };
 
+#  Homemanager method
+#   dconf.settings = {
+#     "org/virt-manager/virt-manager/connections" = {
+#       autoconnect = ["qemu:///system"];
+#       uris = ["qemu:///system"];
+#     };
+#   };
+
   programs = {
+    dconf = {
+      enable = true;
+    };
     git = {
       enable = true;
       config = {
@@ -279,7 +283,6 @@ in
   virtualisation = {
     libvirtd = {
       enable = true;
-      enableKVM = true;
       qemu = {
         swtpm.enable = true;
         ovmf.enable = true;
@@ -288,7 +291,6 @@ in
     };
     spiceUSBRedirection.enable = true;
   };
-
 
   systemd = {
     network.wait-online.enable = false;
@@ -308,18 +310,6 @@ in
   };
 
   # Oqyulink
-
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
 
   system.stateVersion = "24.11";
 
