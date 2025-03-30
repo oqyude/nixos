@@ -12,7 +12,7 @@
   ];
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_xanmod_latest; # linuxPackages_zen
+    kernelPackages = pkgs.linuxPackages_xanmod_latest;
     initrd = {
       kernelModules = [ ];
       availableKernelModules = [
@@ -24,8 +24,8 @@
         "sd_mod"
       ];
     };
-    kernelModules = [ "kvm-amd" ];
-    #kernelParams = [ "i915.force_probe=46d1" ];
+    kernelModules = [ "kvm-amd" "vfio-pci" "vfio_virqfd" "vfio" "vfio_iommu_type1" ];
+    kernelParams = [ "amd_iommu=on" "iommu=pt" ];
     extraModulePackages = [ ];
     loader = {
       systemd-boot.enable = true;

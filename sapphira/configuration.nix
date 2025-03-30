@@ -302,15 +302,15 @@ in
   };
 
   security = {
-#     acme = {
-#       acceptTerms = true;
-#       defaults = {
-#        email = "${my_vars.this-host}@example.com";
-#       };
-#       certs = {
-#        "${config.services.nextcloud.hostName}".group = "nextcloud";
-#       };
-#     };
+    #     acme = {
+    #       acceptTerms = true;
+    #       defaults = {
+    #        email = "${my_vars.this-host}@example.com";
+    #       };
+    #       certs = {
+    #        "${config.services.nextcloud.hostName}".group = "nextcloud";
+    #       };
+    #     };
     sudo.wheelNeedsPassword = false;
     polkit = {
       enable = true;

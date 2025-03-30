@@ -75,10 +75,11 @@ in
         description = "Jor Oqyude";
         initialPassword = "1234";
         extraGroups = [
-          "networkmanager"
-          "wheel"
-          "pipewire"
           "gamemode"
+          "libvirtd"
+          "networkmanager"
+          "pipewire"
+          "wheel"
         ];
         packages = with pkgs; [
           # Workflow
@@ -98,6 +99,7 @@ in
           transmission_4-qt
           lutris
           gamehub
+          quickemu
         ];
       };
     };
@@ -139,6 +141,15 @@ in
       pciutils
       smartmontools
       usbutils
+
+      # Windows virtualisation
+      spice
+      spice-gtk
+      spice-protocol
+      virt-manager
+      virt-viewer
+      win-spice
+      win-virtio
     ];
   };
 
@@ -211,7 +222,11 @@ in
       };
     };
     desktopManager.plasma6.enable = true;
-    printing.enable = true;
+    printing = {
+      enable = true;
+      cups-pdf.enable = true;
+    };
+
     libinput = {
       enable = true;
       mouse = {
@@ -241,8 +256,7 @@ in
     thermald.enable = true;
     earlyoom.enable = true;
     preload.enable = true;
-    #resolved.enable = true;
-    #cron.enable = true;
+    spice-vdagentd.enable = true;
   };
 
   security = {
@@ -261,6 +275,20 @@ in
       '';
     };
   };
+
+  virtualisation = {
+    libvirtd = {
+      enable = true;
+      enableKVM = true;
+      qemu = {
+        swtpm.enable = true;
+        ovmf.enable = true;
+        ovmf.packages = [ pkgs.OVMFFull.fd ];
+      };
+    };
+    spiceUSBRedirection.enable = true;
+  };
+
 
   systemd = {
     network.wait-online.enable = false;
