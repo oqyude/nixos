@@ -22,7 +22,6 @@ in
   boot = {
     kernelPackages = pkgs.linuxPackages_xanmod_latest;
     initrd = {
-      kernelModules = [ ];
       availableKernelModules = [
         "nvme"
         "xhci_pci"
