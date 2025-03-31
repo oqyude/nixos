@@ -3,23 +3,79 @@
   lib,
   pkgs,
   inputs,
+  modulesPath,
   ...
 }:
 let
   my-vars = import ./vars.nix;
 in
 {
-  nix.nixPath = [
-    "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-    "nixos-config=/etc/nixos/${my-vars.this-host}/configuration.nix"
-    "/nix/var/nix/profiles/per-user/root/channels"
-  ];
+
+  nix = {
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [ "nix-command" ];
+    };
+    nixPath = [
+      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+      "nixos-config=/etc/nixos/${my-vars.this-host}/configuration.nix"
+      "/nix/var/nix/profiles/per-user/root/channels"
+    ];
+  };
 
   imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
     "${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
     ./disko.nix
-    ./hardware-configuration.nix
+    #./hardware-configuration.nix
   ];
+
+
+  boot = {
+    initrd = {
+      availableKernelModules = [
+        "ahci"
+        "xhci_pci"
+        "usbhid"
+        "usb_storage"
+        "sd_mod"
+        "sdhci_pci"
+      ];
+      kernelModules = [ ];
+    };
+    kernel = {
+      sysctl = {
+        "fs.inotify.max_user_watches" = "204800";
+      };
+    };
+
+    kernelModules = [
+      "kvm-intel"
+      "coretemp"
+    ];
+    kernelPackages = pkgs.linuxPackages_latest;
+    hardwareScan = true;
+    blacklistedKernelModules = [
+      ""
+    ];
+    extraModulePackages = [ ];
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+  };
+
+  hardware = {
+    bluetooth.enable = false;
+    cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  };
+
+  fileSystems = {
+  };
+
+  #swapDevices =
+  #  [ { device = "/dev/disk/by-partlabel/disk-main-swap"; }
+  #  ];
 
   time.timeZone = "Europe/Moscow";
 
@@ -31,10 +87,9 @@ in
     ];
   };
 
-  nixpkgs.config.allowUnfree = true;
-  nix.settings = {
-    auto-optimise-store = true;
-    experimental-features = [ "nix-command" ];
+  nixpkgs = {
+    config.allowUnfree = true;
+    hostPlatform = lib.mkDefault "x86_64-linux";
   };
 
   users = {
@@ -81,6 +136,31 @@ in
   };
 
   fileSystems = {
+    # System
+    "/" = {
+      device = "/dev/disk/by-partlabel/disk-main-root";
+      fsType = "ext4";
+    };
+    "/boot" = {
+      device = "/dev/disk/by-partlabel/disk-main-ESP";
+      fsType = "vfat";
+      options = [
+        "fmask=0022"
+        "dmask=0022"
+      ];
+    };
+
+    # External drive
+    "/mnt/server" = { 
+      device = "/dev/disk/by-partlabel/Server";
+      fsType = "ext4";
+      options = [
+        "nofail"
+        "x-systemd.device-timeout=0"
+      ];
+    };
+
+    # Mounts
     #"${my-vars.dirs.sync}/Symlinks/VY" = {
     #  device = "${my-vars.dirs.user}/Vaults/My/Общие/VY";
     #  fsType = "none";
