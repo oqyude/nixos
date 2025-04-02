@@ -239,6 +239,7 @@ in
       smartmontools
       usbutils
       btop
+      input-leap
 
       # Windows virtualisation
       spice
@@ -430,6 +431,13 @@ in
       };
     };
   };
+
+#   xdg = {
+#     portal = {
+#       enable = true;
+#       wlr.enable = true;
+#     };
+#   };
 
   # Oqyulink
 
