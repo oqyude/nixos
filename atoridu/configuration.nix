@@ -188,7 +188,6 @@ in
           stretchly
           nekoray
           discord
-          mangohud
           _64gram
           keepassxc
           obsidian
@@ -196,7 +195,6 @@ in
           transmission_4-qt
           lutris
           gamehub
-          quickemu
         ];
       };
     };
@@ -221,25 +219,30 @@ in
 
       # Audio
       wineasio
-      yabridge
-      yabridgectl
+      #yabridge
+      #yabridgectl
 
       # Other
-      ludusavi
-      kdePackages.filelight
-      whitesur-kde
+      mc
+      nixfmt-rfc-style
+
+      # DE
       brave
       easyeffects
       fastfetch
       gparted
+      input-leap
+      kdePackages.filelight
       localsend
-      mc
-      nixfmt-rfc-style
+      ludusavi
+      whitesur-kde
+
+      # Monitoring
+      btop
+      mangohud
       pciutils
       smartmontools
       usbutils
-      btop
-      input-leap
 
       # Windows virtualisation
       spice
@@ -249,7 +252,7 @@ in
       virt-viewer
       win-spice
       win-virtio
-      #       looking-glass-client # pci-passthrough
+      #looking-glass-client # pci-passthrough
     ];
   };
 
