@@ -60,7 +60,8 @@ in
         enableGraphical = true;
       };
     };
-    cpu."${my-vars.platform.cpu}".updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    cpu."${my-vars.platform.cpu}".updateMicrocode =
+      lib.mkDefault config.hardware.enableRedistributableFirmware;
     graphics = {
       enable = true;
     };
@@ -435,12 +436,12 @@ in
     };
   };
 
-#   xdg = {
-#     portal = {
-#       enable = true;
-#       wlr.enable = true;
-#     };
-#   };
+  #   xdg = {
+  #     portal = {
+  #       enable = true;
+  #       wlr.enable = true;
+  #     };
+  #   };
 
   # Oqyulink
 

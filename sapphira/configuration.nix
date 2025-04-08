@@ -29,7 +29,6 @@ in
     ./disko.nix
   ];
 
-
   boot = {
     initrd = {
       availableKernelModules = [
@@ -131,6 +130,7 @@ in
       sing-box
       smartmontools # tty
       yazi
+      nix-search-cli
     ];
   };
 
@@ -150,7 +150,7 @@ in
     };
 
     # External drive
-    "/mnt/server" = { 
+    "/mnt/server" = {
       device = "/dev/disk/by-partlabel/Server";
       fsType = "ext4";
       options = [
