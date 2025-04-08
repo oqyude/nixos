@@ -226,6 +226,7 @@ in
       # Other
       mc
       nixfmt-rfc-style
+      nix-search-cli
 
       # DE
       brave
