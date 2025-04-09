@@ -148,7 +148,7 @@ in
     };
 
     # External drive
-    "${server-home}" = {
+    "${zeroq.dirs.server-home}" = {
       device = "/dev/disk/by-partlabel/Server";
       fsType = "ext4";
       options = [
