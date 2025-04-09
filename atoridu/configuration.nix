@@ -16,8 +16,8 @@ in
 {
 
   imports = [
-    #(import "${home-manager}/nixos")
-    "${zeroq.channels.musnix}"
+    #(import "${builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz"}/nixos")
+    "${builtins.fetchTarball "https://github.com/musnix/musnix/archive/master.tar.gz"}"
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 

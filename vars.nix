@@ -19,11 +19,6 @@ rec {
     credentials-target = "/var/lib/credentials";
   };
 
-  channels = rec {
-    home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz";
-    musnix = builtins.fetchTarball "https://github.com/musnix/musnix/archive/master.tar.gz";
-  };
-
   platform = rec {
     cpu = "amd";
     vfioIds = [

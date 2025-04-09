@@ -148,7 +148,7 @@ in
     };
 
     # External drive
-    "/mnt/server" = {
+    "${server-home}" = {
       device = "/dev/disk/by-partlabel/Server";
       fsType = "ext4";
       options = [
@@ -158,21 +158,11 @@ in
     };
 
     # Mounts
-    #"${zeroq.dirs.sync}/Symlinks/VY" = {
-    #  device = "${zeroq.dirs.user}/Vaults/My/Общие/VY";
-    #  fsType = "none";
-    #  options = [ "bind" ];
-    #};
     "${zeroq.dirs.credentials-target}" = {
       device = "${zeroq.dirs.credentials-source-server}";
       fsType = "none";
       options = [ "bind" ];
     };
-    #"${zeroq.dirs.nextcloud-target}" = {
-    #  device = "${zeroq.dirs.nextcloud-source}";
-    #  fsType = "ext4";
-    #  options = [ "bind" ];
-    #};
   };
 
   services = {
