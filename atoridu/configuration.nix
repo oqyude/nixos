@@ -4,6 +4,8 @@
   pkgs,
   inputs,
   modulesPath,
+  stdenv,
+  fetchurl,
   ...
 }:
 
@@ -11,16 +13,23 @@ let
   # My Lines
   my-vars = import ./vars.nix;
   home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz";
+  musnix = builtins.fetchTarball "https://github.com/musnix/musnix/archive/master.tar.gz";
 in
 {
 
   imports = [
     #(import "${home-manager}/nixos")
+    "${musnix}"
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
+  musnix = {
+    enable = true;
+
+  };
+
   boot = {
-    kernelPackages = pkgs.linuxPackages_xanmod_latest;
+    kernelPackages = pkgs.linuxPackages_xanmod_stable;
     initrd = {
       availableKernelModules = [
         "nvme"
@@ -66,7 +75,7 @@ in
       enable = true;
     };
     bluetooth.enable = true;
-    alsa.enable = false;
+    #alsa.enable = false;
     nvidia = {
       open = true;
       dynamicBoost.enable = true;
@@ -171,6 +180,7 @@ in
         description = "Jor Oqyude";
         initialPassword = "1234";
         extraGroups = [
+          "audio"
           "disk"
           "gamemode"
           "libvirtd"
@@ -214,14 +224,21 @@ in
       nftables
 
       # Wine
+      #winetricks
       wineWowPackages.stagingFull
-      #       winetricks
       dxvk
 
       # Audio
       wineasio
-      #yabridge
-      #yabridgectl
+
+      #       (yabridge.overrideAttrs (oldAttrs: {
+      #         version = "5.1.0";
+      #         src = builtins.fetchTarball "https://github.com/robbert-vdh/yabridge/archive/refs/tags/5.1.0.tar.gz";
+      #       }))
+      #       (yabridgectl.overrideAttrs (oldAttrs: {
+      #         version = "5.1.0";
+      #         src = builtins.fetchTarball "https://github.com/robbert-vdh/yabridge/archive/refs/tags/5.1.0.tar.gz";
+      #       }))
 
       # Other
       mc
@@ -283,8 +300,22 @@ in
     nh.enable = true;
     nix-ld = {
       enable = false;
-      libraries = with pkgs; [
-      ];
+      #       libraries = with pkgs; [
+      #         zlib
+      #         zstd
+      #         stdenv.cc.cc
+      #         curl
+      #         openssl
+      #         attr
+      #         libssh
+      #         bzip2
+      #         libxml2
+      #         acl
+      #         libsodium
+      #         util-linux
+      #         xz
+      #         systemd
+      #       ];
     };
     zsh = {
       enable = true;
@@ -333,7 +364,7 @@ in
         variant = "";
       };
     };
-    pulseaudio.enable = lib.mkForce false;
+    #pulseaudio.enable = lib.mkForce false;
     displayManager = {
       defaultSession = "plasma";
       sddm = {
@@ -378,7 +409,7 @@ in
     };
     thermald.enable = true;
     earlyoom.enable = true;
-    #preload.enable = true;
+    preload.enable = true;
     spice-vdagentd.enable = true;
   };
 
@@ -421,6 +452,7 @@ in
   };
 
   systemd = {
+    #     extraConfig = "DefaultLimitNOFILE=1048576"; # defaults to 1024 if unset
     network.wait-online.enable = false;
     services = {
       base-start = {
