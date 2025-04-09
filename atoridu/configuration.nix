@@ -284,6 +284,7 @@ in
   #   };
 
   programs = {
+    xwayland.enable = true;
     dconf = {
       enable = true;
     };
