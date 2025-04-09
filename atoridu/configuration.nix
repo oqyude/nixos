@@ -10,22 +10,19 @@
 }:
 
 let
-  # My Lines
-  my-vars = import ./vars.nix;
-  home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz";
-  musnix = builtins.fetchTarball "https://github.com/musnix/musnix/archive/master.tar.gz";
+  current.host = "atoridu";
+  zeroq = import ../vars.nix;
 in
 {
 
   imports = [
     #(import "${home-manager}/nixos")
-    "${musnix}"
+    "${zeroq.channels.musnix}"
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
   musnix = {
     enable = true;
-
   };
 
   boot = {
@@ -41,19 +38,19 @@ in
       ];
     };
     kernelModules = [
-      "kvm-${my-vars.platform.cpu}"
+      "kvm-${zeroq.platform.cpu}"
       "vfio"
       "vfio-pci"
       "vfio_iommu_type1"
       "vfio_virqfd"
     ];
     kernelParams = [
-      "${my-vars.platform.cpu}_iommu=on"
+      "${zeroq.platform.cpu}_iommu=on"
       "iommu=pt"
       "kvm.ignore_msrs=1"
-      #("vfio-pci.ids=" + builtins.concatStringsSep "," my-vars.platform.vfioIds)
+      #("vfio-pci.ids=" + builtins.concatStringsSep "," zeroq.platform.vfioIds)
     ];
-    #extraModprobeConfig = "options vfio-pci ids=${builtins.concatStringsSep "," my-vars.platform.vfioIds}";
+    #extraModprobeConfig = "options vfio-pci ids=${builtins.concatStringsSep "," zeroq.platform.vfioIds}";
     extraModulePackages = [ ];
     loader = {
       systemd-boot.enable = true;
@@ -69,7 +66,7 @@ in
         enableGraphical = true;
       };
     };
-    cpu."${my-vars.platform.cpu}".updateMicrocode =
+    cpu."${zeroq.platform.cpu}".updateMicrocode =
       lib.mkDefault config.hardware.enableRedistributableFirmware;
     graphics = {
       enable = true;
@@ -93,7 +90,7 @@ in
           enableOffloadCmd = true;
         };
         sync.enable = false;
-        "${my-vars.platform.cpu}gpuBusId" = "PCI:6:0:0";
+        "${zeroq.platform.cpu}gpuBusId" = "PCI:6:0:0";
         nvidiaBusId = "PCI:1:0:0";
       };
     };
@@ -112,7 +109,7 @@ in
         "dmask=0077"
       ];
     };
-    "/mnt/sound" = {
+    "${zeroq.dirs.sound-drive}" = {
       device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
       fsType = "ntfs3";
       options = [
@@ -121,6 +118,8 @@ in
         "gid=1000"
         "fmask=0007"
         "dmask=0007"
+        "nofail"
+        "x-systemd.device-timeout=0"
       ];
     };
   };
@@ -133,7 +132,7 @@ in
   nix = {
     nixPath = [
       "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-      "nixos-config=/etc/nixos/${my-vars.this-host}/configuration.nix"
+      "nixos-config=/etc/nixos/${current.host}/configuration.nix"
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
     settings = {
@@ -150,7 +149,7 @@ in
   };
 
   networking = {
-    hostName = "${my-vars.this-host}";
+    hostName = "${current.host}";
     networkmanager.enable = true;
     firewall.enable = false;
     useDHCP = lib.mkDefault true;
@@ -175,7 +174,7 @@ in
   users = {
     defaultUserShell = pkgs.zsh;
     users = {
-      "${my-vars.this-admin}" = {
+      "${zeroq.admin}" = {
         isNormalUser = true;
         description = "Jor Oqyude";
         initialPassword = "1234";
@@ -222,6 +221,7 @@ in
       ipset
       iptables
       nftables
+      wget
 
       # Wine
       #winetricks
@@ -393,10 +393,10 @@ in
     syncthing = {
       enable = true;
       systemService = true;
-      configDir = "${my-vars.dirs.storage}/Syncthing/${my-vars.this-host}";
-      dataDir = "${my-vars.dirs.home}";
+      configDir = "${zeroq.dirs.user-storage}/Syncthing/${current.host}";
+      dataDir = "${zeroq.dirs.user-home}";
       group = "users";
-      user = "${my-vars.this-admin}";
+      user = "${zeroq.admin}";
     };
     tailscale.enable = true;
     pipewire = {
@@ -434,7 +434,7 @@ in
     libvirtd = {
       enable = true;
       #       extraConfig = ''
-      #         user="${my-vars.this-admin}"
+      #         user="${zeroq.admin}"
       #       '';
       onBoot = "ignore";
       onShutdown = "shutdown";
@@ -444,7 +444,7 @@ in
         ovmf.packages = [ pkgs.OVMFFull.fd ];
         #         verbatimConfig = ''
         #           namespaces = []
-        #           user = "+${builtins.toString config.users.users.${my-vars.this-admin}.uid}"
+        #           user = "+${builtins.toString config.users.users.${zeroq.admin}.uid}"
         #         '';
       };
     };
