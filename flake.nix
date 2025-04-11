@@ -13,12 +13,12 @@
     in
     {
       #       homeModules = {
-      #         default = import ./homeModules/default.nix flakeContext;
+      #         default = import ./home/default.nix flakeContext;
       #       };
       nixosConfigurations = {
-        atoridu = import ./nixosConfigurations/atoridu.nix flakeContext;
-        sapphira = import ./nixosConfigurations/sapphira.nix flakeContext;
-        #modules = [ ./old.nix ];
+        atoridu = import ./hosts/atoridu.nix flakeContext;
+        sapphira = import ./hosts/sapphira.nix flakeContext;
+        wsl = import ./hosts/sapphira.nix flakeContext;
       };
     };
 }
