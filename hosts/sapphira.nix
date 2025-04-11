@@ -459,7 +459,6 @@ in
 inputs.nixpkgs.lib.nixosSystem {
   modules = [
     nixosModule
-    disko.nixosModules.disko
   ];
   system = "x86_64-linux";
 }
