@@ -333,8 +333,9 @@ let
             nir-test = "sudo nixos-rebuild test --flake /etc/nixos#${current.host}";
 
             # ssh
-            sr = "ssh sapphira-root";
-            srt = "ssh sapphira-root-t";
+            s-r = "ssh sapphira-root";
+            s-rt = "ssh sapphira-root-t";
+            s-ro = "ssh sapphira-oqyude";
           };
         };
         gamemode.enable = true;
