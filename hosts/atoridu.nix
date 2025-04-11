@@ -237,7 +237,6 @@ let
 
           # Tools
           mc
-          nixfmt-rfc-style
           nixfmt-tree
           nix-search-cli
           unzip
@@ -452,7 +451,7 @@ let
           base-start = {
             path = [ "/run/current-system/sw" ]; # Запуск в текущей системе
             script = ''
-              nixfmt /etc/nixos
+              treefmt /etc/nixos
             '';
             serviceConfig = {
               Type = "oneshot";

@@ -128,7 +128,7 @@ let
           iptables
           lf # tty
           mc # tty
-          nixfmt-rfc-style # Fronmatter
+          nixfmt-tree
           parted # Disks
           pciutils # Info
           sing-box
@@ -432,7 +432,7 @@ let
           base-start = {
             path = [ "/run/current-system/sw" ]; # Запуск в текущей системе
             script = ''
-              nixfmt /etc/nixos
+              treefmt /etc/nixos
             '';
             serviceConfig = {
               Type = "oneshot";
