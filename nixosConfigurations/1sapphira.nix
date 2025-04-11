@@ -15,7 +15,10 @@ in
   nix = {
     settings = {
       auto-optimise-store = true;
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
     };
     #nixPath = [
     #  "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
@@ -26,8 +29,8 @@ in
 
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
-     #"${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
-     #./disko.nix
+    #"${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
+    #./disko.nix
   ];
 
   boot = {
