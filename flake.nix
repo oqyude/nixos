@@ -15,7 +15,7 @@
       #       homeModules = {
       #         default = import ./home/default.nix flakeContext;
       #       };
-      nixosConfigurations = {
+      hosts/*nixosConfigurations*/ = {
         atoridu = import ./hosts/atoridu.nix flakeContext;
         sapphira = import ./hosts/sapphira.nix flakeContext;
         wsl = import ./hosts/sapphira.nix flakeContext;
