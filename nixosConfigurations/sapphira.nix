@@ -53,12 +53,11 @@ let
             "fs.inotify.max_user_watches" = "204800";
           };
         };
-
         kernelModules = [
           "kvm-intel"
           "coretemp"
         ];
-        kernelPackages = pkgs.linuxPackages_latest;
+        kernelPackages = pkgs.linuxPackages_xanmod_stable;
         hardwareScan = true;
         blacklistedKernelModules = [
           ""

@@ -49,6 +49,7 @@ let
       #   };
 
       boot = {
+        #hardwareScan = true;
         kernelPackages = pkgs.linuxPackages_xanmod_stable;
         initrd = {
           availableKernelModules = [
