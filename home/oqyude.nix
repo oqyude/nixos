@@ -38,14 +38,14 @@ let
         gamehub
         #anydesk
       ];
-
-      dconf.settings = {
-        "org/virt-manager/virt-manager/connections" = {
-          autoconnect = ["qemu:///system"];
-          uris = ["qemu:///system"];
-        };
-      };
-
+#       dconf = {
+#         settings = {
+#           "org/virt-manager/virt-manager/connections" = {
+#             autoconnect = ["qemu:///system"];
+#             uris = ["qemu:///system"];
+#           };
+#         };
+#       };
       stateVersion = "24.11";
     };
 
