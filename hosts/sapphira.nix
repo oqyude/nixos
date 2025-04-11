@@ -15,6 +15,13 @@ let
     in
     {
 
+
+      imports = [
+        (modulesPath + "/installer/scan/not-detected.nix")
+        #"${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
+        ./disko/${current.host}.nix
+      ];
+
       nix = {
         settings = {
           auto-optimise-store = true;
@@ -29,12 +36,6 @@ let
         #  "/nix/var/nix/profiles/per-user/root/channels"
         #];
       };
-
-      imports = [
-        (modulesPath + "/installer/scan/not-detected.nix")
-        #"${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
-        #./disko.nix
-      ];
 
       boot = {
         initrd = {
@@ -458,6 +459,7 @@ in
 inputs.nixpkgs.lib.nixosSystem {
   modules = [
     nixosModule
+    disko.nixosModules.disko
   ];
   system = "x86_64-linux";
 }

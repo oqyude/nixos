@@ -336,6 +336,9 @@ let
             s-r = "ssh sapphira-root";
             s-rt = "ssh sapphira-root-t";
             s-o = "ssh sapphira-oqyude";
+
+            # Somethings
+            reboot-bios = "sudo systemctl reboot --firmware-setup";
           };
         };
         gamemode.enable = true;
@@ -512,6 +515,12 @@ in
 inputs.nixpkgs.lib.nixosSystem {
   modules = [
     nixosModule
+    inputs.home-manager.nixosModules.home-manager
+    inputs.self.homeConfigurations.oqyude.nixosModule
+    {
+      home-manager.useGlobalPkgs = true;
+      home-manager.useUserPackages = true;
+    }
   ];
   system = "x86_64-linux";
 }

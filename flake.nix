@@ -1,24 +1,39 @@
 {
-  description = "zeroq automate";
+  description = "zeroq flake";
+
   inputs = {
+
     nixpkgs.url = "flake:nixpkgs/nixpkgs-unstable";
-    home-manager.url = "flake:home-manager";
+
+    home-manager = {
+      url = "flake:home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
-  outputs =
-    inputs:
+
+  outputs = inputs:
+
     let
-      flakeContext = {
-        inherit inputs;
-      };
+      flakeContext = { inherit inputs; };
     in
+
     {
-      #       homeModules = {
-      #         default = import ./home/default.nix flakeContext;
-      #       };
-      hosts/*nixosConfigurations*/ = {
+
+      homeConfigurations = {
+        oqyude = import ./home/oqyude.nix flakeContext;
+      };
+
+      nixosConfigurations = {
         atoridu = import ./hosts/atoridu.nix flakeContext;
         sapphira = import ./hosts/sapphira.nix flakeContext;
         wsl = import ./hosts/sapphira.nix flakeContext;
       };
+
     };
 }
