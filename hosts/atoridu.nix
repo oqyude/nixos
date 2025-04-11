@@ -238,6 +238,7 @@ let
           # Tools
           mc
           nixfmt-rfc-style
+          nixfmt-tree
           nix-search-cli
           unzip
           rar

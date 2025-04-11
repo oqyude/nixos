@@ -15,7 +15,6 @@ let
     in
     {
 
-
       imports = [
         (modulesPath + "/installer/scan/not-detected.nix")
         #"${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
@@ -333,10 +332,10 @@ let
           enable = true;
           allowSFTP = true;
           hostKeys = [
-#             {
-#               path = "/etc/ssh/keys/root";
-#               type = "ed25519";
-#             }
+            #             {
+            #               path = "/etc/ssh/keys/root";
+            #               type = "ed25519";
+            #             }
             {
               path = "/etc/ssh/keys/${zeroq.admin}";
               type = "ed25519";

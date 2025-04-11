@@ -17,7 +17,8 @@
 
   };
 
-  outputs = inputs:
+  outputs =
+    inputs:
 
     let
       flakeContext = { inherit inputs; };
