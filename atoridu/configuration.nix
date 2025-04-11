@@ -21,6 +21,27 @@ in
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
+
+  nix = {
+    nixPath = [
+      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+      "nixos-config=/etc/nixos/${current.host}/configuration.nix"
+      "/nix/var/nix/profiles/per-user/root/channels"
+    ];
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [ "nix-command" ];
+    };
+  };
+
+  nixpkgs.config = {
+    hostPlatform = lib.mkDefault "x86_64-linux";
+    allowUnfree = true;
+    permittedInsecurePackages = [
+      "openssl-1.1.1w"
+    ];
+  };
+
   musnix = {
     enable = true;
   };
@@ -127,26 +148,6 @@ in
   swapDevices = [
     { device = "/dev/disk/by-uuid/d89bccd2-0672-4855-9d87-40e2688cdec4"; }
   ];
-
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  nix = {
-    nixPath = [
-      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-      "nixos-config=/etc/nixos/${current.host}/configuration.nix"
-      "/nix/var/nix/profiles/per-user/root/channels"
-    ];
-    settings = {
-      auto-optimise-store = true;
-      experimental-features = [ "nix-command" ];
-    };
-  };
-
-  nixpkgs.config = {
-    allowUnfree = true;
-    permittedInsecurePackages = [
-      "openssl-1.1.1w"
-    ];
-  };
 
   networking = {
     hostName = "${current.host}";
