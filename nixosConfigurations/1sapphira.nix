@@ -15,19 +15,19 @@ in
   nix = {
     settings = {
       auto-optimise-store = true;
-      experimental-features = [ "nix-command" ];
+      experimental-features = [ "nix-command" "flakes" ];
     };
-    nixPath = [
-      "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-      "nixos-config=/etc/nixos/${current.host}/configuration.nix"
-      "/nix/var/nix/profiles/per-user/root/channels"
-    ];
+    #nixPath = [
+    #  "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+    #  "nixos-config=/etc/nixos/${current.host}/configuration.nix"
+    #  "/nix/var/nix/profiles/per-user/root/channels"
+    #];
   };
 
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
-    "${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
-    ./disko.nix
+     #"${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
+     #./disko.nix
   ];
 
   boot = {
@@ -408,11 +408,15 @@ in
         enable = true;
         theme = "robbyrussell";
       };
-    };
-    nix-ld = {
-      enable = false;
-      libraries = with pkgs; [
-      ];
+      shellAliases = {
+        # shell
+        l = "ls -l";
+
+        # nixos
+        nir-switch = "sudo nixos-rebuild switch --flake /etc/nixos#${current.host}";
+        nir-boot = "sudo nixos-rebuild boot --flake /etc/nixos#${current.host}";
+        nir-test = "sudo nixos-rebuild test --flake /etc/nixos#${current.host}";
+      };
     };
   };
 

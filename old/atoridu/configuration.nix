@@ -17,10 +17,9 @@ in
 
   imports = [
     #(import "${builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz"}/nixos")
-    "${builtins.fetchTarball "https://github.com/musnix/musnix/archive/master.tar.gz"}"
-    (modulesPath + "/installer/scan/not-detected.nix")
+    #     "${builtins.fetchTarball "https://github.com/musnix/musnix/archive/master.tar.gz"}"
+    #     (modulesPath + "/installer/scan/not-detected.nix")
   ];
-
 
   nix = {
     nixPath = [
@@ -30,7 +29,10 @@ in
     ];
     settings = {
       auto-optimise-store = true;
-      experimental-features = [ "nix-command" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
     };
   };
 
@@ -42,9 +44,9 @@ in
     ];
   };
 
-  musnix = {
-    enable = true;
-  };
+  #   musnix = {
+  #     enable = true;
+  #   };
 
   boot = {
     kernelPackages = pkgs.linuxPackages_xanmod_stable;
