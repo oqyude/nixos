@@ -205,14 +205,18 @@ in
           transmission_4-qt
           lutris
           gamehub
+          anydesk
         ];
       };
     };
   };
 
   environment = {
+    plasma6.excludePackages = with pkgs; [
+      kdePackages.elisa
+    ];
     sessionVariables = {
-      WINEPREFIX = "$HOME/.wine64";
+      WINEPREFIX = "$HOME/.wine";
       WINEARCH = "win64";
     };
     systemPackages = with pkgs; [
@@ -228,8 +232,12 @@ in
       wineWowPackages.stagingFull
       dxvk
 
+      # Dev
+      gnumake
+
       # Audio
       wineasio
+      qjackctl
 
       #       (yabridge.overrideAttrs (oldAttrs: {
       #         version = "5.1.0";
@@ -255,6 +263,8 @@ in
       localsend
       ludusavi
       whitesur-kde
+      unzip
+      rar
 
       # Monitoring
       btop
@@ -282,7 +292,6 @@ in
   #       uris = ["qemu:///system"];
   #     };
   #   };
-
   programs = {
     xwayland.enable = true;
     dconf = {
@@ -300,7 +309,7 @@ in
     lazygit.enable = true;
     nh.enable = true;
     nix-ld = {
-      enable = false;
+      enable = true;
       #       libraries = with pkgs; [
       #         zlib
       #         zstd
@@ -365,7 +374,6 @@ in
         variant = "";
       };
     };
-    #pulseaudio.enable = lib.mkForce false;
     displayManager = {
       defaultSession = "plasma";
       sddm = {
@@ -407,11 +415,37 @@ in
       alsa.support32Bit = true;
       pulse.enable = true;
       jack.enable = true;
+      extraConfig.pipewire = {
+        "99-rates.conf" = {
+          "default.clock.rate" = 96000;
+          "default.clock.allowed-rates" = [
+            44100
+            48000
+            88200
+            96000
+          ];
+        };
+        "92-low-latency" = {
+          "context.properties" = {
+            "default.clock.rate" = 96000;
+            "default.clock.allowed-rates" = [
+              44100
+              48000
+              88200
+              96000
+            ];
+            "default.clock.quantum" = 64;
+            "default.clock.min-quantum" = 64;
+            "default.clock.max-quantum" = 256;
+          };
+        };
+      };
     };
     thermald.enable = true;
     earlyoom.enable = true;
     preload.enable = true;
     spice-vdagentd.enable = true;
+    #jack.jackd.enable = false;
   };
 
   security = {
