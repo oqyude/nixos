@@ -335,7 +335,7 @@ let
             # ssh
             s-r = "ssh sapphira-root";
             s-rt = "ssh sapphira-root-t";
-            s-ro = "ssh sapphira-oqyude";
+            s-o = "ssh sapphira-oqyude";
           };
         };
         gamemode.enable = true;
