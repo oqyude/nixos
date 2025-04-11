@@ -429,17 +429,17 @@ let
       systemd = {
         network.wait-online.enable = false;
         services = {
-          base-start = {
-            path = [ "/run/current-system/sw" ]; # Запуск в текущей системе
-            script = ''
-              treefmt /etc/nixos
-            '';
-            serviceConfig = {
-              Type = "oneshot";
-              RemainAfterExit = true;
-            };
-            wantedBy = [ "multi-user.target" ];
-          };
+          #           base-start = {
+          #             path = [ "/run/current-system/sw" ]; # Запуск в текущей системе
+          #             script = ''
+          #               treefmt /etc/nixos
+          #             '';
+          #             serviceConfig = {
+          #               Type = "oneshot";
+          #               RemainAfterExit = true;
+          #             };
+          #             wantedBy = [ "multi-user.target" ];
+          #           };
         };
       };
 
