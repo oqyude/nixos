@@ -1,14 +1,52 @@
 { inputs, ... }@flakeContext:
 let
   homeModule = { config, lib, pkgs, ... }: {
-
-    username = "oqyude";
-    homeDirectory = "/home/oqyude";
     home = {
+
+      username = "oqyude";
+
+      homeDirectory = "/home/oqyude";
+
       packages = with pkgs; [
+
+        btop
+        mangohud
+        fastfetch
+        gparted
+        input-leap
+        kdePackages.filelight
+        whitesur-kde
+        localsend
+        ludusavi
+        easyeffects
         brave
-        vivaldi
+        # Workflow
+        pdfarranger
+        libreoffice-qt6
+
+        vlc # Видео
+        gramps # Genealogy
+        stretchly
+        nekoray
+        discord
+        _64gram
+        keepassxc
+        obsidian
+        reaper
+        transmission_4-qt
+        lutris
+        gamehub
+        #anydesk
       ];
+
+      dconf.settings = {
+        "org/virt-manager/virt-manager/connections" = {
+          autoconnect = ["qemu:///system"];
+          uris = ["qemu:///system"];
+        };
+      };
+
+      stateVersion = "24.11";
     };
 
   };

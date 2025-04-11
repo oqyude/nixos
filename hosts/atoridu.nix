@@ -193,23 +193,6 @@ let
               "wheel"
             ];
             packages = with pkgs; [
-              # Workflow
-              pdfarranger
-              libreoffice-qt6
-
-              vlc # Видео
-              gramps # Genealogy
-              stretchly
-              nekoray
-              discord
-              _64gram
-              keepassxc
-              obsidian
-              reaper
-              transmission_4-qt
-              lutris
-              gamehub
-              anydesk
             ];
           };
         };
@@ -252,27 +235,14 @@ let
           #         src = builtins.fetchTarball "https://github.com/robbert-vdh/yabridge/archive/refs/tags/5.1.0.tar.gz";
           #       }))
 
-          # Other
+          # Tools
           mc
           nixfmt-rfc-style
           nix-search-cli
-
-          # DE
-          brave
-          easyeffects
-          fastfetch
-          gparted
-          input-leap
-          kdePackages.filelight
-          localsend
-          ludusavi
-          whitesur-kde
           unzip
           rar
 
           # Monitoring
-          btop
-          mangohud
           pciutils
           smartmontools
           usbutils
@@ -289,13 +259,6 @@ let
         ];
       };
 
-      #  Homemanager method
-      #   dconf.settings = {
-      #     "org/virt-manager/virt-manager/connections" = {
-      #       autoconnect = ["qemu:///system"];
-      #       uris = ["qemu:///system"];
-      #     };
-      #   };
       programs = {
         xwayland.enable = true;
         dconf = {
