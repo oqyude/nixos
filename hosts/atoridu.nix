@@ -133,8 +133,21 @@ let
             "dmask=0077"
           ];
         };
-        "${zeroq.dirs.sound-drive}" = {
+        "${zeroq.dirs.therima-drive}" = {
           device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
+          fsType = "ntfs3";
+          options = [
+            "defaults"
+            "uid=1000"
+            "gid=1000"
+            "fmask=0007"
+            "dmask=0007"
+            "nofail"
+            "x-systemd.device-timeout=0"
+          ];
+        };
+        "${zeroq.dirs.vetymae-drive}" = {
+          device = "/dev/disk/by-uuid/6E04EA7F04EA49A3";
           fsType = "ntfs3";
           options = [
             "defaults"
@@ -241,6 +254,8 @@ let
           nix-search-cli
           unzip
           rar
+          ntfs3g
+          gparted
 
           # Monitoring
           pciutils
@@ -254,7 +269,7 @@ let
           virt-manager
           virt-viewer
           win-spice
-          win-virtio
+          virtio-win
           #looking-glass-client # pci-passthrough
         ];
       };
@@ -281,7 +296,7 @@ let
           enableBashCompletion = true;
           syntaxHighlighting.enable = true;
           zsh-autoenv.enable = true;
-          loginShellInit = "cd /etc/nixos && clear && fastfetch";
+          #loginShellInit = "cd /etc/nixos && clear && fastfetch";
           ohMyZsh = {
             enable = true;
             theme = "robbyrussell";
@@ -291,9 +306,9 @@ let
             l = "ls -l";
 
             # nixos
-            nir-switch = "sudo nixos-rebuild switch --flake /etc/nixos#${current.host}";
-            nir-boot = "sudo nixos-rebuild boot --flake /etc/nixos#${current.host}";
-            nir-test = "sudo nixos-rebuild test --flake /etc/nixos#${current.host}";
+            nir-switch = "sudo nixos-rebuild switch --flake ${zeroq.nixos}#${current.host}";
+            nir-boot = "sudo nixos-rebuild boot --flake ${zeroq.nixos}#${current.host}";
+            nir-test = "sudo nixos-rebuild test --flake ${zeroq.nixos}#${current.host}";
 
             # ssh
             s-r = "ssh sapphira-root";

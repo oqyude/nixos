@@ -8,18 +8,44 @@ let
       ...
     }:
     {
+      xdg = {
+        enable = true;
+        systemDirs = {
+          config = [ "/etc/xdg" ];
+        };
+        userDirs = {
+          createDirectories = true;
+          publicShare = "${config.home.homeDirectory}/public";
+          videos = "${config.home.homeDirectory}/pictures";
+          desktop = "${config.home.homeDirectory}/misc/desktops";
+          templates = null;
+          extraConfig = {
+            XDG_MISC_DIR = "${config.home.homeDirectory}/misc";
+          };
+        };
+      };
+      dconf = {
+        settings = {
+          "org/virt-manager/virt-manager/connections" = {
+            autoconnect = ["qemu:///system"];
+            uris = ["qemu:///system"];
+          };
+        };
+      };
       home = {
-
+#         file = {
+#           "luduasvi" = {
+#             recursive = true;
+#             source = "${config.home.homeDirectory}/storage/ludusavi/cfg";
+#             target = "${config.home.homeDirectory}/.config/ludusavi";
+#           };
+#         };
         username = "oqyude";
-
         homeDirectory = "/home/oqyude";
-
         packages = with pkgs; [
-
           btop
           mangohud
           fastfetch
-          gparted
           input-leap
           kdePackages.filelight
           whitesur-kde
@@ -45,14 +71,6 @@ let
           gamehub
           #anydesk
         ];
-        #       dconf = {
-        #         settings = {
-        #           "org/virt-manager/virt-manager/connections" = {
-        #             autoconnect = ["qemu:///system"];
-        #             uris = ["qemu:///system"];
-        #           };
-        #         };
-        #       };
         stateVersion = "24.11";
       };
 

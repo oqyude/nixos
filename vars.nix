@@ -1,12 +1,13 @@
 rec {
   admin = "oqyude";
+  nixos = "/home/${admin}/zeroq";
 
   dirs = rec {
     # User
     user-home = "/home/${admin}";
-    user-storage = "${user-home}/Storage";
-    sound-drive = "/mnt/sound";
-    windows-drive = "/mnt/windows";
+    user-storage = "${user-home}/storage";
+    therima-drive = "/mnt/therima";
+    vetymae-drive = "/mnt/vetymae";
 
     # Server
     server-home = "/mnt/server";
