@@ -1,6 +1,6 @@
 rec {
   admin = "oqyude";
-  nixos = "/home/${admin}/zeroq";
+  nixos = "/etc/nixos"; #"/home/${admin}/zeroq"
 
   dirs = rec {
     # User
