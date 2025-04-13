@@ -1,5 +1,6 @@
 { inputs, ... }@flakeContext:
 let
+  current.host = "atoridu";
   nixosModule =
     {
       config,
@@ -10,7 +11,6 @@ let
       ...
     }:
     let
-      current.host = "atoridu";
       zeroq = import ../vars.nix;
     in
     {
@@ -191,7 +191,7 @@ let
       users = {
         defaultUserShell = pkgs.zsh;
         users = {
-          "${zeroq.admin}" = {
+          "${zeroq.user-name}" = {
             isNormalUser = true;
             description = "Jor Oqyude";
             initialPassword = "1234";
@@ -378,7 +378,7 @@ let
           configDir = "${zeroq.dirs.user-storage}/Syncthing/${current.host}";
           dataDir = "${zeroq.dirs.user-home}";
           group = "users";
-          user = "${zeroq.admin}";
+          user = "${zeroq.user-name}";
         };
         tailscale.enable = true;
         pipewire = {
@@ -442,7 +442,7 @@ let
         libvirtd = {
           enable = true;
           #       extraConfig = ''
-          #         user="${zeroq.admin}"
+          #         user="${zeroq.user-name}"
           #       '';
           onBoot = "ignore";
           onShutdown = "shutdown";
@@ -452,7 +452,7 @@ let
             ovmf.packages = [ pkgs.OVMFFull.fd ];
             #         verbatimConfig = ''
             #           namespaces = []
-            #           user = "+${builtins.toString config.users.users.${zeroq.admin}.uid}"
+            #           user = "+${builtins.toString config.users.users.${zeroq.user-name}.uid}"
             #         '';
           };
         };
@@ -496,8 +496,13 @@ inputs.nixpkgs.lib.nixosSystem {
     inputs.home-manager.nixosModules.home-manager
     inputs.self.homeConfigurations.oqyude.nixosModule
     {
-      home-manager.useGlobalPkgs = true;
-      home-manager.useUserPackages = true;
+      home-manager = {
+        useGlobalPkgs = true;
+        useUserPackages = true;
+        extraSpecialArgs = {
+          hostname = current.host;
+        };
+      };
     }
   ];
   system = "x86_64-linux";

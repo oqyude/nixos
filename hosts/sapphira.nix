@@ -99,14 +99,14 @@ let
           root = {
             openssh.authorizedKeys.keys = [
               #"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPhxTIqodDYFpXbl12Qe/Sc1PIhsjBrOja+5z3FB/VgF root@${current.host}"
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg" # ${zeroq.admin}@${current.host}
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg" # ${zeroq.user-name}@${current.host}
             ];
           };
-          "${zeroq.admin}" = {
+          "${zeroq.user-name}" = {
             isNormalUser = true;
             description = "Admin";
             openssh.authorizedKeys.keys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg" # ${zeroq.admin}@${current.host}
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg" # ${zeroq.user-name}@${current.host}
             ];
             initialPassword = "1234";
             extraGroups = [
@@ -317,7 +317,7 @@ let
         calibre-web = {
           enable = true;
           group = "users";
-          user = "${zeroq.admin}";
+          user = "${zeroq.user-name}";
           #dataDir = "${zeroq.dirs.server-home}";
           options = {
             calibreLibrary = "${zeroq.dirs.calibre-library}";
@@ -337,7 +337,7 @@ let
             #               type = "ed25519";
             #             }
             {
-              path = "/etc/ssh/keys/${zeroq.admin}";
+              path = "/etc/ssh/keys/${zeroq.user-name}";
               type = "ed25519";
             }
           ];
@@ -369,7 +369,7 @@ let
           configDir = "${zeroq.dirs.storage}/Syncthing/${current.host}";
           dataDir = "${zeroq.dirs.server-home}";
           group = "users";
-          user = "${zeroq.admin}";
+          user = "${zeroq.user-name}";
         };
         tailscale.enable = true;
       };

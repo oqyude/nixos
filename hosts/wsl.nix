@@ -39,13 +39,8 @@ let
 
       environment.systemPackages = with pkgs; [
         btop
-        eza
         fastfetch
-        lf
-        nixfmt-rfc-style
-        nodePackages.prettier
         yazi
-        yq-go
       ];
 
       programs = {

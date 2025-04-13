@@ -28,6 +28,9 @@
 
       homeConfigurations = {
         oqyude = import ./home/oqyude.nix flakeContext;
+        extraSpecialArgs = {
+          inherit (flakeContext) inputs;
+        };
       };
 
       nixosConfigurations = {

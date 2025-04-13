@@ -5,21 +5,27 @@ let
       config,
       lib,
       pkgs,
+      hostname,
       ...
     }:
+    let
+#       current.host = builtins.getEnv "HOSTNAME";
+      zeroq = import ../vars.nix;
+    in
     {
       xdg = {
         enable = true;
         autostart.enable = true;
-#         systemDirs = {
-#           config = [ "/etc/xdg" ];
-#         };
-#         configFile = {
-#           "ludusavi" = {
-#             source = "/home/oqyude/storage/ludusavi/cfg";
-#             target = "/home/oqyude/ludusavi";
-#           };
-#         };
+        configFile = {
+          "ludusavi" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/ludusavi/cfg";
+            target = "ludusavi";
+          };
+          "nekoray" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/Nekoray/${hostname}";
+            target = "nekoray";
+          };
+        };
         userDirs = {
           enable = true;
           createDirectories = true;
@@ -45,15 +51,16 @@ let
         };
       };
       home = {
+        #Downloads.source = config.lib.file.mkOutOfStoreSymlink "/mnt/real/path/to/Downloads";
 #         file = {
 #           "luduasvi" = {
 #             source = "${config.home.homeDirectory}/storage/ludusavi/cfg";
-#             target = "${config.home.homeDirectory}/.config/ludusavi";
+#             target = ".config/ludusavi";
 #           };
 #         };
         preferXdgDirectories = true;
-        username = "oqyude";
-        homeDirectory = "/home/oqyude";
+        username = "${zeroq.user-name}";
+        homeDirectory = "${zeroq.dirs.user-home}";
         packages = with pkgs; [
           home-manager
           btop

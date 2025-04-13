@@ -1,10 +1,10 @@
 rec {
-  admin = "oqyude";
-  nixos = "/etc/nixos"; #"/home/${admin}/zeroq"
+  user-name = "oqyude";
+  nixos = "/etc/nixos"; #"/home/${user-name}/zeroq"
 
   dirs = rec {
     # User
-    user-home = "/home/${admin}";
+    user-home = "/home/${user-name}";
     user-storage = "${user-home}/storage";
     therima-drive = "/mnt/therima";
     vetymae-drive = "/mnt/vetymae";
