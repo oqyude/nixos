@@ -311,9 +311,8 @@ let
             nir-test = "sudo nixos-rebuild test --flake ${zeroq.nixos}#${current.host}";
 
             # ssh
-            s-r = "ssh sapphira-root";
-            s-rt = "ssh sapphira-root-t";
-            s-o = "ssh sapphira-oqyude";
+            s-1 = "ssh sapphira-1";
+            s-1t = "ssh sapphira-1t";
 
             # Somethings
             reboot-bios = "sudo systemctl reboot --firmware-setup";

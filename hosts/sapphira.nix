@@ -109,19 +109,20 @@ let
               "networkmanager"
             ];
           };
-          root = {
-            openssh.authorizedKeys.keys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
-            ];
-          };
+#           root = {
+#             openssh.authorizedKeys.keys = [
+#               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
+#             ];
+#           };
           "${zeroq.user-name}" = {
             isNormalUser = true;
             description = "Admin";
-            openssh.authorizedKeys.keys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
-            ];
+#             openssh.authorizedKeys.keys = [
+#               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
+#             ];
             initialPassword = "1234";
             extraGroups = [
+              "users"
               "wheel"
               "networkmanager"
             ];
@@ -173,13 +174,6 @@ let
             "x-systemd.device-timeout=0"
           ];
         };
-
-#         # Mounts
-#         "${zeroq.dirs.credentials-target}" = {
-#           device = "${zeroq.dirs.credentials-source-server}";
-#           fsType = "none";
-#           options = [ "bind" ];
-#         };
       };
 
       services = {
@@ -194,7 +188,7 @@ let
             #dbhost = "/run/postgresql";
             dbname = "nextcloud";
             adminuser = "root";
-            adminpassFile = "${zeroq.dirs.credentials-target}/nextcloud/admin-pass.txt";
+            #adminpassFile = "${zeroq.dirs.credentials-target}/nextcloud/admin-pass.txt";
           };
           settings = {
             appstoreEnable = false;
@@ -299,18 +293,6 @@ let
               "force user" = "root";
               "force group" = "root";
             };
-#             "${zeroq.server-name}" = {
-#               "path" = "${zeroq.dirs.server-home}";
-#               "browseable" = "yes";
-#               "read only" = "no";
-#               "valid users" = "${zeroq.user-name}";
-#               "guest ok" = "no";
-#               "writable" = "yes";
-#               "create mask" = 700;
-#               "directory mask" = 700;
-#               "force user" = "${zeroq.server-name}";
-#               "force group" = "users";
-#             };
             root = {
               "path" = "/";
               "browseable" = "yes";
@@ -354,10 +336,6 @@ let
           enable = true;
           allowSFTP = true;
           hostKeys = [
-            #             {
-            #               path = "/etc/ssh/keys/root";
-            #               type = "ed25519";
-            #             }
             {
               path = "/etc/ssh/keys/${zeroq.user-name}";
               type = "ed25519";
@@ -370,7 +348,7 @@ let
           };
         };
         transmission = {
-          enable = false;
+          enable = true;
           credentialsFile = "${zeroq.dirs.server-home}/server/transmission/settings.json";
           openRPCPort = true;
           package = pkgs.transmission_4;

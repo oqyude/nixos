@@ -47,12 +47,12 @@ let
 #         };
 #       };
       home = {
-#         file = {
-#           "extenral" = {
-#             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.server-home}";
-#             target = "external";
-#           };
-#         };
+        file = {
+          "ssh" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.storage}/SSH/${hostname}";
+            target = ".ssh";
+          };
+        };
         preferXdgDirectories = true;
         username = "${zeroq.server-name}";
         homeDirectory = "/home/${zeroq.server-name}";
