@@ -9,7 +9,6 @@ let
       ...
     }:
     let
-#       current.host = builtins.getEnv "HOSTNAME";
       zeroq = import ../vars.nix;
     in
     {
@@ -29,16 +28,16 @@ let
         userDirs = {
           enable = true;
           createDirectories = true;
-          desktop = "${config.home.homeDirectory}/misc/desktops";
-          documents = "${config.home.homeDirectory}/documents";
-          download = "${config.home.homeDirectory}/downloads";
-          music = "${config.home.homeDirectory}/music";
-          pictures = "${config.home.homeDirectory}/pictures";
-          publicShare = "${config.home.homeDirectory}/misc/public";
+          desktop = "${config.home.homeDirectory}/Misc/desktops/${hostname}";
+          documents = "${config.home.homeDirectory}/Documents";
+          download = "${config.home.homeDirectory}/Downloads";
+          music = "${config.home.homeDirectory}/Music";
+          pictures = "${config.home.homeDirectory}/Pictures";
+          publicShare = "${config.home.homeDirectory}/Misc/public";
           templates = null;
-          videos = "${config.home.homeDirectory}/pictures/videos";
+          videos = "${config.home.homeDirectory}/Pictures/Videos";
           extraConfig = {
-            XDG_MISC_DIR = "${config.home.homeDirectory}/misc";
+            XDG_MISC_DIR = "${config.home.homeDirectory}/Misc";
           };
         };
       };
@@ -92,8 +91,11 @@ let
           #anydesk
         ];
         stateVersion = "24.11";
+        sessionVariables = {
+          WINEPREFIX = "$HOME/.wine";
+          WINEARCH = "win64";
+        };
       };
-
     };
   nixosModule =
     { ... }:

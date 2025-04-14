@@ -215,10 +215,10 @@ let
         plasma6.excludePackages = with pkgs; [
           kdePackages.elisa
         ];
-        sessionVariables = {
-          WINEPREFIX = "$HOME/.wine";
-          WINEARCH = "win64";
-        };
+#         sessionVariables = {
+#           WINEPREFIX = "$HOME/.wine";
+#           WINEARCH = "win64";
+#         };
         systemPackages = with pkgs; [
           # Net
           curl

@@ -458,6 +458,17 @@ in
 inputs.nixpkgs.lib.nixosSystem {
   modules = [
     nixosModule
+    inputs.home-manager.nixosModules.home-manager
+    inputs.self.homeConfigurations.otreca.nixosModule
+    {
+      home-manager = {
+        useGlobalPkgs = true;
+        useUserPackages = true;
+        extraSpecialArgs = {
+          hostname = current.host;
+        };
+      };
+    }
   ];
   system = "x86_64-linux";
 }

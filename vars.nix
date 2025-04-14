@@ -1,16 +1,18 @@
 rec {
   user-name = "oqyude";
+  server-name = "otreca";
   nixos = "/etc/nixos"; #"/home/${user-name}/zeroq"
 
   dirs = rec {
     # User
     user-home = "/home/${user-name}";
-    user-storage = "${user-home}/storage";
+    user-storage = "${user-home}/Storage";
     therima-drive = "/mnt/therima";
     vetymae-drive = "/mnt/vetymae";
 
     # Server
-    server-home = "/mnt/server";
+    server-drive = "/mnt/server";
+    server-home = "/home/${server-name}";
     sync = "${server-home}/Sync";
     storage = "${server-home}/Storage";
     calibre-library = "${server-home}/Library";

@@ -22,12 +22,14 @@
 
     let
       flakeContext = { inherit inputs; };
+      zeroq = import ./vars.nix;
     in
 
     {
 
       homeConfigurations = {
-        oqyude = import ./home/oqyude.nix flakeContext;
+        "${zeroq.user-name}" = import ./home/${zeroq.user-name}.nix flakeContext;
+        "${zeroq.server-name}" = import ./home/${zeroq.server-name}.nix flakeContext;
         extraSpecialArgs = {
           inherit (flakeContext) inputs;
         };
