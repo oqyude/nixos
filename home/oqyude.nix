@@ -58,9 +58,8 @@ let
         };
         preferXdgDirectories = true;
         username = "${zeroq.user-name}";
-        homeDirectory = "${zeroq.dirs.user-home}";
+        homeDirectory = "/home/${zeroq.user-name}";
         packages = with pkgs; [
-          home-manager
           btop
           mangohud
           fastfetch

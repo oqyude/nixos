@@ -11,9 +11,8 @@ rec {
     vetymae-drive = "/mnt/vetymae";
 
     # Server
-    server-home = "/mnt/server";
-#     server-home = "/home/${server-name}";
-    sync = "${server-home}/Sync";
+#     server-drive = "/mnt/server";
+    server-home = "/home/${server-name}/External";
     storage = "${server-home}/Storage";
     calibre-library = "${server-home}/Library";
     nextcloud-source = "${server-home}/Nextcloud";

@@ -1,5 +1,6 @@
 { inputs, ... }@flakeContext:
 let
+  current.host = "sapphira";
   nixosModule =
     {
       config,
@@ -10,7 +11,6 @@ let
       ...
     }:
     let
-      current.host = "sapphira";
       zeroq = import ../vars.nix;
     in
     {
@@ -96,24 +96,35 @@ let
       users = {
         defaultUserShell = pkgs.zsh;
         users = {
+          "${zeroq.server-name}" = {
+            isNormalUser = true;
+            description = "Server User";
+            openssh.authorizedKeys.keys = [
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
+            ];
+            initialPassword = "1234";
+            extraGroups = [
+              "users"
+              "wheel"
+              "networkmanager"
+            ];
+          };
           root = {
             openssh.authorizedKeys.keys = [
-              #"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPhxTIqodDYFpXbl12Qe/Sc1PIhsjBrOja+5z3FB/VgF root@${current.host}"
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg" # ${zeroq.user-name}@${current.host}
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
             ];
           };
           "${zeroq.user-name}" = {
             isNormalUser = true;
             description = "Admin";
             openssh.authorizedKeys.keys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg" # ${zeroq.user-name}@${current.host}
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
             ];
             initialPassword = "1234";
             extraGroups = [
               "wheel"
               "networkmanager"
             ];
-            packages = with pkgs; [ ];
           };
         };
       };
@@ -163,12 +174,12 @@ let
           ];
         };
 
-        # Mounts
-        "${zeroq.dirs.credentials-target}" = {
-          device = "${zeroq.dirs.credentials-source-server}";
-          fsType = "none";
-          options = [ "bind" ];
-        };
+#         # Mounts
+#         "${zeroq.dirs.credentials-target}" = {
+#           device = "${zeroq.dirs.credentials-source-server}";
+#           fsType = "none";
+#           options = [ "bind" ];
+#         };
       };
 
       services = {
@@ -280,7 +291,7 @@ let
               "path" = "/etc/nixos";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "root oqyude";
+              "valid users" = "${zeroq.user-name}";
               "guest ok" = "no";
               "writable" = "yes";
               "create mask" = 644;
@@ -288,11 +299,23 @@ let
               "force user" = "root";
               "force group" = "root";
             };
+#             "${zeroq.server-name}" = {
+#               "path" = "${zeroq.dirs.server-home}";
+#               "browseable" = "yes";
+#               "read only" = "no";
+#               "valid users" = "${zeroq.user-name}";
+#               "guest ok" = "no";
+#               "writable" = "yes";
+#               "create mask" = 700;
+#               "directory mask" = 700;
+#               "force user" = "${zeroq.server-name}";
+#               "force group" = "users";
+#             };
             root = {
               "path" = "/";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "root oqyude";
+              "valid users" = "${zeroq.user-name}";
               "guest ok" = "no";
               "writable" = "yes";
               #"create mask" = 0644;
@@ -300,16 +323,16 @@ let
               "force user" = "root";
               "force group" = "root";
             };
-            server = {
-              "path" = "/mnt/server";
+            "${zeroq.server-name}" = {
+              "path" = "${zeroq.dirs.server-home}";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "root oqyude";
+              "valid users" = "${zeroq.user-name}";
               "guest ok" = "no";
               "writable" = "yes";
-              "create mask" = 775;
-              "directory mask" = 775;
-              "force user" = "oqyude";
+              "create mask" = 700;
+              "directory mask" = 700;
+              "force user" = "${zeroq.server-name}";
               "force group" = "users";
             };
           };
@@ -317,8 +340,7 @@ let
         calibre-web = {
           enable = true;
           group = "users";
-          user = "${zeroq.user-name}";
-          #dataDir = "${zeroq.dirs.server-home}";
+          user = "${zeroq.server-name}";
           options = {
             calibreLibrary = "${zeroq.dirs.calibre-library}";
             enableBookUploading = true;
@@ -348,10 +370,12 @@ let
           };
         };
         transmission = {
-          enable = true;
-          credentialsFile = "${zeroq.dirs.credentials-target}/transmission/settings.json";
+          enable = false;
+          credentialsFile = "${zeroq.dirs.server-home}/server/transmission/settings.json";
           openRPCPort = true;
           package = pkgs.transmission_4;
+          user = "${zeroq.server-name}";
+          group = "users";
           settings = {
             download-dir = "${zeroq.dirs.server-home}/Downloads";
             incomplete-dir = "${zeroq.dirs.server-home}/Downloads/Temp";
@@ -366,10 +390,11 @@ let
           enable = true;
           systemService = true;
           guiAddress = "0.0.0.0:8384";
+          environment.STNODEFAULTFOLDER = "true";
           configDir = "${zeroq.dirs.storage}/Syncthing/${current.host}";
           dataDir = "${zeroq.dirs.server-home}";
           group = "users";
-          user = "${zeroq.user-name}";
+          user = "${zeroq.server-name}";
         };
         tailscale.enable = true;
       };

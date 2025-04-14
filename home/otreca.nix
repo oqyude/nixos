@@ -27,18 +27,15 @@ let
 #         };
         userDirs = {
           enable = true;
-          createDirectories = true;
+          createDirectories = false;
           desktop = null;
-          documents = "${config.home.homeDirectory}/Documents";
-          download = "${config.home.homeDirectory}/Downloads";
-          music = "${config.home.homeDirectory}/Music";
-          pictures = "${config.home.homeDirectory}/Pictures";
-          publicShare = "${config.home.homeDirectory}/Misc/public/${hostname}";
+          documents = null;
+          download = null;
+          music = null;
+          pictures = null;
+          publicShare = null;
           templates = null;
-          videos = "${config.home.homeDirectory}/Pictures/Videos";
-          extraConfig = {
-            XDG_MISC_DIR = "${config.home.homeDirectory}/Misc";
-          };
+          videos = null;
         };
       };
 #       dconf = {
@@ -50,16 +47,15 @@ let
 #         };
 #       };
       home = {
-        #Downloads.source = config.lib.file.mkOutOfStoreSymlink "/mnt/real/path/to/Downloads";
 #         file = {
-#           "luduasvi" = {
-#             source = "${config.home.homeDirectory}/storage/ludusavi/cfg";
-#             target = ".config/ludusavi";
+#           "extenral" = {
+#             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.server-home}";
+#             target = "external";
 #           };
 #         };
         preferXdgDirectories = true;
         username = "${zeroq.server-name}";
-        homeDirectory = "${zeroq.dirs.server-home}";
+        homeDirectory = "/home/${zeroq.server-name}";
 #         packages = with pkgs; [
 #         ];
         stateVersion = "24.11";
