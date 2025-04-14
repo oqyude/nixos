@@ -9,9 +9,9 @@ rec {
     user-storage = "${user-home}/Storage";
     therima-drive = "/mnt/therima";
     vetymae-drive = "/mnt/vetymae";
+    state-folder = ".userdata";
 
     # Server
-    #     server-drive = "/mnt/server";
     server-home = "/home/${server-name}/External";
     storage = "${server-home}/Storage";
     calibre-library = "${server-home}/Library";

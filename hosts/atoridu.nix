@@ -215,10 +215,6 @@ let
         plasma6.excludePackages = with pkgs; [
           kdePackages.elisa
         ];
-        #         sessionVariables = {
-        #           WINEPREFIX = "$HOME/.wine";
-        #           WINEARCH = "win64";
-        #         };
         systemPackages = with pkgs; [
           # Net
           curl
@@ -276,6 +272,10 @@ let
           virtio-win
           #looking-glass-client # pci-passthrough
         ];
+        sessionVariables = {
+          WINEPREFIX = "${zeroq.dirs.user-home}/${zeroq.dirs.state-folder}/wine"; #${zeroq.dirs.state-folder}
+          WINEARCH = "win64";
+        };
       };
 
       programs = {
@@ -392,16 +392,16 @@ let
           pulse.enable = true;
           jack.enable = true;
           extraConfig.pipewire = {
-            "99-rates.conf" = {
-              "default.clock.rate" = 96000;
-              "default.clock.allowed-rates" = [
-                44100
-                48000
-                88200
-                96000
-              ];
-            };
-            "92-low-latency" = {
+#             "99-default.conf" = {
+#               "default.clock.rate" = 96000;
+#               "default.clock.allowed-rates" = [
+#                 44100
+#                 48000
+#                 88200
+#                 96000
+#               ];
+#             };
+            "99-default.conf" = {
               "context.properties" = {
                 "default.clock.rate" = 96000;
                 "default.clock.allowed-rates" = [
@@ -479,9 +479,9 @@ let
         };
       };
 
-      xdg = {
-        portal.enable = true;
-      };
+#       xdg = {
+#         portal.enable = true;
+#       };
       # Oqyulink
 
       system.stateVersion = "24.11";

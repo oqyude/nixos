@@ -64,7 +64,7 @@ let
             target = "External";
           };
         };
-        preferXdgDirectories = true;
+        #preferXdgDirectories = true;
         username = "${zeroq.user-name}";
         homeDirectory = "/home/${zeroq.user-name}";
         packages = with pkgs; [
@@ -101,10 +101,6 @@ let
           #anydesk
         ];
         stateVersion = "24.11";
-        sessionVariables = {
-          WINEPREFIX = "$HOME/.wine";
-          WINEARCH = "win64";
-        };
       };
     };
   nixosModule =
