@@ -48,8 +48,8 @@ let
       dconf = {
         settings = {
           "org/virt-manager/virt-manager/connections" = {
-            autoconnect = ["qemu:///system"];
-            uris = ["qemu:///system"];
+            autoconnect = [ "qemu:///system" ];
+            uris = [ "qemu:///system" ];
           };
         };
       };
@@ -81,7 +81,6 @@ let
           # Workflow
           pdfarranger
           libreoffice-qt6
-
           vlc # Видео
           gramps # Genealogy
           stretchly
@@ -94,6 +93,11 @@ let
           transmission_4-qt
           lutris
           gamehub
+
+          audacious
+          quodlibet
+          gnome-music
+          lollypop
           #anydesk
         ];
         stateVersion = "24.11";

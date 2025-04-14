@@ -109,17 +109,17 @@ let
               "networkmanager"
             ];
           };
-#           root = {
-#             openssh.authorizedKeys.keys = [
-#               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
-#             ];
-#           };
+          #           root = {
+          #             openssh.authorizedKeys.keys = [
+          #               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
+          #             ];
+          #           };
           "${zeroq.user-name}" = {
             isNormalUser = true;
             description = "Admin";
-#             openssh.authorizedKeys.keys = [
-#               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
-#             ];
+            #             openssh.authorizedKeys.keys = [
+            #               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
+            #             ];
             initialPassword = "1234";
             extraGroups = [
               "users"

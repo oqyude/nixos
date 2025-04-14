@@ -215,10 +215,10 @@ let
         plasma6.excludePackages = with pkgs; [
           kdePackages.elisa
         ];
-#         sessionVariables = {
-#           WINEPREFIX = "$HOME/.wine";
-#           WINEARCH = "win64";
-#         };
+        #         sessionVariables = {
+        #           WINEPREFIX = "$HOME/.wine";
+        #           WINEARCH = "win64";
+        #         };
         systemPackages = with pkgs; [
           # Net
           curl
@@ -230,12 +230,16 @@ let
           # Wine
           #winetricks
           wineWowPackages.stagingFull
+          wineWowPackages.yabridge
+          wineWowPackages.fonts
           dxvk
 
           # Dev
-          gnumake
+          #gnumake
 
           # Audio
+          yabridge
+          yabridgectl
           wineasio
           qjackctl
 
@@ -459,7 +463,6 @@ let
       };
 
       systemd = {
-        #     extraConfig = "DefaultLimitNOFILE=1048576"; # defaults to 1024 if unset
         network.wait-online.enable = false;
         services = {
           #           base-start = {
@@ -476,13 +479,9 @@ let
         };
       };
 
-      #   xdg = {
-      #     portal = {
-      #       enable = true;
-      #       wlr.enable = true;
-      #     };
-      #   };
-
+      xdg = {
+        portal.enable = true;
+      };
       # Oqyulink
 
       system.stateVersion = "24.11";

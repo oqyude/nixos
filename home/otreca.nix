@@ -15,16 +15,16 @@ let
       xdg = {
         enable = true;
         autostart.enable = true;
-#         configFile = {
-#           "ludusavi" = {
-#             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/ludusavi/cfg";
-#             target = "ludusavi";
-#           };
-#           "nekoray" = {
-#             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/Nekoray/${hostname}";
-#             target = "nekoray";
-#           };
-#         };
+        #         configFile = {
+        #           "ludusavi" = {
+        #             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/ludusavi/cfg";
+        #             target = "ludusavi";
+        #           };
+        #           "nekoray" = {
+        #             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/Nekoray/${hostname}";
+        #             target = "nekoray";
+        #           };
+        #         };
         userDirs = {
           enable = true;
           createDirectories = false;
@@ -38,14 +38,14 @@ let
           videos = null;
         };
       };
-#       dconf = {
-#         settings = {
-#           "org/virt-manager/virt-manager/connections" = {
-#             autoconnect = ["qemu:///system"];
-#             uris = ["qemu:///system"];
-#           };
-#         };
-#       };
+      #       dconf = {
+      #         settings = {
+      #           "org/virt-manager/virt-manager/connections" = {
+      #             autoconnect = ["qemu:///system"];
+      #             uris = ["qemu:///system"];
+      #           };
+      #         };
+      #       };
       home = {
         file = {
           "ssh" = {
@@ -56,8 +56,8 @@ let
         preferXdgDirectories = true;
         username = "${zeroq.server-name}";
         homeDirectory = "/home/${zeroq.server-name}";
-#         packages = with pkgs; [
-#         ];
+        #         packages = with pkgs; [
+        #         ];
         stateVersion = "24.11";
       };
 
