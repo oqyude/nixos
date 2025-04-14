@@ -24,6 +24,10 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/Nekoray/${hostname}";
             target = "nekoray";
           };
+          "solaar" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/solaar";
+            target = "solaar";
+          };
         };
         userDirs = {
           enable = true;
