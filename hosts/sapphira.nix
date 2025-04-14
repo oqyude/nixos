@@ -403,7 +403,15 @@ let
 
       programs = {
         nh.enable = true;
-        git.enable = true;
+        git = {
+          enable = true;
+          config = {
+            user = {
+              name = "oqyude";
+              email = "oqyude@gmail.com";
+            };
+          };
+        };
         lazygit.enable = true;
         zsh = {
           enable = true;
