@@ -55,6 +55,10 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/SSH/${hostname}";
             target = ".ssh";
           };
+          "External" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.therima-drive}";
+            target = "External";
+          };
         };
         preferXdgDirectories = true;
         username = "${zeroq.user-name}";

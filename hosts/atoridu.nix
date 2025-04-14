@@ -375,7 +375,6 @@ let
         syncthing = {
           enable = true;
           systemService = true;
-          environment.STNODEFAULTFOLDER = "true";
           configDir = "${zeroq.dirs.user-storage}/Syncthing/${current.host}";
           dataDir = "${zeroq.dirs.user-home}";
           group = "users";
