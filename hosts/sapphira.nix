@@ -390,7 +390,6 @@ let
           enable = true;
           systemService = true;
           guiAddress = "0.0.0.0:8384";
-          environment.STNODEFAULTFOLDER = "true";
           configDir = "${zeroq.dirs.storage}/Syncthing/${current.host}";
           dataDir = "${zeroq.dirs.server-home}";
           group = "users";
