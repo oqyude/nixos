@@ -336,10 +336,10 @@ let
           enable = true;
           allowSFTP = true;
           hostKeys = [
-#             {
-#               path = "/etc/ssh/keys/${zeroq.user-name}";
-#               type = "ed25519";
-#             }
+            {
+              path = "/etc/ssh/keys/${zeroq.user-name}";
+              type = "ed25519";
+            }
           ];
           settings = {
             PasswordAuthentication = false;
