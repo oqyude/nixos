@@ -50,13 +50,12 @@ let
         };
       };
       home = {
-        #Downloads.source = config.lib.file.mkOutOfStoreSymlink "/mnt/real/path/to/Downloads";
-#         file = {
-#           "luduasvi" = {
-#             source = "${config.home.homeDirectory}/storage/ludusavi/cfg";
-#             target = ".config/ludusavi";
-#           };
-#         };
+        file = {
+          "ssh" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/SSH/${hostname}";
+            target = ".ssh";
+          };
+        };
         preferXdgDirectories = true;
         username = "${zeroq.user-name}";
         homeDirectory = "${zeroq.dirs.user-home}";

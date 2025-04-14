@@ -11,8 +11,8 @@ rec {
     vetymae-drive = "/mnt/vetymae";
 
     # Server
-    server-drive = "/mnt/server";
-    server-home = "/home/${server-name}";
+    server-home = "/mnt/server";
+#     server-home = "/home/${server-name}";
     sync = "${server-home}/Sync";
     storage = "${server-home}/Storage";
     calibre-library = "${server-home}/Library";
