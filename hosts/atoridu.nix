@@ -211,11 +211,29 @@ let
         };
       };
 
+      qt = {
+        enable = true;
+        platformTheme = "kde6";
+      };
+
       environment = {
-        plasma6.excludePackages = with pkgs; [
-          kdePackages.elisa
+        plasma6.excludePackages = with pkgs.kdePackages; [
+          plasma-browser-integration
+          elisa
+          kwrited
+        ];
+        gnome.excludePackages = with pkgs; [
+          cheese # webcam tool
+          epiphany # web browser
+          #evince # document viewer
+          geary # email reader
+          gnome-characters
+          gnome-music
+          #gnome-photos
+          gnome-tour
         ];
         systemPackages = with pkgs; [
+
           # Net
           curl
           ipset
@@ -263,17 +281,17 @@ let
           usbutils
 
           # Windows virtualisation
-          spice
-          spice-gtk
-          spice-protocol
+          #           spice
+          #           spice-gtk
+          #           spice-protocol
           virt-manager
           virt-viewer
-          win-spice
-          virtio-win
+          #           win-spice
+          #           virtio-win
           #looking-glass-client # pci-passthrough
         ];
         sessionVariables = {
-          WINEPREFIX = "${zeroq.dirs.user-home}/${zeroq.dirs.state-folder}/wine"; #${zeroq.dirs.state-folder}
+          WINEPREFIX = "${zeroq.dirs.user-home}/${zeroq.dirs.state-folder}/wine"; # ${zeroq.dirs.state-folder}
           WINEARCH = "win64";
         };
       };
@@ -330,42 +348,51 @@ let
         };
         steam = {
           enable = true;
-          gamescopeSession.enable = true;
+          #gamescopeSession.enable = true;
         };
         gamescope = {
           enable = true;
         };
+        kdeconnect = {
+          enable = false;
+          package = pkgs.gnomeExtensions.gsconnect;
+        };
       };
 
       services = {
+        udev = {
+          packages = with pkgs; [ gnome-settings-daemon ];
+        };
         xserver = {
           enable = true;
           videoDrivers = [
             "amdgpu"
             "nvidia"
-            #"intel"
           ];
           xkb = {
-            layout = "us";
+            layout = "us,ru";
             variant = "";
+            options = "grp:alt_shift_toggle";
           };
+          displayManager.gdm.enable = true;
+          displayManager.gdm.wayland = true;
+          desktopManager.gnome.enable = true;
         };
         displayManager = {
-          defaultSession = "plasma";
+          #defaultSession = "plasma";
           sddm = {
-            enable = true;
+            enable = false;
             wayland = {
               enable = true;
               compositor = "kwin";
             };
           };
         };
-        desktopManager.plasma6.enable = true;
+        desktopManager.plasma6.enable = false;
         printing = {
           enable = true;
           cups-pdf.enable = true;
         };
-
         libinput = {
           enable = true;
           mouse = {
@@ -392,15 +419,15 @@ let
           pulse.enable = true;
           jack.enable = true;
           extraConfig.pipewire = {
-#             "99-default.conf" = {
-#               "default.clock.rate" = 96000;
-#               "default.clock.allowed-rates" = [
-#                 44100
-#                 48000
-#                 88200
-#                 96000
-#               ];
-#             };
+            #             "99-default.conf" = {
+            #               "default.clock.rate" = 96000;
+            #               "default.clock.allowed-rates" = [
+            #                 44100
+            #                 48000
+            #                 88200
+            #                 96000
+            #               ];
+            #             };
             "99-default.conf" = {
               "context.properties" = {
                 "default.clock.rate" = 96000;
@@ -479,9 +506,9 @@ let
         };
       };
 
-#       xdg = {
-#         portal.enable = true;
-#       };
+      #       xdg = {
+      #         portal.enable = true;
+      #       };
       # Oqyulink
 
       system.stateVersion = "24.11";

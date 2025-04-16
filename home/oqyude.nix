@@ -51,7 +51,39 @@ let
             autoconnect = [ "qemu:///system" ];
             uris = [ "qemu:///system" ];
           };
+          "org/gnome/shell" = {
+            disable-user-extensions = false;
+            enabled-extensions = with pkgs.gnomeExtensions; [
+              dash-to-panel.extensionUuid
+              arcmenu.extensionUuid
+              vitals.extensionUuid
+              appindicator.extensionUuid
+            ];
+            disabled-extensions = [ ];
+          };
+          #"org/gnome/shell/extensions/user-theme" = {
+          #  name = "palenight";
+          #};
+          "org/gnome/desktop/interface" = {
+            color-scheme = "prefer-light";
+            enable-hot-corners = false;
+          };
         };
+      };
+      #       services = {
+      #         kdeconnect = {
+      #           enable = true;
+      #           indicator = true;
+      #         };
+      #       };
+
+      qt = {
+        enable = true;
+        platformTheme.name = "adwaita";
+        style = {
+          name = "adwaita";
+        };
+
       };
       home = {
         file = {
@@ -68,12 +100,23 @@ let
         username = "${zeroq.user-name}";
         homeDirectory = "/home/${zeroq.user-name}";
         packages = with pkgs; [
+          flameshot
+          gnomeExtensions.appindicator
+          gnomeExtensions.dash-to-panel
+          gnomeExtensions.arcmenu
+          #gnomeExtensions.tray-icons-reloaded
+          gnomeExtensions.vitals
+          #gnomeExtensions.user-themes
+          gnome-tweaks
+          dconf-editor
+          dconf2nix
+          #whitesur-gtk-theme
+          #whitesur-icon-theme
+          #whitesur-kde
           btop
           mangohud
           fastfetch
-          input-leap
           kdePackages.filelight
-          whitesur-kde
           localsend
           ludusavi
           easyeffects
@@ -90,15 +133,18 @@ let
           keepassxc
           obsidian
           reaper
-          transmission_4-qt
           lutris
-          gamehub
+          transmission_4-qt
+          #gamehub
 
           audacious
           quodlibet
           gnome-music
           lollypop
-          #anydesk
+
+          #edid-decode
+          #displaycal
+          #argyllcms
         ];
         stateVersion = "24.11";
       };
