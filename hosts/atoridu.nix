@@ -211,10 +211,10 @@ let
         };
       };
 
-      qt = {
-        enable = true;
-        platformTheme = "kde6";
-      };
+      #qt = {
+      #  enable = true;
+      #  platformTheme = "kde6";
+      #};
 
       environment = {
         plasma6.excludePackages = with pkgs.kdePackages; [
@@ -360,9 +360,9 @@ let
       };
 
       services = {
-        udev = {
-          packages = with pkgs; [ gnome-settings-daemon ];
-        };
+        #udev = {
+        #  packages = with pkgs; [ gnome-settings-daemon ];
+        #};
         xserver = {
           enable = true;
           videoDrivers = [
@@ -374,21 +374,21 @@ let
             variant = "";
             options = "grp:alt_shift_toggle";
           };
-          displayManager.gdm.enable = true;
-          displayManager.gdm.wayland = true;
-          desktopManager.gnome.enable = true;
+          #displayManager.gdm.enable = true;
+          #displayManager.gdm.wayland = true;
+          #desktopManager.gnome.enable = true;
         };
         displayManager = {
           #defaultSession = "plasma";
           sddm = {
-            enable = false;
+            enable = true;
             wayland = {
               enable = true;
               compositor = "kwin";
             };
           };
         };
-        desktopManager.plasma6.enable = false;
+        desktopManager.plasma6.enable = true;
         printing = {
           enable = true;
           cups-pdf.enable = true;

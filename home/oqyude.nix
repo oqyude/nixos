@@ -79,12 +79,14 @@ let
 
       qt = {
         enable = true;
-        platformTheme.name = "adwaita";
-        style = {
-          name = "adwaita";
-        };
-
+#         platformTheme.name = "kde6";
+#         style = {
+#          name = "adwaita";
+#         };
       };
+      
+      programs.dircolors.enable = true;
+      
       home = {
         file = {
           "ssh" = {
@@ -95,24 +97,31 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.therima-drive}";
             target = "External";
           };
+          "Music" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.vetymae-drive}/Users/User/Music";
+            target = "Music";
+          };
         };
         #preferXdgDirectories = true;
         username = "${zeroq.user-name}";
         homeDirectory = "/home/${zeroq.user-name}";
         packages = with pkgs; [
           flameshot
+          
+          # dconf
           gnomeExtensions.appindicator
           gnomeExtensions.dash-to-panel
           gnomeExtensions.arcmenu
-          #gnomeExtensions.tray-icons-reloaded
           gnomeExtensions.vitals
           #gnomeExtensions.user-themes
           gnome-tweaks
           dconf-editor
           dconf2nix
-          #whitesur-gtk-theme
-          #whitesur-icon-theme
-          #whitesur-kde
+          
+          
+          whitesur-gtk-theme
+          whitesur-icon-theme
+          whitesur-kde
           btop
           mangohud
           fastfetch
@@ -138,9 +147,8 @@ let
           #gamehub
 
           audacious
-          quodlibet
-          gnome-music
           lollypop
+          #quodlibet
 
           #edid-decode
           #displaycal
