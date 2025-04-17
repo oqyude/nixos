@@ -437,7 +437,7 @@ let
                   88200
                   96000
                 ];
-                "default.clock.quantum" = 64;
+                "default.clock.quantum" = 128;
                 "default.clock.min-quantum" = 64;
                 "default.clock.max-quantum" = 256;
               };
