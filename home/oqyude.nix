@@ -79,14 +79,14 @@ let
 
       qt = {
         enable = true;
-#         platformTheme.name = "kde6";
-#         style = {
-#          name = "adwaita";
-#         };
+        #         platformTheme.name = "kde6";
+        #         style = {
+        #          name = "adwaita";
+        #         };
       };
-      
+
       programs.dircolors.enable = true;
-      
+
       home = {
         file = {
           "ssh" = {
@@ -107,7 +107,7 @@ let
         homeDirectory = "/home/${zeroq.user-name}";
         packages = with pkgs; [
           flameshot
-          
+
           # dconf
           gnomeExtensions.appindicator
           gnomeExtensions.dash-to-panel
@@ -117,8 +117,7 @@ let
           gnome-tweaks
           dconf-editor
           dconf2nix
-          
-          
+
           whitesur-gtk-theme
           whitesur-icon-theme
           whitesur-kde

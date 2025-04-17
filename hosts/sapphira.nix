@@ -146,7 +146,6 @@ let
           sing-box
           smartmontools # tty
           yazi
-          nix-search-cli
         ];
       };
 

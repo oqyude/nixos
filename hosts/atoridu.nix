@@ -269,7 +269,6 @@ let
           # Tools
           mc
           nixfmt-tree
-          nix-search-cli
           unzip
           rar
           ntfs3g
