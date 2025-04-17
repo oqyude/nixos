@@ -97,6 +97,10 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.therima-drive}";
             target = "External";
           };
+          "Plugins" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.therima-drive}/Plugins";
+            target = "Plugins";
+          };
           "Music" = {
             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.vetymae-drive}/Users/User/Music";
             target = "Music";
