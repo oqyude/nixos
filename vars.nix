@@ -14,7 +14,7 @@ rec {
     # Server
     server-home = "/home/${server-name}/External";
     storage = "${server-home}/Storage";
-    calibre-library = "${server-home}/Library";
+    calibre-library = "${server-home}/Books-Library";
     nextcloud-source = "${server-home}/Nextcloud";
     nextcloud-target = "/var/lib/nextcloud";
     credentials-source-server = "${server-home}/Credentials/.server";
