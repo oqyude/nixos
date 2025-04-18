@@ -1,4 +1,4 @@
-{ inputs, zeroq ... }@flakeContext:
+{ inputs, zeroq, ... }@flakeContext:
 let
   current.host = "sapphira";
   nixosModule =
