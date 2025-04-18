@@ -26,7 +26,7 @@
     inputs:
 
     let
-      zeroq = import ./vars.nix;
+      zeroq = import ./modules/vars.nix;
       flakeContext = { inherit inputs zeroq; };
     in
 
