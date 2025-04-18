@@ -12,6 +12,7 @@ let
     }:
     let
       zeroq = import ../vars.nix;
+      modules = ../modules;
     in
     {
 
@@ -19,6 +20,7 @@ let
         #(import "${builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz"}/nixos")
         #     "${builtins.fetchTarball "https://github.com/musnix/musnix/archive/master.tar.gz"}"
         (modulesPath + "/installer/scan/not-detected.nix")
+        "${modules}"
       ];
 
       nix = {
@@ -317,6 +319,8 @@ let
           enableBashCompletion = true;
           syntaxHighlighting.enable = true;
           zsh-autoenv.enable = true;
+          autosuggestions.enable = true;
+          histSize = 10000;
           #loginShellInit = "cd /etc/nixos && clear && fastfetch";
           ohMyZsh = {
             enable = true;

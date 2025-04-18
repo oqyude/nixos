@@ -105,6 +105,22 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.vetymae-drive}/Users/User/Music";
             target = "Music";
           };
+          "Pictures" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.vetymae-drive}/Users/User/Pictures";
+            target = "Pictures";
+          };
+          "Deploy" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.vetymae-drive}/Users/User/Deploy";
+            target = "Deploy";
+          };
+          "Documents" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.vetymae-drive}/Users/User/Public Documents";
+            target = "Documents";
+          };
+          "Misc" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.vetymae-drive}/Users/User/Misc";
+            target = "Misc";
+          };
         };
         #preferXdgDirectories = true;
         username = "${zeroq.user-name}";
