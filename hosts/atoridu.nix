@@ -16,8 +16,6 @@ let
     }:
     {
       imports = [
-        #(import "${builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz"}/nixos")
-        #     "${builtins.fetchTarball "https://github.com/musnix/musnix/archive/master.tar.gz"}"
         (modulesPath + "/installer/scan/not-detected.nix")
       ];
 
@@ -40,7 +38,7 @@ let
         #     hostPlatform = lib.mkDefault "x86_64-linux";
         allowUnfree = true;
         permittedInsecurePackages = [
-          "openssl-1.1.1w"
+          #"openssl-1.1.1w"
         ];
       };
 

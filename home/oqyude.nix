@@ -8,9 +8,6 @@ let
       hostname,
       ...
     }:
-#     let
-#       zeroq = import ../vars.nix;
-#     in
     {
       xdg = {
         enable = true;
@@ -126,17 +123,16 @@ let
         username = "${zeroq.user-name}";
         homeDirectory = "/home/${zeroq.user-name}";
         packages = with pkgs; [
-          flameshot
 
           # dconf
-          gnomeExtensions.appindicator
-          gnomeExtensions.dash-to-panel
-          gnomeExtensions.arcmenu
-          gnomeExtensions.vitals
-          #gnomeExtensions.user-themes
-          gnome-tweaks
-          dconf-editor
-          dconf2nix
+#           gnomeExtensions.appindicator
+#           gnomeExtensions.dash-to-panel
+#           gnomeExtensions.arcmenu
+#           gnomeExtensions.vitals
+#           gnomeExtensions.user-themes
+#           gnome-tweaks
+#           dconf-editor
+#           dconf2nix
 
           whitesur-gtk-theme
           whitesur-icon-theme
@@ -163,7 +159,8 @@ let
           reaper
           lutris
           transmission_4-qt
-          #gamehub
+          itch
+          gamehub
 
           audacious
           lollypop
