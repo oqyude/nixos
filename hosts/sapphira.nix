@@ -1,4 +1,4 @@
-{ inputs, ... }@flakeContext:
+{ inputs, zeroq ... }@flakeContext:
 let
   current.host = "sapphira";
   nixosModule =
@@ -10,9 +10,6 @@ let
       modulesPath,
       ...
     }:
-    let
-      zeroq = import ../vars.nix;
-    in
     {
 
       imports = [

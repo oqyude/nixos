@@ -10,6 +10,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    musnix = {
+      url = "github:musnix/musnix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -21,12 +26,11 @@
     inputs:
 
     let
-      flakeContext = { inherit inputs; };
       zeroq = import ./vars.nix;
+      flakeContext = { inherit inputs zeroq; };
     in
 
     {
-
       homeConfigurations = {
         "${zeroq.user-name}" = import ./home/${zeroq.user-name}.nix flakeContext;
         "${zeroq.server-name}" = import ./home/${zeroq.server-name}.nix flakeContext;

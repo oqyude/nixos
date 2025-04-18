@@ -1,5 +1,6 @@
-{ inputs, ... }@flakeContext:
+{ inputs, zeroq, ... }@flakeContext:
 let
+  current.host = "wsl";
   nixosModule =
     {
       config,
@@ -9,10 +10,6 @@ let
       modulesPath,
       ...
     }:
-    let
-      current.host = "wsl";
-      zeroq = import ../vars.nix;
-    in
     {
 
       imports = [ <nixos-wsl/modules> ];

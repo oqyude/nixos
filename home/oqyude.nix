@@ -1,4 +1,4 @@
-{ inputs, ... }@flakeContext:
+{ inputs, zeroq, ... }@flakeContext:
 let
   homeModule =
     {
@@ -8,9 +8,9 @@ let
       hostname,
       ...
     }:
-    let
-      zeroq = import ../vars.nix;
-    in
+#     let
+#       zeroq = import ../vars.nix;
+#     in
     {
       xdg = {
         enable = true;

@@ -1,4 +1,8 @@
-{ inputs, ... }@flakeContext:
+{
+  inputs,
+  zeroq,
+  ...
+}@flakeContext:
 let
   current.host = "atoridu";
   nixosModule =
@@ -10,17 +14,11 @@ let
       modulesPath,
       ...
     }:
-    let
-      zeroq = import ../vars.nix;
-      modules = ../modules;
-    in
     {
-
       imports = [
         #(import "${builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz"}/nixos")
         #     "${builtins.fetchTarball "https://github.com/musnix/musnix/archive/master.tar.gz"}"
         (modulesPath + "/installer/scan/not-detected.nix")
-        "${modules}"
       ];
 
       nix = {
@@ -46,9 +44,7 @@ let
         ];
       };
 
-      #   musnix = {
-      #     enable = true;
-      #   };
+      musnix.enable = true;
 
       boot = {
         #hardwareScan = true;
@@ -258,15 +254,6 @@ let
           yabridgectl
           wineasio
           qjackctl
-
-          #       (yabridge.overrideAttrs (oldAttrs: {
-          #         version = "5.1.0";
-          #         src = builtins.fetchTarball "https://github.com/robbert-vdh/yabridge/archive/refs/tags/5.1.0.tar.gz";
-          #       }))
-          #       (yabridgectl.overrideAttrs (oldAttrs: {
-          #         version = "5.1.0";
-          #         src = builtins.fetchTarball "https://github.com/robbert-vdh/yabridge/archive/refs/tags/5.1.0.tar.gz";
-          #       }))
 
           # Tools
           mc
@@ -521,6 +508,8 @@ in
 inputs.nixpkgs.lib.nixosSystem {
   modules = [
     nixosModule
+
+    inputs.musnix.nixosModules.musnix
     inputs.home-manager.nixosModules.home-manager
     inputs.self.homeConfigurations.oqyude.nixosModule
     {
