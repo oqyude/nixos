@@ -161,6 +161,7 @@ let
           transmission_4-qt
           itch
           gamehub
+          bottles
 
           audacious
           lollypop

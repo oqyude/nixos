@@ -71,7 +71,7 @@ let
           #("vfio-pci.ids=" + builtins.concatStringsSep "," zeroq.platform.vfioIds)
         ];
         #extraModprobeConfig = "options vfio-pci ids=${builtins.concatStringsSep "," zeroq.platform.vfioIds}";
-        extraModulePackages = [ ];
+        extraModulePackages = [ config.boot.kernelPackages.amneziawg ];
         loader = {
           systemd-boot.enable = true;
           efi.canTouchEfiVariables = true;
@@ -230,7 +230,12 @@ let
         ];
         systemPackages = with pkgs; [
 
+          linuxKernel.packages.linux_xanmod.amneziawg
+          amneziawg-go
+          amneziawg-tools
+
           # Net
+          byedpi
           curl
           ipset
           iptables
@@ -283,6 +288,7 @@ let
       };
 
       programs = {
+        #amnezia-vpn.enable = true;
         xwayland.enable = true;
         dconf = {
           enable = true;
