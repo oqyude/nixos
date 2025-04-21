@@ -442,7 +442,7 @@ let
         earlyoom.enable = true;
         preload.enable = true;
         spice-vdagentd.enable = true;
-        #jack.jackd.enable = false;
+        resolved.enable = true;
       };
 
       security = {
