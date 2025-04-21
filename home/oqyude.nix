@@ -125,14 +125,14 @@ let
         packages = with pkgs; [
 
           # dconf
-#           gnomeExtensions.appindicator
-#           gnomeExtensions.dash-to-panel
-#           gnomeExtensions.arcmenu
-#           gnomeExtensions.vitals
-#           gnomeExtensions.user-themes
-#           gnome-tweaks
-#           dconf-editor
-#           dconf2nix
+          #           gnomeExtensions.appindicator
+          #           gnomeExtensions.dash-to-panel
+          #           gnomeExtensions.arcmenu
+          #           gnomeExtensions.vitals
+          #           gnomeExtensions.user-themes
+          #           gnome-tweaks
+          #           dconf-editor
+          #           dconf2nix
 
           whitesur-gtk-theme
           whitesur-icon-theme

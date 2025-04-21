@@ -4,19 +4,20 @@
   inputs = {
 
     nixpkgs.url = "flake:nixpkgs/nixpkgs-unstable";
-
     home-manager = {
       url = "flake:home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     musnix = {
       url = "github:musnix/musnix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     disko = {
       url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    aagl = {
+      url = "github:ezKEa/aagl-gtk-on-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -42,7 +43,7 @@
       nixosConfigurations = {
         atoridu = import ./hosts/atoridu.nix flakeContext;
         sapphira = import ./hosts/sapphira.nix flakeContext;
-        wsl = import ./hosts/sapphira.nix flakeContext;
+        wsl = import ./hosts/wsl.nix flakeContext;
       };
 
     };

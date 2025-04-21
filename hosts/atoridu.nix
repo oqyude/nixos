@@ -503,7 +503,6 @@ let
       #       xdg = {
       #         portal.enable = true;
       #       };
-      # Oqyulink
 
       system.stateVersion = "24.11";
 
@@ -511,11 +510,13 @@ let
 in
 inputs.nixpkgs.lib.nixosSystem {
   modules = [
-    nixosModule
+    nixosModule # configuration.nix module
 
-    inputs.musnix.nixosModules.musnix
-    inputs.home-manager.nixosModules.home-manager
-    inputs.self.homeConfigurations.oqyude.nixosModule
+    inputs.musnix.nixosModules.musnix # musnix module
+
+    # home-manager
+    inputs.home-manager.nixosModules.home-manager # home-manager module
+    inputs.self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
     {
       home-manager = {
         useGlobalPkgs = true;
@@ -525,6 +526,21 @@ inputs.nixpkgs.lib.nixosSystem {
         };
       };
     }
+
+    # AAGL Module
+    {
+      imports = [ inputs.aagl.nixosModules.default ];
+      nix.settings = inputs.aagl.nixConfig; # Set up Cachix
+      programs = {
+        anime-game-launcher.enable = true;
+        anime-games-launcher.enable = true;
+        #honkers-railway-launcher.enable = true;
+        #honkers-launcher.enable = true;
+        #wavey-launcher.enable = true;
+        #sleepy-launcher.enable = true;
+      };
+    }
+
   ];
   system = "x86_64-linux";
 }
