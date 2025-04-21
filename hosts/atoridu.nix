@@ -310,7 +310,7 @@ let
           enableBashCompletion = true;
           syntaxHighlighting.enable = true;
           zsh-autoenv.enable = true;
-          autosuggestions.enable = true;
+          #autosuggestions.enable = true;
           histSize = 10000;
           #loginShellInit = "cd /etc/nixos && clear && fastfetch";
           ohMyZsh = {
@@ -319,6 +319,7 @@ let
           };
           shellAliases = {
             # shell
+            ff = "clear && fastfetch";
             l = "ls -l";
 
             # nixos

@@ -25,6 +25,10 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/solaar";
             target = "solaar";
           };
+          "easyeffects" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/easyeffects";
+            target = "easyeffects";
+          };
         };
         userDirs = {
           enable = true;
