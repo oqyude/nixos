@@ -13,10 +13,6 @@ let
       ...
     }:
     {
-      imports = [
-        (modulesPath + "/installer/scan/not-detected.nix")
-      ];
-
       nix = {
         settings = {
           auto-optimise-store = true;
@@ -25,14 +21,6 @@ let
             "flakes"
           ];
         };
-      };
-
-      nixpkgs.config = {
-        #     hostPlatform = lib.mkDefault "x86_64-linux";
-        allowUnfree = true;
-        permittedInsecurePackages = [
-          #"openssl-1.1.1w"
-        ];
       };
 
       musnix.enable = true;
@@ -178,7 +166,6 @@ let
       };
 
       users = {
-        defaultUserShell = pkgs.zsh;
         users = {
           "${zeroq.devices.admin}" = {
             isNormalUser = true;
@@ -296,36 +283,6 @@ let
         };
         lazygit.enable = true;
         nh.enable = true;
-        zsh = {
-          enable = true;
-          enableCompletion = true;
-          enableBashCompletion = true;
-          syntaxHighlighting.enable = true;
-          zsh-autoenv.enable = true;
-          histSize = 10000;
-          #loginShellInit = "cd /etc/nixos && clear && fastfetch";
-          ohMyZsh = {
-            enable = true;
-            theme = "robbyrussell";
-          };
-          shellAliases = {
-            # shell
-            ff = "clear && fastfetch";
-            l = "ls -l";
-
-            # nixos
-            nir-switch = "sudo nixos-rebuild switch --flake ${zeroq.nixos}#${zeroq.devices.laptop.hostname}";
-            nir-boot = "sudo nixos-rebuild boot --flake ${zeroq.nixos}#${zeroq.devices.laptop.hostname}";
-            nir-test = "sudo nixos-rebuild test --flake ${zeroq.nixos}#${zeroq.devices.laptop.hostname}";
-
-            # ssh
-            s-1 = "ssh sapphira-1";
-            s-1t = "ssh sapphira-1t";
-
-            # Somethings
-            reboot-bios = "sudo systemctl reboot --firmware-setup";
-          };
-        };
         gamemode.enable = true;
         #         tuxclocker = {
         #           enable = false;

@@ -56,8 +56,8 @@
         ${zeroq.devices.wsl.hostname} = import ./machines/${zeroq.devices.wsl.hostname}.nix flakeContext;
       };
       nixosModules = {
-        aagl = import ./modules/programs/aagl.nix flakeContext;
         default = import ./modules/default.nix flakeContext;
+        aagl = import ./modules/additional/aagl.nix flakeContext;
       };
 
     };
