@@ -48,12 +48,18 @@
           inherit (flakeContext) inputs;
         };
       };
+      #homeModules = {
+      #  default = import ./homeModules/default.nix flakeContext;
+      #};
 
       nixosConfigurations = {
-        atoridu = import ./hosts/atoridu.nix flakeContext;
-        sapphira = import ./hosts/sapphira.nix flakeContext;
-        wsl = import ./hosts/wsl.nix flakeContext;
+        atoridu = import ./machines/atoridu.nix flakeContext;
+        sapphira = import ./machines/sapphira.nix flakeContext;
+        wsl = import ./machines/wsl.nix flakeContext;
       };
+#       nixosModules = {
+#         vars = import ./modules/vars.nix flakeContext;
+#       };
 
     };
 }
