@@ -137,8 +137,20 @@
         "home-manager": "home-manager",
         "musnix": "musnix",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-unstable": "nixpkgs-unstable"
+        "nixpkgs-unstable": "nixpkgs-unstable",
+        "zeroq": "zeroq"
       }
+    },
+    "zeroq": {
+      "locked": {
+        "path": "./zeroq",
+        "type": "path"
+      },
+      "original": {
+        "path": "./zeroq",
+        "type": "path"
+      },
+      "parent": []
     }
   },
   "root": "root",

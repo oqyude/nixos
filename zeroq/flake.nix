@@ -2,7 +2,9 @@
 {
   description = "Zeroq variables and configurations";
 
-  outputs = import ./vars.nix;
+  outputs = { self }: {
+    # Экспортируем переменные как Nix-модуль или библиотеку
+    lib = import ./vars.nix;
 
     # Опционально: можно добавить модуль для NixOS/Home Manager
     #nixosModule = { lib, ... }: {
