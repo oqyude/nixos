@@ -5,7 +5,7 @@
 
     nixpkgs.url = "github:NixOS/nixpkgs/f6db44a8daa59c40ae41ba6e5823ec77fe0d2124";
 
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; #"flake:nixpkgs/nixpkgs-unstable"
+    nixpkgs-staging.url = "github:NixOS/nixpkgs/master"; #"flake:nixpkgs/nixpkgs-unstable"
 
     flake-compat.url = "github:edolstra/flake-compat";
 
@@ -30,14 +30,13 @@
     };
 
   };
-
   outputs =
     inputs:
     let
       zeroq = import ./modules/vars.nix;
+      staging = import inputs.nixpkgs-staging { system = "x86_64-linux"; };
 
-      pkgs-unstable = import inputs.nixpkgs-unstable { system = "x86_64-linux"; };
-      flakeContext = { inherit inputs zeroq pkgs-unstable; };
+      flakeContext = { inherit inputs zeroq staging; };
     in
 
     {
