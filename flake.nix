@@ -39,8 +39,8 @@
 
     {
       homeConfigurations = {
-        "${zeroq.devices.admin}" = import ./home/${zeroq.devices.admin}.nix flakeContext;
-        "${zeroq.devices.server.username}" = import ./home/${zeroq.devices.server.username}.nix flakeContext;
+        ${zeroq.devices.admin} = import ./home/${zeroq.devices.admin}.nix flakeContext;
+        ${zeroq.devices.server.username} = import ./home/${zeroq.devices.server.username}.nix flakeContext;
         extraSpecialArgs = {
           inherit (flakeContext) inputs;
         };
