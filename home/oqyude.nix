@@ -86,8 +86,6 @@ let
         #         };
       };
 
-      programs.dircolors.enable = true;
-
       home = {
         file = {
           "ssh" = {
@@ -166,6 +164,7 @@ let
           itch
           gamehub
           lollypop
+          prismlauncher
           unstable.brave
           #quodlibet
           #audacious

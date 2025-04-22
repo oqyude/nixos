@@ -473,6 +473,7 @@ inputs.nixpkgs.lib.nixosSystem {
     nixosModule # configuration.nix module
 
     musnix.nixosModules.musnix # musnix module
+    self.nixosModules.default
     self.nixosModules.aagl
 
     # home-manager

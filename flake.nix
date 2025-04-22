@@ -57,6 +57,7 @@
       };
       nixosModules = {
         aagl = import ./modules/programs/aagl.nix flakeContext;
+        default = import ./modules/default.nix flakeContext;
       };
 
     };
