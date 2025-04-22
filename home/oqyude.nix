@@ -9,6 +9,9 @@ let
       ...
     }:
     {
+      imports = [
+        inputs.self.homeModules.default
+      ];
       xdg = {
         enable = true;
         autostart.enable = true;
@@ -176,8 +179,7 @@ let
         stateVersion = "24.11";
       };
     };
-  nixosModule =
-    { ... }:
+  nixosModule = { ... }:
     {
       home-manager = {
         useGlobalPkgs = true;

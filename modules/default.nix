@@ -13,8 +13,45 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  nix = {
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+    };
+  };
+
   users = {
     defaultUserShell = pkgs.zsh;
+    users = {
+      "${zeroq.devices.admin}" = {
+        isNormalUser = true;
+        description = "Jor Oqyude";
+        initialPassword = "1234";
+        extraGroups = [
+          "audio"
+          "disk"
+          "gamemode"
+          "libvirtd"
+          "networkmanager"
+          "pipewire"
+          "qemu-libvirtd"
+          "wheel"
+        ];
+      };
+    };
+  };
+
+  time.timeZone = "Europe/Moscow";
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    supportedLocales = [
+      "C.UTF-8/UTF-8"
+      "en_US.UTF-8/UTF-8"
+      "ru_RU.UTF-8/UTF-8"
+    ];
   };
 
   programs = {
@@ -48,5 +85,42 @@
         reboot-bios = "sudo systemctl reboot --firmware-setup";
       };
     };
+    git = {
+      enable = true;
+      config = {
+        user = {
+          name = "oqyude";
+          email = "oqyude@gmail.com";
+        };
+      };
+    };
+    lazygit.enable = true;
+    nh.enable = true;
+  };
+
+  security = {
+    sudo.wheelNeedsPassword = false;
+    polkit = {
+      enable = true;
+      extraConfig = ''
+        polkit.addRule(function(action, subject) {
+            if ((action.id == "org.gnome.gparted" || // Для гнома
+                action.id == "org.freedesktop.policykit.exec") && // Для запуска Nekoray
+                subject.isInGroup("wheel")){ // Операции sudo
+                return polkit.Result.YES;
+            }
+        });
+      '';
+    };
+  };
+
+  systemd = {
+    network.wait-online.enable = false;
+  };
+
+  environment = {
+    systemPackages = with pkgs; [
+      nixfmt-tree
+    ];
   };
 }

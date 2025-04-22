@@ -9,19 +9,20 @@ let
       config,
       lib,
       pkgs,
-      modulesPath,
       ...
     }:
     {
-      nix = {
-        settings = {
-          auto-optimise-store = true;
-          experimental-features = [
-            "nix-command"
-            "flakes"
-          ];
-        };
-      };
+      imports = with inputs; [
+        self.nixosModules.default # default module
+
+        # additional
+        musnix.nixosModules.musnix # musnix module
+        self.nixosModules.aagl # aagl module
+
+        # home-manager
+        home-manager.nixosModules.home-manager # home-manager module
+        self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
+      ];
 
       musnix.enable = true;
 
@@ -149,9 +150,7 @@ let
         useDHCP = lib.mkDefault true;
       };
 
-      time.timeZone = "Europe/Moscow";
       i18n = {
-        defaultLocale = "en_US.UTF-8";
         extraLocaleSettings = {
           LC_ADDRESS = "ru_RU.UTF-8";
           LC_IDENTIFICATION = "ru_RU.UTF-8";
@@ -162,28 +161,6 @@ let
           LC_PAPER = "ru_RU.UTF-8";
           LC_TELEPHONE = "ru_RU.UTF-8";
           LC_TIME = "ru_RU.UTF-8";
-        };
-      };
-
-      users = {
-        users = {
-          "${zeroq.devices.admin}" = {
-            isNormalUser = true;
-            description = "Jor Oqyude";
-            initialPassword = "1234";
-            extraGroups = [
-              "audio"
-              "disk"
-              "gamemode"
-              "libvirtd"
-              "networkmanager"
-              "pipewire"
-              "qemu-libvirtd"
-              "wheel"
-            ];
-            packages = with pkgs; [
-            ];
-          };
         };
       };
 
@@ -238,7 +215,6 @@ let
 
           # Tools
           mc
-          nixfmt-tree
           unzip
           rar
           ntfs3g
@@ -267,38 +243,16 @@ let
       };
 
       programs = {
-        #amnezia-vpn.enable = true;
         xwayland.enable = true;
-        dconf = {
-          enable = true;
-        };
-        git = {
-          enable = true;
-          config = {
-            user = {
-              name = "oqyude";
-              email = "oqyude@gmail.com";
-            };
-          };
-        };
-        lazygit.enable = true;
-        nh.enable = true;
+        dconf.enable = true;
         gamemode.enable = true;
-        #         tuxclocker = {
-        #           enable = false;
-        #           enableAMD = true;
-        #           useUnfree = true;
-        #         };
-        steam = {
-          enable = true;
+        tuxclocker = {
+          enable = false;
+          enableAMD = true;
+          useUnfree = true;
         };
-        gamescope = {
-          enable = true;
-        };
-        #         kdeconnect = {
-        #           enable = false;
-        #           package = pkgs.gnomeExtensions.gsconnect;
-        #         };
+        steam.enable = true;
+        gamescope.enable = true;
       };
 
       services = {
@@ -385,20 +339,7 @@ let
       };
 
       security = {
-        sudo.wheelNeedsPassword = false;
         rtkit.enable = true;
-        polkit = {
-          enable = true;
-          extraConfig = ''
-            polkit.addRule(function(action, subject) {
-                if ((action.id == "org.gnome.gparted" || // Для гнома
-                    action.id == "org.freedesktop.policykit.exec") && // Для запуска Nekoray
-                    subject.isInGroup("wheel")){ // Операции sudo
-                    return polkit.Result.YES;
-                }
-            });
-          '';
-        };
       };
 
       virtualisation = {
@@ -415,27 +356,12 @@ let
         spiceUSBRedirection.enable = true;
       };
 
-      systemd = {
-        network.wait-online.enable = false;
-        services = {
-        };
-      };
-
       system.stateVersion = "24.11";
-
     };
 in
 inputs.nixpkgs.lib.nixosSystem {
   modules = with inputs; [
-    nixosModule # configuration.nix module
-
-    musnix.nixosModules.musnix # musnix module
-    self.nixosModules.default
-    self.nixosModules.aagl
-
-    # home-manager
-    home-manager.nixosModules.home-manager # home-manager module
-    self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
+    nixosModule
   ];
   system = "x86_64-linux";
 }

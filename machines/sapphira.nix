@@ -5,24 +5,13 @@ let
       config,
       lib,
       pkgs,
-      modulesPath,
       ...
     }:
     {
-
-      imports = [
-        (modulesPath + "/installer/scan/not-detected.nix")
+      imports = with inputs; [
+        home-manager.nixosModules.home-manager
+        self.homeConfigurations.${zeroq.devices.server.username}.nixosModule
       ];
-
-      nix = {
-        settings = {
-          auto-optimise-store = true;
-          experimental-features = [
-            "nix-command"
-            "flakes"
-          ];
-        };
-      };
 
       boot = {
         initrd = {
@@ -66,23 +55,12 @@ let
       #  [ { device = "/dev/disk/by-partlabel/disk-main-swap"; }
       #  ];
 
-      time.timeZone = "Europe/Moscow";
-
-      i18n = {
-        defaultLocale = "en_US.UTF-8";
-        supportedLocales = [
-          "ru_RU.UTF-8/UTF-8"
-          "en_US.UTF-8/UTF-8"
-        ];
-      };
-
       nixpkgs = {
         config.allowUnfree = true;
         hostPlatform = lib.mkDefault "x86_64-linux";
       };
 
       users = {
-        defaultUserShell = pkgs.zsh;
         users = {
           "${zeroq.devices.server.username}" = {
             isNormalUser = true;
@@ -90,24 +68,6 @@ let
             openssh.authorizedKeys.keys = [
               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
             ];
-            initialPassword = "1234";
-            extraGroups = [
-              "users"
-              "wheel"
-              "networkmanager"
-            ];
-          };
-          #           root = {
-          #             openssh.authorizedKeys.keys = [
-          #               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
-          #             ];
-          #           };
-          "${zeroq.devices.admin}" = {
-            isNormalUser = true;
-            description = "Admin";
-            #             openssh.authorizedKeys.keys = [
-            #               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
-            #             ];
             initialPassword = "1234";
             extraGroups = [
               "users"
@@ -123,15 +83,12 @@ let
           acl
           btop # tty
           efibootmgr # Info
-          eza
           fastfetch
           iptables
           lf # tty
           mc # tty
-          nixfmt-tree
           parted # Disks
           pciutils # Info
-          sing-box
           smartmontools # tty
           yazi
         ];
@@ -373,58 +330,6 @@ let
         #        "${config.services.nextcloud.hostName}".group = "nextcloud";
         #       };
         #     };
-        sudo.wheelNeedsPassword = false;
-        polkit = {
-          enable = true;
-          extraConfig = ''
-            polkit.addRule(function(action, subject) {
-                if ((action.id == "org.gnome.gparted" || // Для гнома
-                    action.id == "org.freedesktop.policykit.exec") && // Для запуска Nekoray
-                    subject.isInGroup("wheel")){ // Операции sudo
-                    return polkit.Result.YES;
-                }
-            });
-          '';
-        };
-      };
-
-      programs = {
-        nh.enable = true;
-        git = {
-          enable = true;
-          config = {
-            user = {
-              name = "oqyude";
-              email = "oqyude@gmail.com";
-            };
-          };
-        };
-        lazygit.enable = true;
-        zsh = {
-          enable = true;
-          enableCompletion = true;
-          enableBashCompletion = true;
-          syntaxHighlighting.enable = true;
-          zsh-autoenv.enable = true;
-          loginShellInit = "cd /etc/nixos && clear && fastfetch";
-          ohMyZsh = {
-            enable = true;
-            theme = "robbyrussell";
-          };
-          shellAliases = {
-            # shell
-            l = "ls -l";
-
-            # nixos
-            nir-switch = "sudo nixos-rebuild switch --flake /etc/nixos#${zeroq.devices.server.hostname}";
-            nir-boot = "sudo nixos-rebuild boot --flake /etc/nixos#${zeroq.devices.server.hostname}";
-            nir-test = "sudo nixos-rebuild test --flake /etc/nixos#${zeroq.devices.server.hostname}";
-          };
-        };
-      };
-
-      systemd = {
-        network.wait-online.enable = false;
       };
 
       networking = {
@@ -442,8 +347,6 @@ in
 inputs.nixpkgs.lib.nixosSystem {
   modules = with inputs; [
     nixosModule
-    home-manager.nixosModules.home-manager
-    self.homeConfigurations.${zeroq.devices.server.username}.nixosModule
   ];
   system = "x86_64-linux";
 }

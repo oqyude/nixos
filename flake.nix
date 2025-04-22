@@ -27,26 +27,33 @@
         flake-compat.follows = "flake-compat";
       };
     };
+    zeroq = {
+      url = "path:./zeroq";
+      #flake = false;
+    };
 
   };
   outputs =
     inputs:
     let
-      zeroq = import ./modules/vars.nix;
-      flakeContext = { inherit inputs zeroq; };
+      #zeroq = import ./modules/vars.nix;
+      zeroq = inputs.zeroq;
+      flakeContext = {
+        inherit inputs zeroq;
+      };
     in
 
     {
       homeConfigurations = {
         ${zeroq.devices.admin} = import ./home/${zeroq.devices.admin}.nix flakeContext;
         ${zeroq.devices.server.username} = import ./home/${zeroq.devices.server.username}.nix flakeContext;
-        extraSpecialArgs = {
-          inherit (flakeContext) inputs;
-        };
+#         extraSpecialArgs = {
+#           inherit (flakeContext) inputs;
+#         };
       };
-      #homeModules = {
-      #  default = import ./homeModules/default.nix flakeContext;
-      #};
+      homeModules = {
+        default = import ./modules/home/default.nix flakeContext;
+      };
 
       nixosConfigurations = {
         ${zeroq.devices.laptop.hostname} =
