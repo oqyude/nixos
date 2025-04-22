@@ -49,8 +49,10 @@
       #};
 
       nixosConfigurations = {
-        ${zeroq.devices.laptop.hostname} = import ./machines/${zeroq.devices.laptop.hostname}.nix flakeContext;
-        ${zeroq.devices.server.hostname} = import ./machines/${zeroq.devices.server.hostname}.nix flakeContext;
+        ${zeroq.devices.laptop.hostname} =
+          import ./machines/${zeroq.devices.laptop.hostname}.nix flakeContext;
+        ${zeroq.devices.server.hostname} =
+          import ./machines/${zeroq.devices.server.hostname}.nix flakeContext;
         ${zeroq.devices.wsl.hostname} = import ./machines/${zeroq.devices.wsl.hostname}.nix flakeContext;
       };
       nixosModules = {

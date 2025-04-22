@@ -1,5 +1,11 @@
 { inputs, ... }@flakeContext:
-{ config, lib, pkgs, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
 
   imports = [ inputs.aagl.nixosModules.default ];
   nix.settings = inputs.aagl.nixConfig; # Set up Cachix

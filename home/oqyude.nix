@@ -94,10 +94,10 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/SSH/${zeroq.devices.admin}";
             target = ".ssh";
           };
-#           "genshin impact" = {
-#             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.therima-drive}/Games-ws/HoYoPlay";
-#             target = "Games/genshin-impact/drive_c/Program Files/HoYoPlay";
-#           };
+          #           "genshin impact" = {
+          #             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.therima-drive}/Games-ws/HoYoPlay";
+          #             target = "Games/genshin-impact/drive_c/Program Files/HoYoPlay";
+          #           };
           "External" = {
             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.therima-drive}";
             target = "External";
