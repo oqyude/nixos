@@ -4,8 +4,7 @@
   inputs = {
 
     nixpkgs.url = "github:NixOS/nixpkgs/f6db44a8daa59c40ae41ba6e5823ec77fe0d2124";
-
-    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     flake-compat.url = "github:edolstra/flake-compat";
 

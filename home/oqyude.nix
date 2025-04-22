@@ -1,6 +1,6 @@
 { inputs, zeroq, ... }@flakeContext:
 let
-  staging = import inputs.nixpkgs-master { system = "x86_64-linux"; };
+  unstable = import inputs.nixpkgs-unstable { system = "x86_64-linux"; };
   homeModule =
     {
       config,
@@ -166,7 +166,7 @@ let
           itch
           gamehub
           lollypop
-          staging.brave
+          unstable.brave
           #quodlibet
           #audacious
 
