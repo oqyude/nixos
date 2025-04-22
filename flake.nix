@@ -27,17 +27,14 @@
         flake-compat.follows = "flake-compat";
       };
     };
-    zeroq = {
-      url = "path:./zeroq";
-      #flake = false;
-    };
+    zeroq.url = "path:./vars";
 
   };
   outputs =
     inputs:
     let
       #zeroq = import ./modules/vars.nix;
-      zeroq = inputs.zeroq.lib;
+      zeroq = inputs.zeroq;
       flakeContext = {
         inherit inputs zeroq;
       };
