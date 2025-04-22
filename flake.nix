@@ -1,9 +1,10 @@
 {
-  description = "zeroq flake";
+  description = "oqyude flake";
 
   inputs = {
 
-    zeroq.url = "path:./vars";
+    zeroq.url = "path:./zeroq";
+
     nixpkgs.url = "github:NixOS/nixpkgs/f6db44a8daa59c40ae41ba6e5823ec77fe0d2124";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
@@ -34,9 +35,9 @@
     inputs:
     let
       #zeroq = import ./modules/vars.nix;
-      zeroq = inputs.zeroq;
+      #zeroq = inputs.zeroq;
       flakeContext = {
-        inherit inputs zeroq;
+        inherit inputs;
       };
     in
 
