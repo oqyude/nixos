@@ -5,7 +5,7 @@
 
     nixpkgs.url = "github:NixOS/nixpkgs/f6db44a8daa59c40ae41ba6e5823ec77fe0d2124";
 
-    nixpkgs-staging.url = "github:NixOS/nixpkgs/master"; #"flake:nixpkgs/nixpkgs-unstable"
+    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
 
     flake-compat.url = "github:edolstra/flake-compat";
 
@@ -34,9 +34,7 @@
     inputs:
     let
       zeroq = import ./modules/vars.nix;
-      staging = import inputs.nixpkgs-staging { system = "x86_64-linux"; };
-
-      flakeContext = { inherit inputs zeroq staging; };
+      flakeContext = { inherit inputs zeroq; };
     in
 
     {
@@ -57,7 +55,6 @@
         ${zeroq.devices.wsl.hostname} = import ./machines/${zeroq.devices.wsl.hostname}.nix flakeContext;
       };
       nixosModules = {
-        zeroq = import ./modules/vars.nix;
         aagl = import ./modules/programs/aagl.nix flakeContext;
       };
 
