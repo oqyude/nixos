@@ -4,6 +4,9 @@
   inputs = {
 
     nixpkgs.url = "flake:nixpkgs/nixpkgs-unstable";
+
+    nixpkgs-unstable.url = "flake:nixpkgs/nixpkgs-unstable";
+
     # last working commit - "github:NixOS/nixpkgs/f6db44a8daa59c40ae41ba6e5823ec77fe0d2124";
     home-manager = {
       url = "flake:home-manager";
@@ -26,10 +29,11 @@
 
   outputs =
     inputs:
-
     let
       zeroq = import ./modules/vars.nix;
-      flakeContext = { inherit inputs zeroq; };
+      pkgs-unstable = import inputs.nixpkgs-unstable { system = "x86_64-linux"; };
+
+      flakeContext = { inherit inputs zeroq pkgs-unstable; };
     in
 
     {

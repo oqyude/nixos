@@ -1,4 +1,4 @@
-{ inputs, zeroq, ... }@flakeContext:
+{ inputs, zeroq, pkgs-unstable, ... }@flakeContext:
 let
   homeModule =
     {
@@ -130,52 +130,49 @@ let
         #preferXdgDirectories = true;
         username = "${zeroq.user-name}";
         homeDirectory = "/home/${zeroq.user-name}";
-        packages = with pkgs; [
+        packages = [
+          #           pkgs.gnomeExtensions.appindicator
+          #           pkgs.gnomeExtensions.dash-to-panel
+          #           pkgs.gnomeExtensions.arcmenu
+          #           pkgs.gnomeExtensions.vitals
+          #           pkgs.gnomeExtensions.user-themes
+          #           pkgs.gnome-tweaks
+          #           pkgs.dconf-editor
+          #           pkgs.dconf2nix
 
-          # dconf
-          #           gnomeExtensions.appindicator
-          #           gnomeExtensions.dash-to-panel
-          #           gnomeExtensions.arcmenu
-          #           gnomeExtensions.vitals
-          #           gnomeExtensions.user-themes
-          #           gnome-tweaks
-          #           dconf-editor
-          #           dconf2nix
+          pkgs.whitesur-gtk-theme
+          pkgs.whitesur-icon-theme
+          pkgs.whitesur-kde
+          pkgs.btop
+          pkgs.mangohud
+          pkgs.fastfetch
+          pkgs.kdePackages.filelight
+          pkgs.localsend
+          pkgs.ludusavi
+          pkgs.easyeffects
+          pkgs.pdfarranger
+          pkgs.libreoffice-qt6
+          pkgs.vlc
+          pkgs.gramps
+          pkgs.stretchly
+          pkgs.nekoray
+          pkgs.discord
+          pkgs._64gram
+          pkgs.keepassxc
+          pkgs.obsidian
+          pkgs.reaper
+          pkgs.lutris
+          pkgs.transmission_4-qt
+          pkgs.itch
+          pkgs.gamehub
+          pkgs.lollypop
+          #pkgs.quodlibet
+          #pkgs.audacious
 
-          whitesur-gtk-theme
-          whitesur-icon-theme
-          whitesur-kde
-          btop
-          mangohud
-          fastfetch
-          kdePackages.filelight
-          localsend
-          ludusavi
-          easyeffects
-          brave
-          pdfarranger
-          libreoffice-qt6
-          vlc
-          gramps
-          stretchly
-          nekoray
-          discord
-          _64gram
-          keepassxc
-          obsidian
-          reaper
-          lutris
-          transmission_4-qt
-          itch
-          gamehub
-
-          lollypop
-          #quodlibet
-          #audacious
-
-          #edid-decode
-          #displaycal
-          #argyllcms
+          #pkgs.edid-decode
+          #pkgs.displaycal
+          #pkgs.argyllcms
+          pkgs-unstable.brave
         ];
         stateVersion = "24.11";
       };
