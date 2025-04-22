@@ -62,7 +62,7 @@
       syntaxHighlighting.enable = true;
       zsh-autoenv.enable = true;
       histSize = 10000;
-      #loginShellInit = "cd /etc/nixos && clear && fastfetch";
+      loginShellInit = "cd /etc/nixos && clear && fastfetch";
       ohMyZsh = {
         enable = true;
         theme = "robbyrussell";
