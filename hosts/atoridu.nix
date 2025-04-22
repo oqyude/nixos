@@ -235,7 +235,6 @@ let
           amneziawg-tools
 
           # Net
-          byedpi
           curl
           ipset
           iptables
@@ -336,22 +335,21 @@ let
           };
         };
         gamemode.enable = true;
-        tuxclocker = {
-          enable = true;
-          enableAMD = true;
-          useUnfree = true;
-        };
+#         tuxclocker = {
+#           enable = false;
+#           enableAMD = true;
+#           useUnfree = true;
+#         };
         steam = {
           enable = true;
-          #gamescopeSession.enable = true;
         };
         gamescope = {
           enable = true;
         };
-        kdeconnect = {
-          enable = false;
-          package = pkgs.gnomeExtensions.gsconnect;
-        };
+#         kdeconnect = {
+#           enable = false;
+#           package = pkgs.gnomeExtensions.gsconnect;
+#         };
       };
 
       services = {

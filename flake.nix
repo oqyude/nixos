@@ -3,9 +3,8 @@
 
   inputs = {
 
-    nixpkgs.url = "github:NixOS/nixpkgs/d19cf9dfc633816a437204555afeb9e722386b76";
-    #"github:NixOS/nixpkgs/nixos-unstable";
-    # "flake:nixpkgs/nixpkgs-unstable/4e1b0f54e477462aa0fda917e97f724e49460bb0";
+    nixpkgs.url = "flake:nixpkgs/nixpkgs-unstable";
+    # last working commit - "github:NixOS/nixpkgs/f6db44a8daa59c40ae41ba6e5823ec77fe0d2124";
     home-manager = {
       url = "flake:home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
