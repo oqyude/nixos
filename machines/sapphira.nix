@@ -355,7 +355,7 @@ let
           enable = true;
           systemService = true;
           guiAddress = "0.0.0.0:8384";
-          configDir = "${zeroq.dirs.storage}/Syncthing/${current.host}";
+          configDir = "${zeroq.dirs.storage}/Syncthing/${zeroq.devices.server.hostname}";
           dataDir = "${zeroq.dirs.server-home}";
           group = "users";
           user = "${zeroq.devices.server.username}";
