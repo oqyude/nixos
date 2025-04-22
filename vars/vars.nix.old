@@ -2,10 +2,10 @@ rec {
 
   devices = rec {
     admin = "oqyude";
-    laptop = {
+    laptop = rec {
       hostname = "atoridu";
     };
-    server = {
+    server = rec {
       username = "otreca";
       hostname = "sapphira";
     };
@@ -32,7 +32,8 @@ rec {
     credentials-target = "/var/lib/credentials";
   };
 
-  platform = {
+  platform = rec {
+    cpu = "amd";
     vfioIds = [
       "10de:25a2"
       "10de:2291"

@@ -3,6 +3,7 @@
 
   inputs = {
 
+    zeroq.url = "path:./vars";
     nixpkgs.url = "github:NixOS/nixpkgs/f6db44a8daa59c40ae41ba6e5823ec77fe0d2124";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
@@ -27,7 +28,6 @@
         flake-compat.follows = "flake-compat";
       };
     };
-    zeroq.url = "path:./vars";
 
   };
   outputs =
@@ -42,8 +42,8 @@
 
     {
       homeConfigurations = {
-        ${zeroq.devices.admin} = import ./configurations/home/${zeroq.devices.admin}.nix flakeContext;
-        ${zeroq.devices.server.username} = import ./configurations/home/${zeroq.devices.server.username}.nix flakeContext;
+        ${inputs.zeroq.devices.admin} = import ./configurations/home/${inputs.zeroq.devices.admin}.nix flakeContext;
+        ${inputs.zeroq.devices.server.username} = import ./configurations/home/${inputs.zeroq.devices.server.username}.nix flakeContext;
 #         extraSpecialArgs = {
 #           inherit (flakeContext) inputs;
 #         };
@@ -53,11 +53,11 @@
       };
 
       nixosConfigurations = {
-        ${zeroq.devices.laptop.hostname} =
-          import ./configurations/machines/${zeroq.devices.laptop.hostname}.nix flakeContext;
-        ${zeroq.devices.server.hostname} =
-          import ./machines/${zeroq.devices.server.hostname}.nix flakeContext;
-        ${zeroq.devices.wsl.hostname} = import ./configurations/machines/${zeroq.devices.wsl.hostname}.nix flakeContext;
+        ${inputs.zeroq.devices.laptop.hostname} =
+          import ./configurations/machines/${inputs.zeroq.devices.laptop.hostname}.nix flakeContext;
+        ${inputs.zeroq.devices.server.hostname} =
+          import ./machines/${inputs.zeroq.devices.server.hostname}.nix flakeContext;
+        ${inputs.zeroq.devices.wsl.hostname} = import ./configurations/machines/${inputs.zeroq.devices.wsl.hostname}.nix flakeContext;
       };
       nixosModules = {
         default = import ./modules/default.nix flakeContext;

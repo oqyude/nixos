@@ -1,4 +1,4 @@
-{ inputs, zeroq, ... }@flakeContext:
+{ inputs, ... }@flakeContext:
 let
   nixosModule =
     {
@@ -20,7 +20,7 @@ let
         ];
       };
 
-      networking.hostName = "${zeroq.devices.wsl.username}";
+      networking.hostName = "${inputs.zeroq.devices.wsl.username}";
 
       users = {
         defaultUserShell = pkgs.zsh;

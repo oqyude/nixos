@@ -143,11 +143,11 @@
     },
     "zeroq": {
       "locked": {
-        "path": "./zeroq",
+        "path": "./vars",
         "type": "path"
       },
       "original": {
-        "path": "./zeroq",
+        "path": "./vars",
         "type": "path"
       },
       "parent": []

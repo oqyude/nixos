@@ -1,4 +1,4 @@
-{ inputs, zeroq, ... }@flakeContext:
+{ inputs, ... }@flakeContext:
 let
   unstable = import inputs.nixpkgs-unstable { system = "x86_64-linux"; };
   homeModule =
@@ -17,26 +17,26 @@ let
         autostart.enable = true;
         configFile = {
           "ludusavi" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/ludusavi/cfg";
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/ludusavi/cfg";
             target = "ludusavi";
           };
           "nekoray" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/Nekoray/${zeroq.devices.admin}";
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/Nekoray/${inputs.zeroq.devices.admin}";
             target = "nekoray";
           };
           "solaar" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/solaar";
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/solaar";
             target = "solaar";
           };
           "easyeffects" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/easyeffects";
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/easyeffects";
             target = "easyeffects";
           };
         };
         userDirs = {
           enable = true;
           createDirectories = true;
-          desktop = "${config.home.homeDirectory}/Misc/Desktops/${zeroq.devices.admin}";
+          desktop = "${config.home.homeDirectory}/Misc/Desktops/${inputs.zeroq.devices.admin}";
           documents = "${config.home.homeDirectory}/Documents";
           download = "${config.home.homeDirectory}/Downloads";
           music = "${config.home.homeDirectory}/Music";
@@ -92,45 +92,45 @@ let
       home = {
         file = {
           "ssh" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/SSH/${zeroq.devices.admin}";
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/SSH/${inputs.zeroq.devices.admin}";
             target = ".ssh";
           };
           #           "genshin impact" = {
-          #             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.therima-drive}/Games-ws/HoYoPlay";
+          #             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.therima-drive}/Games-ws/HoYoPlay";
           #             target = "Games/genshin-impact/drive_c/Program Files/HoYoPlay";
           #           };
           "External" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.therima-drive}";
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.therima-drive}";
             target = "External";
           };
           "Plugins" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.therima-drive}/Plugins";
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.therima-drive}/Plugins";
             target = "Plugins";
           };
           "Music" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.vetymae-drive}/Users/User/Music";
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Music";
             target = "Music";
           };
           "Pictures" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.vetymae-drive}/Users/User/Pictures";
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Pictures";
             target = "Pictures";
           };
           "Deploy" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.vetymae-drive}/Users/User/Deploy";
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Deploy";
             target = "Deploy";
           };
           "Documents" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.vetymae-drive}/Users/User/Public Documents";
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Public Documents";
             target = "Documents";
           };
           "Misc" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.vetymae-drive}/Users/User/Misc";
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Misc";
             target = "Misc";
           };
         };
         #preferXdgDirectories = true;
-        username = "${zeroq.devices.admin}";
-        homeDirectory = "/home/${zeroq.devices.admin}";
+        username = "${inputs.zeroq.devices.admin}";
+        homeDirectory = "/home/${inputs.zeroq.devices.admin}";
         packages = with pkgs; [
           #           gnomeExtensions.appindicator
           #           gnomeExtensions.dash-to-panel
@@ -184,7 +184,7 @@ let
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
-        users.${zeroq.devices.admin} = homeModule;
+        users.${inputs.zeroq.devices.admin} = homeModule;
       };
     };
 in

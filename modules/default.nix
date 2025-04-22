@@ -1,4 +1,4 @@
-{ inputs, zeroq, ... }@flakeContext:
+{ inputs, ... }@flakeContext:
 {
   config,
   lib,
@@ -26,7 +26,7 @@
   users = {
     defaultUserShell = pkgs.zsh;
     users = {
-      "${zeroq.devices.admin}" = {
+      "${inputs.zeroq.devices.admin}" = {
         isNormalUser = true;
         description = "Jor Oqyude";
         initialPassword = "1234";
@@ -73,9 +73,9 @@
         l = "ls -l";
 
         # nixos
-        nir-switch = "sudo nixos-rebuild switch --flake ${zeroq.nixos}#${config.networking.hostName}";
-        nir-boot = "sudo nixos-rebuild boot --flake ${zeroq.nixos}#${config.networking.hostName}";
-        nir-test = "sudo nixos-rebuild test --flake ${zeroq.nixos}#${config.networking.hostName}";
+        nir-switch = "sudo nixos-rebuild switch --flake ${inputs.zeroq.nixos}#${config.networking.hostName}";
+        nir-boot = "sudo nixos-rebuild boot --flake ${inputs.zeroq.nixos}#${config.networking.hostName}";
+        nir-test = "sudo nixos-rebuild test --flake ${inputs.zeroq.nixos}#${config.networking.hostName}";
 
         # ssh
         s-1 = "ssh sapphira-1";

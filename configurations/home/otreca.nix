@@ -1,4 +1,4 @@
-{ inputs, zeroq, ... }@flakeContext:
+{ inputs, ... }@flakeContext:
 let
   homeModule =
     {
@@ -27,12 +27,12 @@ let
       home = {
         file = {
           "ssh" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.storage}/SSH/${zeroq.devices.server.hostname}";
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.storage}/SSH/${inputs.zeroq.devices.server.hostname}";
             target = ".ssh";
           };
         };
-        username = "${zeroq.devices.server.username}";
-        homeDirectory = "/home/${zeroq.devices.server.username}";
+        username = "${inputs.zeroq.devices.server.username}";
+        homeDirectory = "/home/${inputs.zeroq.devices.server.username}";
         stateVersion = "24.11";
       };
 
@@ -43,7 +43,7 @@ let
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
-        users.${zeroq.devices.server.username} = homeModule;
+        users.${inputs.zeroq.devices.server.username} = homeModule;
       };
     };
 in

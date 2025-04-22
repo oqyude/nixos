@@ -1,6 +1,5 @@
 {
   inputs,
-  zeroq,
   ...
 }@flakeContext:
 let
@@ -40,19 +39,19 @@ let
           ];
         };
         kernelModules = [
-          "kvm-${zeroq.platform.cpu}"
+          "kvm-amd"
           "vfio"
           "vfio-pci"
           "vfio_iommu_type1"
           "vfio_virqfd"
         ];
         kernelParams = [
-          "${zeroq.platform.cpu}_iommu=on"
+          "amd_iommu=on"
           "iommu=pt"
           "kvm.ignore_msrs=1"
-          #("vfio-pci.ids=" + builtins.concatStringsSep "," zeroq.platform.vfioIds)
+          #("vfio-pci.ids=" + builtins.concatStringsSep "," inputs.zeroq.platform.vfioIds)
         ];
-        #extraModprobeConfig = "options vfio-pci ids=${builtins.concatStringsSep "," zeroq.platform.vfioIds}";
+        #extraModprobeConfig = "options vfio-pci ids=${builtins.concatStringsSep "," inputs.zeroq.platform.vfioIds}";
         extraModulePackages = [ config.boot.kernelPackages.amneziawg ];
         loader = {
           systemd-boot.enable = true;
@@ -68,8 +67,7 @@ let
             enableGraphical = true;
           };
         };
-        cpu."${zeroq.platform.cpu}".updateMicrocode =
-          lib.mkDefault config.hardware.enableRedistributableFirmware;
+        cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
         graphics = {
           enable = true;
         };
@@ -92,7 +90,7 @@ let
               enableOffloadCmd = true;
             };
             sync.enable = false;
-            "${zeroq.platform.cpu}gpuBusId" = "PCI:6:0:0";
+            amdgpuBusId = "PCI:6:0:0";
             nvidiaBusId = "PCI:1:0:0";
           };
         };
@@ -111,7 +109,7 @@ let
             "dmask=0077"
           ];
         };
-        "${zeroq.dirs.therima-drive}" = {
+        "${inputs.zeroq.dirs.therima-drive}" = {
           device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
           fsType = "ntfs3";
           options = [
@@ -124,7 +122,7 @@ let
             "x-systemd.device-timeout=0"
           ];
         };
-        "${zeroq.dirs.vetymae-drive}" = {
+        "${inputs.zeroq.dirs.vetymae-drive}" = {
           device = "/dev/disk/by-uuid/6E04EA7F04EA49A3";
           fsType = "ntfs3";
           options = [
@@ -144,7 +142,7 @@ let
       ];
 
       networking = {
-        hostName = "${zeroq.devices.laptop.hostname}";
+        hostName = "${inputs.zeroq.devices.laptop.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
         useDHCP = lib.mkDefault true;
@@ -237,7 +235,7 @@ let
           #looking-glass-client # pci-passthrough
         ];
         sessionVariables = {
-          WINEPREFIX = "${zeroq.dirs.user-home}/${zeroq.dirs.state-folder}/wine"; # ${zeroq.dirs.state-folder}
+          WINEPREFIX = "${inputs.zeroq.dirs.user-home}/${inputs.zeroq.dirs.state-folder}/wine"; # ${inputs.zeroq.dirs.state-folder}
           WINEARCH = "win64";
         };
       };
@@ -301,10 +299,10 @@ let
         syncthing = {
           enable = true;
           systemService = true;
-          configDir = "${zeroq.dirs.user-storage}/Syncthing/${zeroq.devices.laptop.hostname}";
-          dataDir = "${zeroq.dirs.user-home}";
+          configDir = "${inputs.zeroq.dirs.user-storage}/Syncthing/${inputs.zeroq.devices.laptop.hostname}";
+          dataDir = "${inputs.zeroq.dirs.user-home}";
           group = "users";
-          user = "${zeroq.devices.admin}";
+          user = "${inputs.zeroq.devices.admin}";
         };
         tailscale.enable = true;
         pipewire = {

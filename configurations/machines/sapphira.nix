@@ -1,4 +1,4 @@
-{ inputs, zeroq, ... }@flakeContext:
+{ inputs, ... }@flakeContext:
 let
   nixosModule =
     {
@@ -10,7 +10,7 @@ let
     {
       imports = with inputs; [
         home-manager.nixosModules.home-manager
-        self.homeConfigurations.${zeroq.devices.server.username}.nixosModule
+        self.homeConfigurations.${inputs.zeroq.devices.server.username}.nixosModule
       ];
 
       boot = {
@@ -62,7 +62,7 @@ let
 
       users = {
         users = {
-          "${zeroq.devices.server.username}" = {
+          "${inputs.zeroq.devices.server.username}" = {
             isNormalUser = true;
             description = "Server User";
             openssh.authorizedKeys.keys = [
@@ -110,7 +110,7 @@ let
         };
 
         # External drive
-        "${zeroq.dirs.server-home}" = {
+        "${inputs.zeroq.dirs.server-home}" = {
           device = "/dev/disk/by-uuid/37e53ebc-5343-a94d-9fe2-0ca39e13a8de";
           fsType = "ext4";
           options = [
@@ -132,7 +132,7 @@ let
             #dbhost = "/run/postgresql";
             dbname = "nextcloud";
             adminuser = "root";
-            #adminpassFile = "${zeroq.dirs.credentials-target}/nextcloud/admin-pass.txt";
+            #adminpassFile = "${inputs.zeroq.dirs.credentials-target}/nextcloud/admin-pass.txt";
           };
           settings = {
             appstoreEnable = false;
@@ -229,7 +229,7 @@ let
               "path" = "/etc/nixos";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${zeroq.devices.admin}";
+              "valid users" = "${inputs.zeroq.devices.admin}";
               "guest ok" = "no";
               "writable" = "yes";
               "create mask" = 644;
@@ -241,7 +241,7 @@ let
               "path" = "/";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${zeroq.devices.admin}";
+              "valid users" = "${inputs.zeroq.devices.admin}";
               "guest ok" = "no";
               "writable" = "yes";
               #"create mask" = 0644;
@@ -249,16 +249,16 @@ let
               "force user" = "root";
               "force group" = "root";
             };
-            "${zeroq.devices.server.username}" = {
-              "path" = "${zeroq.dirs.server-home}";
+            "${inputs.zeroq.devices.server.username}" = {
+              "path" = "${inputs.zeroq.dirs.server-home}";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${zeroq.devices.admin}";
+              "valid users" = "${inputs.zeroq.devices.admin}";
               "guest ok" = "no";
               "writable" = "yes";
               "create mask" = 700;
               "directory mask" = 700;
-              "force user" = "${zeroq.devices.server.username}";
+              "force user" = "${inputs.zeroq.devices.server.username}";
               "force group" = "users";
             };
           };
@@ -266,9 +266,9 @@ let
         calibre-web = {
           enable = true;
           group = "users";
-          user = "${zeroq.devices.server.username}";
+          user = "${inputs.zeroq.devices.server.username}";
           options = {
-            calibreLibrary = "${zeroq.dirs.calibre-library}";
+            calibreLibrary = "${inputs.zeroq.dirs.calibre-library}";
             enableBookUploading = true;
             enableKepubify = false;
           };
@@ -281,7 +281,7 @@ let
           allowSFTP = true;
           hostKeys = [
             {
-              path = "/etc/ssh/keys/${zeroq.devices.admin}";
+              path = "/etc/ssh/keys/${inputs.zeroq.devices.admin}";
               type = "ed25519";
             }
           ];
@@ -293,14 +293,14 @@ let
         };
         transmission = {
           enable = true;
-          credentialsFile = "${zeroq.dirs.server-home}/server/transmission/settings.json";
+          credentialsFile = "${inputs.zeroq.dirs.server-home}/server/transmission/settings.json";
           openRPCPort = true;
           package = pkgs.transmission_4;
-          user = "${zeroq.devices.server.username}";
+          user = "${inputs.zeroq.devices.server.username}";
           group = "users";
           settings = {
-            download-dir = "${zeroq.dirs.server-home}/Downloads";
-            incomplete-dir = "${zeroq.dirs.server-home}/Downloads/Temp";
+            download-dir = "${inputs.zeroq.dirs.server-home}/Downloads";
+            incomplete-dir = "${inputs.zeroq.dirs.server-home}/Downloads/Temp";
             incomplete-dir-enabled = true;
             rpc-bind-address = "0.0.0.0";
             rpc-port = 9091;
@@ -312,10 +312,10 @@ let
           enable = true;
           systemService = true;
           guiAddress = "0.0.0.0:8384";
-          configDir = "${zeroq.dirs.storage}/Syncthing/${zeroq.devices.server.hostname}";
-          dataDir = "${zeroq.dirs.server-home}";
+          configDir = "${inputs.zeroq.dirs.storage}/Syncthing/${inputs.zeroq.devices.server.hostname}";
+          dataDir = "${inputs.zeroq.dirs.server-home}";
           group = "users";
-          user = "${zeroq.devices.server.username}";
+          user = "${inputs.zeroq.devices.server.username}";
         };
         tailscale.enable = true;
       };
@@ -324,7 +324,7 @@ let
         #     acme = {
         #       acceptTerms = true;
         #       defaults = {
-        #        email = "${zeroq.devices.server.hostname}@example.com";
+        #        email = "${inputs.zeroq.devices.server.hostname}@example.com";
         #       };
         #       certs = {
         #        "${config.services.nextcloud.hostName}".group = "nextcloud";
@@ -333,7 +333,7 @@ let
       };
 
       networking = {
-        hostName = "${zeroq.devices.server.hostname}";
+        hostName = "${inputs.zeroq.devices.server.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
         useDHCP = lib.mkDefault true;
