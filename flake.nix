@@ -51,7 +51,7 @@
 
       nixosConfigurations = {
         ${inputs.zeroq.devices.laptop.hostname} = import ./configurations/machines/${inputs.zeroq.devices.laptop.hostname}.nix flakeContext; # laptop config
-        ${inputs.zeroq.devices.server.hostname} = import ./machines/${inputs.zeroq.devices.server.hostname}.nix flakeContext; # server config
+        ${inputs.zeroq.devices.server.hostname} = import ./configurations/machines/${inputs.zeroq.devices.server.hostname}.nix flakeContext; # server config
         ${inputs.zeroq.devices.wsl.hostname} = import ./configurations/machines/${inputs.zeroq.devices.wsl.hostname}.nix flakeContext; # wsl config
       };
       nixosModules = {
