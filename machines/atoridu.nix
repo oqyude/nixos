@@ -261,6 +261,17 @@ let
           pciutils
           smartmontools
           usbutils
+
+          # Windows virtualisation
+          spice
+          #spice-gtk
+          #spice-protocol
+          virt-manager
+          virt-viewer
+          virtiofsd
+          win-spice
+          virtio-win
+          #looking-glass-client # pci-passthrough
         ];
         sessionVariables = {
           WINEPREFIX = "${zeroq.dirs.user-home}/${zeroq.dirs.state-folder}/wine"; # ${zeroq.dirs.state-folder}
@@ -393,15 +404,6 @@ let
           pulse.enable = true;
           jack.enable = true;
           extraConfig.pipewire = {
-            #             "99-default.conf" = {
-            #               "default.clock.rate" = 96000;
-            #               "default.clock.allowed-rates" = [
-            #                 44100
-            #                 48000
-            #                 88200
-            #                 96000
-            #               ];
-            #             };
             "99-default.conf" = {
               "context.properties" = {
                 "default.clock.rate" = 96000;
@@ -445,19 +447,12 @@ let
       virtualisation = {
         libvirtd = {
           enable = true;
-          #       extraConfig = ''
-          #         user="${zeroq.devices.admin}"
-          #       '';
           onBoot = "ignore";
           onShutdown = "shutdown";
           qemu = {
             swtpm.enable = true;
             ovmf.enable = true;
             ovmf.packages = [ pkgs.OVMFFull.fd ];
-            #         verbatimConfig = ''
-            #           namespaces = []
-            #           user = "+${builtins.toString config.users.users.${zeroq.devices.admin}.uid}"
-            #         '';
           };
         };
         spiceUSBRedirection.enable = true;
@@ -466,23 +461,8 @@ let
       systemd = {
         network.wait-online.enable = false;
         services = {
-          #           base-start = {
-          #             path = [ "/run/current-system/sw" ]; # Запуск в текущей системе
-          #             script = ''
-          #               treefmt /etc/nixos
-          #             '';
-          #             serviceConfig = {
-          #               Type = "oneshot";
-          #               RemainAfterExit = true;
-          #             };
-          #             wantedBy = [ "multi-user.target" ];
-          #           };
         };
       };
-
-      #       xdg = {
-      #         portal.enable = true;
-      #       };
 
       system.stateVersion = "24.11";
 

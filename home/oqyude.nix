@@ -173,16 +173,6 @@ let
           #edid-decode
           #displaycal
           #argyllcms
-
-          # Windows virtualisation
-          #           spice
-          #           spice-gtk
-          #           spice-protocol
-          virt-manager
-          virt-viewer
-          #           win-spice
-          #           virtio-win
-          #looking-glass-client # pci-passthrough
         ];
         stateVersion = "24.11";
       };

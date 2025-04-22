@@ -12,13 +12,7 @@ rec {
     wsl.hostname = "wsl";
   };
 
-#   user-name = "oqyude";
-#   user-host = "atoridu";
-#
-#   server-name = "otreca";
-#   server-host = "sapphira";
-
-  nixos = "/etc/nixos"; # "/home/${user-name}/zeroq"
+  nixos = "/etc/nixos";
 
   dirs = rec {
     # User
