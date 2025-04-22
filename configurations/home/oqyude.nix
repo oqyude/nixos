@@ -179,7 +179,8 @@ let
         stateVersion = "24.11";
       };
     };
-  nixosModule = { ... }:
+  nixosModule =
+    { ... }:
     {
       home-manager = {
         useGlobalPkgs = true;

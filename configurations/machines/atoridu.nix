@@ -12,7 +12,7 @@ let
     }:
     {
       imports = with inputs; [
-        self.nixosModules.default # default module
+        self.nixosModules.global # global module
 
         # additional
         musnix.nixosModules.musnix # musnix module

@@ -42,20 +42,25 @@
 
     {
       homeConfigurations = {
-        ${inputs.zeroq.devices.admin} = import ./configurations/home/${inputs.zeroq.devices.admin}.nix flakeContext; # main user
-        ${inputs.zeroq.devices.server.username} = import ./configurations/home/${inputs.zeroq.devices.server.username}.nix flakeContext; # server user
+        ${inputs.zeroq.devices.admin} =
+          import ./configurations/home/${inputs.zeroq.devices.admin}.nix flakeContext; # main user
+        ${inputs.zeroq.devices.server.username} =
+          import ./configurations/home/${inputs.zeroq.devices.server.username}.nix flakeContext; # server user
       };
       homeModules = {
         default = import ./modules/home/default.nix flakeContext; # wip
       };
 
       nixosConfigurations = {
-        ${inputs.zeroq.devices.laptop.hostname} = import ./configurations/machines/${inputs.zeroq.devices.laptop.hostname}.nix flakeContext; # laptop config
-        ${inputs.zeroq.devices.server.hostname} = import ./configurations/machines/${inputs.zeroq.devices.server.hostname}.nix flakeContext; # server config
-        ${inputs.zeroq.devices.wsl.hostname} = import ./configurations/machines/${inputs.zeroq.devices.wsl.hostname}.nix flakeContext; # wsl config
+        ${inputs.zeroq.devices.laptop.hostname} =
+          import ./configurations/machines/${inputs.zeroq.devices.laptop.hostname}.nix flakeContext; # laptop config
+        ${inputs.zeroq.devices.server.hostname} =
+          import ./configurations/machines/${inputs.zeroq.devices.server.hostname}.nix flakeContext; # server config
+        ${inputs.zeroq.devices.wsl.hostname} =
+          import ./configurations/machines/${inputs.zeroq.devices.wsl.hostname}.nix flakeContext; # wsl config
       };
       nixosModules = {
-        default = import ./modules/default.nix flakeContext; # global config
+        global = import ./modules/global.nix flakeContext; # global module
         aagl = import ./modules/additional/aagl.nix flakeContext; # an anime game launcher module
       };
 

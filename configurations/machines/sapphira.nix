@@ -9,6 +9,9 @@ let
     }:
     {
       imports = with inputs; [
+        self.nixosModules.global # global module
+
+        # home-manager
         home-manager.nixosModules.home-manager
         self.homeConfigurations.${inputs.zeroq.devices.server.username}.nixosModule
       ];

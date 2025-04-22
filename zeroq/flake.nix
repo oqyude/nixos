@@ -1,5 +1,5 @@
 {
   description = "zeroq structure flake";
 
-  outputs = { self }: (import ./vars.nix) // {};
+  outputs = { self }: (import ./vars.nix) // { };
 }
