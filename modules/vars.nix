@@ -1,18 +1,35 @@
 rec {
-  user-name = "oqyude";
-  server-name = "otreca";
+
+  devices = rec {
+    admin = "oqyude";
+    laptop = rec {
+      hostname = "atoridu";
+    };
+    server = rec {
+      username = "otreca";
+      hostname = "sapphira";
+    };
+    wsl.hostname = "wsl";
+  };
+
+#   user-name = "oqyude";
+#   user-host = "atoridu";
+#
+#   server-name = "otreca";
+#   server-host = "sapphira";
+
   nixos = "/etc/nixos"; # "/home/${user-name}/zeroq"
 
   dirs = rec {
     # User
-    user-home = "/home/${user-name}";
+    user-home = "/home/${devices.admin}";
     user-storage = "${user-home}/Storage";
     therima-drive = "/mnt/therima";
     vetymae-drive = "/mnt/vetymae";
     state-folder = ".userdata";
 
     # Server
-    server-home = "/home/${server-name}/External";
+    server-home = "/home/${devices.server.username}/External";
     storage = "${server-home}/Storage";
     calibre-library = "${server-home}/Books-Library";
     nextcloud-source = "${server-home}/Nextcloud";

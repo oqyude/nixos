@@ -1,12 +1,10 @@
 { inputs, zeroq, ... }@flakeContext:
 let
-  current.host = "sapphira";
   nixosModule =
     {
       config,
       lib,
       pkgs,
-      inputs,
       modulesPath,
       ...
     }:
@@ -14,8 +12,6 @@ let
 
       imports = [
         (modulesPath + "/installer/scan/not-detected.nix")
-        #"${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
-        #./disko/${current.host}.nix
       ];
 
       nix = {
@@ -26,11 +22,6 @@ let
             "flakes"
           ];
         };
-        #nixPath = [
-        #  "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-        #  "nixos-config=/etc/nixos/${current.host}/configuration.nix"
-        #  "/nix/var/nix/profiles/per-user/root/channels"
-        #];
       };
 
       boot = {
@@ -93,7 +84,7 @@ let
       users = {
         defaultUserShell = pkgs.zsh;
         users = {
-          "${zeroq.server-name}" = {
+          "${zeroq.devices.server.username}" = {
             isNormalUser = true;
             description = "Server User";
             openssh.authorizedKeys.keys = [
@@ -111,7 +102,7 @@ let
           #               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg"
           #             ];
           #           };
-          "${zeroq.user-name}" = {
+          "${zeroq.devices.admin}" = {
             isNormalUser = true;
             description = "Admin";
             #             openssh.authorizedKeys.keys = [
@@ -281,7 +272,7 @@ let
               "path" = "/etc/nixos";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${zeroq.user-name}";
+              "valid users" = "${zeroq.devices.admin}";
               "guest ok" = "no";
               "writable" = "yes";
               "create mask" = 644;
@@ -293,7 +284,7 @@ let
               "path" = "/";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${zeroq.user-name}";
+              "valid users" = "${zeroq.devices.admin}";
               "guest ok" = "no";
               "writable" = "yes";
               #"create mask" = 0644;
@@ -301,16 +292,16 @@ let
               "force user" = "root";
               "force group" = "root";
             };
-            "${zeroq.server-name}" = {
+            "${zeroq.devices.server.username}" = {
               "path" = "${zeroq.dirs.server-home}";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${zeroq.user-name}";
+              "valid users" = "${zeroq.devices.admin}";
               "guest ok" = "no";
               "writable" = "yes";
               "create mask" = 700;
               "directory mask" = 700;
-              "force user" = "${zeroq.server-name}";
+              "force user" = "${zeroq.devices.server.username}";
               "force group" = "users";
             };
           };
@@ -318,7 +309,7 @@ let
         calibre-web = {
           enable = true;
           group = "users";
-          user = "${zeroq.server-name}";
+          user = "${zeroq.devices.server.username}";
           options = {
             calibreLibrary = "${zeroq.dirs.calibre-library}";
             enableBookUploading = true;
@@ -333,7 +324,7 @@ let
           allowSFTP = true;
           hostKeys = [
             {
-              path = "/etc/ssh/keys/${zeroq.user-name}";
+              path = "/etc/ssh/keys/${zeroq.devices.admin}";
               type = "ed25519";
             }
           ];
@@ -348,7 +339,7 @@ let
           credentialsFile = "${zeroq.dirs.server-home}/server/transmission/settings.json";
           openRPCPort = true;
           package = pkgs.transmission_4;
-          user = "${zeroq.server-name}";
+          user = "${zeroq.devices.server.username}";
           group = "users";
           settings = {
             download-dir = "${zeroq.dirs.server-home}/Downloads";
@@ -367,7 +358,7 @@ let
           configDir = "${zeroq.dirs.storage}/Syncthing/${current.host}";
           dataDir = "${zeroq.dirs.server-home}";
           group = "users";
-          user = "${zeroq.server-name}";
+          user = "${zeroq.devices.server.username}";
         };
         tailscale.enable = true;
       };
@@ -376,7 +367,7 @@ let
         #     acme = {
         #       acceptTerms = true;
         #       defaults = {
-        #        email = "${current.host}@example.com";
+        #        email = "${zeroq.devices.server.hostname}@example.com";
         #       };
         #       certs = {
         #        "${config.services.nextcloud.hostName}".group = "nextcloud";
@@ -425,9 +416,9 @@ let
             l = "ls -l";
 
             # nixos
-            nir-switch = "sudo nixos-rebuild switch --flake /etc/nixos#${current.host}";
-            nir-boot = "sudo nixos-rebuild boot --flake /etc/nixos#${current.host}";
-            nir-test = "sudo nixos-rebuild test --flake /etc/nixos#${current.host}";
+            nir-switch = "sudo nixos-rebuild switch --flake /etc/nixos#${zeroq.devices.server.hostname}";
+            nir-boot = "sudo nixos-rebuild boot --flake /etc/nixos#${zeroq.devices.server.hostname}";
+            nir-test = "sudo nixos-rebuild test --flake /etc/nixos#${zeroq.devices.server.hostname}";
           };
         };
       };
@@ -450,7 +441,7 @@ let
       };
 
       networking = {
-        hostName = "${current.host}";
+        hostName = "${zeroq.devices.server.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
         useDHCP = lib.mkDefault true;
@@ -462,19 +453,10 @@ let
     };
 in
 inputs.nixpkgs.lib.nixosSystem {
-  modules = [
+  modules = with inputs; [
     nixosModule
-    inputs.home-manager.nixosModules.home-manager
-    inputs.self.homeConfigurations.otreca.nixosModule
-    {
-      home-manager = {
-        useGlobalPkgs = true;
-        useUserPackages = true;
-        extraSpecialArgs = {
-          hostname = current.host;
-        };
-      };
-    }
+    home-manager.nixosModules.home-manager
+    self.homeConfigurations.${zeroq.devices.server.username}.nixosModule
   ];
   system = "x86_64-linux";
 }

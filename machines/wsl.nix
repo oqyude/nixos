@@ -1,12 +1,10 @@
 { inputs, zeroq, ... }@flakeContext:
 let
-  current.host = "wsl";
   nixosModule =
     {
       config,
       lib,
       pkgs,
-      inputs,
       modulesPath,
       ...
     }:
@@ -22,7 +20,7 @@ let
         ];
       };
 
-      networking.hostName = "${current.host}";
+      networking.hostName = "${zeroq.devices.wsl.username}";
 
       users = {
         defaultUserShell = pkgs.zsh;
@@ -54,22 +52,6 @@ let
           ohMyZsh = {
             enable = true;
             theme = "robbyrussell";
-          };
-        };
-      };
-
-      systemd = {
-        services = {
-          base-start = {
-            path = [ "/run/current-system/sw" ]; # Запуск в текущей системе
-            script = ''
-              nixfmt /etc/nixos
-            '';
-            serviceConfig = {
-              Type = "oneshot";
-              RemainAfterExit = true;
-            };
-            wantedBy = [ "multi-user.target" ];
           };
         };
       };

@@ -5,23 +5,12 @@ let
       config,
       lib,
       pkgs,
-      hostname,
       ...
     }:
     {
       xdg = {
         enable = true;
         autostart.enable = true;
-        #         configFile = {
-        #           "ludusavi" = {
-        #             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/ludusavi/cfg";
-        #             target = "ludusavi";
-        #           };
-        #           "nekoray" = {
-        #             source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/Nekoray/${hostname}";
-        #             target = "nekoray";
-        #           };
-        #         };
         userDirs = {
           enable = true;
           createDirectories = false;
@@ -35,26 +24,15 @@ let
           videos = null;
         };
       };
-      #       dconf = {
-      #         settings = {
-      #           "org/virt-manager/virt-manager/connections" = {
-      #             autoconnect = ["qemu:///system"];
-      #             uris = ["qemu:///system"];
-      #           };
-      #         };
-      #       };
       home = {
         file = {
           "ssh" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.storage}/SSH/${hostname}";
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.storage}/SSH/${zeroq.devices.server.hostname}";
             target = ".ssh";
           };
         };
-        preferXdgDirectories = true;
-        username = "${zeroq.server-name}";
-        homeDirectory = "/home/${zeroq.server-name}";
-        #         packages = with pkgs; [
-        #         ];
+        username = "${zeroq.devices.server.username}";
+        homeDirectory = "/home/${zeroq.devices.server.username}";
         stateVersion = "24.11";
       };
 
@@ -62,7 +40,11 @@ let
   nixosModule =
     { ... }:
     {
-      home-manager.users.otreca = homeModule;
+      home-manager = {
+        useGlobalPkgs = true;
+        useUserPackages = true;
+        users.${zeroq.devices.server.username} = homeModule;
+      };
     };
 in
 (

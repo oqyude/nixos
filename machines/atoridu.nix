@@ -4,13 +4,11 @@
   ...
 }@flakeContext:
 let
-  current.host = "atoridu";
   nixosModule =
     {
       config,
       lib,
       pkgs,
-      inputs,
       modulesPath,
       ...
     }:
@@ -20,11 +18,6 @@ let
       ];
 
       nix = {
-        #     nixPath = [
-        #       "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-        #       "nixos-config=/etc/nixos/${current.host}/configuration.nix"
-        #       "/nix/var/nix/profiles/per-user/root/channels"
-        #     ];
         settings = {
           auto-optimise-store = true;
           experimental-features = [
@@ -162,7 +155,7 @@ let
       ];
 
       networking = {
-        hostName = "${current.host}";
+        hostName = "${zeroq.devices.laptop.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
         useDHCP = lib.mkDefault true;
@@ -187,7 +180,7 @@ let
       users = {
         defaultUserShell = pkgs.zsh;
         users = {
-          "${zeroq.user-name}" = {
+          "${zeroq.devices.admin}" = {
             isNormalUser = true;
             description = "Jor Oqyude";
             initialPassword = "1234";
@@ -230,6 +223,7 @@ let
         ];
         systemPackages = with pkgs; [
 
+          # Amneziawg. Temp
           linuxKernel.packages.linux_xanmod.amneziawg
           amneziawg-go
           amneziawg-tools
@@ -248,16 +242,15 @@ let
           wineWowPackages.fonts
           dxvk
 
-          # Dev
-          #gnumake
-
-          # Audio
+          # Wine audio
           yabridge
           yabridgectl
+
+          # Audio
           qjackctl
 
           # Tools
-          #mc
+          mc
           nixfmt-tree
           unzip
           rar
@@ -268,16 +261,6 @@ let
           pciutils
           smartmontools
           usbutils
-
-          # Windows virtualisation
-          #           spice
-          #           spice-gtk
-          #           spice-protocol
-          virt-manager
-          virt-viewer
-          #           win-spice
-          #           virtio-win
-          #looking-glass-client # pci-passthrough
         ];
         sessionVariables = {
           WINEPREFIX = "${zeroq.dirs.user-home}/${zeroq.dirs.state-folder}/wine"; # ${zeroq.dirs.state-folder}
@@ -308,7 +291,6 @@ let
           enableBashCompletion = true;
           syntaxHighlighting.enable = true;
           zsh-autoenv.enable = true;
-          #autosuggestions.enable = true;
           histSize = 10000;
           #loginShellInit = "cd /etc/nixos && clear && fastfetch";
           ohMyZsh = {
@@ -321,9 +303,9 @@ let
             l = "ls -l";
 
             # nixos
-            nir-switch = "sudo nixos-rebuild switch --flake ${zeroq.nixos}#${current.host}";
-            nir-boot = "sudo nixos-rebuild boot --flake ${zeroq.nixos}#${current.host}";
-            nir-test = "sudo nixos-rebuild test --flake ${zeroq.nixos}#${current.host}";
+            nir-switch = "sudo nixos-rebuild switch --flake ${zeroq.nixos}#${zeroq.devices.laptop.hostname}";
+            nir-boot = "sudo nixos-rebuild boot --flake ${zeroq.nixos}#${zeroq.devices.laptop.hostname}";
+            nir-test = "sudo nixos-rebuild test --flake ${zeroq.nixos}#${zeroq.devices.laptop.hostname}";
 
             # ssh
             s-1 = "ssh sapphira-1";
@@ -397,10 +379,10 @@ let
         syncthing = {
           enable = true;
           systemService = true;
-          configDir = "${zeroq.dirs.user-storage}/Syncthing/${current.host}";
+          configDir = "${zeroq.dirs.user-storage}/Syncthing/${zeroq.devices.laptop.hostname}";
           dataDir = "${zeroq.dirs.user-home}";
           group = "users";
-          user = "${zeroq.user-name}";
+          user = "${zeroq.devices.admin}";
         };
         tailscale.enable = true;
         pipewire = {
@@ -464,7 +446,7 @@ let
         libvirtd = {
           enable = true;
           #       extraConfig = ''
-          #         user="${zeroq.user-name}"
+          #         user="${zeroq.devices.admin}"
           #       '';
           onBoot = "ignore";
           onShutdown = "shutdown";
@@ -474,7 +456,7 @@ let
             ovmf.packages = [ pkgs.OVMFFull.fd ];
             #         verbatimConfig = ''
             #           namespaces = []
-            #           user = "+${builtins.toString config.users.users.${zeroq.user-name}.uid}"
+            #           user = "+${builtins.toString config.users.users.${zeroq.devices.admin}.uid}"
             #         '';
           };
         };
@@ -516,16 +498,6 @@ inputs.nixpkgs.lib.nixosSystem {
     # home-manager
     home-manager.nixosModules.home-manager # home-manager module
     self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
-    {
-      home-manager = {
-        useGlobalPkgs = true;
-        useUserPackages = true;
-        extraSpecialArgs = {
-          hostname = current.host;
-        };
-      };
-    }
-
   ];
   system = "x86_64-linux";
 }

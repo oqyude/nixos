@@ -5,7 +5,6 @@ let
       config,
       lib,
       pkgs,
-      hostname,
       ...
     }:
     {
@@ -18,7 +17,7 @@ let
             target = "ludusavi";
           };
           "nekoray" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/Nekoray/${hostname}";
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/Nekoray/${zeroq.devices.admin}";
             target = "nekoray";
           };
           "solaar" = {
@@ -33,12 +32,12 @@ let
         userDirs = {
           enable = true;
           createDirectories = true;
-          desktop = "${config.home.homeDirectory}/Misc/desktops/${hostname}";
+          desktop = "${config.home.homeDirectory}/Misc/Desktops/${zeroq.devices.admin}";
           documents = "${config.home.homeDirectory}/Documents";
           download = "${config.home.homeDirectory}/Downloads";
           music = "${config.home.homeDirectory}/Music";
           pictures = "${config.home.homeDirectory}/Pictures";
-          publicShare = "${config.home.homeDirectory}/Misc/public";
+          publicShare = "${config.home.homeDirectory}/Misc/Public";
           templates = null;
           videos = "${config.home.homeDirectory}/Pictures/Videos";
           extraConfig = {
@@ -91,7 +90,7 @@ let
       home = {
         file = {
           "ssh" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/SSH/${hostname}";
+            source = config.lib.file.mkOutOfStoreSymlink "${zeroq.dirs.user-storage}/SSH/${zeroq.devices.admin}";
             target = ".ssh";
           };
 #           "genshin impact" = {
@@ -128,8 +127,8 @@ let
           };
         };
         #preferXdgDirectories = true;
-        username = "${zeroq.user-name}";
-        homeDirectory = "/home/${zeroq.user-name}";
+        username = "${zeroq.devices.admin}";
+        homeDirectory = "/home/${zeroq.devices.admin}";
         packages = with pkgs; [
           #           gnomeExtensions.appindicator
           #           gnomeExtensions.dash-to-panel
@@ -139,7 +138,7 @@ let
           #           gnome-tweaks
           #           dconf-editor
           #           dconf2nix
-
+          # Base
           whitesur-gtk-theme
           whitesur-icon-theme
           whitesur-kde
@@ -166,13 +165,23 @@ let
           itch
           gamehub
           lollypop
+          staging.brave
           #quodlibet
           #audacious
 
           #edid-decode
           #displaycal
           #argyllcms
-          staging.brave
+
+          # Windows virtualisation
+          #           spice
+          #           spice-gtk
+          #           spice-protocol
+          virt-manager
+          virt-viewer
+          #           win-spice
+          #           virtio-win
+          #looking-glass-client # pci-passthrough
         ];
         stateVersion = "24.11";
       };
@@ -180,7 +189,11 @@ let
   nixosModule =
     { ... }:
     {
-      home-manager.users.oqyude = homeModule;
+      home-manager = {
+        useGlobalPkgs = true;
+        useUserPackages = true;
+        users.${zeroq.devices.admin} = homeModule;
+      };
     };
 in
 (

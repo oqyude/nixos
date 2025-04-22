@@ -41,8 +41,8 @@
 
     {
       homeConfigurations = {
-        "${zeroq.user-name}" = import ./home/${zeroq.user-name}.nix flakeContext;
-        "${zeroq.server-name}" = import ./home/${zeroq.server-name}.nix flakeContext;
+        "${zeroq.devices.admin}" = import ./home/${zeroq.devices.admin}.nix flakeContext;
+        "${zeroq.devices.server.username}" = import ./home/${zeroq.devices.server.username}.nix flakeContext;
         extraSpecialArgs = {
           inherit (flakeContext) inputs;
         };
@@ -52,9 +52,9 @@
       #};
 
       nixosConfigurations = {
-        atoridu = import ./machines/atoridu.nix flakeContext;
-        sapphira = import ./machines/sapphira.nix flakeContext;
-        wsl = import ./machines/wsl.nix flakeContext;
+        ${zeroq.devices.laptop.hostname} = import ./machines/${zeroq.devices.laptop.hostname}.nix flakeContext;
+        ${zeroq.devices.server.hostname} = import ./machines/${zeroq.devices.server.hostname}.nix flakeContext;
+        ${zeroq.devices.wsl.hostname} = import ./machines/${zeroq.devices.wsl.hostname}.nix flakeContext;
       };
       nixosModules = {
         zeroq = import ./modules/vars.nix;
