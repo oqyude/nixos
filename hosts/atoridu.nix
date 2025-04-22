@@ -532,7 +532,7 @@ inputs.nixpkgs.lib.nixosSystem {
       nix.settings = inputs.aagl.nixConfig; # Set up Cachix
       programs = {
         anime-game-launcher.enable = true;
-        anime-games-launcher.enable = true;
+        #anime-games-launcher.enable = true;
         #honkers-railway-launcher.enable = true;
         #honkers-launcher.enable = true;
         #wavey-launcher.enable = true;
