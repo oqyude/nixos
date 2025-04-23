@@ -16,6 +16,7 @@ let
 
         self.nixosModules.audio.musnix # musnix module
         self.nixosModules.additional.aagl # aagl module
+        self.nixosModules.special.${inputs.zeroq.devices.laptop.hostname} # aagl module
 
         home-manager.nixosModules.home-manager # home-manager module
         self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
