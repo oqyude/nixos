@@ -15,7 +15,7 @@
       url = "flake:home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    disko = {
+    disko = { # wip
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -41,16 +41,6 @@
     in
 
     {
-      homeConfigurations = {
-        ${inputs.zeroq.devices.admin} =
-          import ./configurations/home/${inputs.zeroq.devices.admin}.nix flakeContext; # main user
-        ${inputs.zeroq.devices.server.username} =
-          import ./configurations/home/${inputs.zeroq.devices.server.username}.nix flakeContext; # server user
-      };
-      homeModules = {
-        default = import ./modules/home/default.nix flakeContext; # wip
-      };
-
       nixosConfigurations = {
         ${inputs.zeroq.devices.laptop.hostname} =
           import ./configurations/machines/${inputs.zeroq.devices.laptop.hostname}.nix flakeContext; # laptop config
@@ -61,8 +51,18 @@
       };
       nixosModules = {
         global = import ./modules/global.nix flakeContext; # global module
-        aagl = import ./modules/additional/aagl.nix flakeContext; # an anime game launcher module
-        musnix = import ./modules/additional/musnix.nix flakeContext; # musnix module
+        additional.aagl = import ./modules/plugins/aagl.nix flakeContext; # an anime game launcher module
+        audio.musnix = import ./modules/plugins/musnix.nix flakeContext; # musnix module
+      };
+
+      homeConfigurations = {
+        ${inputs.zeroq.devices.admin} =
+          import ./configurations/home/${inputs.zeroq.devices.admin}.nix flakeContext; # main user
+        ${inputs.zeroq.devices.server.username} =
+          import ./configurations/home/${inputs.zeroq.devices.server.username}.nix flakeContext; # server user
+      };
+      homeModules = {
+        default = import ./modules/home/default.nix flakeContext; # wip
       };
 
     };

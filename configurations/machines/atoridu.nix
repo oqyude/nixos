@@ -15,8 +15,8 @@ let
         self.nixosModules.global # global module
 
         # additional
-        self.nixosModules.musnix # musnix module
-        self.nixosModules.aagl # aagl module
+        self.nixosModules.audio.musnix # musnix module
+        self.nixosModules.additional.aagl # aagl module
 
         # home-manager
         home-manager.nixosModules.home-manager # home-manager module
