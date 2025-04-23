@@ -62,6 +62,7 @@
       nixosModules = {
         global = import ./modules/global.nix flakeContext; # global module
         aagl = import ./modules/additional/aagl.nix flakeContext; # an anime game launcher module
+        musnix = import ./modules/additional/musnix.nix flakeContext; # musnix module
       };
 
     };

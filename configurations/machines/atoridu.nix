@@ -15,7 +15,7 @@ let
         self.nixosModules.global # global module
 
         # additional
-        musnix.nixosModules.musnix # musnix module
+        self.nixosModules.musnix # musnix module
         self.nixosModules.aagl # aagl module
 
         # home-manager
@@ -23,7 +23,6 @@ let
         self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
       ];
 
-      musnix.enable = true;
 
       boot = {
         #hardwareScan = true;
