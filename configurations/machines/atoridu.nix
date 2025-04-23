@@ -72,7 +72,7 @@ let
           dynamicBoost.enable = true;
           nvidiaSettings = true;
           powerManagement = {
-            enable = true;
+            enable = false;
             finegrained = false; # maybe comment this out idk what it does
           };
           package = config.boot.kernelPackages.nvidiaPackages.stable;
