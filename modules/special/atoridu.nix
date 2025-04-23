@@ -3,11 +3,14 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }:
 {
   imports = [
-    ./hardware/fingerprint.nix
+    ../hardware/fingerprint.nix
+
+
   ];
+    #../plugins/musnix.nix
+    #../plugins/aagl.nix
 }
