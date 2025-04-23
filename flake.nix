@@ -52,11 +52,13 @@
       };
       nixosModules = {
         global = import ./modules/global.nix flakeContext; # global module
-        additional.aagl = import ./modules/plugins/aagl.nix flakeContext; # an anime game launcher module
-        audio.musnix = import ./modules/plugins/musnix.nix flakeContext; # musnix module
         special = {
           ${inputs.zeroq.devices.laptop.hostname} =
             import ./modules/special/${inputs.zeroq.devices.laptop.hostname}.nix flakeContext;
+        };
+        additional = {
+          aagl = import ./modules/additional/aagl.nix flakeContext; # an anime game launcher module
+          musnix = import ./modules/additional/musnix.nix flakeContext; # musnix module
         };
       };
 
