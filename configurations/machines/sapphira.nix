@@ -11,9 +11,8 @@ let
       imports = with inputs; [
         self.nixosModules.global # global module
 
-        # home-manager
-        home-manager.nixosModules.home-manager
-        self.homeConfigurations.${inputs.zeroq.devices.server.username}.nixosModule
+        home-manager.nixosModules.home-manager # home-manager module
+        self.homeConfigurations.${inputs.zeroq.devices.server.username}.nixosModule # home-manager configuration module
       ];
 
       boot = {
