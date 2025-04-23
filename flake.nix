@@ -20,7 +20,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # additional
+    # other
     aagl = {
       url = "github:ezKEa/aagl-gtk-on-nix";
       inputs = {
