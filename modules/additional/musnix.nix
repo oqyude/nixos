@@ -8,5 +8,11 @@
 {
   imports = [ inputs.musnix.nixosModules.musnix ];
 
-  musnix.enable = true;
+  musnix = {
+    enable = true;
+    #ffado.enable = true;
+    rtcqs.enable = true;
+    kernel.realtime = true;
+    kernel.packages = pkgs.linuxPackages_latest_rt;
+  };
 }
