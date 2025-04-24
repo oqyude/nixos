@@ -95,7 +95,14 @@
       };
     };
     lazygit.enable = true;
-    nh.enable = true;
+    nh  = {
+      enable = true;
+      flake = "/etc/nixos";
+      clean = {
+        enable = true;
+        extraArgs = "--keep 3 --keep-since 2d";
+      };
+    };
   };
 
   security = {

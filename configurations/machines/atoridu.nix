@@ -11,6 +11,8 @@ let
       ...
     }:
     {
+      system.nixos.label = "stock";
+
       imports = with inputs; [
         self.nixosModules.global # global module
         self.nixosModules.special.${inputs.zeroq.devices.laptop.hostname} # special module
@@ -21,7 +23,7 @@ let
 
       boot = {
         #hardwareScan = true;
-        #kernelPackages = pkgs.linuxPackages_xanmod_stable;
+        kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable; #lib.mkForce
         initrd = {
           availableKernelModules = [
             "nvme"
@@ -46,7 +48,7 @@ let
           #("vfio-pci.ids=" + builtins.concatStringsSep "," inputs.zeroq.platform.vfioIds)
         ];
         #extraModprobeConfig = "options vfio-pci ids=${builtins.concatStringsSep "," inputs.zeroq.platform.vfioIds}";
-        extraModulePackages = [ config.boot.kernelPackages.amneziawg ];
+        #extraModulePackages = [  ]; #config.boot.kernelPackages.amneziawg
         loader = {
           systemd-boot.enable = true;
           efi.canTouchEfiVariables = true;
@@ -68,7 +70,8 @@ let
         bluetooth.enable = true;
         #alsa.enable = false;
         nvidia = {
-          open = true;
+          #enabled = lib.mkDefault true;
+          open = false;
           dynamicBoost.enable = true;
           nvidiaSettings = true;
           powerManagement = {
@@ -180,9 +183,9 @@ let
         systemPackages = with pkgs; [
 
           # Amneziawg. Temp
-          linuxKernel.packages.linux_xanmod.amneziawg
-          amneziawg-go
-          amneziawg-tools
+          #linuxKernel.packages.linux_xanmod.amneziawg
+          #amneziawg-go
+          #amneziawg-tools
 
           # Net
           curl
@@ -237,6 +240,7 @@ let
       programs = {
         xwayland.enable = true;
         dconf.enable = true;
+        adb.enable = true;
         gamemode.enable = true;
         tuxclocker = {
           enable = false;
@@ -319,6 +323,7 @@ let
                 "default.clock.quantum" = 256;
                 "default.clock.min-quantum" = 64;
                 "default.clock.max-quantum" = 256;
+                "default.clock.force-quantum" = true;
               };
             };
           };
