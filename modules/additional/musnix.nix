@@ -13,24 +13,19 @@
       inheritParentConfig = true;
       configuration = {
         #system.nixos.label = "musnix";
-        boot.blacklistedKernelModules = [
-          "nvidia"
-          "nouveau"
-          "nvidia_drm"
-          "nvidia_modeset"
-        ];
+        #         boot.blacklistedKernelModules = [
+        #           "nvidia"
+        #           "nouveau"
+        #           "nvidia_drm"
+        #           "nvidia_modeset"
+        #         ];
         musnix = {
           enable = true;
           #ffado.enable = true;
           rtcqs.enable = true;
           kernel.realtime = true;
-          kernel.packages = lib.mkForce pkgs.linuxPackages_latest_rt;
+          kernel.packages = /*lib.mkForce */pkgs.linuxPackages_latest_rt;
         };
-        #             hardware = {
-        #               nvidia = {
-        #                 enabled = lib.mkForce false;
-        #               };
-        #             };
       };
     };
   };
