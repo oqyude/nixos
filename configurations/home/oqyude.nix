@@ -74,12 +74,20 @@ let
           };
         };
       };
-      #       services = {
-      #         kdeconnect = {
-      #           enable = true;
-      #           indicator = true;
-      #         };
-      #       };
+      services = {
+        kdeconnect = {
+          enable = true;
+          indicator = true;
+        };
+        easyeffects.enable = true;
+      };
+
+      programs = {
+        fastfetch.enable = true;
+        btop.enable = true;
+        mangohud.enable = true;
+        zed-editor.enable = true;
+      };
 
       qt = {
         enable = true;
@@ -144,13 +152,9 @@ let
           whitesur-gtk-theme
           whitesur-icon-theme
           whitesur-kde
-          btop
-          mangohud
-          fastfetch
           kdePackages.filelight
           localsend
           ludusavi
-          easyeffects
           pdfarranger
           libreoffice-qt6
           vlc
@@ -159,7 +163,6 @@ let
           nekoray
           discord
           _64gram
-          keepassxc
           obsidian
           reaper
           transmission_4-qt
