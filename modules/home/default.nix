@@ -5,6 +5,6 @@
 }:
 {
   imports = [
-    ../apps/keepassxc.nix
+    ./apps/keepassxc.nix
   ];
 }
