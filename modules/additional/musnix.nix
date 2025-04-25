@@ -24,7 +24,7 @@
           #ffado.enable = true;
           rtcqs.enable = true;
           kernel.realtime = true;
-          kernel.packages = /*lib.mkForce */pkgs.linuxPackages_latest_rt;
+          kernel.packages = pkgs.linuxPackages_rt; # pkgs.linuxPackages_latest_rt;
         };
       };
     };

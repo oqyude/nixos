@@ -15,6 +15,9 @@
 
   nix = {
     settings = {
+      substituters = {
+        "https://nixos-cache-proxy.cofob.dev"
+      };
       auto-optimise-store = true;
       experimental-features = [
         "nix-command"
@@ -73,9 +76,9 @@
         l = "ls -l";
 
         # nixos
-        nir-switch = "sudo nixos-rebuild switch --flake ${inputs.zeroq.nixos}#${config.networking.hostName}";
-        nir-boot = "sudo nixos-rebuild boot --flake ${inputs.zeroq.nixos}#${config.networking.hostName}";
-        nir-test = "sudo nixos-rebuild test --flake ${inputs.zeroq.nixos}#${config.networking.hostName}";
+        #nir-switch = "sudo nixos-rebuild switch --flake ${inputs.zeroq.nixos}#${config.networking.hostName}";
+        #nir-boot = "sudo nixos-rebuild boot --flake ${inputs.zeroq.nixos}#${config.networking.hostName}";
+        #nir-test = "sudo nixos-rebuild test --flake ${inputs.zeroq.nixos}#${config.networking.hostName}";
 
         # ssh
         s-1 = "ssh sapphira-1";
@@ -97,7 +100,7 @@
     lazygit.enable = true;
     nh = {
       enable = true;
-      flake = "/etc/nixos";
+      flake = "${inputs.zeroq.nixos}";
       clean = {
         enable = true;
         extraArgs = "--keep 3 --keep-since 2d";

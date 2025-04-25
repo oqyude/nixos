@@ -162,15 +162,17 @@ let
           keepassxc
           obsidian
           reaper
-          lutris
           transmission_4-qt
-          itch
-          gamehub
           lollypop
-          prismlauncher
+
           unstable.brave
-          #quodlibet
-          #audacious
+
+
+          prismlauncher
+          #gamehub
+          #itch
+          heroic
+          lutris
 
           #edid-decode
           #displaycal

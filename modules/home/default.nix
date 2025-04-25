@@ -1,10 +1,10 @@
 { inputs, ... }@flakeContext:
 {
   config,
-  lib,
-  pkgs,
   ...
 }:
 {
-
+  imports = [
+    ../apps/keepassxc.nix
+  ];
 }
