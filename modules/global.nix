@@ -16,7 +16,7 @@
   nix = {
     settings = {
       substituters = {
-        "https://nixos-cache-proxy.cofob.dev"
+        "https://nixos-cache-proxy.cofob.dev";
       };
       auto-optimise-store = true;
       experimental-features = [
