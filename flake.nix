@@ -6,10 +6,16 @@
     zeroq.url = "path:./zeroq"; # my flake of variables
 
     nixpkgs.url = "github:NixOS/nixpkgs/f6db44a8daa59c40ae41ba6e5823ec77fe0d2124";
+    #nixpkgs.url = "github:NixOS/nixpkgs/f6db44a8daa59c40ae41ba6e5823ec77fe0d2124";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     flake-compat.url = "github:edolstra/flake-compat";
     flake-utils.url = "github:numtide/flake-utils"; # wip
+
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     home-manager = {
       url = "flake:home-manager";
