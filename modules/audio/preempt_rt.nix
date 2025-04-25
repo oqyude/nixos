@@ -1,8 +1,13 @@
-{ config, lib, pkgs, ... }:
-let 
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
   rtnix = config.rtnix;
 
-  in
+in
 {
   options.rtnix = {
     kernel.realtime.enable = lib.mkOption {
@@ -60,22 +65,45 @@ let
       type = lib.types.bool;
       default = false;
     };
-  }; 
+  };
 
-  config =  {
-    users.groups.realtime = {};
+  config = {
+    users.groups.realtime = { };
 
     security.pam.loginLimits = [
-      { domain = "@realtime"; item = "memlock"; type = "-"   ; value = "unlimited"; }
-      { domain = "@realtime"; item = "rtprio" ; type = "-"   ; value = "99"       ; }
-      { domain = "@realtime"; item = "nofile" ; type = "soft"; value = "99999"    ; }
-      { domain = "@realtime"; item = "nofile" ; type = "hard"; value = "99999"    ; }
+      {
+        domain = "@realtime";
+        item = "memlock";
+        type = "-";
+        value = "unlimited";
+      }
+      {
+        domain = "@realtime";
+        item = "rtprio";
+        type = "-";
+        value = "99";
+      }
+      {
+        domain = "@realtime";
+        item = "nofile";
+        type = "soft";
+        value = "99999";
+      }
+      {
+        domain = "@realtime";
+        item = "nofile";
+        type = "hard";
+        value = "99999";
+      }
     ];
 
     boot.kernelPackages = lib.mkIf rtnix.kernel.realtime.enable pkgs.linuxPackages-rt_latest;
 
     boot.kernelParams = lib.mkMerge [
-      (lib.mkIf rtnix.disableCStates [ "processor.max_cstate=0" "idle=poll" ]) 
+      (lib.mkIf rtnix.disableCStates [
+        "processor.max_cstate=0"
+        "idle=poll"
+      ])
       (lib.mkIf rtnix.intelPStatePassive [ "intel_pstate=passive" ])
     ];
 
@@ -101,13 +129,23 @@ let
       # after = [ "-.mount" ];
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = lib.imap0 (i: x: "${pkgs.bash}/bin/bash -c 'for pid in $(${pkgs.procps}/bin/pgrep \'" + x + "\'); do echo Tuning: \'" + x + "\' \"with pid(s): $pid\"...; ${pkgs.util-linux}/bin/chrt --pid -f " + (builtins.toString (rtnix.tuningMaxPriority - i)) + " $pid; done'") rtnix.tuningProcesses;
+        ExecStart = lib.imap0 (
+          i: x:
+          "${pkgs.bash}/bin/bash -c 'for pid in $(${pkgs.procps}/bin/pgrep \'"
+          + x
+          + "\'); do echo Tuning: \'"
+          + x
+          + "\' \"with pid(s): $pid\"...; ${pkgs.util-linux}/bin/chrt --pid -f "
+          + (builtins.toString (rtnix.tuningMaxPriority - i))
+          + " $pid; done'"
+        ) rtnix.tuningProcesses;
         User = "root";
       };
     };
 
-    environment.systemPackages = with pkgs; [ 
-      rt-tests config.boot.kernelPackages.perf
+    environment.systemPackages = with pkgs; [
+      rt-tests
+      config.boot.kernelPackages.perf
     ];
 
     systemd.services.disableBoost = lib.mkIf rtnix.disableBoost {
@@ -120,7 +158,7 @@ let
         User = "root";
       };
     };
-       
+
     systemd.services.setCpuDmaLatency = lib.mkIf rtnix.setCpuDmaLatency {
       enable = true;
       description = "Set CPU DMA latency";
@@ -130,11 +168,13 @@ let
         User = "root";
       };
     };
- 
-    systemd.services.powerManagementTuning = lib.mkIf rtnix.powerManagementTuning
-      (let powerTuning = pkgs.writeShellScript "powerTuning.sh" ''
-        ${pkgs.findutils}/bin/find /sys/devices/ -maxdepth 5 -path '*/pci*/power/control' -exec ${pkgs.bash}/bin/bash -c "echo tuning {}; echo on > {};" \;
-      ''; in
+
+    systemd.services.powerManagementTuning = lib.mkIf rtnix.powerManagementTuning (
+      let
+        powerTuning = pkgs.writeShellScript "powerTuning.sh" ''
+          ${pkgs.findutils}/bin/find /sys/devices/ -maxdepth 5 -path '*/pci*/power/control' -exec ${pkgs.bash}/bin/bash -c "echo tuning {}; echo on > {};" \;
+        '';
+      in
       {
         enable = true;
         description = "Power management tuning in sysfs";
@@ -144,6 +184,7 @@ let
           ExecStart = "${powerTuning}";
           User = "root";
         };
-      });
+      }
+    );
   };
 }

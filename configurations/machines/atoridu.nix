@@ -23,7 +23,7 @@ let
 
       boot = {
         #hardwareScan = true;
-        kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable; #lib.mkForce
+        kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable; # lib.mkForce
         initrd = {
           availableKernelModules = [
             "nvme"
