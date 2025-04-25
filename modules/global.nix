@@ -15,9 +15,9 @@
 
   nix = {
     settings = {
-      substituters = {
-        "https://nixos-cache-proxy.cofob.dev";
-      };
+      substituters = [
+        "https://nixos-cache-proxy.cofob.dev"
+      ];
       auto-optimise-store = true;
       experimental-features = [
         "nix-command"
