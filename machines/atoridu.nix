@@ -14,7 +14,7 @@ let
       system.nixos.label = "stock";
 
       imports = with inputs; [
-        self.nixosModules.global # global module
+        self.nixosModules.default # default module
         self.nixosModules.special.${inputs.zeroq.devices.laptop.hostname} # special module
 
         home-manager.nixosModules.home-manager # home-manager module
