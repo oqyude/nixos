@@ -170,11 +170,9 @@ let
 
           unstable.brave
 
-
           prismlauncher
           #gamehub
           #itch
-          heroic
           lutris
 
           #edid-decode

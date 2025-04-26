@@ -304,7 +304,7 @@ let
         };
         tailscale.enable = true;
         pipewire = {
-          enable = true;
+          enable = lib.mkDefault true;
           systemWide = true;
           alsa.enable = true;
           alsa.support32Bit = true;

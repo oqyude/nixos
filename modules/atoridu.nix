@@ -5,9 +5,10 @@
 }:
 {
   imports = [
-    ./hardware/fingerprint.nix
+    #./hardware/fingerprint.nix
 
-    inputs.self.nixosModules.additional.musnix # musnix module
-    inputs.self.nixosModules.additional.aagl # aagl module
+    inputs.self.nixosModules.hardware.fingerprint # fingerprint module
+    #inputs.self.nixosModules.additional.musnix # musnix module
+    #inputs.self.nixosModules.additional.aagl # aagl module
   ];
 }

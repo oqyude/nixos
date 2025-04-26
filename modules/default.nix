@@ -34,6 +34,7 @@
         description = "Jor Oqyude";
         initialPassword = "1234";
         extraGroups = [
+          "jackaudio"
           "audio"
           "disk"
           "gamemode"

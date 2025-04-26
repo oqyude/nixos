@@ -12,19 +12,32 @@
     "rt_kernel" = {
       inheritParentConfig = true;
       configuration = {
-        #system.nixos.label = "musnix";
-        #         boot.blacklistedKernelModules = [
-        #           "nvidia"
-        #           "nouveau"
-        #           "nvidia_drm"
-        #           "nvidia_modeset"
-        #         ];
+
+        boot.kernelModules = [ "snd-seq" "snd-rawmidi" ];
+
+        services = {
+          pipewire.enable = lib.mkForce false;
+          jack = {
+            jackd.enable = lib.mkForce true;
+            alsa.enable = true;
+            loopback.enable = true;
+          };
+        };
+        environment.systemPackages = with pkgs; [
+          pavucontrol
+          libjack2
+          jack2
+          qjackctl
+          jack_capture
+          libjack2
+          jack2
+        ];
         musnix = {
           enable = true;
           #ffado.enable = true;
           rtcqs.enable = true;
           kernel.realtime = true;
-          kernel.packages = pkgs.linuxPackages_rt; # pkgs.linuxPackages_latest_rt;
+          kernel.packages = pkgs.linuxPackages_latest_rt;
         };
       };
     };

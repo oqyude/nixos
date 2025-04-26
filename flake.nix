@@ -7,7 +7,9 @@
 
     nixpkgs.url = "github:NixOS/nixpkgs/f6db44a8daa59c40ae41ba6e5823ec77fe0d2124";
     #nixpkgs.url = "github:NixOS/nixpkgs/f6db44a8daa59c40ae41ba6e5823ec77fe0d2124";
+
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
 
     flake-compat.url = "github:edolstra/flake-compat";
     flake-utils.url = "github:numtide/flake-utils"; # wip
@@ -57,7 +59,8 @@
           import ./machines/${inputs.zeroq.devices.wsl.hostname}.nix flakeContext; # wsl config
       };
       nixosModules = {
-        default = import ./modules/default.nix flakeContext; # global module
+        default = import ./modules/default.nix flakeContext; # default module
+        hardware.fingerprint = import ./modules/hardware/fingerprint.nix flakeContext; # fingerprint module
         special = {
           ${inputs.zeroq.devices.laptop.hostname} =
             import ./modules/${inputs.zeroq.devices.laptop.hostname}.nix flakeContext;
@@ -69,8 +72,7 @@
       };
 
       homeConfigurations = {
-        ${inputs.zeroq.devices.admin} =
-          import ./home/users/${inputs.zeroq.devices.admin}.nix flakeContext; # main user
+        ${inputs.zeroq.devices.admin} = import ./home/users/${inputs.zeroq.devices.admin}.nix flakeContext; # main user
         ${inputs.zeroq.devices.server.username} =
           import ./home/users/${inputs.zeroq.devices.server.username}.nix flakeContext; # server user
       };

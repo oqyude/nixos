@@ -1,3 +1,7 @@
+{ inputs, ... }@flakeContext:
+let
+  pkgs-stable = import inputs.nixpkgs-stable { system = "x86_64-linux"; };
+in
 {
   config,
   lib,
@@ -5,41 +9,50 @@
   ...
 }:
 {
-  # start on boot
-#   systemd.services.fprintd = {
-#     wantedBy = [ "multi-user.target" ];
-#     serviceConfig.Type = "simple";
-#   };
-
   services = {
     fprintd = {
       enable = true;
-      #package = pkgs.libfprint;
+      package = pkgs-stable.fprintd;
       #tod.enable = true;
-      #tod.driver = pkgs.libfprint-2-tod1-goodix-550a;
+      #tod.driver = pkgs-stable.libfprint-2-tod1-vfs0090;
     };
   };
 
+  # start on boot
+  #     systemd.services.fprintd = {
+  #       wantedBy = [ "multi-user.target" ];
+  #       serviceConfig.Type = "simple";
+  #     };
+  #     environment.systemPackages = with pkgs; [
+  #     ];
 
-#   nixpkgs.overlays = [
-#     (final: prev: {
-#       libfprint = prev.libfprint.overrideAttrs (oldAttrs: {
-#         version = "git";
-#         src = final.fetchFromGitHub {
-#           owner = "ericlinagora";
-#           repo = "libfprint-CS9711";
-#           rev = "03ace5b20146eb01c77fb3ea63e1909984d6d377";
-#           sha256 = "sha256-gr3UvFB6D04he/9zawvQIuwfv0B7fEZb6BGiNAbLids=";
-#         };
-#         nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [
-#           final.opencv
-#           final.cmake
-#           final.doctest
-#           final.nss
-#         ];
-#       });
-#     })
-#   ];
+  #     services.fwupd.enable = true;
 
+  #     services.udev = {
+  #       enable = true;
+  #       extraRules = ''
+  #         SUBSYSTEM=="usb", ATTRS{idVendor}=="2541", ATTRS{idProduct}=="0236", MODE="0666", GROUP="plugdev", TAG+="uaccess"
+  #       '';
+  #     };
+
+  #     nixpkgs.overlays = [
+  #       (final: prev: {
+  #         libfprint = prev.libfprint.overrideAttrs (oldAttrs: {
+  #           version = "git";
+  #           src = final.fetchFromGitHub {
+  #             owner = "ericlinagora";
+  #             repo = "libfprint-CS9711";
+  #             rev = "c242a40fcc51aec5b57d877bdf3edfe8cb4883fd";
+  #             sha256 = "sha256-WFq8sNitwhOOS3eO8V35EMs+FA73pbILRP0JoW/UR80=";
+  #           };
+  #           nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [
+  #             final.opencv
+  #             final.cmake
+  #             final.doctest
+  #             #final.nss
+  #           ];
+  #         });
+  #       })
+  #     ];
 
 }
