@@ -86,7 +86,25 @@ let
         fastfetch.enable = true;
         btop.enable = true;
         mangohud.enable = true;
-        zed-editor.enable = true;
+        zed-editor = {
+          enable = true;
+          extensions = [
+            "nix"
+          ];
+          userSettings = {
+            "telemetry" = {
+              "diagnostics" = false;
+              "metrics" = false;
+            };
+            "ui_font_size" = 20;
+            "buffer_font_size" = 26;
+            "theme" = {
+              "mode" = "system";
+              "light" = "Ayu Light";
+              "dark" = "Ayu Dark";
+            };
+          };
+        };
       };
 
       qt = {
