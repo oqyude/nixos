@@ -22,5 +22,5 @@
   #     packages = with pkgs; [
   #       zapret
   #     ];
-  #   };\
+  #   };
 }
