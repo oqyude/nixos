@@ -49,6 +49,18 @@ let
         };
       };
 
+      systemd.services.tune-usb-autosuspend = {
+        description = "Disable USB autosuspend";
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+        };
+        unitConfig.RequiresMountsFor = "/sys";
+        script = ''
+          echo -1 > /sys/module/usbcore/parameters/autosuspend
+        '';
+      };
+
       hardware = {
         logitech = {
           wireless = {

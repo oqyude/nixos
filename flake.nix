@@ -57,6 +57,7 @@
       nixosModules = {
         default = import ./modules/default.nix flakeContext;
         desktop = import ./modules/desktop/default.nix flakeContext;
+        software = import ./modules/software/default.nix flakeContext;
         hardware = {
           audio = import ./modules/hardware/audio.nix flakeContext;
           fingerprint = import ./modules/hardware/fingerprint.nix flakeContext;
