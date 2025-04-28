@@ -1,4 +1,5 @@
 rec {
+  bash-dir = toString ./.;
 
   devices = rec {
     admin = "oqyude";

@@ -18,7 +18,7 @@
       Type = "simple";
       Restart = "on-failure";
       User = "root";
-      WorkingDirectory = ${inputs.zapret.bash-dir}; # "/etc/nixos/modules/software/zapret"
+      WorkingDirectory = ${inputs.zeroq.bash-dir}; # "/etc/nixos/modules/software/zapret"
       ExecStart = "/run/current-system/sw/bin/bash ./main_script.sh -nointeractive";
       ExecStop = "/run/current-system/sw/bin/bash ./stop_and_clean_nft.sh";
     };
