@@ -77,7 +77,7 @@ let
       services = {
         kdeconnect = {
           enable = true;
-          indicator = true;
+          #indicator = true;
         };
         easyeffects.enable = true;
       };

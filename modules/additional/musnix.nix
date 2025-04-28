@@ -13,7 +13,10 @@
       inheritParentConfig = true;
       configuration = {
 
-        boot.kernelModules = [ "snd-seq" "snd-rawmidi" ];
+        boot.kernelModules = [
+          "snd-seq"
+          "snd-rawmidi"
+        ];
 
         services = {
           pipewire.enable = lib.mkForce false;
