@@ -57,9 +57,7 @@
       };
       nixosModules = {
         default = import ./modules/default.nix flakeContext;
-        desktop = {
-          default = import ./modules/destkop/default.nix flakeContext;
-        };
+        desktop = import ./modules/destkop/default.nix flakeContext;
         hardware = {
           audio = import ./modules/hardware/audio.nix flakeContext;
           fingerprint = import ./modules/hardware/fingerprint.nix flakeContext;
