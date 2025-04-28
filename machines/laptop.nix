@@ -14,8 +14,11 @@ let
       system.nixos.label = "stock";
 
       imports = with inputs; [
-        self.nixosModules.default # default module
-        self.nixosModules.special.${inputs.zeroq.devices.laptop.hostname} # special module
+        self.nixosModules.default
+        self.nixosModules.hardware.fingerprint
+        #self.nixosModules.hardware.virtualisation
+        #self.nixosModules.additional.musnix
+        #self.nixosModules.additional.aagl
 
         home-manager.nixosModules.home-manager # home-manager module
         self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
@@ -34,21 +37,6 @@ let
             "sd_mod"
           ];
         };
-        kernelModules = [
-          "kvm-amd"
-          "vfio"
-          "vfio-pci"
-          "vfio_iommu_type1"
-          "vfio_virqfd"
-        ];
-        kernelParams = [
-          "amd_iommu=on"
-          "iommu=pt"
-          "kvm.ignore_msrs=1"
-          #("vfio-pci.ids=" + builtins.concatStringsSep "," inputs.zeroq.platform.vfioIds)
-        ];
-        #extraModprobeConfig = "options vfio-pci ids=${builtins.concatStringsSep "," inputs.zeroq.platform.vfioIds}";
-        #extraModulePackages = [  ]; #config.boot.kernelPackages.amneziawg
         loader = {
           systemd-boot.enable = true;
           efi.canTouchEfiVariables = true;
@@ -181,12 +169,6 @@ let
           gnome-tour
         ];
         systemPackages = with pkgs; [
-
-          # Amneziawg. Temp
-          #linuxKernel.packages.linux_xanmod.amneziawg
-          #amneziawg-go
-          #amneziawg-tools
-
           # Net
           curl
           ipset
@@ -232,7 +214,7 @@ let
           #looking-glass-client # pci-passthrough
         ];
         sessionVariables = {
-          WINEPREFIX = "${inputs.zeroq.dirs.user-home}/${inputs.zeroq.dirs.state-folder}/wine"; # ${inputs.zeroq.dirs.state-folder}
+          WINEPREFIX = "${inputs.zeroq.dirs.user-home}/.local/share/wine/stock";
           WINEARCH = "win64";
         };
       };
@@ -331,26 +313,11 @@ let
         thermald.enable = true;
         earlyoom.enable = true;
         preload.enable = true;
-        spice-vdagentd.enable = true;
         resolved.enable = true;
       };
 
       security = {
         rtkit.enable = true;
-      };
-
-      virtualisation = {
-        libvirtd = {
-          enable = true;
-          onBoot = "ignore";
-          onShutdown = "shutdown";
-          qemu = {
-            swtpm.enable = true;
-            ovmf.enable = true;
-            ovmf.packages = [ pkgs.OVMFFull.fd ];
-          };
-        };
-        spiceUSBRedirection.enable = true;
       };
 
       system.stateVersion = "24.11";

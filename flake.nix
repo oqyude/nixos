@@ -52,22 +52,21 @@
     {
       nixosConfigurations = {
         ${inputs.zeroq.devices.laptop.hostname} =
-          import ./machines/${inputs.zeroq.devices.laptop.hostname}.nix flakeContext; # laptop config
+          import ./machines/laptop.nix flakeContext; # atoridu config
         ${inputs.zeroq.devices.server.hostname} =
-          import ./machines/${inputs.zeroq.devices.server.hostname}.nix flakeContext; # server config
+          import ./machines/server.nix flakeContext; # sapphira config
         ${inputs.zeroq.devices.wsl.hostname} =
-          import ./machines/${inputs.zeroq.devices.wsl.hostname}.nix flakeContext; # wsl config
+          import ./machines/wsl.nix flakeContext; # wsl config
       };
       nixosModules = {
-        default = import ./modules/default.nix flakeContext; # default module
-        hardware.fingerprint = import ./modules/hardware/fingerprint.nix flakeContext; # fingerprint module
-        special = {
-          ${inputs.zeroq.devices.laptop.hostname} =
-            import ./modules/${inputs.zeroq.devices.laptop.hostname}.nix flakeContext;
+        default = import ./modules/default.nix flakeContext;
+        hardware = {
+          fingerprint = import ./modules/hardware/fingerprint.nix flakeContext;
+          virtualisation = import ./modules/hardware/virtualisation.nix flakeContext;
         };
         additional = {
           aagl = import ./modules/additional/aagl.nix flakeContext; # an anime game launcher module
-          musnix = import ./modules/additional/musnix.nix flakeContext; # musnix module
+          musnix = import ./modules/additional/musnix.nix flakeContext;
         };
       };
 
@@ -77,7 +76,7 @@
           import ./home/users/${inputs.zeroq.devices.server.username}.nix flakeContext; # server user
       };
       homeModules = {
-        default = import ./home/default.nix flakeContext; # wip
+        default = import ./home/default.nix flakeContext;
       };
 
     };

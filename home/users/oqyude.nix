@@ -81,6 +81,7 @@ let
       services = {
         kdeconnect.enable = true;
         easyeffects.enable = true;
+        pass-secret-service.enable = true;
       };
 
       programs = {
