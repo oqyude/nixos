@@ -1,5 +1,6 @@
 rec {
-  bash-dir = toString ./.;
+
+  #zapret-dir = "/etc/nixos/zeroq/zapret";
 
   devices = rec {
     admin = "oqyude";
@@ -21,7 +22,7 @@ rec {
     user-storage = "${user-home}/Storage";
     therima-drive = "/mnt/therima";
     vetymae-drive = "/mnt/vetymae";
-    state-folder = ".userdata";
+    #state-folder = ".userdata";
 
     # Server
     server-home = "/home/${devices.server.username}/External";
