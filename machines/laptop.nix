@@ -16,6 +16,7 @@ let
       imports = with inputs; [
         self.nixosModules.default
 
+        self.nixosModules.desktop.default
         self.nixosModules.hardware.audio
         self.nixosModules.hardware.fingerprint
         self.nixosModules.hardware.wine
