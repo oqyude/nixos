@@ -1,0 +1,3 @@
+{
+  bash-dir = toString ./.;
+}
