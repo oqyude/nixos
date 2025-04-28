@@ -9,10 +9,11 @@ in
   ...
 }:
 {
-  systemd.services.fprintd = { # start on boot
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig.Type = "simple";
-  };
+#   systemd.services.fprintd = { # start on boot
+#     wantedBy = [ "multi-user.target" ];
+#     serviceConfig.Type = "simple";
+#   };
+  security.pam.services.login.fprintAuth = false;
   services = {
     fprintd = {
       enable = true;
