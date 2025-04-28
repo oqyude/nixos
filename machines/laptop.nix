@@ -15,7 +15,11 @@ let
 
       imports = with inputs; [
         self.nixosModules.default
+
+        self.nixosModules.hardware.audio
         self.nixosModules.hardware.fingerprint
+        self.nixosModules.hardware.wine
+
         #self.nixosModules.hardware.virtualisation
         #self.nixosModules.additional.musnix
         #self.nixosModules.additional.aagl
@@ -147,27 +151,7 @@ let
         };
       };
 
-      #qt = {
-      #  enable = true;
-      #  platformTheme = "kde6";
-      #};
-
       environment = {
-        plasma6.excludePackages = with pkgs.kdePackages; [
-          plasma-browser-integration
-          elisa
-          kwrited
-        ];
-        gnome.excludePackages = with pkgs; [
-          cheese # webcam tool
-          epiphany # web browser
-          #evince # document viewer
-          geary # email reader
-          gnome-characters
-          gnome-music
-          #gnome-photos
-          gnome-tour
-        ];
         systemPackages = with pkgs; [
           # Net
           curl
@@ -175,20 +159,6 @@ let
           iptables
           nftables
           wget
-
-          # Wine
-          #winetricks
-          wineWowPackages.stagingFull
-          wineWowPackages.yabridge
-          wineWowPackages.fonts
-          dxvk
-
-          # Wine audio
-          yabridge
-          yabridgectl
-
-          # Audio
-          qjackctl
 
           # Tools
           mc
@@ -201,22 +171,7 @@ let
           pciutils
           smartmontools
           usbutils
-
-          # Windows virtualisation
-          spice
-          #spice-gtk
-          #spice-protocol
-          virt-manager
-          virt-viewer
-          virtiofsd
-          win-spice
-          virtio-win
-          #looking-glass-client # pci-passthrough
         ];
-        sessionVariables = {
-          WINEPREFIX = "${inputs.zeroq.dirs.user-home}/.local/share/wine/stock";
-          WINEARCH = "win64";
-        };
       };
 
       programs = {
@@ -234,9 +189,6 @@ let
       };
 
       services = {
-        #udev = {
-        #  packages = with pkgs; [ gnome-settings-daemon ];
-        #};
         xserver = {
           enable = true;
           videoDrivers = [
@@ -248,12 +200,8 @@ let
             variant = "";
             options = "grp:alt_shift_toggle";
           };
-          #displayManager.gdm.enable = true;
-          #displayManager.gdm.wayland = true;
-          #desktopManager.gnome.enable = true;
         };
         displayManager = {
-          #defaultSession = "plasma";
           sddm = {
             enable = true;
             wayland = {

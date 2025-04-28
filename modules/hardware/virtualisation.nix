@@ -36,4 +36,18 @@
     };
     spiceUSBRedirection.enable = true;
   };
+  environment = {
+    systemPackages = with pkgs; [
+      spice
+      #spice-gtk
+      #spice-protocol
+      virt-manager
+      virt-viewer
+      virtiofsd
+      win-spice
+      virtio-win
+      #looking-glass-client # pci-passthrough
+    ];
+  };
+
 }

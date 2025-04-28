@@ -12,12 +12,11 @@
     "rt_kernel" = {
       inheritParentConfig = true;
       configuration = {
-
+        ###
         boot.kernelModules = [
           "snd-seq"
           "snd-rawmidi"
         ];
-
         services = {
           pipewire.enable = lib.mkForce false;
           jack = {
@@ -27,13 +26,11 @@
           };
         };
         environment.systemPackages = with pkgs; [
-          pavucontrol
-          libjack2
           jack2
-          qjackctl
           jack_capture
           libjack2
-          jack2
+          pavucontrol
+          qjackctl
         ];
         musnix = {
           enable = true;
@@ -42,6 +39,7 @@
           kernel.realtime = true;
           kernel.packages = pkgs.linuxPackages_latest_rt;
         };
+        ###
       };
     };
   };

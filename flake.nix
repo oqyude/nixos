@@ -51,18 +51,17 @@
 
     {
       nixosConfigurations = {
-        ${inputs.zeroq.devices.laptop.hostname} =
-          import ./machines/laptop.nix flakeContext; # atoridu config
-        ${inputs.zeroq.devices.server.hostname} =
-          import ./machines/server.nix flakeContext; # sapphira config
-        ${inputs.zeroq.devices.wsl.hostname} =
-          import ./machines/wsl.nix flakeContext; # wsl config
+        ${inputs.zeroq.devices.laptop.hostname} = import ./machines/laptop.nix flakeContext; # atoridu config
+        ${inputs.zeroq.devices.server.hostname} = import ./machines/server.nix flakeContext; # sapphira config
+        ${inputs.zeroq.devices.wsl.hostname} = import ./machines/wsl.nix flakeContext; # wsl config
       };
       nixosModules = {
         default = import ./modules/default.nix flakeContext;
         hardware = {
+          audio = import ./modules/hardware/audio.nix flakeContext;
           fingerprint = import ./modules/hardware/fingerprint.nix flakeContext;
           virtualisation = import ./modules/hardware/virtualisation.nix flakeContext;
+          wine = import ./modules/hardware/wine.nix flakeContext;
         };
         additional = {
           aagl = import ./modules/additional/aagl.nix flakeContext; # an anime game launcher module
