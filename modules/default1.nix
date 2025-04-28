@@ -7,6 +7,6 @@
 }:
 {
   imports = [
-    ./kde.nix
+    ./desktop/kde.nix
   ];
 }

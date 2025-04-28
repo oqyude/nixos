@@ -56,7 +56,7 @@
       };
       nixosModules = {
         default = import ./modules/default.nix flakeContext;
-        desktop = import ./modules/destkop/kde.nix flakeContext;
+        desktop = import ./modules/default1.nix flakeContext;
         hardware = {
           audio = import ./modules/hardware/audio.nix flakeContext;
           fingerprint = import ./modules/hardware/fingerprint.nix flakeContext;
