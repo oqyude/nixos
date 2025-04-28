@@ -32,6 +32,10 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/easyeffects";
             target = "easyeffects";
           };
+          "keepassxc" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/KeePassXC";
+            target = "keepassxc";
+          };
         };
         userDirs = {
           enable = true;
@@ -75,10 +79,7 @@ let
         };
       };
       services = {
-        kdeconnect = {
-          enable = true;
-          #indicator = true;
-        };
+        kdeconnect.enable = true;
         easyeffects.enable = true;
       };
 
@@ -86,6 +87,7 @@ let
         fastfetch.enable = true;
         btop.enable = true;
         mangohud.enable = true;
+        keepassxc.enable = true;
         zed-editor = {
           enable = true;
           extensions = [
