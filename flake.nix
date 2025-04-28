@@ -48,7 +48,6 @@
     let
       flakeContext = { inherit inputs; };
     in
-
     {
       nixosConfigurations = {
         ${inputs.zeroq.devices.laptop.hostname} = import ./machines/laptop.nix flakeContext; # atoridu config
@@ -57,7 +56,7 @@
       };
       nixosModules = {
         default = import ./modules/default.nix flakeContext;
-        desktop = import ./modules/destkop/default.nix flakeContext;
+          desktop = import ./modules/destkop/kde.nix flakeContext;
         hardware = {
           audio = import ./modules/hardware/audio.nix flakeContext;
           fingerprint = import ./modules/hardware/fingerprint.nix flakeContext;
@@ -78,6 +77,5 @@
       homeModules = {
         default = import ./home/default.nix flakeContext;
       };
-
     };
 }

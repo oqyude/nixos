@@ -1,3 +1,4 @@
+{ inputs, ... }@flakeContext:
 {
   config,
   lib,
