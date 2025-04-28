@@ -1,7 +1,5 @@
 rec {
 
-  #zapret-dir = "/etc/nixos/zeroq/zapret";
-
   devices = rec {
     admin = "oqyude";
     laptop = {

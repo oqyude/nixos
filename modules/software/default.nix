@@ -24,9 +24,6 @@
     };
   };
 
-
-
-
 #   systemd.services.zapret = {
 #     description = "Zaaaapret";
 #     unitConfig = {
