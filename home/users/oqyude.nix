@@ -1,7 +1,7 @@
 { inputs, ... }@flakeContext:
 let
   unstable = import inputs.nixpkgs-unstable { system = "x86_64-linux"; };
-  stable = import inputs.nixpkgs-stable { system = "x86_64-linux"; };
+  last-stable = import inputs.nixpkgs-last-unstable { system = "x86_64-linux"; };
   homeModule =
     {
       config,
@@ -190,7 +190,7 @@ let
           stretchly
           nekoray
           discord
-          stable._64gram
+          last-stable._64gram
           obsidian
           reaper
           transmission_4-qt

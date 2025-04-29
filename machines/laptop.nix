@@ -17,10 +17,10 @@ let
         self.nixosModules.default
 
         self.nixosModules.desktop
-        self.nixosModules.software
         self.nixosModules.hardware.audio
         self.nixosModules.hardware.fingerprint
         self.nixosModules.hardware.wine
+        self.nixosModules.additional.zapret
 
         #self.nixosModules.hardware.virtualisation
         #self.nixosModules.additional.musnix
