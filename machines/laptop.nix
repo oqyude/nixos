@@ -77,14 +77,14 @@ let
         #alsa.enable = false;
         nvidia = {
           #enabled = lib.mkDefault true;
-          open = false;
+          open = true;
           dynamicBoost.enable = true;
           nvidiaSettings = true;
           powerManagement = {
             enable = false;
             finegrained = false; # maybe comment this out idk what it does
           };
-          package = config.boot.kernelPackages.nvidiaPackages.stable;
+          #package = config.boot.kernelPackages.nvidiaPackages.stable;
           nvidiaPersistenced = true;
           modesetting.enable = true;
           prime = {
