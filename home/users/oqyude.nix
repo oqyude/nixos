@@ -15,6 +15,12 @@ let
       xdg = {
         enable = true;
         autostart.enable = true;
+        dataFile = {
+          "Prism Launcher" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/External/Games/PrismLauncher";
+            target = "PrismLauncher";
+          };
+        };
         configFile = {
           "ludusavi" = {
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/ludusavi/cfg";
