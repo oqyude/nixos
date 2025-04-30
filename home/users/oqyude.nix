@@ -17,10 +17,10 @@ let
         enable = true;
         autostart.enable = true;
         dataFile = {
-          "Prism Launcher" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/External/Games/PrismLauncher";
-            target = "PrismLauncher";
-          };
+#           "Prism Launcher" = {
+#             source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/External/Games/PrismLauncher";
+#             target = "PrismLauncher";
+#           };
         };
         configFile = {
           "ludusavi" = {
@@ -196,12 +196,13 @@ let
           transmission_4-qt
           lollypop
 
-          unstable.brave
+          brave
 
           prismlauncher
           #gamehub
           #itch
           lutris
+          zerotierone
 
           #edid-decode
           #displaycal
