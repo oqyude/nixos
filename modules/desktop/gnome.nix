@@ -16,7 +16,7 @@
       gnome-user-docs
       gnome-tour
     ];
-    systemPackages = with pkgs.gnomeExtensions; [
+    systemPackages = with pkgs; [
       gnomeExtensions.appindicator
       gnomeExtensions.dash-to-panel
       gnomeExtensions.arcmenu

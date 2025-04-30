@@ -25,6 +25,7 @@ let
         #self.nixosModules.hardware.virtualisation
         #self.nixosModules.additional.musnix
         #self.nixosModules.additional.aagl
+        nix-gaming.nixosModules.pipewireLowLatency
 
         home-manager.nixosModules.home-manager # home-manager module
         self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
