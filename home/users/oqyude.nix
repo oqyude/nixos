@@ -168,14 +168,6 @@ let
         username = "${inputs.zeroq.devices.admin}";
         homeDirectory = "/home/${inputs.zeroq.devices.admin}";
         packages = with pkgs; [
-          #           gnomeExtensions.appindicator
-          #           gnomeExtensions.dash-to-panel
-          #           gnomeExtensions.arcmenu
-          #           gnomeExtensions.vitals
-          #           gnomeExtensions.user-themes
-          #           gnome-tweaks
-          #           dconf-editor
-          #           dconf2nix
           # Base
           whitesur-gtk-theme
           whitesur-icon-theme

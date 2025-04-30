@@ -221,23 +221,31 @@ let
           alsa.support32Bit = true;
           pulse.enable = true;
           jack.enable = true;
-          extraConfig.pipewire = {
-            "99-default.conf" = {
-              "context.properties" = {
-                "default.clock.rate" = 96000;
-                "default.clock.allowed-rates" = [
-                  44100
-                  48000
-                  88200
-                  96000
-                ];
-                "default.clock.quantum" = 256;
-                "default.clock.min-quantum" = 64;
-                "default.clock.max-quantum" = 256;
-                "default.clock.force-quantum" = true;
-              };
-            };
+
+          lowLatency = {
+            # enable this module
+            enable = true;
+            # defaults (no need to be set unless modified)
+            quantum = 256;
+            rate = 96000;
           };
+          #           extraConfig.pipewire = {
+          #             "99-default.conf" = {
+          #               "context.properties" = {
+          #                 "default.clock.rate" = 96000;
+          #                 "default.clock.allowed-rates" = [
+          #                   44100
+          #                   48000
+          #                   88200
+          #                   96000
+          #                 ];
+          #                 "default.clock.quantum" = 256;
+          #                 "default.clock.min-quantum" = 64;
+          #                 "default.clock.max-quantum" = 256;
+          #                 #"default.clock.force-quantum" = true;
+          #               };
+          #             };
+          #           };
         };
         thermald.enable = true;
         earlyoom.enable = true;

@@ -17,6 +17,14 @@
       gnome-tour
     ];
     systemPackages = with pkgs.gnomeExtensions; [
+      gnomeExtensions.appindicator
+      gnomeExtensions.dash-to-panel
+      gnomeExtensions.arcmenu
+      gnomeExtensions.vitals
+      gnomeExtensions.user-themes
+      gnome-tweaks
+      dconf-editor
+      dconf2nix
     ];
   };
   services = {
