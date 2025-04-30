@@ -50,17 +50,17 @@ let
         };
       };
 
-#       systemd.services.tune-usb-autosuspend = {
-#         description = "Disable USB autosuspend";
-#         wantedBy = [ "multi-user.target" ];
-#         serviceConfig = {
-#           Type = "oneshot";
-#         };
-#         unitConfig.RequiresMountsFor = "/sys";
-#         script = ''
-#           echo -1 > /sys/module/usbcore/parameters/autosuspend
-#         '';
-#       };
+      #       systemd.services.tune-usb-autosuspend = {
+      #         description = "Disable USB autosuspend";
+      #         wantedBy = [ "multi-user.target" ];
+      #         serviceConfig = {
+      #           Type = "oneshot";
+      #         };
+      #         unitConfig.RequiresMountsFor = "/sys";
+      #         script = ''
+      #           echo -1 > /sys/module/usbcore/parameters/autosuspend
+      #         '';
+      #       };
 
       hardware = {
         logitech = {
@@ -189,8 +189,6 @@ let
       };
 
       programs = {
-        xwayland.enable = true;
-        dconf.enable = true;
         adb.enable = true;
         gamemode.enable = true;
         tuxclocker = {
@@ -203,40 +201,9 @@ let
       };
 
       services = {
-        xserver = {
-          enable = true;
-          videoDrivers = [
-            "amdgpu"
-            "nvidia"
-          ];
-          xkb = {
-            layout = "us,ru";
-            variant = "";
-            options = "grp:alt_shift_toggle";
-          };
-        };
-        displayManager = {
-          sddm = {
-            enable = true;
-            wayland = {
-              enable = true;
-              compositor = "kwin";
-            };
-          };
-        };
-        desktopManager.plasma6.enable = true;
         printing = {
           enable = true;
           cups-pdf.enable = true;
-        };
-        libinput = {
-          enable = true;
-          mouse = {
-            accelProfile = "flat";
-          };
-          touchpad = {
-            accelProfile = "flat";
-          };
         };
         syncthing = {
           enable = true;

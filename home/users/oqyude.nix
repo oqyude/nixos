@@ -17,10 +17,10 @@ let
         enable = true;
         autostart.enable = true;
         dataFile = {
-#           "Prism Launcher" = {
-#             source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/External/Games/PrismLauncher";
-#             target = "PrismLauncher";
-#           };
+          #           "Prism Launcher" = {
+          #             source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/External/Games/PrismLauncher";
+          #             target = "PrismLauncher";
+          #           };
         };
         configFile = {
           "ludusavi" = {
@@ -117,13 +117,13 @@ let
         };
       };
 
-      qt = {
-        enable = true;
-        #         platformTheme.name = "kde6";
-        #         style = {
-        #          name = "adwaita";
-        #         };
-      };
+      #       qt = {
+      #         enable = true;
+      #         #         platformTheme.name = "kde6";
+      #         #         style = {
+      #         #          name = "adwaita";
+      #         #         };
+      #       };
 
       home = {
         file = {

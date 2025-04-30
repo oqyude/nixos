@@ -13,8 +13,20 @@
       geary # email reader
       gnome-characters
       gnome-music
-      #gnome-photos
+      gnome-user-docs
       gnome-tour
     ];
+    systemPackages = with pkgs.gnomeExtensions; [
+    ];
+  };
+  services = {
+    udev.packages = with pkgs; [ gnome-settings-daemon ];
+    xserver = {
+      displayManager.gdm = {
+        enable = true;
+        wayland = true;
+      };
+      desktopManager.gnome.enable = true;
+    };
   };
 }
