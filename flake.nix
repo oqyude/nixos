@@ -5,7 +5,7 @@
 
     zeroq.url = "path:./zeroq"; # my flake of variables
 
-    zapret.url = "github:oqyude/zapret-easyflake"; # my flake of variables
+    zapret.url = "github:oqyude/zapret-easyflake"; # my zapret easy-flake
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-last-unstable.url = "github:NixOS/nixpkgs/f6db44a8daa59c40ae41ba6e5823ec77fe0d2124";
