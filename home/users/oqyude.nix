@@ -88,7 +88,13 @@ let
       services = {
         kdeconnect.enable = true;
         easyeffects.enable = true;
-        pass-secret-service.enable = true;
+        #         dbus.packages = [
+        #
+        #         ];
+        #         pass-secret-service = {
+        #           enable = false;
+        #           package = pkgs.keepassxc;
+        #         };
       };
 
       programs = {
@@ -116,14 +122,6 @@ let
           };
         };
       };
-
-      #       qt = {
-      #         enable = true;
-      #         #         platformTheme.name = "kde6";
-      #         #         style = {
-      #         #          name = "adwaita";
-      #         #         };
-      #       };
 
       home = {
         file = {
