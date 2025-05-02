@@ -193,6 +193,7 @@ let
           #itch
           lutris
           zerotierone
+          libsecret
 
           #edid-decode
           #displaycal

@@ -243,7 +243,7 @@ let
         thermald.enable = true;
         earlyoom.enable = true;
         preload.enable = true;
-        resolved.enable = true;
+        #resolved.enable = true;
       };
 
       security = {
