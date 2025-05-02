@@ -16,12 +16,6 @@ let
       xdg = {
         enable = true;
         autostart.enable = true;
-        dataFile = {
-          #           "Prism Launcher" = {
-          #             source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/External/Games/PrismLauncher";
-          #             target = "PrismLauncher";
-          #           };
-        };
         configFile = {
           "ludusavi" = {
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/ludusavi/cfg";
@@ -76,9 +70,6 @@ let
             ];
             disabled-extensions = [ ];
           };
-          #"org/gnome/shell/extensions/user-theme" = {
-          #  name = "palenight";
-          #};
           "org/gnome/desktop/interface" = {
             color-scheme = "prefer-light";
             enable-hot-corners = false;
@@ -88,13 +79,6 @@ let
       services = {
         kdeconnect.enable = true;
         easyeffects.enable = true;
-        #         dbus.packages = [
-        #
-        #         ];
-        #         pass-secret-service = {
-        #           enable = false;
-        #           package = pkgs.keepassxc;
-        #         };
       };
 
       programs = {
@@ -137,10 +121,6 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.therima-drive}";
             target = "External";
           };
-          "Plugins" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.therima-drive}/Plugins";
-            target = "Plugins";
-          };
           "Music" = {
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Music";
             target = "Music";
@@ -165,40 +145,6 @@ let
         #preferXdgDirectories = true;
         username = "${inputs.zeroq.devices.admin}";
         homeDirectory = "/home/${inputs.zeroq.devices.admin}";
-        packages = with pkgs; [
-          # Base
-          whitesur-gtk-theme
-          whitesur-icon-theme
-          whitesur-kde
-          kdePackages.filelight
-          localsend
-          ludusavi
-          pdfarranger
-          libreoffice-qt6
-          vlc
-          gramps
-          stretchly
-          nekoray
-          discord
-          last-stable._64gram
-          obsidian
-          reaper
-          transmission_4-qt
-          lollypop
-
-          brave
-
-          prismlauncher
-          #gamehub
-          #itch
-          lutris
-          zerotierone
-          libsecret
-
-          #edid-decode
-          #displaycal
-          #argyllcms
-        ];
         stateVersion = "24.11";
       };
     };

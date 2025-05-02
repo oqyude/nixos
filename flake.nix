@@ -77,9 +77,9 @@
       };
 
       homeConfigurations = {
-        ${inputs.zeroq.devices.admin} = import ./home/users/${inputs.zeroq.devices.admin}.nix flakeContext; # main user
+        ${inputs.zeroq.devices.admin} = import ./home/users/admin.nix flakeContext; # main user
         ${inputs.zeroq.devices.server.username} =
-          import ./home/users/${inputs.zeroq.devices.server.username}.nix flakeContext; # server user
+          import ./home/users/server.nix flakeContext; # server user
       };
       homeModules = {
         default = import ./home/default.nix flakeContext;

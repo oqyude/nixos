@@ -9,6 +9,8 @@ let
     }:
     {
       imports = with inputs; [
+        ./hardware-configuration/server.nix
+
         self.nixosModules.default # default module
 
         home-manager.nixosModules.home-manager # home-manager module
