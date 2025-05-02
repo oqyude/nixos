@@ -83,6 +83,7 @@
       };
       homeModules = {
         default = import ./home/default.nix flakeContext;
+        packages = import ./home/packages.nix flakeContext;
       };
     };
 }

@@ -1,7 +1,5 @@
 { inputs, ... }@flakeContext:
 let
-  unstable = import inputs.nixpkgs-unstable { system = "x86_64-linux"; };
-  last-stable = import inputs.nixpkgs-last-unstable { system = "x86_64-linux"; };
   homeModule =
     {
       config,
@@ -11,7 +9,7 @@ let
     }:
     {
       imports = [
-        inputs.self.homeModules.default
+        (builtins.attrValues inputs.self.homeModules)
       ];
       xdg = {
         enable = true;
