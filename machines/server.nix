@@ -9,7 +9,7 @@ let
     }:
     {
       imports = with inputs; [
-        ./hardware-configuration/server.nix
+        ./hardware/server.nix
 
         self.nixosModules.default # default module
 
@@ -18,32 +18,8 @@ let
       ];
 
       boot = {
-        initrd = {
-          availableKernelModules = [
-            "ahci"
-            "xhci_pci"
-            "usbhid"
-            "usb_storage"
-            "sd_mod"
-            "sdhci_pci"
-          ];
-          kernelModules = [ ];
-        };
-        kernel = {
-          sysctl = {
-            "fs.inotify.max_user_watches" = "204800";
-          };
-        };
-        kernelModules = [
-          "kvm-intel"
-          "coretemp"
-        ];
         kernelPackages = pkgs.linuxPackages_xanmod_stable;
         hardwareScan = true;
-        blacklistedKernelModules = [
-          ""
-        ];
-        extraModulePackages = [ ];
         loader = {
           systemd-boot.enable = true;
           efi.canTouchEfiVariables = true;
@@ -52,17 +28,11 @@ let
 
       hardware = {
         bluetooth.enable = false;
-        cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
       };
 
       #swapDevices =
       #  [ { device = "/dev/disk/by-partlabel/disk-main-swap"; }
       #  ];
-
-      nixpkgs = {
-        config.allowUnfree = true;
-        hostPlatform = lib.mkDefault "x86_64-linux";
-      };
 
       users = {
         users = {
@@ -99,20 +69,6 @@ let
       };
 
       fileSystems = {
-        # System
-        "/" = {
-          device = "/dev/disk/by-partlabel/disk-main-root";
-          fsType = "ext4";
-        };
-        "/boot" = {
-          device = "/dev/disk/by-partlabel/disk-main-ESP";
-          fsType = "vfat";
-          options = [
-            "fmask=0022"
-            "dmask=0022"
-          ];
-        };
-
         # External drive
         "${inputs.zeroq.dirs.server-home}" = {
           device = "/dev/disk/by-uuid/37e53ebc-5343-a94d-9fe2-0ca39e13a8de";
@@ -324,27 +280,14 @@ let
         tailscale.enable = true;
       };
 
-      security = {
-        #     acme = {
-        #       acceptTerms = true;
-        #       defaults = {
-        #        email = "${inputs.zeroq.devices.server.hostname}@example.com";
-        #       };
-        #       certs = {
-        #        "${config.services.nextcloud.hostName}".group = "nextcloud";
-        #       };
-        #     };
-      };
-
       networking = {
         hostName = "${inputs.zeroq.devices.server.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
-        useDHCP = lib.mkDefault true;
       };
 
       system = {
-        stateVersion = "24.05";
+        stateVersion = "25.05";
       };
     };
 in

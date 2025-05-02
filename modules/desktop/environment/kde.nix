@@ -14,9 +14,9 @@
       plasma-browser-integration
       elisa
       kwrited
-#       kwallet
-#       kwallet-pam
-#       kwalletmanager
+      #       kwallet
+      #       kwallet-pam
+      #       kwalletmanager
     ];
   };
   services = {

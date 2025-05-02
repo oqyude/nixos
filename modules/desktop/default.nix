@@ -17,10 +17,10 @@
   services = {
     xserver = {
       enable = true;
-#       videoDrivers = [
-#         "amdgpu"
-#         "nvidia"
-#       ];
+      #       videoDrivers = [
+      #         "amdgpu"
+      #         "nvidia"
+      #       ];
       xkb = {
         layout = "us,ru";
         variant = "";
