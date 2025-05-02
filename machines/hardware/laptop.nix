@@ -12,6 +12,8 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
+  #hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
   boot = {
     initrd = {
       availableKernelModules = [
@@ -57,5 +59,4 @@
   # networking.interfaces.wlp3s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

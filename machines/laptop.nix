@@ -19,6 +19,7 @@ let
         self.nixosModules.default
         self.nixosModules.software.wine
 
+        nixos-hardware.nixosModules.asus-fa506ic
         home-manager.nixosModules.home-manager # home-manager module
         self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
       ] ++ (builtins.attrValues inputs.self.nixosModules.desktop);
@@ -73,27 +74,27 @@ let
           enable = true;
         };
         bluetooth.enable = true;
-        nvidia = {
-          open = true;
-          dynamicBoost.enable = true;
-          nvidiaSettings = true;
-          powerManagement = {
-            enable = false;
-            finegrained = false; # maybe comment this out idk what it does
-          };
-          #package = config.boot.kernelPackages.nvidiaPackages.stable;
-          nvidiaPersistenced = true;
-          modesetting.enable = true;
-          prime = {
-            offload = {
-              enable = true;
-              enableOffloadCmd = true;
-            };
-            sync.enable = false;
-            amdgpuBusId = "PCI:6:0:0";
-            nvidiaBusId = "PCI:1:0:0";
-          };
-        };
+#         nvidia = {
+#           open = true;
+#           dynamicBoost.enable = true;
+#           nvidiaSettings = true;
+#           powerManagement = {
+#             enable = false;
+#             finegrained = false; # maybe comment this out idk what it does
+#           };
+#           #package = config.boot.kernelPackages.nvidiaPackages.stable;
+#           nvidiaPersistenced = true;
+#           modesetting.enable = true;
+#           prime = {
+#             offload = {
+#               enable = true;
+#               enableOffloadCmd = true;
+#             };
+#             sync.enable = false;
+#             amdgpuBusId = "PCI:6:0:0";
+#             nvidiaBusId = "PCI:1:0:0";
+#           };
+#         };
       };
 
       # networking.firewall.allowedTCPPorts = [ ... ];

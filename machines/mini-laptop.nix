@@ -16,6 +16,7 @@ let
       imports = with inputs; [
         self.nixosModules.default
 
+        nixos-hardware.nixosModules.chuwi-minibook-x
         home-manager.nixosModules.home-manager # home-manager module
         self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
       ];
