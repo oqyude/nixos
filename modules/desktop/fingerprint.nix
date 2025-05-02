@@ -9,7 +9,7 @@ in
   ...
 }:
 {
-  security.pam.services.login.fprintAuth = true;
+  security.pam.services.login.fprintAuth = false;
   services = {
     fprintd = {
       enable = true;
