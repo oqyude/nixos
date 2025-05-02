@@ -19,7 +19,9 @@ let
         self.nixosModules.default
 
         self.nixosModules.desktop
-        self.nixosModules.base
+        self.nixosModules.base.logitech
+        self.nixosModules.base.zapret
+        self.nixosModules.base.fingerprint
         self.nixosModules.hardware.wine
 
         home-manager.nixosModules.home-manager # home-manager module
