@@ -14,19 +14,12 @@ let
       system.nixos.label = "stock";
 
       imports = with inputs; [
-        ./hardware-configuration/laptop.nix
-
         self.nixosModules.default
 
         self.nixosModules.desktop
-        self.nixosModules.hardware.audio
         self.nixosModules.hardware.fingerprint
         self.nixosModules.hardware.wine
         self.nixosModules.additional.zapret
-
-        #self.nixosModules.hardware.virtualisation
-        #self.nixosModules.additional.musnix
-        #self.nixosModules.additional.aagl
 
         home-manager.nixosModules.home-manager # home-manager module
         self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
@@ -35,12 +28,34 @@ let
       boot = {
         #hardwareScan = true;
         kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
+        initrd = {
+          availableKernelModules = [
+            "nvme"
+            "xhci_pci"
+            "usbhid"
+            "usb_storage"
+            "uas"
+            "sd_mod"
+          ];
+        };
         loader = {
           systemd-boot.enable = true;
           efi.canTouchEfiVariables = true;
           timeout = 3;
         };
       };
+
+      #       systemd.services.tune-usb-autosuspend = {
+      #         description = "Disable USB autosuspend";
+      #         wantedBy = [ "multi-user.target" ];
+      #         serviceConfig = {
+      #           Type = "oneshot";
+      #         };
+      #         unitConfig.RequiresMountsFor = "/sys";
+      #         script = ''
+      #           echo -1 > /sys/module/usbcore/parameters/autosuspend
+      #         '';
+      #       };
 
       hardware = {
         logitech = {
@@ -49,11 +64,14 @@ let
             enableGraphical = true;
           };
         };
+        cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
         graphics = {
           enable = true;
         };
         bluetooth.enable = true;
+        #alsa.enable = false;
         nvidia = {
+          #enabled = lib.mkDefault true;
           open = true;
           dynamicBoost.enable = true;
           nvidiaSettings = true;
@@ -76,12 +94,56 @@ let
         };
       };
 
-      # networking.firewall.allowedTCPPorts = [ ... ];
-      # networking.firewall.allowedUDPPorts = [ ... ];
+      fileSystems = {
+        "/" = {
+          device = "/dev/disk/by-uuid/5938c796-6ff5-49d9-a3a6-022b4c32beeb";
+          fsType = "ext4";
+        };
+        "/boot" = {
+          device = "/dev/disk/by-uuid/61BF-3342";
+          fsType = "vfat";
+          options = [
+            "fmask=0077"
+            "dmask=0077"
+          ];
+        };
+        "${inputs.zeroq.dirs.therima-drive}" = {
+          device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
+          fsType = "ntfs3";
+          options = [
+            "defaults"
+            "uid=1000"
+            "gid=1000"
+            "fmask=0007"
+            "dmask=0007"
+            "nofail"
+            "x-systemd.device-timeout=0"
+          ];
+        };
+        "${inputs.zeroq.dirs.vetymae-drive}" = {
+          device = "/dev/disk/by-uuid/6E04EA7F04EA49A3";
+          fsType = "ntfs3";
+          options = [
+            "defaults"
+            "uid=1000"
+            "gid=1000"
+            "fmask=0007"
+            "dmask=0007"
+            "nofail"
+            "x-systemd.device-timeout=0"
+          ];
+        };
+      };
+
+      swapDevices = [
+        { device = "/dev/disk/by-uuid/d89bccd2-0672-4855-9d87-40e2688cdec4"; }
+      ];
+
       networking = {
         hostName = "${inputs.zeroq.devices.laptop.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
+        useDHCP = lib.mkDefault true;
       };
 
       i18n = {
@@ -175,13 +237,14 @@ let
         thermald.enable = true;
         earlyoom.enable = true;
         preload.enable = true;
+        #resolved.enable = true;
       };
 
       security = {
         rtkit.enable = true;
       };
 
-      system.stateVersion = "25.05";
+      system.stateVersion = "24.11";
     };
 in
 inputs.nixpkgs.lib.nixosSystem {
