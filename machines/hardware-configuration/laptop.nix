@@ -3,6 +3,7 @@
   lib,
   pkgs,
   modulesPath,
+  inputs,
   ...
 }:
 
@@ -38,32 +39,6 @@
       options = [
         "fmask=0077"
         "dmask=0077"
-      ];
-    };
-    "${inputs.zeroq.dirs.therima-drive}" = {
-      device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
-      fsType = "ntfs3";
-      options = [
-        "defaults"
-        "uid=1000"
-        "gid=1000"
-        "fmask=0007"
-        "dmask=0007"
-        "nofail"
-        "x-systemd.device-timeout=0"
-      ];
-    };
-    "${inputs.zeroq.dirs.vetymae-drive}" = {
-      device = "/dev/disk/by-uuid/6E04EA7F04EA49A3";
-      fsType = "ntfs3";
-      options = [
-        "defaults"
-        "uid=1000"
-        "gid=1000"
-        "fmask=0007"
-        "dmask=0007"
-        "nofail"
-        "x-systemd.device-timeout=0"
       ];
     };
   };
