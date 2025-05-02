@@ -52,6 +52,7 @@
     {
       nixosConfigurations = {
         ${inputs.zeroq.devices.laptop.hostname} = import ./machines/laptop.nix flakeContext; # atoridu config
+        ${inputs.zeroq.devices.mini-laptop.hostname} = import ./machines/mini-laptop.nix flakeContext; # lamet config
         ${inputs.zeroq.devices.server.hostname} = import ./machines/server.nix flakeContext; # sapphira config
         ${inputs.zeroq.devices.wsl.hostname} = import ./machines/wsl.nix flakeContext; # wsl config
       };
@@ -60,15 +61,18 @@
         desktop = import ./modules/desktop/default.nix flakeContext;
         software = import ./modules/software/default.nix flakeContext;
         hardware = {
-          audio = import ./modules/hardware/audio.nix flakeContext;
-          fingerprint = import ./modules/hardware/fingerprint.nix flakeContext;
+          daw = import ./modules/hardware/daw.nix flakeContext;
           virtualisation = import ./modules/hardware/virtualisation.nix flakeContext;
           wine = import ./modules/hardware/wine.nix flakeContext;
+        };
+        base = {
+            logitech = import ./modules/base/logitech.nix flakeContext;
+            zapret = import ./modules/base/zapret.nix flakeContext;
+          fingerprint = import ./modules/hardware/fingerprint.nix flakeContext;
         };
         additional = {
           aagl = import ./modules/additional/aagl.nix flakeContext; # an anime game launcher module
           musnix = import ./modules/additional/musnix.nix flakeContext;
-          zapret = import ./modules/additional/zapret.nix flakeContext;
         };
       };
 

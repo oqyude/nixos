@@ -16,28 +16,12 @@ let
       imports = with inputs; [
         self.nixosModules.default
 
-        self.nixosModules.desktop
-        self.nixosModules.hardware.fingerprint
-        self.nixosModules.hardware.wine
-        self.nixosModules.additional.zapret
-
         home-manager.nixosModules.home-manager # home-manager module
         self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
       ];
 
       boot = {
-        #hardwareScan = true;
         kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
-        initrd = {
-          availableKernelModules = [
-            "nvme"
-            "xhci_pci"
-            "usbhid"
-            "usb_storage"
-            "uas"
-            "sd_mod"
-          ];
-        };
         loader = {
           systemd-boot.enable = true;
           efi.canTouchEfiVariables = true;
@@ -45,68 +29,12 @@ let
         };
       };
 
-      #       systemd.services.tune-usb-autosuspend = {
-      #         description = "Disable USB autosuspend";
-      #         wantedBy = [ "multi-user.target" ];
-      #         serviceConfig = {
-      #           Type = "oneshot";
-      #         };
-      #         unitConfig.RequiresMountsFor = "/sys";
-      #         script = ''
-      #           echo -1 > /sys/module/usbcore/parameters/autosuspend
-      #         '';
-      #       };
-
       hardware = {
-        logitech = {
-          wireless = {
-            enable = true;
-            enableGraphical = true;
-          };
-        };
-        cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-        graphics = {
-          enable = true;
-        };
+        graphics.enable = true;
         bluetooth.enable = true;
-        #alsa.enable = false;
-        nvidia = {
-          #enabled = lib.mkDefault true;
-          open = true;
-          dynamicBoost.enable = true;
-          nvidiaSettings = true;
-          powerManagement = {
-            enable = false;
-            finegrained = false; # maybe comment this out idk what it does
-          };
-          #package = config.boot.kernelPackages.nvidiaPackages.stable;
-          nvidiaPersistenced = true;
-          modesetting.enable = true;
-          prime = {
-            offload = {
-              enable = true;
-              enableOffloadCmd = true;
-            };
-            sync.enable = false;
-            amdgpuBusId = "PCI:6:0:0";
-            nvidiaBusId = "PCI:1:0:0";
-          };
-        };
       };
 
       fileSystems = {
-        "/" = {
-          device = "/dev/disk/by-uuid/5938c796-6ff5-49d9-a3a6-022b4c32beeb";
-          fsType = "ext4";
-        };
-        "/boot" = {
-          device = "/dev/disk/by-uuid/61BF-3342";
-          fsType = "vfat";
-          options = [
-            "fmask=0077"
-            "dmask=0077"
-          ];
-        };
         "${inputs.zeroq.dirs.therima-drive}" = {
           device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
           fsType = "ntfs3";
@@ -135,15 +63,10 @@ let
         };
       };
 
-      swapDevices = [
-        { device = "/dev/disk/by-uuid/d89bccd2-0672-4855-9d87-40e2688cdec4"; }
-      ];
-
       networking = {
-        hostName = "${inputs.zeroq.devices.laptop.hostname}";
+        hostName = "${inputs.zeroq.devices.mini-laptop.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
-        useDHCP = lib.mkDefault true;
       };
 
       i18n = {
@@ -184,15 +107,7 @@ let
       };
 
       programs = {
-        adb.enable = true;
-        gamemode.enable = true;
-        tuxclocker = {
-          enable = false;
-          enableAMD = true;
-          useUnfree = true;
-        };
         steam.enable = true;
-        gamescope.enable = true;
       };
 
       services = {
@@ -237,14 +152,13 @@ let
         thermald.enable = true;
         earlyoom.enable = true;
         preload.enable = true;
-        #resolved.enable = true;
       };
 
       security = {
         rtkit.enable = true;
       };
 
-      system.stateVersion = "24.11";
+      system.stateVersion = "25.05";
     };
 in
 inputs.nixpkgs.lib.nixosSystem {

@@ -19,14 +19,8 @@ let
         self.nixosModules.default
 
         self.nixosModules.desktop
-        self.nixosModules.hardware.audio
-        self.nixosModules.hardware.fingerprint
+        self.nixosModules.base
         self.nixosModules.hardware.wine
-        self.nixosModules.additional.zapret
-
-        #self.nixosModules.hardware.virtualisation
-        #self.nixosModules.additional.musnix
-        #self.nixosModules.additional.aagl
 
         home-manager.nixosModules.home-manager # home-manager module
         self.homeConfigurations.oqyude.nixosModule # home-manager configuration module

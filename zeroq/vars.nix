@@ -5,6 +5,9 @@ rec {
     laptop = {
       hostname = "atoridu";
     };
+    mini-laptop = {
+      hostname = "lamet";
+    };
     server = {
       username = "otreca";
       hostname = "sapphira";
