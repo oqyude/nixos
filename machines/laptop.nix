@@ -14,7 +14,7 @@ let
       system.nixos.label = "stock";
 
       imports = with inputs; [
-        ./hardware-configuration/laptop.nix
+        ./hardware/laptop.nix
 
         self.nixosModules.default
         self.nixosModules.software.wine
@@ -186,7 +186,7 @@ let
                 ];
                 "default.clock.quantum" = 256;
                 "default.clock.min-quantum" = 64;
-                "default.clock.max-quantum" = 256;
+                "default.clock.max-quantum" = 1024;
                 #"default.clock.force-quantum" = true;
               };
             };

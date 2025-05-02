@@ -71,11 +71,6 @@
         ff = "clear && fastfetch";
         l = "ls -l";
 
-        # nixos
-        #nir-switch = "sudo nixos-rebuild switch --flake ${inputs.zeroq.nixos}#${config.networking.hostName}";
-        #nir-boot = "sudo nixos-rebuild boot --flake ${inputs.zeroq.nixos}#${config.networking.hostName}";
-        #nir-test = "sudo nixos-rebuild test --flake ${inputs.zeroq.nixos}#${config.networking.hostName}";
-
         # ssh
         s-1 = "ssh sapphira-1";
         s-1t = "ssh sapphira-1t";

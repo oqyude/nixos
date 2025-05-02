@@ -3,7 +3,10 @@
 
   inputs = {
 
-    zeroq.url = "path:./zeroq"; # my flake of variables
+    zeroq = {
+      flake = false;
+      url = "path:./zeroq"; # my flake of variables
+    };
 
     zapret.url = "github:oqyude/zapret-easyflake"; # my zapret easy-flake
 
