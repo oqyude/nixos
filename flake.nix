@@ -3,15 +3,12 @@
 
   inputs = {
 
-    zeroq = {
-      flake = false;
-      url = "path:./zeroq"; # my flake of variables
-    };
+    zeroq.url = "path:./zeroq"; # my flake of variables
 
     zapret.url = "github:oqyude/zapret-easyflake"; # my zapret easy-flake
 
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # 29335f23bea5e34228349ea739f31ee79e267b88
-    nixpkgs-last-unstable.url = "github:NixOS/nixpkgs/f6db44a8daa59c40ae41ba6e5823ec77fe0d2124";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # 507b63021ada5fee621b6ca371c4fca9ca46f52c
+    nixpkgs-last-unstable.url = "github:NixOS/nixpkgs/507b63021ada5fee621b6ca371c4fca9ca46f52c"; #f6db44a8daa59c40ae41ba6e5823ec77fe0d2124
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
 

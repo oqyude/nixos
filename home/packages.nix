@@ -25,13 +25,17 @@ in
       stretchly
       nekoray
       discord
-      last-stable._64gram
+      _64gram
       obsidian
       reaper
       transmission_4-qt
       lollypop
 
-      brave
+      (brave.override {
+        commandLineArgs = [
+          "--password-store=gnome-libsecret"  # on purpose to make it break
+        ];
+      })
 
       prismlauncher
       #gamehub
