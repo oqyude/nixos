@@ -7,8 +7,8 @@
 }:
 {
   imports = [
-    ./kde.nix
-    #./gnome.nix
+    ./environment/kde.nix
+    #./environment/gnome.nix
   ];
   programs = {
     xwayland.enable = true;

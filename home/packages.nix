@@ -10,40 +10,40 @@ let
 in
 {
   home = {
-        packages = with pkgs; [
-          # Base
-          whitesur-gtk-theme
-          whitesur-icon-theme
-          whitesur-kde
-          kdePackages.filelight
-          localsend
-          ludusavi
-          pdfarranger
-          libreoffice-qt6
-          vlc
-          gramps
-          stretchly
-          nekoray
-          discord
-          last-stable._64gram
-          obsidian
-          reaper
-          transmission_4-qt
-          lollypop
+    packages = with pkgs; [
+      # Base
+      whitesur-gtk-theme
+      whitesur-icon-theme
+      whitesur-kde
+      kdePackages.filelight
+      localsend
+      ludusavi
+      pdfarranger
+      libreoffice-qt6
+      vlc
+      gramps
+      stretchly
+      nekoray
+      discord
+      last-stable._64gram
+      obsidian
+      reaper
+      transmission_4-qt
+      lollypop
 
-          brave
+      brave
 
-          prismlauncher
-          #gamehub
-          #itch
-          lutris
+      prismlauncher
+      #gamehub
+      #itch
+      lutris
 
-          zerotierone
-          libsecret
+      zerotierone
+      libsecret
 
-          #edid-decode
-          #displaycal
-          #argyllcms
-        ];
+      #edid-decode
+      #displaycal
+      #argyllcms
+    ];
   };
 }

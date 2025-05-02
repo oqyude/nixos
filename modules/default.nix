@@ -6,10 +6,6 @@
   ...
 }:
 {
-  #   imports = [
-  #     (modulesPath + "/installer/scan/not-detected.nix")
-  #   ];
-
   nixpkgs.config.allowUnfree = true;
 
   nix = {

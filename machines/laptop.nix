@@ -17,16 +17,11 @@ let
         ./hardware-configuration/laptop.nix
 
         self.nixosModules.default
-
-        self.nixosModules.desktop
-        self.nixosModules.base.logitech
-        self.nixosModules.base.zapret
-        self.nixosModules.base.fingerprint
-        self.nixosModules.hardware.wine
+        self.nixosModules.software.wine
 
         home-manager.nixosModules.home-manager # home-manager module
         self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
-      ];
+      ] ++ (builtins.attrValues inputs.self.nixosModules.desktop);
 
       fileSystems = {
         "${inputs.zeroq.dirs.therima-drive}" = {

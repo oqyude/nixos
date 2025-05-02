@@ -8,9 +8,7 @@ let
       ...
     }:
     {
-      imports = [
-        (builtins.attrValues inputs.self.homeModules)
-      ];
+      imports = [ ] ++ (builtins.attrValues inputs.self.homeModules);
       xdg = {
         enable = true;
         autostart.enable = true;

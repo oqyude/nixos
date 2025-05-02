@@ -58,17 +58,16 @@
       };
       nixosModules = {
         default = import ./modules/default.nix flakeContext;
-        desktop = import ./modules/desktop/default.nix flakeContext;
-        software = import ./modules/software/default.nix flakeContext;
-        hardware = {
-          daw = import ./modules/hardware/daw.nix flakeContext;
-          virtualisation = import ./modules/hardware/virtualisation.nix flakeContext;
-          wine = import ./modules/hardware/wine.nix flakeContext;
+        software = {
+          daw = import ./modules/software/daw.nix flakeContext;
+          virtualisation = import ./modules/software/virtualisation.nix flakeContext;
+          wine = import ./modules/software/wine.nix flakeContext;
         };
-        base = {
-          logitech = import ./modules/base/logitech.nix flakeContext;
-          zapret = import ./modules/base/zapret.nix flakeContext;
-          fingerprint = import ./modules/base/fingerprint.nix flakeContext;
+        desktop = {
+          default = import ./modules/desktop/default.nix flakeContext;
+          logitech = import ./modules/desktop/logitech.nix flakeContext;
+          zapret = import ./modules/desktop/zapret.nix flakeContext;
+          fingerprint = import ./modules/desktop/fingerprint.nix flakeContext;
         };
         additional = {
           aagl = import ./modules/additional/aagl.nix flakeContext; # an anime game launcher module
@@ -78,8 +77,7 @@
 
       homeConfigurations = {
         ${inputs.zeroq.devices.admin} = import ./home/users/admin.nix flakeContext; # main user
-        ${inputs.zeroq.devices.server.username} =
-          import ./home/users/server.nix flakeContext; # server user
+        ${inputs.zeroq.devices.server.username} = import ./home/users/server.nix flakeContext; # server user
       };
       homeModules = {
         default = import ./home/default.nix flakeContext;
