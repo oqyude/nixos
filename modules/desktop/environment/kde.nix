@@ -7,13 +7,22 @@
 {
   qt = {
     enable = true;
-    platformTheme = "kde6";
+    style = "breeze";
+    platformTheme = "kde6"; # kde6
   };
   environment = {
+    systemPackages = with pkgs; [
+      whitesur-gtk-theme
+      whitesur-icon-theme
+      whitesur-cursors
+      whitesur-kde
+      #       qogir-icon-theme
+      #       qogir-theme
+      #       qogir-kde
+    ];
     plasma6.excludePackages = with pkgs.kdePackages; [
       plasma-browser-integration
       elisa
-      kwrited
       #       kwallet
       #       kwallet-pam
       #       kwalletmanager
@@ -23,6 +32,7 @@
     displayManager = {
       sddm = {
         enable = true;
+        theme = "WhiteSur-light";
         wayland = {
           enable = true;
           compositor = "kwin";

@@ -8,9 +8,10 @@
 {
   environment = {
     systemPackages = with pkgs; [
-      wineWowPackages.stagingFull
-      wineWowPackages.fonts
-      dxvk
+      wineWowPackages.waylandFull
+      #wineWowPackages.stagingFull
+      #wineWowPackages.fonts
+      #dxvk
     ];
     sessionVariables = {
       WINEARCH = "win64";

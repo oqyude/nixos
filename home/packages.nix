@@ -12,9 +12,6 @@ in
   home = {
     packages = with pkgs; [
       # Base
-      whitesur-gtk-theme
-      whitesur-icon-theme
-      whitesur-kde
       kdePackages.filelight
       localsend
       ludusavi
@@ -37,14 +34,14 @@ in
         ];
       })
 
-      prismlauncher
       #gamehub
       #itch
+      prismlauncher
       lutris
 
-      zerotierone
       libsecret
-      menulibre
+      #zerotierone
+      #menulibre
 
       #edid-decode
       #displaycal
