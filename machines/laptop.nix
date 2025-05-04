@@ -20,7 +20,7 @@ let
 
           self.nixosModules.default
           self.nixosModules.software.wine
-          self.nixosModules.software.daw
+          #self.nixosModules.software.daw
 
           nixos-hardware.nixosModules.asus-fa506ic
           home-manager.nixosModules.home-manager # home-manager module

@@ -83,7 +83,7 @@ let
         mangohud.enable = true;
         keepassxc.enable = true;
         zed-editor = {
-          enable = false;
+          enable = true;
           extensions = [
             "nix"
           ];

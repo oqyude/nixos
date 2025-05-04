@@ -33,7 +33,7 @@ in
 
       (brave.override {
         commandLineArgs = [
-          "--password-store=gnome-libsecret" # on purpose to make it break
+          "--password-store=basic" # on purpose to make it break "--password-store=gnome-libsecret"
         ];
       })
 
@@ -44,6 +44,7 @@ in
 
       zerotierone
       libsecret
+      menulibre
 
       #edid-decode
       #displaycal

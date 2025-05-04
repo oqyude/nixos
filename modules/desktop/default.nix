@@ -7,8 +7,9 @@
 }:
 {
   imports = [
-    ./environment/kde.nix
+    #./environment/kde.nix
     #./environment/gnome.nix
+    ./environment/budgie.nix
   ];
   programs = {
     xwayland.enable = true;
@@ -36,5 +37,8 @@
         accelProfile = "flat";
       };
     };
+  };
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
   };
 }
