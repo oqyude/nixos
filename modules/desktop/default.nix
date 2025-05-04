@@ -16,6 +16,10 @@
     plymouth = {
       enable = true;
       theme = "bgrt";
+      extraConfig = ''
+        [Daemon]
+        ShowDelay=5
+      '';
       # themePackages = with pkgs; [
       #   # By default we would install all themes
       #   (adi1090x-plymouth-themes.override {
