@@ -53,7 +53,7 @@
     xserver = {
       enable = true;
       videoDrivers = [
-        #"amdgpu"
+        "amdgpu"
         "nvidia"
       ];
       xkb = {
