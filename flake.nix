@@ -84,12 +84,12 @@
       };
 
       homeConfigurations = {
-        main = import ./home/users/main.nix flakeContext;
-        server = import ./home/users/server.nix flakeContext;
+        main = import ./modules/home/users/main.nix flakeContext;
+        server = import ./modules/home/users/server.nix flakeContext;
       };
       homeModules = {
-        default = import ./home/default.nix flakeContext;
-        packages = import ./home/packages.nix flakeContext;
+        default = import ./modules/home/default.nix flakeContext;
+        packages = import ./modules/home/packages.nix flakeContext;
       };
     };
 }
