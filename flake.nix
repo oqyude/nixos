@@ -11,15 +11,6 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
 
-    stylix = {
-      url = "github:danth/stylix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        home-manager.follows = "home-manager";
-        flake-compat.follows = "flake-compat";
-        flake-utils.follows = "flake-utils";
-      };
-    };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     flake-compat.url = "github:edolstra/flake-compat";
     flake-utils.url = "github:numtide/flake-utils";
@@ -54,6 +45,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+#     stylix = {
+#       url = "github:danth/stylix";
+#       inputs = {
+#         nixpkgs.follows = "nixpkgs";
+#         home-manager.follows = "home-manager";
+#         flake-compat.follows = "flake-compat";
+#         flake-utils.follows = "flake-utils";
+#       };
+#     };
 
   };
   outputs =

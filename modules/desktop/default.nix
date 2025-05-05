@@ -12,12 +12,7 @@
     #./environment/budgie.nix
 
     ./packages.nix
-    inputs.stylix.nixosModules.stylix
   ];
-
-  stylix = {
-    enable = true;
-  };
 
   boot = {
     plymouth = {

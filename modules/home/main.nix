@@ -34,6 +34,7 @@ let
             target = "keepassxc";
           };
         };
+        #systemDirs.config = ["/etc/xdg"];
         userDirs = {
           enable = true;
           createDirectories = true;
