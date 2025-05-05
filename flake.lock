@@ -474,11 +474,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1746332716,
-        "narHash": "sha256-VBmKSkmw9PYBCEGhBKzORjx+nwNZkPZyHcUHE21A/ws=",
+        "lastModified": 1746397377,
+        "narHash": "sha256-5oLdRa3vWSRbuqPIFFmQBGGUqaYZBxX+GGtN9f/n4lU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "6b1c028bce9c89e9824cde040d6986d428296055",
+        "rev": "ed30f8aba41605e3ab46421e3dcb4510ec560ff8",
         "type": "github"
       },
       "original": {
@@ -490,11 +490,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1746332716,
-        "narHash": "sha256-VBmKSkmw9PYBCEGhBKzORjx+nwNZkPZyHcUHE21A/ws=",
+        "lastModified": 1746397377,
+        "narHash": "sha256-5oLdRa3vWSRbuqPIFFmQBGGUqaYZBxX+GGtN9f/n4lU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "6b1c028bce9c89e9824cde040d6986d428296055",
+        "rev": "ed30f8aba41605e3ab46421e3dcb4510ec560ff8",
         "type": "github"
       },
       "original": {
@@ -513,11 +513,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1746440823,
-        "narHash": "sha256-aRDrEl65gpA0zoSbc1PgMTqKg2KftKwPmT4Wcco0O8U=",
+        "lastModified": 1746456350,
+        "narHash": "sha256-0KnqNEDZ44tuIxBlAGG2chgIYa457xVeRr9v/4y7Gu4=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "fce799ca5f9de092ed27f5c31ed98ab0c83308c6",
+        "rev": "2547c4c3009aef38d30a092cc10e3cc63f76caf2",
         "type": "github"
       },
       "original": {
@@ -624,11 +624,11 @@
         "tinted-zed": "tinted-zed"
       },
       "locked": {
-        "lastModified": 1746439475,
-        "narHash": "sha256-9aFYFeE/Atl9i4rj9NqLLLER0y21F1nIF+ZeJ1Ueml4=",
+        "lastModified": 1746455300,
+        "narHash": "sha256-SxHatwTIR1qEqAHJrThUHYM86hauXsJud3o/L+oEyYY=",
         "owner": "danth",
         "repo": "stylix",
-        "rev": "6c8b77a7f5c1ff7059c4b6d749ace3b6f083e4bb",
+        "rev": "ce5fcf851d6546a24e5b5b17ee7051b4b384be79",
         "type": "github"
       },
       "original": {
@@ -809,11 +809,11 @@
     },
     "zeroq": {
       "locked": {
-        "path": "./zeroq",
+        "path": "./modules/zeroq",
         "type": "path"
       },
       "original": {
-        "path": "./zeroq",
+        "path": "./modules/zeroq",
         "type": "path"
       },
       "parent": []

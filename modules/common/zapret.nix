@@ -23,4 +23,9 @@
       ExecStop = "/run/current-system/sw/bin/bash ./stop_and_clean_nft.sh";
     };
   };
+  environment = {
+    systemPackages = with pkgs; [
+      nftables
+    ];
+  };
 }

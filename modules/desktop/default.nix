@@ -12,15 +12,19 @@
     #./environment/budgie.nix
 
     ./packages.nix
+    inputs.stylix.nixosModules.stylix
   ];
+
+  stylix = {
+    enable = true;
+  };
 
   boot = {
     plymouth = {
       enable = true;
       theme = "bgrt";
       extraConfig = ''
-        [Daemon]
-        ShowDelay=5
+        ShowDelay=2
       '';
       # themePackages = with pkgs; [
       #   # By default we would install all themes
