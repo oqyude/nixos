@@ -16,9 +16,9 @@
       whitesur-icon-theme
       whitesur-cursors
       whitesur-kde
-      #       qogir-icon-theme
-      #       qogir-theme
-      #       qogir-kde
+      qogir-icon-theme
+      qogir-theme
+      qogir-kde
     ];
     plasma6.excludePackages = with pkgs.kdePackages; [
       plasma-browser-integration
