@@ -15,7 +15,8 @@
           theme = "Qogir";
           size = 24;
         };
-        iconTheme = "WhiteSur-light";
+        #iconTheme = "WhiteSur-light";
+        iconTheme = "WhiteSur";
         #wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Patak/contents/images/1080x1920.png";
       };
     };
