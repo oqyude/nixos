@@ -3,7 +3,7 @@
 
   inputs = {
 
-    zeroq.url = "path:./zeroq"; # my flake of variables
+    zeroq.url = "path:./modules/zeroq"; # my flake of variables
     zapret.url = "github:oqyude/zapret-easyflake"; # my zapret easy-flake
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # 507b63021ada5fee621b6ca371c4fca9ca46f52c
