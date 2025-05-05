@@ -94,7 +94,9 @@ let
         useGlobalPkgs = true;
         useUserPackages = true;
         users.${inputs.zeroq.devices.admin} = homeModule;
+        sharedModules = [ inputs.plasma-manager.homeManagerModules.plasma-manager ];
       };
+
     };
 in
 (

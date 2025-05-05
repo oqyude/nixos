@@ -91,6 +91,7 @@
         default = import ./modules/home/modules/default.nix flakeContext;
         packages = import ./modules/home/modules/packages.nix flakeContext;
         dconf = import ./modules/home/modules/dconf.nix flakeContext;
+        plasma-manager = import ./modules/home/modules/plasma-manager.nix flakeContext;
       };
     };
 }
