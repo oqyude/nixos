@@ -65,11 +65,11 @@
         };
         desktop = {
           default = import ./modules/desktop/default.nix flakeContext;
-          base = {
-            logitech = import ./modules/base/logitech.nix flakeContext;
-            zapret = import ./modules/base/zapret.nix flakeContext;
-            fingerprint = import ./modules/base/fingerprint.nix flakeContext;
-          };
+        };
+        base = {
+          logitech = import ./modules/base/logitech.nix flakeContext;
+          zapret = import ./modules/base/zapret.nix flakeContext;
+          fingerprint = import ./modules/base/fingerprint.nix flakeContext;
         };
         extra = {
           aagl = import ./modules/extra/aagl.nix flakeContext; # an anime game launcher module
