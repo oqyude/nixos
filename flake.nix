@@ -4,8 +4,8 @@
   inputs = {
 
     zeroq.url = "path:./zeroq"; # my flake of variables
-
     zapret.url = "github:oqyude/zapret-easyflake"; # my zapret easy-flake
+
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # 507b63021ada5fee621b6ca371c4fca9ca46f52c
     nixpkgs-last-unstable.url = "github:NixOS/nixpkgs/507b63021ada5fee621b6ca371c4fca9ca46f52c"; # f6db44a8daa59c40ae41ba6e5823ec77fe0d2124
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -26,7 +26,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     disko = {
-      # wip
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -66,19 +65,21 @@
         };
         desktop = {
           default = import ./modules/desktop/default.nix flakeContext;
-          logitech = import ./modules/desktop/logitech.nix flakeContext;
-          zapret = import ./modules/desktop/zapret.nix flakeContext;
-          fingerprint = import ./modules/desktop/fingerprint.nix flakeContext;
+          extra = {
+            logitech = import ./modules/desktop/extra/logitech.nix flakeContext;
+            zapret = import ./modules/desktop/extra/zapret.nix flakeContext;
+            fingerprint = import ./modules/desktop/extra/fingerprint.nix flakeContext;
+          };
         };
-        additional = {
-          aagl = import ./modules/additional/aagl.nix flakeContext; # an anime game launcher module
-          musnix = import ./modules/additional/musnix.nix flakeContext;
+        extra = {
+          aagl = import ./modules/extra/aagl.nix flakeContext; # an anime game launcher module
+          musnix = import ./modules/extra/musnix.nix flakeContext;
         };
       };
 
       homeConfigurations = {
-        ${inputs.zeroq.devices.admin} = import ./home/users/admin.nix flakeContext; # main user
-        ${inputs.zeroq.devices.server.username} = import ./home/users/server.nix flakeContext; # server user
+        main = import ./home/users/main.nix flakeContext;
+        server = import ./home/users/server.nix flakeContext;
       };
       homeModules = {
         default = import ./home/default.nix flakeContext;

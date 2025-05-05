@@ -24,7 +24,7 @@ let
 
           nixos-hardware.nixosModules.asus-fa506ic
           home-manager.nixosModules.home-manager # home-manager module
-          self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
+          self.homeConfigurations.main.nixosModule # home-manager configuration module
         ]
         ++ (builtins.attrValues inputs.self.nixosModules.desktop);
 
@@ -58,25 +58,14 @@ let
       };
 
       boot = {
-        #hardwareScan = true;
         kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
         loader = {
           systemd-boot.enable = true;
           efi.canTouchEfiVariables = true;
-          #timeout = 3;
         };
       };
 
       hardware = {
-        logitech = {
-          wireless = {
-            enable = true;
-            enableGraphical = true;
-          };
-        };
-        graphics = {
-          enable = true;
-        };
         bluetooth.enable = true;
         #         nvidia = {
         #           open = true;
@@ -123,46 +112,7 @@ let
         };
       };
 
-      environment = {
-        systemPackages = with pkgs; [
-          # Net
-          curl
-          ipset
-          iptables
-          nftables
-          wget
-
-          # Tools
-          mc
-          unzip
-          rar
-          ntfs3g
-          gparted
-
-          # Monitoring
-          pciutils
-          smartmontools
-          usbutils
-        ];
-      };
-
-      programs = {
-        adb.enable = true;
-        gamemode.enable = true;
-        tuxclocker = {
-          enable = false;
-          enableAMD = true;
-          useUnfree = true;
-        };
-        steam.enable = true;
-        gamescope.enable = true;
-      };
-
       services = {
-        printing = {
-          enable = true;
-          cups-pdf.enable = true;
-        };
         syncthing = {
           enable = true;
           systemService = true;

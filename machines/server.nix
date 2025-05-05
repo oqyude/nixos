@@ -14,7 +14,7 @@ let
         self.nixosModules.default # default module
 
         home-manager.nixosModules.home-manager # home-manager module
-        self.homeConfigurations.${inputs.zeroq.devices.server.username}.nixosModule # home-manager configuration module
+        self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];
 
       boot = {

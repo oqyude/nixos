@@ -10,6 +10,8 @@
     ./environment/kde.nix
     #./environment/gnome.nix
     #./environment/budgie.nix
+
+    ./packages.nix
   ];
 
   boot = {
@@ -42,7 +44,7 @@
     # It will just not appear on screen unless a key is pressed
     loader.timeout = 0;
   };
-
+  hardware.graphics.enable = true;
   programs = {
     xwayland.enable = true;
     dconf.enable = true;
