@@ -44,6 +44,20 @@
             vendorId = "04f3";
           }
         ];
+        keyboard = {
+          switchingPolicy = "global";
+          #           options = [
+          #             "altshift"
+          #           ];
+          layouts = [
+            {
+              layout = "us";
+            }
+            {
+              layout = "ru";
+            }
+          ];
+        };
       };
       workspace = {
         #clickItemTo = "open"; # If you liked the click-to-open default from plasma 5
@@ -55,7 +69,7 @@
           theme = "Qogir";
           size = 24;
         };
-        wallpaper = "${config.home.homeDirectory}/Misc/Desktops/Wallpapers/Desktop/END_Circle_7.png.png";
+        wallpaper = "${config.home.homeDirectory}//Misc/Desktops/Wallpapers/Desktop/END_Circle_7.png";
         #windowDecorations = {
         #  library = "org.kde.kwin.aurorae";
         #  theme = "__aurorae__svg__WhiteSur";

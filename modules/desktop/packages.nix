@@ -28,9 +28,9 @@
       #gparted
 
       # Monitoring
-      #pciutils
-      #smartmontools
-      #usbutils
+      pciutils
+      smartmontools
+      usbutils
     ];
   };
   services = {
