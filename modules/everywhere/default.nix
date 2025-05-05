@@ -11,6 +11,7 @@
     ./extras/i18n.nix
     ./extras/nix-store.nix
     ./extras/packages.nix
+    ./extras/system.nix
   ];
 
   users = {
@@ -54,25 +55,5 @@
         dates = "daily";
       };
     };
-  };
-
-  security = {
-    sudo.wheelNeedsPassword = false;
-    polkit = {
-      enable = true;
-      extraConfig = ''
-        polkit.addRule(function(action, subject) {
-            if ((action.id == "org.gnome.gparted" || // Для гнома
-                action.id == "org.freedesktop.policykit.exec") && // Для запуска Nekoray
-                subject.isInGroup("wheel")){ // Операции sudo
-                return polkit.Result.YES;
-            }
-        });
-      '';
-    };
-  };
-
-  systemd = {
-    network.wait-online.enable = false;
   };
 }

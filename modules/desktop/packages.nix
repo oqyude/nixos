@@ -19,23 +19,18 @@
   environment = {
     systemPackages = with pkgs; [
       # Net
-      curl
-      ipset
-      iptables
-      nftables
-      wget
+      #ipset
+      #iptables
+      #nftables
 
       # Tools
-      mc
-      unzip
-      rar
-      ntfs3g
-      gparted
+      #ntfs3g
+      #gparted
 
       # Monitoring
-      pciutils
-      smartmontools
-      usbutils
+      #pciutils
+      #smartmontools
+      #usbutils
     ];
   };
   services = {

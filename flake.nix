@@ -63,16 +63,16 @@
           default = import ./modules/everywhere/default.nix flakeContext;
           terminal = import ./modules/everywhere/terminal.nix flakeContext;
         };
-        software = {
-          daw = import ./modules/software/daw.nix flakeContext;
-          virtualisation = import ./modules/software/virtualisation.nix flakeContext;
-          wine = import ./modules/software/wine.nix flakeContext;
-        };
-        desktop = import ./modules/desktop/default.nix flakeContext;
         common = {
           fingerprint = import ./modules/common/fingerprint.nix flakeContext;
           logitech = import ./modules/common/logitech.nix flakeContext;
           zapret = import ./modules/common/zapret.nix flakeContext;
+        };
+        desktop = import ./modules/desktop/default.nix flakeContext;
+        software = {
+          daw = import ./modules/software/daw.nix flakeContext;
+          virtualisation = import ./modules/software/virtualisation.nix flakeContext;
+          wine = import ./modules/software/wine.nix flakeContext;
         };
         extra = {
           musnix = import ./modules/extra/musnix.nix flakeContext; # https://github.com/musnix/musnix
