@@ -10,6 +10,7 @@
     ./extras/binary-cache.nix # list of caches
     ./extras/i18n.nix
     ./extras/nix-store.nix
+    ./extras/packages.nix
   ];
 
   users = {
