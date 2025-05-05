@@ -8,14 +8,15 @@ let
       ...
     }:
     {
-      imports = with inputs; [
-        ./hardware/server.nix
+      imports =
+        with inputs;
+        [
+          ./hardware/server.nix
 
-        self.nixosModules.default # default module
-
-        home-manager.nixosModules.home-manager # home-manager module
-        self.homeConfigurations.server.nixosModule # home-manager configuration module
-      ];
+          home-manager.nixosModules.home-manager # home-manager module
+          self.homeConfigurations.server.nixosModule # home-manager configuration module
+        ]
+        ++ (builtins.attrValues inputs.self.nixosModules.everywhere);
 
       boot = {
         kernelPackages = pkgs.linuxPackages_xanmod_stable;

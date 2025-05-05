@@ -11,38 +11,41 @@ in
 {
   home = {
     packages = with pkgs; [
-      # Base
-      kdePackages.filelight
-      localsend
-      ludusavi
-      pdfarranger
-      libreoffice-qt6
-      vlc
-      gramps
-      stretchly
-      nekoray
-      discord
-      _64gram
-      obsidian
-      reaper
-      transmission_4-qt
-      lollypop
-
+      # Surfing
       (brave.override {
         commandLineArgs = [
           "--password-store=basic" # on purpose to make it break "--password-store=gnome-libsecret"
         ];
       })
+      nekoray
 
+      # Workflow
+      _64gram
+      discord
+      gramps
+      kdePackages.filelight
+      libreoffice-qt6
+      localsend
+      lollypop
+      obsidian
+      pdfarranger
+      reaper
+      stretchly
+      transmission_4-qt
+      vlc
+      #zerotierone
+
+      # Games
+      ludusavi
       #gamehub
       #itch
       prismlauncher
       lutris
 
+      # Libs
       libsecret
-      #zerotierone
-      #menulibre
 
+      # Display
       #edid-decode
       #displaycal
       #argyllcms

@@ -18,16 +18,16 @@ let
         [
           ./hardware/laptop.nix
 
-          self.nixosModules.default
           self.nixosModules.software.wine
           #self.nixosModules.software.daw
 
-          self.nixosModules.desktop.default
+          self.nixosModules.desktop
           nixos-hardware.nixosModules.asus-fa506ic
           home-manager.nixosModules.home-manager # home-manager module
           self.homeConfigurations.main.nixosModule # home-manager configuration module
         ]
-        ++ (builtins.attrValues inputs.self.nixosModules.base);
+        ++ (builtins.attrValues inputs.self.nixosModules.common)
+        ++ (builtins.attrValues inputs.self.nixosModules.everywhere);
 
       fileSystems = {
         "${inputs.zeroq.dirs.therima-drive}" = {

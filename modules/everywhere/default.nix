@@ -6,23 +6,13 @@
   ...
 }:
 {
-  nixpkgs.config.allowUnfree = true;
-
-  nix = {
-    settings = {
-      substituters = [
-        "https://nixos-cache-proxy.cofob.dev" # https://gist.github.com/cofob/9b1fd205e6d961a45c225ae9f0af1394
-      ];
-      auto-optimise-store = true;
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
-    };
-  };
+  imports = [
+    ./extras/binary-cache.nix # list of caches
+    ./extras/i18n.nix
+    ./extras/nix-store.nix
+  ];
 
   users = {
-    defaultUserShell = pkgs.zsh;
     users = {
       "${inputs.zeroq.devices.admin}" = {
         isNormalUser = true;
@@ -43,42 +33,7 @@
     };
   };
 
-  time.timeZone = "Europe/Moscow";
-  i18n = {
-    defaultLocale = "en_US.UTF-8";
-    supportedLocales = [
-      "C.UTF-8/UTF-8"
-      "en_US.UTF-8/UTF-8"
-      "ru_RU.UTF-8/UTF-8"
-    ];
-  };
-
   programs = {
-    zsh = {
-      enable = true;
-      enableCompletion = true;
-      enableBashCompletion = true;
-      syntaxHighlighting.enable = true;
-      zsh-autoenv.enable = true;
-      histSize = 10000;
-      loginShellInit = "cd /etc/nixos && clear && fastfetch";
-      ohMyZsh = {
-        enable = true;
-        theme = "robbyrussell";
-      };
-      shellAliases = {
-        # shell
-        ff = "clear && fastfetch";
-        l = "ls -l";
-
-        # ssh
-        s-1 = "ssh sapphira-1";
-        s-1t = "ssh sapphira-1t";
-
-        # Somethings
-        reboot-bios = "sudo systemctl reboot --firmware-setup";
-      };
-    };
     git = {
       enable = true;
       config = {
@@ -118,12 +73,5 @@
 
   systemd = {
     network.wait-online.enable = false;
-  };
-
-  environment = {
-    systemPackages = with pkgs; [
-      nixfmt-tree
-      nix-diff
-    ];
   };
 }
