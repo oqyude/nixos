@@ -90,6 +90,7 @@
       homeModules = {
         default = import ./modules/home/modules/default.nix flakeContext;
         packages = import ./modules/home/modules/packages.nix flakeContext;
+        dconf = import ./modules/home/modules/dconf.nix flakeContext;
       };
     };
 }
