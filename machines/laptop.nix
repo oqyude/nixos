@@ -24,7 +24,8 @@ let
           self.nixosModules.desktop
           nixos-hardware.nixosModules.asus-fa506ic
           home-manager.nixosModules.home-manager # home-manager module
-          self.homeConfigurations.main.nixosModule # home-manager configuration module
+          self.homeConfigurations.main.nixosModule # main user
+          self.homeConfigurations.root.nixosModule # main user
         ]
         ++ (builtins.attrValues inputs.self.nixosModules.common)
         ++ (builtins.attrValues inputs.self.nixosModules.everywhere);
