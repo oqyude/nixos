@@ -22,7 +22,7 @@
     nix-gaming.url = "github:fufexan/nix-gaming";
 
     home-manager = {
-      url = "flake:home-manager";
+      url = "github:nix-community/home-manager"; # flake:home-manager
       inputs.nixpkgs.follows = "nixpkgs";
     };
     disko = {
@@ -67,13 +67,16 @@
           default = import ./modules/desktop/default.nix flakeContext;
         };
         base = {
+          fingerprint = import ./modules/base/fingerprint.nix flakeContext;
           logitech = import ./modules/base/logitech.nix flakeContext;
           zapret = import ./modules/base/zapret.nix flakeContext;
-          fingerprint = import ./modules/base/fingerprint.nix flakeContext;
         };
         extra = {
-          aagl = import ./modules/extra/aagl.nix flakeContext; # an anime game launcher module
-          musnix = import ./modules/extra/musnix.nix flakeContext;
+          musnix = import ./modules/extra/musnix.nix flakeContext; # https://github.com/musnix/musnix
+          nix-gaming = {
+            default = import ./modules/extra/nix-gaming/default.nix flakeContext; # https://github.com/fufexan/nix-gaming
+            aagl = import ./modules/extra/nix-gaming/aagl.nix flakeContext; # https://github.com/ezKEa/aagl-gtk-on-nix
+          };
         };
       };
 

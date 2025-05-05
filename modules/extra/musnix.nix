@@ -1,3 +1,4 @@
+# https://github.com/musnix/musnix
 { inputs, ... }@flakeContext:
 {
   config,

@@ -1,7 +1,7 @@
+# https://github.com/ezKEa/aagl-gtk-on-nix
 { inputs, ... }@flakeContext:
 {
   config,
-  lib,
   pkgs,
   ...
 }:
