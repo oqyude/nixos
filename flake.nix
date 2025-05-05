@@ -45,15 +45,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
-#     stylix = {
-#       url = "github:danth/stylix";
-#       inputs = {
-#         nixpkgs.follows = "nixpkgs";
-#         home-manager.follows = "home-manager";
-#         flake-compat.follows = "flake-compat";
-#         flake-utils.follows = "flake-utils";
-#       };
-#     };
+    #     stylix = {
+    #       url = "github:danth/stylix";
+    #       inputs = {
+    #         nixpkgs.follows = "nixpkgs";
+    #         home-manager.follows = "home-manager";
+    #         flake-compat.follows = "flake-compat";
+    #         flake-utils.follows = "flake-utils";
+    #       };
+    #     };
 
   };
   outputs =
