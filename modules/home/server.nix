@@ -33,7 +33,7 @@ let
         };
         username = "${inputs.zeroq.devices.server.username}";
         homeDirectory = "/home/${inputs.zeroq.devices.server.username}";
-        stateVersion = "24.11";
+        stateVersion = "25.05";
       };
 
     };
