@@ -7,6 +7,7 @@
 let
   unstable = import inputs.nixpkgs-unstable { system = "x86_64-linux"; };
   last-stable = import inputs.nixpkgs-last-unstable { system = "x86_64-linux"; };
+  stable = import inputs.nixpkgs-stable { system = "x86_64-linux"; };
 in
 {
   programs = {
@@ -63,7 +64,6 @@ in
       transmission_4-qt
       vlc
       #zerotierone
-      input-leap
 
       # Games
       ludusavi
