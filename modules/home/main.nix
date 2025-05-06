@@ -38,7 +38,7 @@ let
         userDirs = {
           enable = true;
           createDirectories = true;
-          desktop = "${config.home.homeDirectory}/Misc/Desktops/${inputs.zeroq.devices.admin}";
+          desktop = "${config.xdg.dataHome}/desktop";
           documents = "${config.home.homeDirectory}/Documents";
           download = "${config.home.homeDirectory}/Downloads";
           music = "${config.home.homeDirectory}/Music";

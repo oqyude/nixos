@@ -6,9 +6,40 @@
 }:
 {
   programs = {
+    kate = {
+      enable = true;
+      editor = {
+        brackets = {
+          automaticallyAddClosing = true;
+          highlightMatching = true;
+        };
+        font = {
+          family = "Hack";
+          pointSize = 14;
+        };
+      };
+    };
     plasma = {
       enable = true;
-      overrideConfig = true;
+      overrideConfig = false;
+      configFile = {
+        dolphinrc = {
+          "General" = {
+            "RememberOpenedTabs" = true;
+          };
+          "DetailsMode" = {
+            "ExpandableFolders" = false;
+            "PreviewSize" = 32;
+            "IconSize" = 32;
+          };
+        };
+        "katerc" = {
+          "KTextEditor View" = {
+            "Scroll Bar MiniMap" = false;
+            "Scroll Bar Preview" = false;
+          };
+        };
+      };
       input = {
         # /proc/bus/input/devices
         mice = [
