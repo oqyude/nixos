@@ -6,8 +6,8 @@
     zeroq.url = "path:./modules/zeroq"; # my flake of variables
     zapret.url = "github:oqyude/zapret-easyflake"; # my zapret easy-flake
 
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # 507b63021ada5fee621b6ca371c4fca9ca46f52c
-    nixpkgs-last-unstable.url = "github:NixOS/nixpkgs/507b63021ada5fee621b6ca371c4fca9ca46f52c"; # f6db44a8daa59c40ae41ba6e5823ec77fe0d2124
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # b6aef6c3553f849e1e6c08f1bcd3061df2b69fc4
+    nixpkgs-last-unstable.url = "github:NixOS/nixpkgs/b6aef6c3553f849e1e6c08f1bcd3061df2b69fc4"; # 507b63021ada5fee621b6ca371c4fca9ca46f52c
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
 
