@@ -100,7 +100,7 @@
           theme = "Qogir";
           size = 24;
         };
-        wallpaper = "${config.home.homeDirectory}//Misc/Desktops/Wallpapers/Desktop/END_Circle_7.png";
+        #wallpaper = "${config.home.homeDirectory}//Misc/Desktops/Wallpapers/Desktop/END_Circle_7.png";
         #windowDecorations = {
         #  library = "org.kde.kwin.aurorae";
         #  theme = "__aurorae__svg__WhiteSur";

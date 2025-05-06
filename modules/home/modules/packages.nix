@@ -63,6 +63,7 @@ in
       transmission_4-qt
       vlc
       #zerotierone
+      input-leap
 
       # Games
       ludusavi
