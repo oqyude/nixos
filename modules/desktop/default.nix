@@ -18,15 +18,9 @@
     plymouth = {
       enable = true;
       theme = "bgrt";
-      extraConfig = ''
-        ShowDelay=2
-      '';
-      # themePackages = with pkgs; [
-      #   # By default we would install all themes
-      #   (adi1090x-plymouth-themes.override {
-      #     selected_themes = [ "rings" ];
-      #   })
-      # ];
+      #extraConfig = ''
+      #  ShowDelay=2
+      #'';
     };
     # Enable "Silent boot"
     consoleLogLevel = 3;
@@ -41,7 +35,7 @@
     # Hide the OS choice for bootloaders.
     # It's still possible to open the bootloader list by pressing any key
     # It will just not appear on screen unless a key is pressed
-    loader.timeout = 0;
+    loader.timeout = 2;
   };
   hardware.graphics.enable = true;
   programs = {

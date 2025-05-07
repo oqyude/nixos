@@ -66,25 +66,27 @@ let
           #systemd-boot.enable = true;
           grub = {
             enable = true;
-            useOSProber           = true;
+            useOSProber = true;
             #efiInstallAsRemovable = true;
-            efiSupport            = true;
+            efiSupport = true;
             device = "nodev";
-            #fsIdentifier          = "label";
-            extraEntries = ''
-                menuentry "Reboot" {
-                    reboot
-                }
-                menuentry "Poweroff" {
-                    halt
-                }
-            '';
+            #copyKernels = true;
+            #             extraEntries = ''
+            #                 menuentry "Reboot" {
+            #                     reboot
+            #                 }
+            #                 menuentry "Poweroff" {
+            #                     halt
+            #                 }
+            #             '';
           };
           grub2-theme = {
             enable = true;
             theme = "whitesur";
+            icon = "whitesur";
             footer = true;
-            customResolution = "1920x1080";  # Optional: Set a custom resolution
+            #bootMenuConfig = "";
+            customResolution = "1920x1080"; # Optional: Set a custom resolution
           };
           efi.canTouchEfiVariables = true;
         };
