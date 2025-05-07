@@ -67,7 +67,7 @@ let
           grub = {
             enable = true;
             useOSProber = true;
-            #efiInstallAsRemovable = true;
+            efiInstallAsRemovable = true;
             efiSupport = true;
             device = "nodev";
             #copyKernels = true;
@@ -88,7 +88,7 @@ let
             #bootMenuConfig = "";
             customResolution = "1920x1080"; # Optional: Set a custom resolution
           };
-          efi.canTouchEfiVariables = true;
+          #efi.canTouchEfiVariables = true;
         };
       };
 
