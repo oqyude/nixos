@@ -67,8 +67,6 @@ in
 
       # Games
       ludusavi
-      #gamehub
-      #itch
       prismlauncher
       lutris
 
