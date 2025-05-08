@@ -187,7 +187,7 @@ let
     };
 in
 inputs.nixpkgs.lib.nixosSystem {
-  modules = with inputs; [
+  modules = [
     nixosModule
   ];
   system = "x86_64-linux";
