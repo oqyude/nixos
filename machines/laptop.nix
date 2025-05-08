@@ -26,7 +26,7 @@ let
           home-manager.nixosModules.home-manager # home-manager module
           grub2-themes.nixosModules.default # grub2 themes module
           self.homeConfigurations.main.nixosModule # main user
-          self.homeConfigurations.root.nixosModule # main user
+          self.homeConfigurations.root.nixosModule # root user
         ]
         ++ (builtins.attrValues inputs.self.nixosModules.common)
         ++ (builtins.attrValues inputs.self.nixosModules.everywhere);
