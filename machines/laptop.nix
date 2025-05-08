@@ -176,7 +176,7 @@ let
         };
         thermald.enable = true;
         earlyoom.enable = true;
-        preload.enable = false;
+        preload.enable = true;
       };
 
       security = {
