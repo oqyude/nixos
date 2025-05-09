@@ -64,8 +64,22 @@
         accelProfile = "flat";
       };
     };
+    colord.enable = true;
   };
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
   };
+
+#   systemd.services.xiccd = { # Color Profiler bus for x11
+#     enable = false;
+#     description = "Xiccd Screen Color Profiler";
+#     serviceConfig = {
+#       ExecStart = "${pkgs.xiccd}/bin/xiccd";
+#       ExecStop = "pkill xiccd";
+#       Restart = "always";
+#     };
+#     wantedBy = [ "dbus.service" ];
+#     after = [ "dbus.service" ];
+#     partOf = [ "dbus.service" ];
+#   };
 }

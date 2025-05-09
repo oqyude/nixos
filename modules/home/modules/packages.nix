@@ -72,6 +72,7 @@ in
 
       # Libs
       libsecret
+      tg
 
       # Display
       #edid-decode

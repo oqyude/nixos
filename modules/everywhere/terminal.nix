@@ -5,6 +5,7 @@
   ...
 }:
 {
+  system.userActivationScripts.zshrc = "touch .zshrc";
   users.defaultUserShell = pkgs.zsh;
   programs.zsh = {
     enable = true;

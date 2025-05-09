@@ -31,6 +31,9 @@
       pciutils
       smartmontools
       usbutils
+      #xiccd
+      #argyllcms
+      #colord
     ];
   };
   services = {
