@@ -59,11 +59,12 @@ in
       lollypop
       obsidian
       pdfarranger
-      reaper
       stretchly
-      transmission_4-qt
+      transmission_4-gtk
       vlc
       #zerotierone
+      #tg
+      #reaper
 
       # Games
       ludusavi
@@ -72,7 +73,6 @@ in
 
       # Libs
       libsecret
-      tg
 
       # Display
       #edid-decode
