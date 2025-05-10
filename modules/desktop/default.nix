@@ -10,8 +10,6 @@
     ./environment/kde.nix
     #./environment/gnome.nix
     #./environment/budgie.nix
-
-    ./packages.nix
   ];
 
   boot = {
@@ -58,6 +56,10 @@
   programs = {
     xwayland.enable = true;
     dconf.enable = true;
+    adb.enable = true;
+    gamemode.enable = true;
+    steam.enable = true;
+    #gamescope.enable = true;
   };
   services = {
     xserver = {
@@ -82,11 +84,19 @@
       };
     };
     colord.enable = true;
+    printing = {
+      enable = true;
+      cups-pdf.enable = true;
+    };
   };
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
   };
 
+  #   environment = {
+  #     systemPackages = with pkgs; [
+  #     ];
+  #   };
   #   systemd.services.xiccd = { # Color Profiler bus for x11
   #     enable = false;
   #     description = "Xiccd Screen Color Profiler";

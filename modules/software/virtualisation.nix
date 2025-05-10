@@ -49,5 +49,4 @@
       #looking-glass-client # pci-passthrough
     ];
   };
-
 }

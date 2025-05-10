@@ -11,11 +11,28 @@
       nix-diff
 
       # Essentials
-      wget
       curl
       mc
-      unzip
+      pciutils
       rar
+      smartmontools
+      unzip
+      usbutils
+      wget
+
+      # Tools
+      #ntfs3g
+      #gparted
+
+      # Color Prorilers
+      #xiccd
+      #argyllcms
+      #colord
+
+      # Net
+      #ipset
+      #iptables
+      #nftables
     ];
   };
 }
