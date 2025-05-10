@@ -39,7 +39,7 @@ let
           enable = true;
           createDirectories = true;
           desktop = "${config.xdg.dataHome}/desktop";
-          documents = "${config.home.homeDirectory}/Documents";
+          documents = null;
           download = "${config.home.homeDirectory}/Downloads";
           music = "${config.home.homeDirectory}/Music";
           pictures = "${config.home.homeDirectory}/Pictures";
@@ -76,10 +76,6 @@ let
           "Deploy" = {
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Deploy";
             target = "Deploy";
-          };
-          "Documents" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Public Documents";
-            target = "Documents";
           };
           "Misc" = {
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Misc";
