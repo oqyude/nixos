@@ -35,6 +35,7 @@
     loader = {
       timeout = 2;
       efi.canTouchEfiVariables = lib.mkForce false;
+      systemd-boot.enable = lib.mkForce false;
       grub = {
         enable = lib.mkForce true;
         useOSProber = true;
@@ -42,14 +43,6 @@
         efiSupport = true;
         device = "nodev";
         #copyKernels = true;
-        #             extraEntries = ''
-        #                 menuentry "Reboot" {
-        #                     reboot
-        #                 }
-        #                 menuentry "Poweroff" {
-        #                     halt
-        #                 }
-        #             '';
       };
       grub2-theme = {
         enable = true;
