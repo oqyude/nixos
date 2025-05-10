@@ -55,7 +55,7 @@ let
 
       environment = {
         systemPackages = with pkgs; [
-          acl
+          #acl
           btop # tty
           efibootmgr # Info
           fastfetch
