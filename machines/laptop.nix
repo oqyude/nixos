@@ -20,14 +20,12 @@ let
 
           self.nixosModules.software.wine
           #self.nixosModules.software.daw
-
           self.nixosModules.desktop
-          nixos-hardware.nixosModules.asus-fa506ic
-          home-manager.nixosModules.home-manager # home-manager module
-          grub2-themes.nixosModules.default # grub2 themes module
           self.homeConfigurations.main.nixosModule # main user
           self.homeConfigurations.root.nixosModule # root user
 
+          home-manager.nixosModules.home-manager # home-manager module
+          nixos-hardware.nixosModules.asus-fa506ic
           nix-index-database.nixosModules.nix-index
         ]
         ++ (builtins.attrValues inputs.self.nixosModules.common)

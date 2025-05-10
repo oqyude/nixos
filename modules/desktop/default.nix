@@ -10,6 +10,8 @@
     ./environment/kde.nix
     #./environment/gnome.nix
     #./environment/budgie.nix
+
+    inputs.grub2-themes.nixosModules.default # grub2 themes module
   ];
 
   boot = {
