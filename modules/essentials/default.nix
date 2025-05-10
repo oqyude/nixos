@@ -25,9 +25,10 @@
       };
     };
     lazygit.enable = true;
+    command-not-found.enable = false;
     nix-index = {
       enable = true;
-      enableBashIntegration = false;
+      #enableBashIntegration = false;
     };
     nh = {
       enable = true;
