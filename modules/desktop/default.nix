@@ -79,10 +79,11 @@
     libinput = {
       enable = true;
       mouse = {
-        accelProfile = "flat";
+        #accelStepScroll = 0.1;
+        #accelProfile = "flat";
       };
       touchpad = {
-        accelProfile = "flat";
+        #accelProfile = "flat";
       };
     };
     colord.enable = true;
