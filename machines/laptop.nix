@@ -29,7 +29,7 @@ let
           self.homeConfigurations.root.nixosModule # root user
         ]
         ++ (builtins.attrValues inputs.self.nixosModules.common)
-        ++ (builtins.attrValues inputs.self.nixosModules.everywhere);
+        ++ (builtins.attrValues inputs.self.nixosModules.essentials);
 
       fileSystems = {
         "${inputs.zeroq.dirs.therima-drive}" = {

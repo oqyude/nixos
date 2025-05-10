@@ -6,11 +6,11 @@
 {
   environment = {
     systemPackages = with pkgs; [
-      # Common
+      # Nix
       nixfmt-tree
       nix-diff
 
-      # Utility
+      # Essentials
       wget
       curl
       mc

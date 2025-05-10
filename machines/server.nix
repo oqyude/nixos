@@ -16,7 +16,7 @@ let
           home-manager.nixosModules.home-manager # home-manager module
           self.homeConfigurations.server.nixosModule # home-manager configuration module
         ]
-        ++ (builtins.attrValues inputs.self.nixosModules.everywhere);
+        ++ (builtins.attrValues inputs.self.nixosModules.essentials);
 
       boot = {
         kernelPackages = pkgs.linuxPackages_xanmod_stable;

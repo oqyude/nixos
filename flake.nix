@@ -3,14 +3,17 @@
 
   inputs = {
 
-    zeroq.url = "path:./modules/zeroq"; # my flake of variables
-    zapret.url = "github:oqyude/zapret-easyflake"; # my zapret easy-flake
+    # My
+    zeroq.url = "path:./modules/zeroq"; # flake of variables
+    zapret.url = "github:oqyude/zapret-easyflake"; # stupid flake of zapret
 
+    # nixpkgs
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # b6aef6c3553f849e1e6c08f1bcd3061df2b69fc4
     nixpkgs-last-unstable.url = "github:NixOS/nixpkgs/b6aef6c3553f849e1e6c08f1bcd3061df2b69fc4"; # 507b63021ada5fee621b6ca371c4fca9ca46f52c
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
 
+    # nix-community
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     flake-compat.url = "github:edolstra/flake-compat";
     flake-utils.url = "github:numtide/flake-utils";
@@ -19,7 +22,6 @@
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-gaming.url = "github:fufexan/nix-gaming";
     home-manager = {
       url = "github:nix-community/home-manager"; # flake:home-manager
       inputs.nixpkgs.follows = "nixpkgs";
@@ -28,6 +30,15 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    plasma-manager = {
+      # https://github.com/nix-community/plasma-manager
+      url = "github:nix-community/plasma-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
+
+    # extras
+    nix-gaming.url = "github:fufexan/nix-gaming";
     aagl = {
       url = "github:ezKEa/aagl-gtk-on-nix";
       inputs = {
@@ -39,14 +50,13 @@
       url = "github:musnix/musnix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    plasma-manager = {
-      # https://github.com/nix-community/plasma-manager
-      url = "github:nix-community/plasma-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
-    };
     grub2-themes = {
       url = "github:vinceliuice/grub2-themes";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nypkgs = {
+      # https://github.com/yunfachi/nypkgs
+      url = "github:yunfachi/nypkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     #     stylix = {
@@ -73,9 +83,9 @@
         ${inputs.zeroq.devices.wsl.hostname} = import ./machines/wsl.nix flakeContext; # wsl config
       };
       nixosModules = {
-        everywhere = {
-          default = import ./modules/everywhere/default.nix flakeContext;
-          terminal = import ./modules/everywhere/terminal.nix flakeContext;
+        essentials = {
+          default = import ./modules/essentials/default.nix flakeContext;
+          terminal = import ./modules/essentials/terminal.nix flakeContext;
         };
         common = {
           fingerprint = import ./modules/common/fingerprint.nix flakeContext;
@@ -90,9 +100,9 @@
         };
         extra = {
           musnix = import ./modules/extra/musnix.nix flakeContext; # https://github.com/musnix/musnix
-          nix-gaming = {
-            default = import ./modules/extra/nix-gaming/default.nix flakeContext; # https://github.com/fufexan/nix-gaming
-            aagl = import ./modules/extra/nix-gaming/aagl.nix flakeContext; # https://github.com/ezKEa/aagl-gtk-on-nix
+          gaming = {
+            nix-gaming = import ./modules/extra/gaming/nix-gaming.nix flakeContext; # https://github.com/fufexan/nix-gaming
+            aagl = import ./modules/extra/gaming/aagl.nix flakeContext; # https://github.com/ezKEa/aagl-gtk-on-nix
           };
         };
       };
