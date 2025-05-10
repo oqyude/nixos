@@ -25,7 +25,10 @@
       };
     };
     lazygit.enable = true;
-    nix-index.enable = true;
+    nix-index = {
+      enable = true;
+      enableBashIntegration = false;
+    };
     nh = {
       enable = true;
       flake = "${inputs.zeroq.nixos}";
