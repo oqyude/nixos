@@ -26,10 +26,7 @@
     };
     lazygit.enable = true;
     command-not-found.enable = false;
-    nix-index = {
-      enable = true;
-      #enableBashIntegration = false;
-    };
+    nix-index.enable = true;
     nh = {
       enable = true;
       flake = "${inputs.zeroq.nixos}";
