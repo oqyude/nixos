@@ -32,10 +32,34 @@
       "udev.log_priority=3"
       "rd.systemd.show_status=auto"
     ];
-    # Hide the OS choice for bootloaders.
-    # It's still possible to open the bootloader list by pressing any key
-    # It will just not appear on screen unless a key is pressed
-    loader.timeout = 2;
+    loader = {
+      timeout = 2;
+      efi.canTouchEfiVariables = lib.mkForce false;
+      grub = {
+        enable = lib.mkForce true;
+        useOSProber = true;
+        efiInstallAsRemovable = true;
+        efiSupport = true;
+        device = "nodev";
+        #copyKernels = true;
+        #             extraEntries = ''
+        #                 menuentry "Reboot" {
+        #                     reboot
+        #                 }
+        #                 menuentry "Poweroff" {
+        #                     halt
+        #                 }
+        #             '';
+      };
+      grub2-theme = {
+        enable = true;
+        theme = "whitesur";
+        icon = "whitesur";
+        footer = true;
+        #bootMenuConfig = "";
+        customResolution = "1920x1080"; # Optional: Set a custom resolution
+      };
+    };
   };
   hardware.graphics.enable = true;
   programs = {

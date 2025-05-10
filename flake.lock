@@ -360,6 +360,26 @@
         "type": "github"
       }
     },
+    "nypkgs": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1744125335,
+        "narHash": "sha256-yH1bbLTB/Ozhg7ScAXiJKzW1GZ4Y4+VlS9HCmIZDyME=",
+        "owner": "yunfachi",
+        "repo": "nypkgs",
+        "rev": "e9a5d894690e9205e28839ef9289ee2baa3f017c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "yunfachi",
+        "repo": "nypkgs",
+        "type": "github"
+      }
+    },
     "plasma-manager": {
       "inputs": {
         "home-manager": [
@@ -400,6 +420,7 @@
         "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nur": "nur",
+        "nypkgs": "nypkgs",
         "plasma-manager": "plasma-manager",
         "zapret": "zapret",
         "zeroq": "zeroq"

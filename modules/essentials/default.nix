@@ -14,6 +14,29 @@
     ./extras/system.nix
   ];
 
+  programs = {
+    git = {
+      enable = true;
+      config = {
+        user = {
+          name = "oqyude";
+          email = "oqyude@gmail.com";
+        };
+      };
+    };
+    lazygit.enable = true;
+    nix-index.enable = true;
+    nh = {
+      enable = true;
+      flake = "${inputs.zeroq.nixos}";
+      clean = {
+        enable = true;
+        extraArgs = "--keep 3 --keep-since 2d";
+        dates = "daily";
+      };
+    };
+  };
+
   users = {
     users = {
       "${inputs.zeroq.devices.admin}" = {
@@ -31,28 +54,6 @@
           "qemu-libvirtd"
           "wheel"
         ];
-      };
-    };
-  };
-
-  programs = {
-    git = {
-      enable = true;
-      config = {
-        user = {
-          name = "oqyude";
-          email = "oqyude@gmail.com";
-        };
-      };
-    };
-    lazygit.enable = true;
-    nh = {
-      enable = true;
-      flake = "${inputs.zeroq.nixos}";
-      clean = {
-        enable = true;
-        extraArgs = "--keep 3 --keep-since 2d";
-        dates = "daily";
       };
     };
   };

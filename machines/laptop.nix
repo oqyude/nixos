@@ -27,6 +27,8 @@ let
           grub2-themes.nixosModules.default # grub2 themes module
           self.homeConfigurations.main.nixosModule # main user
           self.homeConfigurations.root.nixosModule # root user
+
+          nix-index-database.nixosModules.nix-index
         ]
         ++ (builtins.attrValues inputs.self.nixosModules.common)
         ++ (builtins.attrValues inputs.self.nixosModules.essentials);
@@ -63,32 +65,8 @@ let
       boot = {
         kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
         loader = {
-          #systemd-boot.enable = true;
-          grub = {
-            enable = true;
-            useOSProber = true;
-            efiInstallAsRemovable = true;
-            efiSupport = true;
-            device = "nodev";
-            #copyKernels = true;
-            #             extraEntries = ''
-            #                 menuentry "Reboot" {
-            #                     reboot
-            #                 }
-            #                 menuentry "Poweroff" {
-            #                     halt
-            #                 }
-            #             '';
-          };
-          grub2-theme = {
-            enable = true;
-            theme = "whitesur";
-            icon = "whitesur";
-            footer = true;
-            #bootMenuConfig = "";
-            customResolution = "1920x1080"; # Optional: Set a custom resolution
-          };
-          #efi.canTouchEfiVariables = true;
+          systemd-boot.enable = lib.mkDefault true;
+          efi.canTouchEfiVariables = lib.mkDefault true;
         };
       };
 
