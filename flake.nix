@@ -120,7 +120,6 @@
         packages = import ./home/modules/packages.nix flakeContext;
         default = import ./home/modules/default.nix flakeContext;
         dconf = import ./home/modules/dconf.nix flakeContext;
-        beets = import ./home/modules/beets.nix flakeContext;
         plasma-manager = import ./home/modules/plasma-manager.nix flakeContext;
       };
     };
