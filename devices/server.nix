@@ -50,6 +50,19 @@ let
           device = "/dev/disk/by-uuid/37e53ebc-5343-a94d-9fe2-0ca39e13a8de";
           fsType = "ext4";
           options = [
+            #"nofail"
+            "x-systemd.device-timeout=0"
+          ];
+        };
+        # beets
+        "/mnt/beets/music" = {
+          device = "${inputs.zeroq.dirs.server-home}/External/Music";
+          options = [
+            "bind"
+            "uid=1000"
+            "gid=1000"
+            "fmask=0007"
+            "dmask=0007"
             "nofail"
             "x-systemd.device-timeout=0"
           ];

@@ -17,14 +17,6 @@ let
   beetsEnv = python3.withPackages (ps: [ ps.beets ]);
 in
 {
-  fileSystems."/mnt/beets/music" = {
-    device = "${inputs.zeroq.dirs.music-library}";
-    options = [
-      "bind"
-      "nofail"
-    ];
-  };
-
   systemd.tmpfiles.rules = [
     "z /mnt/beets 0700 ${inputs.zeroq.dirs.music-library} users -" # beets absolute paths
   ];
