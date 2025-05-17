@@ -34,6 +34,10 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.storage}/SSH/${inputs.zeroq.devices.server.hostname}";
             target = ".ssh";
           };
+          "Music" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/External/Music";
+            target = "${config.home.homeDirectory}/Music";
+          };
         };
         username = "${inputs.zeroq.devices.admin}";
       };
