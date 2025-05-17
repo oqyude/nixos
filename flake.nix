@@ -118,6 +118,7 @@
         server = import ./home/server.nix flakeContext;
       };
       homeModules = {
+        links = import ./home/modules/links.nix flakeContext;
         packages = import ./home/modules/packages.nix flakeContext;
         default = import ./home/modules/default.nix flakeContext;
         dconf = import ./home/modules/dconf.nix flakeContext;

@@ -41,23 +41,4 @@ in
       };
     };
   };
-
-  #   users = {
-  #     groups = {
-  #       beets = { };
-  #     };
-  #     users = {
-  #       beets = {
-  #         isSystemUser = true;
-  #         #isNormalUser = true;
-  #         description = "beets service";
-  #         group = "beets";
-  #         homeMode = "0770";
-  #         home = "/var/lib/beets";
-  #         packages = [ ];
-  #         shell = pkgs.bashInteractive;
-  #       };
-  #     };
-  #   };
-
 }
