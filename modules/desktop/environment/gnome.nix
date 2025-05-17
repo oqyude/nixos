@@ -5,6 +5,11 @@
   ...
 }:
 {
+#   qt = {
+#     enable = true;
+#     style = "breeze";
+#     platformTheme = "kde6"; # kde6
+#   };
   programs.dconf.enable = true;
   environment = {
     gnome.excludePackages = with pkgs; [
