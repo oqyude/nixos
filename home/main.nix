@@ -13,11 +13,9 @@ let
         enable = true;
         autostart.enable = true;
         configFile = {
-          configFile = {
-            "beets" = {
-              source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/beets/linux";
-              target = "beets";
-            };
+          "beets" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/beets/linux";
+            target = "beets";
           };
           "ludusavi" = {
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/ludusavi/cfg";
