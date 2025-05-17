@@ -17,12 +17,6 @@ let
   beetsEnv = python3.withPackages (ps: [ ps.beets ]);
 in
 {
-
-  environment.systemPackages = [
-    beetsEnv
-    pkgs.imagemagick
-  ];
-
   fileSystems."/mnt/beets/music" = {
     device = "${inputs.zeroq.dirs.music-library}";
     options = [
@@ -34,8 +28,19 @@ in
   systemd.tmpfiles.rules = [
     #     "d /var/lib/beets 0770 beets beets -"
     #     "d /mnt/beets 0770 beets beets -"
-    "z /mnt/beets 0755 oqyude users -" # beets absolute paths
+    "z /mnt/beets 0700 ${inputs.zeroq.dirs.music-library} users -" # beets absolute paths
   ];
+
+  users = {
+    users = {
+      "${inputs.zeroq.devices.admin}" = {
+        packages = [
+          beetsEnv
+          pkgs.imagemagick
+        ];
+      };
+    };
+  };
 
   #   users = {
   #     groups = {
