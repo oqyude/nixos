@@ -32,6 +32,7 @@
 
       # Extras
       plasma-manager = "nix run github:nix-community/plasma-manager";
+      pip2nix = "nix run github:nix-community/pip2nix -- generate -r";
     };
   };
 }

@@ -11,7 +11,7 @@
   nixpkgs.overlays = [
     (self: super: {
       python3 = super.python3.override {
-        packageOverrides = import ./python-deps.nix {
+        packageOverrides = import ./deps.nix {
           pkgs = self;
           inherit (super) fetchurl fetchgit fetchhg;
         };
@@ -26,7 +26,7 @@
 
   users = {
     groups = {
-      beets = {};
+      beets = { };
     };
     users = {
       beets = {
@@ -36,7 +36,12 @@
         group = "beets";
         homeMode = "0770";
         home = "/var/lib/beets";
-        packages = [(pkgs.python3.withPackages (ps: [ ps.beets ps.beetcamp ]))];
+        packages = [
+          (pkgs.python3.withPackages (ps: [
+            ps.beets
+            ps.beetcamp
+          ]))
+        ];
         shell = pkgs.bashInteractive;
       };
     };

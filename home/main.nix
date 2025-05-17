@@ -59,10 +59,10 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.therima-drive}";
             target = "External";
           };
-#           "Music" = {
-#             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Music";
-#             target = "Music";
-#           };
+          #           "Music" = {
+          #             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Music";
+          #             target = "Music";
+          #           };
           "Pictures" = {
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Pictures";
             target = "Pictures";
