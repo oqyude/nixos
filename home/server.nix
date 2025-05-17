@@ -10,9 +10,15 @@ let
     {
       imports = [
         inputs.self.homeModules.default
-        inputs.self.homeModules.links
+        #inputs.self.homeModules.links
       ];
       xdg = {
+        configFile = {
+          "beets" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.storage}/beets/linux";
+            target = "beets";
+          };
+        };
         enable = true;
         autostart.enable = true;
         userDirs = {
