@@ -26,8 +26,6 @@ in
   };
 
   systemd.tmpfiles.rules = [
-    #     "d /var/lib/beets 0770 beets beets -"
-    #     "d /mnt/beets 0770 beets beets -"
     "z /mnt/beets 0700 ${inputs.zeroq.dirs.music-library} users -" # beets absolute paths
   ];
 
