@@ -18,6 +18,7 @@
           "pipewire"
           "qemu-libvirtd"
           "wheel"
+          "beets"
         ];
       };
     };

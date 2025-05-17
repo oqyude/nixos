@@ -52,6 +52,7 @@ in
       # Workflow
       _64gram
       discord
+      vesktop
       gramps
       kdePackages.filelight
       libreoffice-qt6

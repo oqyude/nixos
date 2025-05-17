@@ -20,6 +20,7 @@ let
           nixos-hardware.nixosModules.asus-fa506ic
 
           self.nixosModules.software.wine
+          self.nixosModules.software.beets
           self.nixosModules.desktop
           self.homeConfigurations.main.nixosModule
           self.homeConfigurations.root.nixosModule
@@ -128,7 +129,7 @@ let
         pipewire = {
           enable = lib.mkDefault true;
           systemWide = true;
-          alsa.enable = true;
+          alsa.enable = false;
           alsa.support32Bit = true;
           pulse.enable = true;
           jack.enable = true;
@@ -143,7 +144,7 @@ let
                 ];
                 "default.clock.quantum" = 256;
                 "default.clock.min-quantum" = 64;
-                "default.clock.max-quantum" = 1024;
+                "default.clock.max-quantum" = 2048;
               };
             };
           };
@@ -152,6 +153,9 @@ let
         earlyoom.enable = true;
         preload.enable = true;
       };
+      nixpkgs.config.pulseaudio = true;
+
+      #services.power-profiles-daemon.enable = false;
 
       security = {
         rtkit.enable = true;

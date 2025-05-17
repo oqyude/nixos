@@ -6,6 +6,7 @@
 }:
 {
   systemd.services.zapret = {
+    enable = false;
     description = "zapret complete";
     unitConfig = {
       After = [ "network-online.target" ];
