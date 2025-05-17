@@ -34,6 +34,7 @@
         server-home = "/home/${devices.admin}/External";
         storage = "${server-home}/Storage";
         calibre-library = "${server-home}/Books-Library";
+        music-library = "${dirs.user-home}/Music";
       };
     };
 

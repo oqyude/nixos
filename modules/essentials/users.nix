@@ -10,6 +10,7 @@
         description = "Jor Oqyude";
         initialPassword = "1234";
         extraGroups = [
+          "beets"
           "audio"
           "disk"
           "gamemode"
@@ -18,7 +19,6 @@
           "pipewire"
           "qemu-libvirtd"
           "wheel"
-          "beets"
         ];
       };
     };

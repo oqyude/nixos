@@ -20,7 +20,6 @@ let
           nixos-hardware.nixosModules.asus-fa506ic
 
           self.nixosModules.software.wine
-          self.nixosModules.software.beets
           self.nixosModules.desktop
           self.homeConfigurations.main.nixosModule
           self.homeConfigurations.root.nixosModule
