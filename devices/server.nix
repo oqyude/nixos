@@ -12,6 +12,8 @@ let
         ./hardware/server.nix
         self.nixosModules.default
 
+        self.nixosModules.software.beets
+
         self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];
 

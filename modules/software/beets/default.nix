@@ -1,4 +1,3 @@
-# WIP, Garbage
 { inputs, ... }@flakeContext:
 {
   config,
@@ -8,7 +7,7 @@
 }:
 let
   # Beets with plugins
-  depsOverlay = import ./deps.nix {
+  depsOverlay = import ./dependencies.nix {
     inherit (pkgs) fetchurl fetchgit fetchhg;
     inherit pkgs;
   };
@@ -32,6 +31,12 @@ in
     ];
   };
 
+  systemd.tmpfiles.rules = [
+    #     "d /var/lib/beets 0770 beets beets -"
+    #     "d /mnt/beets 0770 beets beets -"
+    "z /mnt/beets 0755 oqyude users -" # beets absolute paths
+  ];
+
   #   users = {
   #     groups = {
   #       beets = { };
@@ -50,9 +55,4 @@ in
   #     };
   #   };
 
-  systemd.tmpfiles.rules = [
-    #     "d /var/lib/beets 0770 beets beets -"
-    #     "d /mnt/beets 0770 beets beets -"
-    "z /mnt/beets 0755 oqyude users -"
-  ];
 }
