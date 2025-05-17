@@ -33,10 +33,6 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/KeePassXC";
             target = "keepassxc";
           };
-#           "beets" = {
-#             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/beets/linux";
-#             target = "beets";
-#           };
         };
         userDirs = {
           enable = true;
@@ -91,7 +87,6 @@ let
         users.${inputs.zeroq.devices.admin} = homeModule;
         sharedModules = [ inputs.plasma-manager.homeManagerModules.plasma-manager ];
         extraSpecialArgs = {
-          #inherit inputs;
           inherit (config.networking) hostName;
         };
       };

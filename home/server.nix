@@ -8,7 +8,10 @@ let
       ...
     }:
     {
-      imports = [ inputs.self.homeModules.default inputs.self.homeModules.links ];
+      imports = [
+        inputs.self.homeModules.default
+        inputs.self.homeModules.links
+      ];
       xdg = {
         enable = true;
         autostart.enable = true;
