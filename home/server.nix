@@ -37,7 +37,7 @@ let
       home = {
         file = {
           "ssh" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.storage}/SSH/${inputs.zeroq.devices.server.hostname}";
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.storage}/ssh/${inputs.zeroq.devices.server.hostname}";
             target = ".ssh";
           };
           "Music" = {
