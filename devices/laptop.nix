@@ -70,6 +70,7 @@ let
 
       boot = {
         kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
+        kernelParams = [ "usbcore.autosuspend=-1" ];
         loader = {
           systemd-boot.enable = lib.mkDefault true;
           efi.canTouchEfiVariables = lib.mkDefault true;
