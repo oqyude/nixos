@@ -56,7 +56,7 @@ let
         };
         # beets
         "/mnt/beets/music" = {
-          device = "${inputs.zeroq.dirs.server-home}/External/Music";
+          device = "${inputs.zeroq.dirs.server-home}/Music";
           options = [
             "bind"
             "uid=1000"
