@@ -55,13 +55,13 @@ let
           ];
         };
         "/mnt/beets/music" = {
-          device = "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Music";
+          device = "/home/${inputs.zeroq.devices.admin}/Music"; #"${inputs.zeroq.dirs.vetymae-drive}/Users/User/Music"
           options = [
             "bind"
-            "uid=1000"
-            "gid=1000"
-            "fmask=0007"
-            "dmask=0007"
+            #"uid=1000"
+            #"gid=1000"
+            "fmask=0077"
+            "dmask=0077"
             "nofail"
             "x-systemd.device-timeout=0"
           ];
