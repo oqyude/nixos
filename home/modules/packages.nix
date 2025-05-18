@@ -51,7 +51,6 @@ in
 
       # Workflow
       _64gram
-      discord
       vesktop
       gramps
       kdePackages.filelight
@@ -63,9 +62,11 @@ in
       stretchly
       transmission_4-gtk
       vlc
+
       #zerotierone
       #tg
       #reaper
+      #discord
 
       # Games
       ludusavi
