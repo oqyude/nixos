@@ -55,7 +55,7 @@ let
           ];
         };
         "/mnt/beets/music" = {
-          device = "/home/${inputs.zeroq.devices.admin}/Music"; #"${inputs.zeroq.dirs.vetymae-drive}/Users/User/Music"
+          device = "/home/${inputs.zeroq.devices.admin}/Music"; # "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Music"
           options = [
             "bind"
             #"uid=1000"
