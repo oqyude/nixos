@@ -242,7 +242,7 @@ let
           };
         };
         transmission = {
-          enable = true;
+          enable = false;
           credentialsFile = "${inputs.zeroq.dirs.server-home}/server/transmission/settings.json";
           openRPCPort = true;
           package = pkgs.transmission_4;
