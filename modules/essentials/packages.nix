@@ -9,6 +9,7 @@
       # Nix
       nixfmt-tree
       nix-diff
+      nix-tree
 
       # Base
       mc
