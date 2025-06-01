@@ -7,14 +7,8 @@
 }:
 {
   services = {
- postgresql = {
-      enable = false;
-      #  ensureDatabases = [ "nextcloud" ];
-      #  ensureUsers = [
-      #    {
-      #      name = "nextcloud"; # Здесь не хватает строчек\\
-      #    }
-      #  ];
+    postgresql = {
+      enable = lib.mkDefault true;
     };
     immich = {
       enable = true;
@@ -23,9 +17,18 @@
       openFirewall = true;
       accelerationDevices = null;
       machine-learning.enable = false;
-     
+      mediaLocation = "${inputs.zeroq.dirs.immich-folder}";
     };
   };
-  
-  users.users.immich.extraGroups = [ "video" "render" ];
+
+  users.users.immich.extraGroups = [
+    "video"
+    "render"
+  ];
+
+  environment = {
+    systemPackages = with pkgs; [
+      immich-cli
+    ];
+  };
 }
