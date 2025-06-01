@@ -31,6 +31,7 @@
           "pipewire"
           "qemu-libvirtd"
           "wheel"
+          "immich"
         ];
       };
     };

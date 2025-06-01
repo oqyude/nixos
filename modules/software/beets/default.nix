@@ -18,7 +18,7 @@ let
 in
 {
   systemd.tmpfiles.rules = [
-    "z /mnt/beets 0700 ${inputs.zeroq.dirs.music-library} users -" # beets absolute paths
+    "z /mnt/beets 0700 ${inputs.zeroq.devices.admin} users -" # beets absolute paths
   ];
 
   users = {
