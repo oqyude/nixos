@@ -22,18 +22,18 @@
   };
 
   # immich
-  fileSystems."${services.immich.mediaLocation}" = {
-    device = "${inputs.zeroq.dirs.immich-folder}";
-    options = [
-      "bind"
-      # "uid=1000"
-      # "gid=1000"
-      # "fmask=0007"
-      # "dmask=0007"
-      "nofail"
-      "x-systemd.device-timeout=0"
-    ];
-  };
+  # fileSystems."${config.services.immich.mediaLocation}" = {
+  #   device = "${inputs.zeroq.dirs.immich-folder}";
+  #   options = [
+  #     "bind"
+  #     # "uid=1000"
+  #     # "gid=1000"
+  #     # "fmask=0007"
+  #     # "dmask=0007"
+  #     "nofail"
+  #     "x-systemd.device-timeout=0"
+  #   ];
+  # };
 
   users.users.immich.extraGroups = [
     "video"
