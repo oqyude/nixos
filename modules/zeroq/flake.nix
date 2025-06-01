@@ -35,6 +35,8 @@
         storage = "${server-home}/Storage";
         calibre-library = "${server-home}/Books-Library";
         music-library = "${dirs.user-home}/Music";
+        immich-folder = "${server-home}/Services/immich";
+        postgresql-folder = "${server-home}/Services/postgresql";
       };
     };
 

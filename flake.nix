@@ -110,6 +110,9 @@
             aagl = import ./modules/extra/gaming/aagl.nix flakeContext; # https://github.com/ezKEa/aagl-gtk-on-nix
           };
         };
+        server = {
+          immich = import ./modules/server/immich.nix flakeContext;
+        };
       };
 
       homeConfigurations = {

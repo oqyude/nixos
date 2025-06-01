@@ -13,6 +13,7 @@ let
         self.nixosModules.default
 
         self.nixosModules.software.beets
+        self.nixosModules.server.immich
 
         self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];
@@ -152,15 +153,6 @@ let
             };
           };
         };
-        postgresql = {
-          enable = false;
-          #  ensureDatabases = [ "nextcloud" ];
-          #  ensureUsers = [
-          #    {
-          #      name = "nextcloud"; # Здесь не хватает строчек\\
-          #    }
-          #  ];
-        };
         journald = {
           extraConfig = ''
             SystemMaxUse=128M
@@ -183,8 +175,8 @@ let
               "writable" = "yes";
               "create mask" = 644;
               "directory mask" = 644;
-              "force user" = "root";
-              "force group" = "root";
+              "force user" = "${inputs.zeroq.devices.admin}";
+              "force group" = "users";
             };
             root = {
               "path" = "/";
