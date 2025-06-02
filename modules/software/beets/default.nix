@@ -27,6 +27,7 @@ in
         packages = [
           beetsEnv
           pkgs.imagemagick
+          pkgs.ffmpeg
         ];
       };
     };
