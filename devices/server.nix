@@ -14,6 +14,7 @@ let
 
         self.nixosModules.software.beets
         self.nixosModules.server.immich
+        #self.nixosModules.extra.self.zapret
 
         self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];
