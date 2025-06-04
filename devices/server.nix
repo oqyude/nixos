@@ -138,7 +138,7 @@ let
           recommendedProxySettings = true;
           recommendedTlsSettings = true;
           virtualHosts = {
-            "localhost:10000" = {
+            "localhost:2283" = {
               forceSSL = false;
               enableACME = false;
               listen = [

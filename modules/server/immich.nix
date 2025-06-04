@@ -30,6 +30,7 @@
               service = "http://localhost:2283";
             };
           };
+          warp-routing.enabled = true;
           default = "http_status:404";
         };
       };
