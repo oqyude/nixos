@@ -50,6 +50,7 @@ in
       nekoray
 
       # Workflow
+      cloudflared
       _64gram
       vesktop
       gramps
