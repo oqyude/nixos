@@ -14,6 +14,8 @@ let
 
         self.nixosModules.software.beets
         self.nixosModules.server.immich
+        self.nixosModules.server.nextcloud
+        self.nixosModules.server.cloudflared
         #self.nixosModules.extra.self.zapret
 
         self.homeConfigurations.server.nixosModule # home-manager configuration module
@@ -72,61 +74,6 @@ let
       };
 
       services = {
-        nextcloud = {
-          enable = false;
-          package = pkgs.nextcloud30;
-          hostName = "localhost:10000";
-          database.createLocally = true;
-          config = {
-            dbtype = "mysql";
-            dbuser = "nextcloud";
-            #dbhost = "/run/postgresql";
-            dbname = "nextcloud";
-            adminuser = "root";
-            #adminpassFile = "${inputs.zeroq.dirs.credentials-target}/nextcloud/admin-pass.txt";
-          };
-          settings = {
-            appstoreEnable = false;
-            log_type = "file";
-            trusted_domains = [
-              "100.64.0.0"
-              "192.168.1.18"
-              "localhost"
-            ];
-          };
-          extraAppsEnable = true;
-          extraApps = {
-            inherit (pkgs.nextcloud30Packages.apps)
-              bookmarks
-              calendar
-              contacts
-              cookbook
-              cospend
-              deck
-              end_to_end_encryption
-              forms
-              gpoddersync
-              groupfolders
-              impersonate
-              integration_paperless
-              mail
-              maps
-              memories
-              music
-              notes
-              notify_push
-              onlyoffice
-              polls
-              previewgenerator
-              richdocuments
-              spreed
-              tasks
-              user_oidc
-              user_saml
-              whiteboard
-              ;
-          };
-        };
         earlyoom.enable = true;
         preload.enable = true;
         auto-cpufreq.enable = true;
