@@ -32,6 +32,7 @@
 
         # Server
         server-home = "/home/${devices.admin}/External";
+        server-credentials = "${server-home}/Credentials/server";
         storage = "${server-home}/Storage";
         calibre-library = "${server-home}/Books-Library";
         music-library = "${dirs.user-home}/Music";

@@ -8,8 +8,8 @@
 {
   services = {
     nextcloud = {
-      enable = false;
-      package = pkgs.nextcloud30;
+      enable = true;
+      package = pkgs.nextcloud31;
       hostName = "localhost:10000";
       database.createLocally = true;
       home = "/mnt/nextcloud";
@@ -19,7 +19,7 @@
         #dbhost = "/run/postgresql";
         dbname = "nextcloud";
         adminuser = "oqyude";
-        adminpassFile = "${inputs.zeroq.dirs.credentials-target}/nextcloud/admin-pass.txt";
+        adminpassFile = "${inputs.zeroq.dirs.server-credentials}/nextcloud/admin-pass.txt";
       };
       settings = {
         appstoreEnable = false;
