@@ -67,10 +67,10 @@ let
           #             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Music";
           #             target = "Music";
           #           };
-          "Pictures" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Pictures";
-            target = "Pictures";
-          };
+          #           "Pictures" = {
+          #             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Pictures";
+          #             target = "Pictures";
+          #           };
           #           "Deploy" = {
           #             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Deploy";
           #             target = "Deploy";
