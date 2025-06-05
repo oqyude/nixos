@@ -10,18 +10,11 @@
     cloudflared = {
       enable = true;
 
-      certificateFile = "${inputs.zeroq.dirs.server-home}/Credentials/server/cloudflared/cert.pem";
+      certificateFile = "${inputs.zeroq.dirs.server-credentials}/cloudflared/cert.pem";
       tunnels = {
-        "e5d66ea5-d6d2-4eef-9b34-82696946ef58" = {
-          credentialsFile = "${inputs.zeroq.dirs.server-credentials}/cloudflared/immich.json";
-          warp-routing.enabled = false;
-          originRequest = {
-            tlsTimeout = "15s";
-            tcpKeepAlive = "30s";
-            noHappyEyeballs = false;
-            keepAliveTimeout = "1m30s";
-            connectTimeout = "1m";
-          };
+        "58b340ee-e98a-4af9-b786-74600c71f49e" = {
+          credentialsFile = "${inputs.zeroq.dirs.server-credentials}/cloudflared/server.json";
+          warp-routing.enabled = true;
           ingress = {
             "immich.zeroq.ru" = {
               service = "http://localhost:2283";
@@ -35,6 +28,32 @@
       };
     };
   };
+
+#   users.users = {
+#     cloudflared = {
+#       group = "cloudflared";
+#       isSystemUser = true;
+#     };
+#   };
+#   users.groups.cloudflared = { };
+#
+#   systemd.services.cloudflared = {
+#     after = [
+#       "network.target"
+#       "network-online.target"
+#     ];
+#     wants = [
+#       "network.target"
+#       "network-online.target"
+#     ];
+#     wantedBy = [ "multi-user.target" ];
+#     serviceConfig = {
+#       ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate --config=${inputs.zeroq.dirs.server-credentials}/cloudflared/config.yaml --origincert=${inputs.zeroq.dirs.server-credentials}/cloudflared/cert.pem --credentials-file=${inputs.zeroq.dirs.server-credentials}/cloudflared/server.json run";
+#       Group = "root";
+#       User = "root";
+#       Restart = "on-failure";
+#     };
+#   };
 
   environment = {
     systemPackages = with pkgs; [
