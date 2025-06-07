@@ -9,7 +9,6 @@
   services = {
     cloudflared = {
       enable = true;
-
       certificateFile = "${inputs.zeroq.dirs.server-credentials}/cloudflared/cert.pem";
       tunnels = {
         "58b340ee-e98a-4af9-b786-74600c71f49e" = {
@@ -19,12 +18,19 @@
             "immich.zeroq.ru" = {
               service = "http://localhost:2283";
             };
-            "nextcloud.zeroq.ru" = {
-              service = "http://localhost:10000";
-            };
           };
           default = "http_status:404";
         };
+#         "58b340ee-e98a-4af9-b786-74600c71f49e" = {
+#           credentialsFile = "${inputs.zeroq.dirs.server-credentials}/cloudflared/server.json";
+#           warp-routing.enabled = true;
+#           ingress = {
+#             "nextcloud.zeroq.ru" = {
+#               service = "http://localhost:10000";
+#             };
+#           };
+#           default = "http_status:404";
+#         };
       };
     };
   };
