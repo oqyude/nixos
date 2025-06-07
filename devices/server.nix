@@ -58,6 +58,17 @@ let
             "x-systemd.device-timeout=0"
           ];
         };
+        # Archive drive
+        "/mnt/archive" = {
+          device = "/dev/disk/by-label/archive";
+          fsType = "exfat";
+          options = [
+            "nofail"
+            "x-systemd.device-timeout=0"
+            "uid=1000"
+            "gid=1000"
+          ];
+        };
         # beets
         "/mnt/beets/music" = {
           device = "${inputs.zeroq.dirs.server-home}/Music";
