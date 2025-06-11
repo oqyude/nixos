@@ -12,9 +12,10 @@ let
         ./hardware/server.nix
         self.nixosModules.default
 
+        self.nixosModules.desktop
         self.nixosModules.software.beets
         self.nixosModules.server.immich
-        self.nixosModules.server.nextcloud
+        #self.nixosModules.server.nextcloud
         self.nixosModules.server.cloudflared
         #self.nixosModules.extra.self.zapret
 
@@ -87,7 +88,7 @@ let
       services = {
         earlyoom.enable = true;
         preload.enable = true;
-        auto-cpufreq.enable = true;
+        #auto-cpufreq.enable = true;
         throttled.enable = true;
         nginx = {
           enable = false;

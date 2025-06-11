@@ -17,7 +17,7 @@ let
           ./hardware/laptop.nix
           ./hardware/logitech.nix
           self.nixosModules.default
-          nixos-hardware.nixosModules.asus-fa506ic
+          #nixos-hardware.nixosModules.asus-fa506ic
 
           self.nixosModules.software.wine
           self.nixosModules.software.beets

@@ -9,9 +9,9 @@ let
     }:
     {
       imports = [
-        inputs.self.homeModules.default
+        #inputs.self.homeModules.default
         #inputs.self.homeModules.links
-      ];
+      ]++ (builtins.attrValues inputs.self.homeModules);
       xdg = {
         configFile = {
           "beets" = {
@@ -23,10 +23,10 @@ let
         autostart.enable = true;
         userDirs = {
           enable = true;
-          createDirectories = false;
+          createDirectories = true;
           desktop = null;
           documents = null;
-          download = null;
+          download = "${config.home.homeDirectory}/Downloads";
           music = null;
           pictures = null;
           publicShare = null;
@@ -56,6 +56,10 @@ let
         useGlobalPkgs = true;
         useUserPackages = true;
         users.${inputs.zeroq.devices.admin} = homeModule;
+        sharedModules = [ inputs.plasma-manager.homeManagerModules.plasma-manager ];
+#         extraSpecialArgs = {
+#           inherit (config.networking) hostName;
+#         };
       };
     };
 in
