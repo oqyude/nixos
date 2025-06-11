@@ -86,9 +86,10 @@ let
       };
 
       services = {
+        power-profiles-daemon.enable = lib.mkForce false;
         earlyoom.enable = true;
         preload.enable = true;
-        #auto-cpufreq.enable = true;
+        auto-cpufreq.enable = true;
         throttled.enable = true;
         nginx = {
           enable = false;

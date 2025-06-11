@@ -11,7 +11,7 @@ let
       imports = [
         #inputs.self.homeModules.default
         #inputs.self.homeModules.links
-      ]++ (builtins.attrValues inputs.self.homeModules);
+      ] ++ (builtins.attrValues inputs.self.homeModules);
       xdg = {
         configFile = {
           "beets" = {
@@ -57,9 +57,9 @@ let
         useUserPackages = true;
         users.${inputs.zeroq.devices.admin} = homeModule;
         sharedModules = [ inputs.plasma-manager.homeManagerModules.plasma-manager ];
-#         extraSpecialArgs = {
-#           inherit (config.networking) hostName;
-#         };
+        #         extraSpecialArgs = {
+        #           inherit (config.networking) hostName;
+        #         };
       };
     };
 in
