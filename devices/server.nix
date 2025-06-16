@@ -16,14 +16,14 @@ let
         self.nixosModules.software.beets
         self.nixosModules.server.immich
         #self.nixosModules.server.nextcloud
-        self.nixosModules.server.cloudflared
+        #self.nixosModules.server.cloudflared
         #self.nixosModules.extra.self.zapret
 
         self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];
 
       boot = {
-        kernelPackages = pkgs.linuxPackages_xanmod_stable;
+        #kernelPackages = pkgs.linuxPackages_xanmod_stable;
         hardwareScan = true;
         loader = {
           systemd-boot.enable = lib.mkDefault true;
