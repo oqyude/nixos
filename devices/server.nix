@@ -12,7 +12,7 @@ let
         ./hardware/server.nix
         self.nixosModules.default
 
-        #self.nixosModules.desktop
+        self.nixosModules.desktop
         self.nixosModules.software.beets
         self.nixosModules.server.immich
         #self.nixosModules.server.nextcloud

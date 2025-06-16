@@ -8,9 +8,9 @@
 }:
 {
   imports = [
-    ./environment/kde.nix
+    #./environment/kde.nix
     #./environment/gnome.nix
-    #./environment/budgie.nix
+    ./environment/xfce.nix
     #./environment/deepin.nix
 
     ./environment/theming.nix
