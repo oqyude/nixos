@@ -11,7 +11,8 @@ let
       imports = [
         inputs.self.homeModules.default
         #inputs.self.homeModules.links
-      ] /*++ (builtins.attrValues inputs.self.homeModules)*/;
+      ] # ++ (builtins.attrValues inputs.self.homeModules)
+      ;
       xdg = {
         configFile = {
           "beets" = {

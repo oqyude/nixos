@@ -21,14 +21,14 @@
   #   services.desktopManager.cosmic.xwayland.enable = true;
   #   services.desktopManager.cosmic.enable = true;
 
-    services.xserver = {
-      enable = true;
-      desktopManager = {
-        #xterm.enable = false;
-        xfce.enable = true;
-        xfce.enableWaylandSession = true;
-      };
+  services.xserver = {
+    enable = true;
+    desktopManager = {
+      #xterm.enable = false;
+      xfce.enable = true;
+      xfce.enableWaylandSession = true;
     };
+  };
 
   #- services.xserver.desktopManager.pantheon.enable = true;
   #- services.pantheon.apps.enable = true;
