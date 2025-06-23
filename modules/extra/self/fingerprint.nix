@@ -1,6 +1,6 @@
 { inputs, ... }@flakeContext:
 let
-  pkgs-stable = import inputs.nixpkgs-stable { system = "x86_64-linux"; };
+  pkgs-stable = import inputs.nixpkgs-fingerprint { system = "x86_64-linux"; };
 in
 {
   config,
