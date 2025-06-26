@@ -34,6 +34,9 @@ in
         };
       };
     };
+    vscode = {
+      enable = true;
+    };
   };
   services = {
     kdeconnect.enable = true;
