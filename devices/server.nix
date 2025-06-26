@@ -15,8 +15,8 @@ let
         #self.nixosModules.desktop
         self.nixosModules.software.beets
         self.nixosModules.server.immich
-        #self.nixosModules.server.nextcloud
-        #self.nixosModules.server.cloudflared
+        self.nixosModules.server.nextcloud
+        self.nixosModules.server.cloudflared
         #self.nixosModules.extra.self.zapret
 
         self.homeConfigurations.server.nixosModule # home-manager configuration module

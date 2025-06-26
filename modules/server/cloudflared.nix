@@ -18,6 +18,9 @@
             "immich.zeroq.ru" = {
               service = "http://localhost:2283";
             };
+            "nextcloud.zeroq.ru" = {
+              service = "http://localhost:10000";
+            };
           };
           default = "http_status:404";
         };
