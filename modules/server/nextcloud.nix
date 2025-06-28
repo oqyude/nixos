@@ -14,7 +14,7 @@
       database.createLocally = true;
       home = "/mnt/nextcloud";
       config = {
-        dbtype = "mysql";
+        dbtype = "pgsql";
         dbuser = "nextcloud";
         #dbhost = "/run/postgresql";
         dbname = "nextcloud";
@@ -26,8 +26,8 @@
         log_type = "file";
         trusted_domains = [
           "nextcloud.zeroq.ru"
-          #"100.64.0.0"
-          #"192.168.1.18"
+          "100.64.0.0"
+          "192.168.1.18"
           #"localhost"
         ];
       };

@@ -14,7 +14,7 @@
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
-        "localhost:2283" = {
+        "localhost:10000" = {
           forceSSL = false;
           enableACME = false;
           listen = [
