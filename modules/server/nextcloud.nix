@@ -28,23 +28,24 @@
           "nextcloud.zeroq.ru"
           "100.64.0.0"
           "192.168.1.18"
-          #"localhost"
+          "localhost"
         ];
       };
       extraAppsEnable = true;
       extraApps = {
-        inherit (pkgs.nextcloud30Packages.apps)
+        inherit (pkgs.nextcloud31Packages.apps)
+          deck
+          end_to_end_encryption
+          groupfolders
+          impersonate
+          onlyoffice
           bookmarks
           calendar
           contacts
           cookbook
           cospend
-          deck
-          end_to_end_encryption
           forms
           gpoddersync
-          groupfolders
-          impersonate
           integration_paperless
           mail
           maps
@@ -52,7 +53,6 @@
           music
           notes
           notify_push
-          onlyoffice
           polls
           previewgenerator
           richdocuments
