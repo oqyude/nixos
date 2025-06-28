@@ -17,13 +17,14 @@ let
         self.nixosModules.server.immich
         self.nixosModules.server.nextcloud
         self.nixosModules.server.cloudflared
+        self.nixosModules.server.nginx
         #self.nixosModules.extra.self.zapret
 
         self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];
 
       boot = {
-        kernelPackages = pkgs.linuxPackages_xanmod_latest; #pkgs.linuxPackages_xanmod_stable
+        kernelPackages = pkgs.linuxPackages_xanmod_latest; # pkgs.linuxPackages_xanmod_stable
         hardwareScan = true;
         loader = {
           systemd-boot.enable = lib.mkDefault true;
@@ -91,29 +92,6 @@ let
         preload.enable = true;
         auto-cpufreq.enable = true;
         throttled.enable = true;
-        nginx = {
-          enable = false;
-          recommendedGzipSettings = true;
-          recommendedOptimisation = true;
-          recommendedProxySettings = true;
-          recommendedTlsSettings = true;
-          virtualHosts = {
-            "localhost:2283" = {
-              forceSSL = false;
-              enableACME = false;
-              listen = [
-                {
-                  addr = "100.64.0.0";
-                  port = 10000;
-                }
-                {
-                  addr = "192.168.1.18";
-                  port = 10000;
-                }
-              ];
-            };
-          };
-        };
         journald = {
           extraConfig = ''
             SystemMaxUse=128M
