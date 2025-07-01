@@ -14,7 +14,7 @@ let
       imports =
         with inputs;
         [
-          ./hardware/laptop.nix
+          ./hardware/mini-pc.nix
           ./hardware/logitech.nix
           self.nixosModules.default
           #nixos-hardware.nixosModules.asus-fa506ic
@@ -42,7 +42,7 @@ let
           ];
         };
         "${inputs.zeroq.dirs.vetymae-drive}" = {
-          device = "/dev/disk/by-uuid/6E04EA7F04EA49A3";
+          device = "/dev/disk/by-uuid/38D63C6ED63C2E8E";
           fsType = "ntfs3";
           options = [
             "defaults"
@@ -70,7 +70,7 @@ let
 
       boot = {
         kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
-        kernelParams = [ "usbcore.autosuspend=-1" ];
+        kernelParams = [ #"usbcore.autosuspend=-1" ];
         loader = {
           systemd-boot.enable = lib.mkDefault true;
           efi.canTouchEfiVariables = lib.mkDefault true;
@@ -79,27 +79,6 @@ let
 
       hardware = {
         bluetooth.enable = true;
-        #         nvidia = {
-        #           open = true;
-        #           dynamicBoost.enable = true;
-        #           nvidiaSettings = true;
-        #           powerManagement = {
-        #             enable = false;
-        #             finegrained = false; # maybe comment this out idk what it does
-        #           };
-        #           #package = config.boot.kernelPackages.nvidiaPackages.stable;
-        #           nvidiaPersistenced = true;
-        #           modesetting.enable = true;
-        #           prime = {
-        #             offload = {
-        #               enable = true;
-        #               enableOffloadCmd = true;
-        #             };
-        #             sync.enable = false;
-        #             amdgpuBusId = "PCI:6:0:0";
-        #             nvidiaBusId = "PCI:1:0:0";
-        #           };
-        #         };
       };
 
       # networking.firewall.allowedTCPPorts = [ ... ];
@@ -128,7 +107,7 @@ let
         xserver = {
           videoDrivers = [
             "amdgpu"
-            "nvidia"
+            #"nvidia"
           ];
         };
         syncthing = {

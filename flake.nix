@@ -86,7 +86,7 @@
     in
     {
       nixosConfigurations = {
-        atoridu = import ./devices/laptop.nix flakeContext; # atoridu
+        atoridu = import ./devices/mini-pc.nix flakeContext; # atoridu
         lamet = import ./devices/mini-laptop.nix flakeContext; # lamet
         sapphira = import ./devices/server.nix flakeContext; # sapphira
         wsl = import ./devices/wsl.nix flakeContext; # wsl
