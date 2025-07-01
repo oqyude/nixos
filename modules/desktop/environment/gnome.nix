@@ -36,6 +36,7 @@
     ];
   };
   services = {
+    gnome.gnome-keyring.enable = lib.mkForce false;
     udev.packages = with pkgs; [ gnome-settings-daemon ];
     displayManager.gdm = {
       enable = true;
