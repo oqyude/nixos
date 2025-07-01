@@ -80,6 +80,14 @@ let
           #             target = "Misc";
           #           };
         };
+        pointerCursor = {
+          enable = true;
+          x11.enable = true;
+          gtk.enable = true;
+          size = 24;
+          name = "Qogir";
+          package = pkgs.qogir-icon-theme;
+        };
       };
     };
   nixosModule =
