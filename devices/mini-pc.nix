@@ -17,7 +17,6 @@ let
           ./hardware/mini-pc.nix
           ./hardware/logitech.nix
           self.nixosModules.default
-          #nixos-hardware.nixosModules.asus-fa506ic
 
           self.nixosModules.software.wine
           self.nixosModules.software.beets
@@ -26,8 +25,7 @@ let
           self.homeConfigurations.root.nixosModule
         ]
         ++ builtins.attrValues inputs.self.nixosModules.extra.self;
-	
-	services.logrotate.checkConfig = false;
+
       fileSystems = {
         "${inputs.zeroq.dirs.therima-drive}" = {
           device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
@@ -70,8 +68,8 @@ let
       };
 
       boot = {
-        kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
-        #kernelParams = [ #"usbcore.autosuspend=-1" ];
+        kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_latest;
+        #kernelParams = [ "usbcore.autosuspend=-1" ];
         loader = {
           systemd-boot.enable = lib.mkDefault true;
           efi.canTouchEfiVariables = lib.mkDefault true;
@@ -105,10 +103,11 @@ let
       };
 
       services = {
+        #logrotate.checkConfig = false;
+        #power-profiles-daemon.enable = false;
         xserver = {
           videoDrivers = [
             "amdgpu"
-            #"nvidia"
           ];
         };
         syncthing = {
@@ -147,8 +146,6 @@ let
         preload.enable = true;
       };
       nixpkgs.config.pulseaudio = true;
-
-      #services.power-profiles-daemon.enable = false;
 
       security = {
         rtkit.enable = true;
