@@ -16,7 +16,7 @@ in
     mangohud.enable = true;
     keepassxc.enable = true;
     zed-editor = {
-      enable = true;
+      enable = false;
       extensions = [
         "nix"
       ];
