@@ -26,7 +26,8 @@ let
           self.homeConfigurations.root.nixosModule
         ]
         ++ builtins.attrValues inputs.self.nixosModules.extra.self;
-
+	
+	services.logrotate.checkConfig = false;
       fileSystems = {
         "${inputs.zeroq.dirs.therima-drive}" = {
           device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
@@ -70,7 +71,7 @@ let
 
       boot = {
         kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
-        kernelParams = [ #"usbcore.autosuspend=-1" ];
+        #kernelParams = [ #"usbcore.autosuspend=-1" ];
         loader = {
           systemd-boot.enable = lib.mkDefault true;
           efi.canTouchEfiVariables = lib.mkDefault true;
