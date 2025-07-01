@@ -34,9 +34,6 @@ in
         };
       };
     };
-    vscode = {
-      enable = true;
-    };
   };
   services = {
     kdeconnect.enable = true;
@@ -53,8 +50,9 @@ in
       nekoray
 
       # Workflow
-      cloudflared
-      _64gram
+      #cloudflared
+      vscodium
+      ayugram-desktop
       vesktop
       gramps
       kdePackages.filelight
@@ -80,10 +78,6 @@ in
       # Libs
       libsecret
 
-      # Display
-      #edid-decode
-      #displaycal
-      #argyllcms
     ];
   };
 }

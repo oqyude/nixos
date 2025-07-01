@@ -8,8 +8,8 @@
 }:
 {
   imports = [
-    ./environment/kde.nix
-    #./environment/gnome.nix
+    #./environment/kde.nix
+    ./environment/gnome.nix
     #./environment/xfce.nix
     #./environment/deepin.nix
 
