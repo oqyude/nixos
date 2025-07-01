@@ -76,7 +76,7 @@ in
       lutris
 
       # Libs
-      libsecret
+      #libsecret
 
     ];
   };
