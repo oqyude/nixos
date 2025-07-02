@@ -38,6 +38,12 @@ let
             target = "keepassxc";
           };
         };
+        dataFile = {
+          "PrismLauncher" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Games/PrismLauncher";
+            target = "PrismLauncher";
+          };
+        };
         userDirs = {
           enable = true;
           createDirectories = true;
