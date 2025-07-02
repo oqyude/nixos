@@ -11,20 +11,18 @@ let
       ...
     }:
     {
-      imports =
-        with inputs;
-        [
-          ./hardware/mini-pc.nix
-          ./hardware/logitech.nix
-          self.nixosModules.default
+      imports = with inputs; [
+        ./hardware/mini-pc.nix
+        ./hardware/logitech.nix
+        self.nixosModules.default
 
-          self.nixosModules.software.wine
-          self.nixosModules.software.beets
-          self.nixosModules.desktop
-          self.homeConfigurations.main.nixosModule
-          self.homeConfigurations.root.nixosModule
-        ]
-        ++ builtins.attrValues inputs.self.nixosModules.extra.self;
+        self.nixosModules.software.wine
+        self.nixosModules.software.beets
+        self.nixosModules.extra.self.fingerprint
+        self.nixosModules.desktop
+        self.homeConfigurations.main.nixosModule
+        self.homeConfigurations.root.nixosModule
+      ];
 
       fileSystems = {
         "${inputs.zeroq.dirs.therima-drive}" = {
