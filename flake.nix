@@ -116,6 +116,7 @@
           immich = import ./modules/server/immich.nix flakeContext;
           nextcloud = import ./modules/server/nextcloud.nix flakeContext;
           nginx = import ./modules/server/cloudflared.nix flakeContext;
+          zerotier = import ./modules/server/zerotier.nix flakeContext;
         };
       };
 

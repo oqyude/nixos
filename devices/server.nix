@@ -17,6 +17,7 @@ let
         self.nixosModules.server.immich
         self.nixosModules.server.nextcloud
         self.nixosModules.server.nginx
+        self.nixosModules.server.zerotier
         self.nixosModules.software.beets
         #self.nixosModules.extra.self.zapret
 
