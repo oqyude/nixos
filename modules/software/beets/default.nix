@@ -14,7 +14,7 @@ let
   python3 = pkgs.python3.override {
     packageOverrides = depsOverlay;
   };
-  beetsEnv = python3.withPackages (ps: [ ps.beets ]);
+  beetsEnv = python3.withPackages (ps: [ ps.beets /*ps.gst-python ps.pygobject3*/ ]);
 in
 {
   systemd.tmpfiles.rules = [
@@ -26,6 +26,7 @@ in
       "${inputs.zeroq.devices.admin}" = {
         packages = [
           beetsEnv
+          pkgs.mp3gain
           pkgs.imagemagick
           pkgs.ffmpeg
         ];
