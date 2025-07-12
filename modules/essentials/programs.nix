@@ -14,6 +14,10 @@
       };
     };
     lazygit.enable = true;
+    yazi = {
+      enable = true;
+    };
+    bat.enable = true;
     command-not-found.enable = false;
     nix-index.enable = true;
     nh = {

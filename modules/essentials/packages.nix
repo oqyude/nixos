@@ -18,18 +18,23 @@
       lazysql
 
       # Base
-      mc
-      yazi
-      pciutils
-      smartmontools
-      efibootmgr
-      usbutils
-
-      # Data
-      wget
       curl
-      rsync
+      efibootmgr
+      fd
       fdupes
+      fzf
+      gdu
+      lsof
+      mc
+      pciutils
+      rsync
+      usbutils
+      wget
+
+      # Monitoring
+      smartmontools
+      btop
+      fastfetch
 
       # Disk
       gparted
@@ -48,10 +53,6 @@
       ipset
       iptables
       nftables
-
-      # Monitoring
-      btop
-      fastfetch
     ];
   };
 }
