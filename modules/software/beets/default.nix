@@ -14,7 +14,9 @@ let
   python3 = pkgs.python3.override {
     packageOverrides = depsOverlay;
   };
-  beetsEnv = python3.withPackages (ps: [ ps.beets /*ps.gst-python ps.pygobject3*/ ]);
+  beetsEnv = python3.withPackages (ps: [
+    ps.beets # ps.gst-python ps.pygobject3
+  ]);
 in
 {
   systemd.tmpfiles.rules = [

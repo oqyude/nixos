@@ -7,9 +7,10 @@
   environment = {
     systemPackages = with pkgs; [
       # Nix
-      nixfmt-tree
       nix-diff
       nix-tree
+      nixfmt-tree
+      nvd
 
       # Lazy
       lazycli
