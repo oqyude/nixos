@@ -11,6 +11,12 @@
       nix-diff
       nix-tree
 
+      # Lazy
+      lazycli
+      lazydocker
+      lazyjournal
+      lazysql
+
       # Base
       mc
       yazi
