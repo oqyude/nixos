@@ -64,6 +64,7 @@ in
       stretchly
       transmission_4-gtk
       vlc
+      normcap
 
       #zerotierone
       #tg
