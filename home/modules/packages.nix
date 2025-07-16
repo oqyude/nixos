@@ -65,15 +65,16 @@ in
       transmission_4-gtk
       vlc
       normcap
+      handbrake
+      zerotierone
 
-      #zerotierone
       #tg
       #reaper
       #discord
 
       # Games
       ludusavi
-      prismlauncher
+      last-stable.prismlauncher
       lutris
 
       # Libs

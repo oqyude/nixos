@@ -9,7 +9,7 @@
 
     # nixpkgs
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    #nixpkgs-last-unstable.url = "github:NixOS/nixpkgs/b6aef6c3553f849e1e6c08f1bcd3061df2b69fc4";
+    nixpkgs-last-unstable.url = "github:NixOS/nixpkgs/be9e214982e20b8310878ac2baa063a961c1bdf6";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
     nixpkgs-fingerprint.url = "github:NixOS/nixpkgs/nixos-24.11";
