@@ -74,7 +74,7 @@ in
 
       # Games
       ludusavi
-      last-stable.prismlauncher
+      prismlauncher
       lutris
 
       # Libs
