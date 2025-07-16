@@ -76,6 +76,9 @@ let
 
       hardware = {
         bluetooth.enable = true;
+        graphics.extraPackages = with pkgs; [
+          amdvlk
+        ];
       };
 
       # networking.firewall.allowedTCPPorts = [ ... ];
