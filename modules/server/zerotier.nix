@@ -8,7 +8,7 @@
 {
   services = {
     zerotierone = {
-      enable = true;
+      enable = false;
       joinNetworks = [
         "db64858fedde087e"
       ];
@@ -16,9 +16,9 @@
     };
   };
 
-  environment = {
-    systemPackages = with pkgs; [
-      zerotierone
-    ];
-  };
+  # environment = {
+  #   systemPackages = with pkgs; [
+  #     zerotierone
+  #   ];
+  # };
 }
