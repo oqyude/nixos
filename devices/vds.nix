@@ -10,12 +10,12 @@ let
     }:
     {
       imports = with inputs; [
-        "${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
-        ./disk-config.nix
         (modulesPath + "/installer/scan/not-detected.nix")
         (modulesPath + "/profiles/qemu-guest.nix")
 
         ./disko/vds.nix
+        disko.nixosModules.disko
+
         self.nixosModules.default
         #self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];
