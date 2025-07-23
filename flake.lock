@@ -477,7 +477,8 @@
         "plasma-manager": "plasma-manager",
         "sops-nix": "sops-nix",
         "zapret": "zapret",
-        "zeroq": "zeroq"
+        "zeroq": "zeroq",
+        "zeroq-credentials": "zeroq-credentials"
       }
     },
     "sops-nix": {
@@ -540,6 +541,21 @@
         "type": "path"
       },
       "parent": []
+    },
+    "zeroq-credentials": {
+      "locked": {
+        "lastModified": 1753304447,
+        "narHash": "sha256-dklfZZI1KWlc2RsqyDN09iop7iZaM9B7Eqmbt9587E0=",
+        "ref": "refs/heads/master",
+        "rev": "8320cf777bab7f0cb9191ecd6834f55298bcaff0",
+        "revCount": 2,
+        "type": "git",
+        "url": "ssh://git@github.com/oqyude/zeroq-credentials.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/oqyude/zeroq-credentials.git"
+      }
     }
   },
   "root": "root",

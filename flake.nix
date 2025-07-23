@@ -5,7 +5,7 @@
 
     # My
     zeroq.url = "path:./modules/zeroq"; # flake of variables
-    zeroq-credentials.url = "git+ssh://git@github.com:oqyude/zeroq-credentials.git"; # flake of variables
+    zeroq-credentials.url = "git+ssh://git@github.com/oqyude/zeroq-credentials.git"; # flake of variables
     zapret.url = "github:oqyude/zapret-easyflake"; # stupid flake of zapret
 
     # nixpkgs
