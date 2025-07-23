@@ -13,12 +13,12 @@ let
         (modulesPath + "/installer/scan/not-detected.nix")
         (modulesPath + "/profiles/qemu-guest.nix")
 
-        ./disko/vds.nix
+        #./disko/vds.nix
         ./hardware/vds.nix
 
-        disko.nixosModules.disko
+        #disko.nixosModules.disko
 
-        nixos-facter-modules.nixosModules.facter
+        #nixos-facter-modules.nixosModules.facter
 
         self.nixosModules.default
         #self.homeConfigurations.server.nixosModule # home-manager configuration module
@@ -39,17 +39,20 @@ let
       #         efiInstallAsRemovable = true;
       #       };
       boot = {
-        kernelPackages = pkgs.linuxPackages_xanmod_stable;
+        #kernelPackages = pkgs.linuxPackages_xanmod_stable;
         hardwareScan = true;
         loader = {
-          systemd-boot.enable = lib.mkDefault true;
-          efi.canTouchEfiVariables = lib.mkDefault true;
+          grub = {
+            enable = true;
+            device = "/dev/vda";
+            useOSProber = false;
+            efiSupport = false;
+            #efiInstallAsRemovable = true;
+          };
+          systemd-boot.enable = lib.mkDefault false;
+          #efi.canTouchEfiVariables = lib.mkDefault true;
         };
       };
-
-      swapDevices = [
-        { device = "/dev/disk/by-partlabel/disk-main-swap"; }
-      ];
 
       users = {
         users = {

@@ -9,40 +9,33 @@
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
-  boot = {
-    initrd = {
-      availableKernelModules = [
-        "ahci"
-        "xhci_pci"
-        "usbhid"
-        "usb_storage"
-        "sd_mod"
-        "sdhci_pci"
-      ];
-    };
-    kernel = {
-      sysctl = {
-        "fs.inotify.max_user_watches" = "204800";
-      };
-    };
-    kernelModules = [
-      "kvm-intel"
-      "coretemp"
-    ];
-  };
+
+  #  boot = {
+  #     initrd = {
+  #       availableKernelModules = [
+  #         "ahci"
+  #         "xhci_pci"
+  #         "usbhid"
+  #         "usb_storage"
+  #         "sd_mod"
+  #         "sdhci_pci"
+  #       ];
+  #     };
+  #     kernel = {
+  #       sysctl = {
+  #         "fs.inotify.max_user_watches" = "204800";
+  #       };
+  #     };
+  #     kernelModules = [
+  #       "kvm-intel"
+  #       "coretemp"
+  #     ];
+  #  };
 
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-partlabel/disk-main-root";
+      device = "/dev/vda1"; # "/dev/disk/by-partlabel/disk-main-root";
       fsType = "ext4";
-    };
-    "/boot" = {
-      device = "/dev/disk/by-partlabel/disk-main-ESP";
-      fsType = "vfat";
-      options = [
-        "fmask=0022"
-        "dmask=0022"
-      ];
     };
   };
 
@@ -62,7 +55,9 @@
   #       fsType = "ext4";
   #     };
 
-  swapDevices = [ ];
+  #       swapDevices = [
+  #         { device = "/dev/disk/by-partlabel/disk-main-swap"; }
+  #       ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
