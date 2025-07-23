@@ -20,6 +20,7 @@
           username = "otreca";
           hostname = "sapphira";
         };
+        vds.hostname = "otreca";
         wsl.hostname = "wsl";
       };
 

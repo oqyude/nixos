@@ -90,6 +90,7 @@
         lamet = import ./devices/mini-laptop.nix flakeContext; # lamet
         sapphira = import ./devices/server.nix flakeContext; # sapphira
         wsl = import ./devices/wsl.nix flakeContext; # wsl
+        vds = import ./devices/vds.nix flakeContext; # vds
       };
       nixosModules = {
         default = import ./modules/default.nix flakeContext;
