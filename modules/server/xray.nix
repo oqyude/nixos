@@ -8,8 +8,7 @@
 {
   services.xray = {
     enable = true;
-    settings = import "${inputs.zeroq-credentials}/services/xray/config.nix";
-    #settingsFile = "/etc/xray/config.json";
+    settings = inputs.zeroq-credentials.services.xray;
   };
 
   networking.firewall = {
