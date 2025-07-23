@@ -22,7 +22,7 @@ let
         #self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];
 
-      facter.reportPath = ./report/facter.json;
+      #facter.reportPath = ./report/facter.json;
 
       environment.systemPackages = map lib.lowPrio [
         pkgs.curl
