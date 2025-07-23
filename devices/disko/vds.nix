@@ -7,15 +7,15 @@
         content = {
           type = "gpt";
           partitions = {
-            #             ESP = {
-            #               type = "EF00";
-            #               size = "512M";
-            #               content = {
-            #                 type = "filesystem";
-            #                 format = "vfat";
-            #                 mountpoint = "/boot";
-            #               };
-            #             };
+            ESP = {
+              type = "EF02";
+              size = "512M";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot";
+              };
+            };
             #             swap = {
             #               size = "2G";
             #               content = {

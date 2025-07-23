@@ -34,26 +34,15 @@
 
   fileSystems = {
     "/" = {
-      device = lib.mkForce "/dev/vda1"; # "/dev/disk/by-partlabel/disk-main-root";
+      device = lib.mkForce "/dev/vda2"; # "/dev/disk/by-partlabel/disk-main-root";
       fsType = "ext4";
     };
+    "/boot" = {
+      device = lib.mkForce "/dev/vda1";
+      fsType = "vfat";
+      options = [ "fmask=0022" "dmask=0022" ];
+    };
   };
-
-  #   fileSystems."/" =
-  #     { device = "/dev/disk/by-uuid/8acccc34-edc6-4934-886c-ef4b778ca24a";
-  #       fsType = "ext4";
-  #     };
-  #
-  #   fileSystems."/boot" =
-  #     { device = "/dev/disk/by-uuid/DDF2-C940";
-  #       fsType = "vfat";
-  #       options = [ "fmask=0022" "dmask=0022" ];
-  #     };
-  #
-  #   fileSystems."/home/otreca/External" =
-  #     { device = "/dev/disk/by-uuid/37e53ebc-5343-a94d-9fe2-0ca39e13a8de";
-  #       fsType = "ext4";
-  #     };
 
   #       swapDevices = [
   #         { device = "/dev/disk/by-partlabel/disk-main-swap"; }
