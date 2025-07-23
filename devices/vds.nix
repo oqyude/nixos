@@ -44,7 +44,7 @@ let
         loader = {
           grub = {
             enable = true;
-            device = "/dev/vda1";
+            device = "nodev";
             useOSProber = false;
             efiSupport = false;
             #efiInstallAsRemovable = true;
