@@ -14,6 +14,8 @@ let
         (modulesPath + "/profiles/qemu-guest.nix")
 
         ./disko/vds.nix
+        ./hardware/vds.nix
+
         disko.nixosModules.disko
 
         nixos-facter-modules.nixosModules.facter
@@ -30,24 +32,24 @@ let
         pkgs.lazygit
       ];
 
-      boot.loader.grub = {
-        # no need to set devices, disko will add all devices that have a EF02 partition to the list already
-        # devices = [ ];
-        efiSupport = true;
-        efiInstallAsRemovable = true;
+      #       boot.loader.grub = {
+      #         # no need to set devices, disko will add all devices that have a EF02 partition to the list already
+      #         # devices = [ ];
+      #         efiSupport = true;
+      #         efiInstallAsRemovable = true;
+      #       };
+      boot = {
+        kernelPackages = pkgs.linuxPackages_xanmod_stable;
+        hardwareScan = true;
+        loader = {
+          systemd-boot.enable = lib.mkDefault true;
+          efi.canTouchEfiVariables = lib.mkDefault true;
+        };
       };
-      #boot = {
-      #kernelPackages = pkgs.linuxPackages_xanmod_stable; # pkgs.linuxPackages_xanmod_stable
-      #hardwareScan = true;
-      #loader = {
-      #  systemd-boot.enable = lib.mkDefault true;
-      #  efi.canTouchEfiVariables = lib.mkDefault true;
-      #};
-      #};
 
-      #swapDevices =
-      #  [ { device = "/dev/disk/by-partlabel/disk-main-swap"; }
-      #  ];
+      swapDevices = [
+        { device = "/dev/disk/by-partlabel/disk-main-swap"; }
+      ];
 
       users = {
         users = {

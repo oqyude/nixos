@@ -1,7 +1,7 @@
 {
   disko.devices = {
     disk = {
-      my-disk = {
+      main = {
         device = "/dev/vda";
         type = "disk";
         content = {
@@ -9,11 +9,17 @@
           partitions = {
             ESP = {
               type = "EF00";
-              size = "500M";
+              size = "512M";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
+              };
+            };
+            swap = {
+              size = "2G";
+              content = {
+                type = "swap";
               };
             };
             root = {
