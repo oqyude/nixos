@@ -29,6 +29,7 @@
           "100.64.0.0"
           "192.168.1.20"
           "localhost"
+          "sapphira.latxa-platy.ts.net"
         ];
       };
       extraAppsEnable = true;
