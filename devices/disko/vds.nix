@@ -11,16 +11,16 @@
               type = "EF02";
               size = "1M";
             };
-            ESP = {
-              size = "500M";
-              type = "EF00";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot";
-                mountOptions = [ "umask=0077" ];
-              };
-            };
+            #             ESP = {
+            #               size = "500M";
+            #               type = "EF00";
+            #               content = {
+            #                 type = "filesystem";
+            #                 format = "vfat";
+            #                 mountpoint = "/boot";
+            #                 mountOptions = [ "umask=0077" ];
+            #               };
+            #             };
             root = {
               size = "100%";
               content = {
@@ -30,7 +30,7 @@
               };
             };
             swap = {
-              size = "2G";
+              size = "256M";
               content = {
                 type = "swap";
               };
