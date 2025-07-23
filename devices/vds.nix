@@ -21,6 +21,7 @@ let
         #nixos-facter-modules.nixosModules.facter
 
         self.nixosModules.default
+        self.nixosModules.server.xray
         #self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];
 
