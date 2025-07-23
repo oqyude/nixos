@@ -39,7 +39,7 @@ let
       #         efiInstallAsRemovable = true;
       #       };
       boot = {
-        #kernelPackages = pkgs.linuxPackages_xanmod_stable;
+        kernelPackages = pkgs.linuxPackages_xanmod_stable;
         hardwareScan = true;
         loader = {
           grub = {
@@ -81,6 +81,7 @@ let
         };
         samba = {
           enable = true;
+          openFirewall = true;
           settings = {
             global = {
               "invalid users" = [ ];
@@ -116,6 +117,7 @@ let
         openssh = {
           enable = true;
           allowSFTP = true;
+          openFirewall = true;
           hostKeys = [
             {
               path = "/etc/ssh/id_ed25519";
@@ -128,13 +130,16 @@ let
             UsePAM = true;
           };
         };
-        tailscale.enable = true;
+        tailscale = {
+          enable = true;
+          openFirewall = true;
+        };
       };
 
       networking = {
         hostName = "${inputs.zeroq.devices.vds.hostname}";
         networkmanager.enable = true;
-        firewall.enable = false;
+        firewall.enable = true;
       };
 
       system = {
