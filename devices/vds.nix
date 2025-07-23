@@ -13,10 +13,10 @@ let
         (modulesPath + "/installer/scan/not-detected.nix")
         (modulesPath + "/profiles/qemu-guest.nix")
 
-        #./disko/vds.nix
+        ./disko/vds.nix
         ./hardware/vds.nix
 
-        #disko.nixosModules.disko
+        disko.nixosModules.disko
 
         #nixos-facter-modules.nixosModules.facter
 
@@ -44,7 +44,7 @@ let
         loader = {
           grub = {
             enable = true;
-            device = "/dev/vda";
+            device = "/dev/vda1";
             useOSProber = false;
             efiSupport = false;
             #efiInstallAsRemovable = true;

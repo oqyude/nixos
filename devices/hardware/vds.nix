@@ -34,7 +34,7 @@
 
   fileSystems = {
     "/" = {
-      device = "/dev/vda1"; # "/dev/disk/by-partlabel/disk-main-root";
+      device = lib.mkForce "/dev/vda1"; # "/dev/disk/by-partlabel/disk-main-root";
       fsType = "ext4";
     };
   };
