@@ -26,6 +26,8 @@
       # ssh
       s-1 = "ssh sapphira-1";
       s-1t = "ssh sapphira-1t";
+      o-1 = "ssh otreca-1";
+      o-1t = "ssh otreca-1t";
 
       # Somethings
       reboot-bios = "sudo systemctl reboot --firmware-setup";

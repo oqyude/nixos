@@ -79,40 +79,40 @@ let
             SystemMaxUse=128M
           '';
         };
-        # samba = {
-        #   enable = true;
-        #   settings = {
-        #     global = {
-        #       "invalid users" = [ ];
-        #       "passwd program" = "/run/wrappers/bin/passwd %u";
-        #       security = "user";
-        #     };
-        #     nixos = {
-        #       "path" = "/etc/nixos";
-        #       "browseable" = "yes";
-        #       "read only" = "no";
-        #       "valid users" = "${inputs.zeroq.devices.admin}";
-        #       "guest ok" = "no";
-        #       "writable" = "yes";
-        #       "create mask" = 644;
-        #       "directory mask" = 644;
-        #       "force user" = "${inputs.zeroq.devices.admin}";
-        #       "force group" = "users";
-        #     };
-        #     root = {
-        #       "path" = "/";
-        #       "browseable" = "yes";
-        #       "read only" = "no";
-        #       "valid users" = "${inputs.zeroq.devices.admin}";
-        #       "guest ok" = "no";
-        #       "writable" = "yes";
-        #       #"create mask" = 0644;
-        #       #"directory mask" = 0644;
-        #       "force user" = "root";
-        #       "force group" = "root";
-        #     };
-        #   };
-        # };
+        samba = {
+          enable = true;
+          settings = {
+            global = {
+              "invalid users" = [ ];
+              "passwd program" = "/run/wrappers/bin/passwd %u";
+              security = "user";
+            };
+            nixos = {
+              "path" = "/etc/nixos";
+              "browseable" = "yes";
+              "read only" = "no";
+              "valid users" = "${inputs.zeroq.devices.admin}";
+              "guest ok" = "no";
+              "writable" = "yes";
+              "create mask" = 644;
+              "directory mask" = 644;
+              "force user" = "${inputs.zeroq.devices.admin}";
+              "force group" = "users";
+            };
+            root = {
+              "path" = "/";
+              "browseable" = "yes";
+              "read only" = "no";
+              "valid users" = "${inputs.zeroq.devices.admin}";
+              "guest ok" = "no";
+              "writable" = "yes";
+              #"create mask" = 0644;
+              #"directory mask" = 0644;
+              "force user" = "root";
+              "force group" = "root";
+            };
+          };
+        };
         openssh = {
           enable = true;
           allowSFTP = true;
