@@ -140,11 +140,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1753236723,
-        "narHash": "sha256-nheZ7t89/Ob/O1nWbGv0RrFrfPR4ArDV4sX1EuO6OmA=",
+        "lastModified": 1753279958,
+        "narHash": "sha256-EJ1udnwKYgWeAJzncAccbLPtbSWiuIANryXTGI9nY6w=",
         "owner": "vinceliuice",
         "repo": "grub2-themes",
-        "rev": "739cddf60fb0090282ca306805ea0ce5b2fd9447",
+        "rev": "6c26f99622cb1c705b3fe2dbe1eb88521096b25a",
         "type": "github"
       },
       "original": {
@@ -160,11 +160,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1753181343,
-        "narHash": "sha256-CLQfNtUqirNVSYoW/kYbvL4PeeNasmZonaPnjO3+1YQ=",
+        "lastModified": 1753294394,
+        "narHash": "sha256-1Dfgq09lHZ8AdYB2Deu/mYP1pMNpob8CgqT5Mzo44eI=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "0cdfcdbb525b77b951c889b6131047bc374f48fe",
+        "rev": "1fde6fb1be6cd5dc513dc1c287d69e4eb2de973e",
         "type": "github"
       },
       "original": {
@@ -199,11 +199,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1753253128,
-        "narHash": "sha256-Vzq45M0SeOzB898Nttb38ItHlzGob3rC5rwJJBuKvxI=",
+        "lastModified": 1753259579,
+        "narHash": "sha256-la/nOVejczda0kbOyGFxlvIqQqd5gL+0J21CQF7GDCc=",
         "owner": "fufexan",
         "repo": "nix-gaming",
-        "rev": "e159b12c7169fb0858cda678fdf6d10f00595091",
+        "rev": "173967ec613de095c73a077f9f9d3099746499e8",
         "type": "github"
       },
       "original": {
@@ -397,11 +397,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1753257080,
-        "narHash": "sha256-uz1YdUhagSMabde/wjO/e82QOCWOklogQZAWnDCz4FY=",
+        "lastModified": 1753306654,
+        "narHash": "sha256-RpMnFWb/AepEI2BUMEhAj/7iY3zdSVOppnX/AYH8S2M=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "182486117f110c88323a4c9f95b6afc7fb6f4729",
+        "rev": "e9ac0e615220b10559d0a466f6eacc7e2e0ff6f0",
         "type": "github"
       },
       "original": {
@@ -544,11 +544,11 @@
     },
     "zeroq-credentials": {
       "locked": {
-        "lastModified": 1753304447,
-        "narHash": "sha256-dklfZZI1KWlc2RsqyDN09iop7iZaM9B7Eqmbt9587E0=",
+        "lastModified": 1753306975,
+        "narHash": "sha256-CXQWVkM+KUohsqm+AS8/3nrCCfoCMyOrRbEfteHU16s=",
         "ref": "refs/heads/master",
-        "rev": "8320cf777bab7f0cb9191ecd6834f55298bcaff0",
-        "revCount": 2,
+        "rev": "08da6b588abb5833e724e26828d18b1641c61bb4",
+        "revCount": 7,
         "type": "git",
         "url": "ssh://git@github.com/oqyude/zeroq-credentials.git"
       },
