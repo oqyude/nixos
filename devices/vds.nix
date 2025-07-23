@@ -16,9 +16,13 @@ let
         ./disko/vds.nix
         disko.nixosModules.disko
 
+        nixos-facter-modules.nixosModules.facter
+
         self.nixosModules.default
         #self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];
+
+      facter.reportPath = ./report/facter.json;
 
       environment.systemPackages = map lib.lowPrio [
         pkgs.curl

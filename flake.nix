@@ -15,6 +15,7 @@
     nixpkgs-fingerprint.url = "github:NixOS/nixpkgs/nixos-24.11";
 
     # nix-community
+    nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     flake-compat.url = "github:edolstra/flake-compat";
     flake-utils.url = "github:numtide/flake-utils";
