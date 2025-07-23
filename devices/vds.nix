@@ -13,7 +13,7 @@ let
         (modulesPath + "/installer/scan/not-detected.nix")
         (modulesPath + "/profiles/qemu-guest.nix")
 
-        #./hardware/vds.nix
+        ./disco/vds.nix
         self.nixosModules.default
         #self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];
@@ -21,6 +21,7 @@ let
       environment.systemPackages = map lib.lowPrio [
         pkgs.curl
         pkgs.gitMinimal
+        pkgs.lazygit
       ];
 
       boot.loader.grub = {
@@ -46,10 +47,9 @@ let
         users = {
           root = {
             openssh.authorizedKeys.keys = [
-              # change this to your ssh key
-              "# CHANGE"
-            ]
-            ++ (args.extraPublicKeys or [ ]); # this is used for unit-testing this module and can be removed if not needed
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKduJia+unaQQdN6X5syaHvnpIutO+yZwvfiCP4qKQ/P"
+            ];
+            #++ (args.extraPublicKeys or [ ]); # this is used for unit-testing this module and can be removed if not needed
           };
           "${inputs.zeroq.devices.admin}" = {
             openssh.authorizedKeys.keys = [
