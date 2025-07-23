@@ -8,7 +8,8 @@
 {
   services.xray = {
     enable = true;
-    settingsFile = "/etc/xray/config.json";
+    settings = "${inputs.zeroq-credentials.services.xray}";
+    #settingsFile = "/etc/xray/config.json";
   };
 
   networking.firewall = {
