@@ -19,7 +19,7 @@
         #dbhost = "/run/postgresql";
         dbname = "nextcloud";
         adminuser = "oqyude";
-        adminpassFile = "${inputs.zeroq.dirs.server-credentials}/nextcloud/admin-pass.txt";
+        adminpassFile = "${inputs.zeroq-credentials}/services/nextcloud/admin-pass.txt";
       };
       settings = {
         appstoreEnable = false;
