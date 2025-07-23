@@ -27,7 +27,7 @@
         trusted_domains = [
           "nextcloud.zeroq.ru"
           "100.64.0.0"
-          "192.168.1.18"
+          "192.168.1.20"
           "localhost"
         ];
       };
