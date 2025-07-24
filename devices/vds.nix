@@ -9,16 +9,18 @@ let
       ...
     }:
     {
-      imports = with inputs; [
-        (modulesPath + "/installer/scan/not-detected.nix")
-        (modulesPath + "/profiles/qemu-guest.nix")
+      imports =
+        with inputs;
+        [
+          (modulesPath + "/installer/scan/not-detected.nix")
+          (modulesPath + "/profiles/qemu-guest.nix")
 
-        ./disko/vds.nix
-        ./hardware/vds.nix
+          ./disko/vds.nix
+          ./hardware/vds.nix
 
-        disko.nixosModules.disko
-        self.nixosModules.default
-      ]
+          disko.nixosModules.disko
+          self.nixosModules.default
+        ]
         ++ builtins.attrValues inputs.self.nixosModules.vds;
 
       environment.systemPackages = map lib.lowPrio [

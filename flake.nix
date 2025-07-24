@@ -123,6 +123,7 @@
         };
         vds = {
           cloudflared = import ./modules/vds/cloudflared.nix flakeContext;
+          netbird = import ./modules/vds/netbird.nix flakeContext;
           nginx = import ./modules/vds/cloudflared.nix flakeContext;
           xray = import ./modules/vds/xray.nix flakeContext;
         };
