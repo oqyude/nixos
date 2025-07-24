@@ -13,7 +13,7 @@ let
         self.nixosModules.default
 
         #self.nixosModules.desktop
-        self.nixosModules.server.cloudflared
+        #self.nixosModules.server.cloudflared
         self.nixosModules.server.immich
         self.nixosModules.server.nextcloud
         self.nixosModules.server.nginx
@@ -113,8 +113,8 @@ let
               "valid users" = "${inputs.zeroq.devices.admin}";
               "guest ok" = "no";
               "writable" = "yes";
-              "create mask" = 644;
-              "directory mask" = 644;
+              "create mask" = 755;
+              "directory mask" = 755;
               "force user" = "${inputs.zeroq.devices.admin}";
               "force group" = "users";
             };

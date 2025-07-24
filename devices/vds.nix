@@ -17,15 +17,9 @@ let
         ./hardware/vds.nix
 
         disko.nixosModules.disko
-
-        #nixos-facter-modules.nixosModules.facter
-
         self.nixosModules.default
-        self.nixosModules.server.xray
-        #self.homeConfigurations.server.nixosModule # home-manager configuration module
-      ];
-
-      #facter.reportPath = ./report/facter.json;
+      ]
+        ++ builtins.attrValues inputs.self.nixosModules.vds;
 
       environment.systemPackages = map lib.lowPrio [
         pkgs.curl
@@ -33,12 +27,6 @@ let
         pkgs.lazygit
       ];
 
-      #       boot.loader.grub = {
-      #         # no need to set devices, disko will add all devices that have a EF02 partition to the list already
-      #         # devices = [ ];
-      #         efiSupport = true;
-      #         efiInstallAsRemovable = true;
-      #       };
       boot = {
         kernelPackages = pkgs.linuxPackages_xanmod_stable;
         hardwareScan = true;
@@ -48,10 +36,8 @@ let
             device = "nodev";
             useOSProber = false;
             efiSupport = false;
-            #efiInstallAsRemovable = true;
           };
           systemd-boot.enable = lib.mkDefault false;
-          #efi.canTouchEfiVariables = lib.mkDefault true;
         };
       };
 
@@ -61,7 +47,6 @@ let
             openssh.authorizedKeys.keys = [
               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKduJia+unaQQdN6X5syaHvnpIutO+yZwvfiCP4qKQ/P"
             ];
-            #++ (args.extraPublicKeys or [ ]); # this is used for unit-testing this module and can be removed if not needed
           };
           "${inputs.zeroq.devices.admin}" = {
             openssh.authorizedKeys.keys = [
@@ -96,8 +81,8 @@ let
               "valid users" = "${inputs.zeroq.devices.admin}";
               "guest ok" = "no";
               "writable" = "yes";
-              "create mask" = 644;
-              "directory mask" = 644;
+              "create mask" = 755;
+              "directory mask" = 755;
               "force user" = "${inputs.zeroq.devices.admin}";
               "force group" = "users";
             };

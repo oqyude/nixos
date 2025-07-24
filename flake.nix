@@ -120,7 +120,11 @@
           nextcloud = import ./modules/server/nextcloud.nix flakeContext;
           nginx = import ./modules/server/cloudflared.nix flakeContext;
           zerotier = import ./modules/server/zerotier.nix flakeContext;
-          xray = import ./modules/server/xray.nix flakeContext;
+        };
+        vds = {
+          cloudflared = import ./modules/vds/cloudflared.nix flakeContext;
+          nginx = import ./modules/vds/cloudflared.nix flakeContext;
+          xray = import ./modules/vds/xray.nix flakeContext;
         };
       };
 
