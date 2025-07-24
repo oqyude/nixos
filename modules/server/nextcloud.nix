@@ -7,6 +7,12 @@
 }:
 {
   services = {
+    nextcloud-whiteboard-server = {
+      enable = true;
+      settings = {
+        NEXTCLOUD_URL = "https://nextcloud.zeroq.ru/";
+      };
+    };
     nextcloud = {
       enable = true;
       package = pkgs.nextcloud31;
