@@ -19,7 +19,7 @@
               service = "http://sapphira.latxa-platy.ts.net:2283";
             };
             "nextcloud.zeroq.ru" = {
-              service = "http://sapphira.latxa-platy.ts.net";
+              service = "http://sapphira.latxa-platy.ts.net:10000";
             };
           };
           default = "http_status:404";
