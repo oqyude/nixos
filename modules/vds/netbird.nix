@@ -15,7 +15,7 @@
       domain = "netbird.zeroq.ru";
       settings = {
         #AUTH_AUTHORITY = "nbp_ufe0v5mbb5H1lQWL8eJfuzJ5ItPmlM46Mik0";
-      };  
+      };
     };
     management = {
       enable = false;
