@@ -11,11 +11,8 @@
       enable = true;
       settings = {
         NEXTCLOUD_URL = "https://nextcloud.zeroq.ru";
-        JWT_SECRET_KEY = "sjlbhMzmNopbYMOx";
       };
-      # secrets = [
-      #   "sjlbhMzmNopbYMOx"
-      # ];
+      secrets = [ "${inputs.zeroq-credentials}/services/nextcloud/jwt-secret.txt" ];
     };
     nextcloud = {
       enable = true;
