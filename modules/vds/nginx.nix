@@ -8,7 +8,7 @@
 {
   services = {
     nginx = {
-      enable = true;
+      enable = false;
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       recommendedProxySettings = true;
@@ -19,12 +19,12 @@
           serverName = "${inputs.zeroq.devices.vds.hostname}.latxa-platy.ts.net";
           listen = [
             {
-              addr = "${inputs.zeroq.devices.vds.hostname}.latxa-platy.ts.net"; # Tailscale IP вашего VDS
+              addr = "0.0.0.0"; # Tailscale IP вашего VDS
               port = 44444;
               ssl = false;
             }
             {
-              addr = "${inputs.zeroq.devices.vds.hostname}.latxa-platy.ts.net"; # Tailscale IP вашего VDS
+              addr = "0.0.0.0"; # Tailscale IP вашего VDS
               port = 44443;
               ssl = true;
             }
@@ -44,17 +44,18 @@
       };
     };
   };
-  security.acme = {
-    acceptTerms = true;
-    defaults.email = "oqyude@gmail.com"; # Укажите ваш email
-    certs."${inputs.zeroq.devices.vds.hostname}.latxa-platy.ts.net" = {
-      dnsProvider = null; # Tailscale hostname не требует DNS-проверки, если используем HTTP-01
-      webroot = "/var/lib/acme/acme-challenge";
-    };
-  };
-  networking.firewall.allowedTCPPorts = [
-    44443
-    44444
-    80
-  ];
+  # security.acme = {
+  #   acceptTerms = true;
+  #   defaults.email = "oqyude@gmail.com"; # Укажите ваш email
+  #   certs."${inputs.zeroq.devices.vds.hostname}.latxa-platy.ts.net" = {
+  #     dnsProvider = null; # Tailscale hostname не требует DNS-проверки, если используем HTTP-01
+  #     webroot = "/var/lib/acme/acme-challenge";
+  #     extraLegoFlags = [ "--http-01.port=80" ];
+  #   };
+  # };
+  # networking.firewall.allowedTCPPorts = [
+  #   44443
+  #   44444
+  #   80
+  # ];
 }
