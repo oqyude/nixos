@@ -10,8 +10,12 @@
     nextcloud-whiteboard-server = {
       enable = true;
       settings = {
-        NEXTCLOUD_URL = "https://nextcloud.zeroq.ru/";
+        NEXTCLOUD_URL = "https://nextcloud.zeroq.ru";
+        JWT_SECRET_KEY = "sjlbhMzmNopbYMOx";
       };
+      # secrets = [
+      #   "sjlbhMzmNopbYMOx"
+      # ];
     };
     nextcloud = {
       enable = true;

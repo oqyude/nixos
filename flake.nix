@@ -118,13 +118,13 @@
           cloudflared = import ./modules/server/cloudflared.nix flakeContext;
           immich = import ./modules/server/immich.nix flakeContext;
           nextcloud = import ./modules/server/nextcloud.nix flakeContext;
-          nginx = import ./modules/server/cloudflared.nix flakeContext;
+          nginx = import ./modules/server/nginx.nix flakeContext;
           zerotier = import ./modules/server/zerotier.nix flakeContext;
         };
         vds = {
           cloudflared = import ./modules/vds/cloudflared.nix flakeContext;
           netbird = import ./modules/vds/netbird.nix flakeContext;
-          nginx = import ./modules/vds/cloudflared.nix flakeContext;
+          nginx = import ./modules/vds/nginx.nix flakeContext;
           xray = import ./modules/vds/xray.nix flakeContext;
         };
       };
