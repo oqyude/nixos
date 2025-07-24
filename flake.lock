@@ -544,11 +544,11 @@
     },
     "zeroq-credentials": {
       "locked": {
-        "lastModified": 1753364427,
-        "narHash": "sha256-80qOUx/1DspR1RzdkUFxhaqvxfqcVDnbp3kAfq151tI=",
+        "lastModified": 1753387589,
+        "narHash": "sha256-kJypMcuUJ6PRVrBQxQa7qYhPmyEDh14aZ8EMSLALhwA=",
         "ref": "refs/heads/master",
-        "rev": "36b8715d3aafab43fbec37855f7e8793d59bef29",
-        "revCount": 16,
+        "rev": "5973e19fc796a3bb6124d6f44400da8dc8f3196b",
+        "revCount": 18,
         "type": "git",
         "url": "ssh://git@github.com/oqyude/zeroq-credentials.git"
       },

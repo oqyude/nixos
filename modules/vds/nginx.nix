@@ -8,27 +8,53 @@
 {
   services = {
     nginx = {
-      enable = false;
+      enable = true;
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
-        "localhost:10000" = {
-          forceSSL = false;
-          enableACME = false;
+        "vless-sub" = {
+
+          serverName = "${inputs.zeroq.devices.vds.hostname}.latxa-platy.ts.net";
           listen = [
             {
-              addr = "100.64.0.0";
-              port = 10000;
+              addr = "${inputs.zeroq.devices.vds.hostname}.latxa-platy.ts.net"; # Tailscale IP вашего VDS
+              port = 44444;
+              ssl = false;
             }
             {
-              addr = "192.168.1.20";
-              port = 10000;
+              addr = "${inputs.zeroq.devices.vds.hostname}.latxa-platy.ts.net"; # Tailscale IP вашего VDS
+              port = 44443;
+              ssl = true;
             }
           ];
+          root = "${inputs.zeroq-credentials.paths.vless-subs.root}"; # "${inputs.zeroq-credentials}/services/xray/subs";
+          locations."/" = {
+            extraConfig = ''
+              if ($scheme = http) {
+                return 301 https://$host:44443$request_uri;
+              }
+            '';
+          };
+          enableACME = true;
+          forceSSL = true; # Принудительно HTTPS
+
         };
       };
     };
   };
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = "oqyude@gmail.com"; # Укажите ваш email
+    certs."${inputs.zeroq.devices.vds.hostname}.latxa-platy.ts.net" = {
+      dnsProvider = null; # Tailscale hostname не требует DNS-проверки, если используем HTTP-01
+      webroot = "/var/lib/acme/acme-challenge";
+    };
+  };
+  networking.firewall.allowedTCPPorts = [
+    44443
+    44444
+    80
+  ];
 }
