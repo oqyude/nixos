@@ -100,6 +100,18 @@ let
               "force user" = "root";
               "force group" = "root";
             };
+            "${inputs.zeroq.devices.admin}" = {
+              "path" = "/home/${inputs.zeroq.devices.admin}";
+              "browseable" = "yes";
+              "read only" = "no";
+              "valid users" = "${inputs.zeroq.devices.admin}";
+              "guest ok" = "no";
+              "writable" = "yes";
+              "create mask" = 700;
+              "directory mask" = 700;
+              "force user" = "${inputs.zeroq.devices.admin}";
+              "force group" = "users";
+            };
           };
         };
         openssh = {
