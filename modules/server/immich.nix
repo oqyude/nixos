@@ -13,7 +13,7 @@
       host = "0.0.0.0";
       openFirewall = true;
       accelerationDevices = null;
-      machine-learning.enable = true;
+      machine-learning.enable = false;
       mediaLocation = "/mnt/immich";
     };
   };
