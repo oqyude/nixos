@@ -48,6 +48,7 @@ in
         ];
       })
       nekoray
+      v2rayn
 
       # Workflow
       #cloudflared

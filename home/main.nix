@@ -43,6 +43,10 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Games/PrismLauncher";
             target = "PrismLauncher";
           };
+          "v2rayN" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/v2rayN";
+            target = "v2rayN";
+          };
         };
         userDirs = {
           enable = true;
