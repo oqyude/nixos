@@ -26,8 +26,6 @@
       # ssh
       s-1 = "ssh sapphira-1";
       s-1t = "ssh sapphira-1t";
-      o-1 = "ssh otreca-1";
-      o-1t = "ssh otreca-1t";
       o-0 = "ssh otreca-0";
       o-0t = "ssh otreca-0t";
 
