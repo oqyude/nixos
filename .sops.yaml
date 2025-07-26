@@ -1,0 +1,7 @@
+keys:
+  - &oqyude age13l2gtk0nzr484zprp7e0pkrt0ne0j4asyn2pjmlaw73nte7t7d8q4sqtxm
+creation_rules:
+  - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+      age:
+      - *oqyude
