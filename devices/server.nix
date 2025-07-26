@@ -203,6 +203,7 @@ let
       networking = {
         hostName = "${inputs.zeroq.devices.server.hostname}";
         networkmanager.enable = true;
+        networkmanager.dns = "default";
         firewall.enable = false;
       };
 
