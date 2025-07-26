@@ -7,6 +7,10 @@ let
       pkgs,
       ...
     }:
+    let
+
+      last-stable = import inputs.nixpkgs-last-unstable { system = "x86_64-linux"; };
+    in
     {
       imports = with inputs; [
         sops-nix.nixosModules.sops
@@ -144,6 +148,7 @@ let
         };
         calibre-web = {
           enable = true;
+          package = last-stable.calibre-web;
           group = "users";
           user = "${inputs.zeroq.devices.admin}";
           options = {
@@ -158,7 +163,6 @@ let
         openssh = {
           enable = true;
           allowSFTP = true;
-          #knownHosts.otreca.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJpMaD143EZqhRlpAgNINLrH/qXkN3zXmKgFJlhbhGwg";
           hostKeys = [
             {
               path = "/etc/ssh/id_ed25519";
@@ -203,8 +207,6 @@ let
       networking = {
         hostName = "${inputs.zeroq.devices.server.hostname}";
         networkmanager.enable = true;
-        #networkmanager.dns = "default";
-        #enableIPv6 = true;
         firewall.enable = false;
       };
 
