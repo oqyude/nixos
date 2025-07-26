@@ -9,6 +9,7 @@
       # Encrypt
       age
       sops
+      ssh-to-age
 
       # Nix
       nix-diff
