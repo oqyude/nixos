@@ -13,6 +13,7 @@
         };
       };
     };
+    partition-manager.enable = true;
     lazygit.enable = true;
     yazi = {
       enable = true;

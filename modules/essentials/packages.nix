@@ -43,7 +43,6 @@
       fastfetch
 
       # Disk
-      gparted
       parted
       ntfs3g
       exfatprogs # for gparted exfat support
