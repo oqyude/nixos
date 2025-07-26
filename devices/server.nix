@@ -17,18 +17,13 @@ let
         self.nixosModules.default
 
         self.nixosModules.server.immich
-        #self.nixosModules.server.nextcloud
+        self.nixosModules.server.nextcloud
         #self.nixosModules.server.nginx
         self.nixosModules.software.beets
         #self.nixosModules.server.zerotier
 
         self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];
-
-      sops = {
-        defaultSopsFile = ./secrets/example.yaml;
-        age.keyFile = "/var/lib/sops-nix/key.txt";
-      };
 
       boot = {
         kernelPackages = pkgs.linuxPackages_xanmod_stable;

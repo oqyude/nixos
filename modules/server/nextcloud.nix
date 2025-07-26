@@ -6,10 +6,10 @@
   ...
 }:
 {
-  environment.etc."/sops-secrets/nextcloud/admin-pass" = {
-    text = sops.secrets.services.nextcloud.admin-pass;
-    mode = "0640"; # Права доступа к файлу (опционально)
-  };
+  #   environment.etc."/sops-secrets/nextcloud/admin-pass" = {
+  #     text = sops.secrets.services.nextcloud.admin-pass;
+  #     mode = "0640"; # Права доступа к файлу (опционально)
+  #   };
   services = {
     # nextcloud-whiteboard-server = {
     #   enable = true;
@@ -19,7 +19,7 @@
     #   secrets = [ "${inputs.zeroq-credentials}/services/nextcloud/jwt-secret.txt" ];
     # };
     nextcloud = {
-      enable = true;
+      enable = false;
       package = pkgs.nextcloud31;
       hostName = "localhost:10000";
       database.createLocally = true;
