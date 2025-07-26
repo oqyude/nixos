@@ -13,14 +13,11 @@ let
         ./hardware/server.nix
         self.nixosModules.default
 
-        #self.nixosModules.desktop
-        #self.nixosModules.server.cloudflared
         self.nixosModules.server.immich
-        self.nixosModules.server.nextcloud
+        #self.nixosModules.server.nextcloud
         self.nixosModules.server.nginx
-        self.nixosModules.server.zerotier
         self.nixosModules.software.beets
-        #self.nixosModules.extra.self.zapret
+        #self.nixosModules.server.zerotier
 
         self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];

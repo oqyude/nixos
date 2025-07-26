@@ -8,7 +8,7 @@
 {
   services = {
     zerotierone = {
-      enable = false;
+      enable = enable;
       joinNetworks = [
         "db64858fedde087e"
       ];
