@@ -6,10 +6,6 @@
   ...
 }:
 {
-  #   environment.etc."/sops-secrets/nextcloud/admin-pass" = {
-  #     text = sops.secrets.services.nextcloud.admin-pass;
-  #     mode = "0640"; # Права доступа к файлу (опционально)
-  #   };
   services = {
     # nextcloud-whiteboard-server = {
     #   enable = true;
@@ -19,7 +15,7 @@
     #   secrets = [ "${inputs.zeroq-credentials}/services/nextcloud/jwt-secret.txt" ];
     # };
     nextcloud = {
-      enable = false;
+      enable = true;
       package = pkgs.nextcloud31;
       hostName = "localhost:10000";
       database.createLocally = true;
@@ -30,7 +26,7 @@
         #dbhost = "/run/postgresql";
         dbname = "nextcloud";
         adminuser = "oqyude";
-        adminpassFile = "/etc/sops-nix/nextcloud/admin-pass"; # "${inputs.zeroq-credentials}/services/nextcloud/admin-pass.txt";
+        adminpassFile = "${inputs.zeroq-credentials}/services/nextcloud/admin-pass.txt";
       };
       settings = {
         appstoreEnable = false;
