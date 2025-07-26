@@ -8,7 +8,6 @@ let
       ...
     }:
     let
-
       last-stable = import inputs.nixpkgs-last-unstable { system = "x86_64-linux"; };
     in
     {
@@ -25,6 +24,11 @@ let
 
         self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];
+
+      sops = {
+        defaultSopsFile = ./secrets/example.yaml;
+        age.keyFile = "/var/lib/sops-nix/key.txt";
+      };
 
       boot = {
         kernelPackages = pkgs.linuxPackages_xanmod_stable;

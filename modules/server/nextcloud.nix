@@ -6,6 +6,10 @@
   ...
 }:
 {
+  environment.etc."/sops-secrets/nextcloud/admin-pass" = {
+    text = sops.secrets.services.nextcloud.admin-pass;
+    mode = "0640"; # Права доступа к файлу (опционально)
+  };
   services = {
     # nextcloud-whiteboard-server = {
     #   enable = true;
@@ -26,7 +30,7 @@
         #dbhost = "/run/postgresql";
         dbname = "nextcloud";
         adminuser = "oqyude";
-        adminpassFile = "${inputs.zeroq-credentials}/services/nextcloud/admin-pass.txt";
+        adminpassFile = "/etc/sops-nix/nextcloud/admin-pass"; # "${inputs.zeroq-credentials}/services/nextcloud/admin-pass.txt";
       };
       settings = {
         appstoreEnable = false;

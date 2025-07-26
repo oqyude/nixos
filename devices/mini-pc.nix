@@ -24,6 +24,11 @@ let
         self.homeConfigurations.root.nixosModule
       ];
 
+      sops = {
+        defaultSopsFile = ./secrets/example.yaml;
+        age.keyFile = "/var/lib/sops-nix/key.txt";
+      };
+
       fileSystems = {
         "${inputs.zeroq.dirs.therima-drive}" = {
           device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
