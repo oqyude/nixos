@@ -23,7 +23,7 @@ let
       ];
 
       boot = {
-        kernelPackages = pkgs.linuxPackages_xanmod_stable; # pkgs.linuxPackages_xanmod_stable
+        #kernelPackages = pkgs.linuxPackages_xanmod_stable; # pkgs.linuxPackages_xanmod_stable
         hardwareScan = true;
         loader = {
           systemd-boot.enable = lib.mkDefault true;
