@@ -9,6 +9,7 @@ let
     }:
     {
       imports = with inputs; [
+        sops-nix.nixosModules.sops
         ./hardware/server.nix
         self.nixosModules.default
 
@@ -91,11 +92,11 @@ let
         power-profiles-daemon.enable = lib.mkForce false;
         earlyoom.enable = true;
         preload.enable = true;
-        auto-cpufreq.enable = true;
+        auto-cpufreq.enable = false;
         throttled.enable = true;
         journald = {
           extraConfig = ''
-            SystemMaxUse=128M
+            SystemMaxUse=512M
           '';
         };
         samba = {

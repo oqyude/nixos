@@ -64,7 +64,7 @@ let
         throttled.enable = true;
         journald = {
           extraConfig = ''
-            SystemMaxUse=128M
+            SystemMaxUse=512M
           '';
         };
         samba = {

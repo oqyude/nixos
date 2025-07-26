@@ -6,6 +6,10 @@
 {
   environment = {
     systemPackages = with pkgs; [
+      # Encrypt
+      age
+      sops
+
       # Nix
       nix-diff
       nix-tree
