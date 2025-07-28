@@ -5,9 +5,9 @@
   pkgs,
   ...
 }:
-  let
-    unstable = import inputs.nixos { system = "x86_64-linux"; };
-  in
+let
+  unstable = import inputs.nixos { system = "x86_64-linux"; };
+in
 {
   services = {
     immich = {
@@ -17,7 +17,7 @@
       host = "0.0.0.0";
       openFirewall = true;
       accelerationDevices = null;
-      machine-learning.enable = true;
+      machine-learning.enable = false;
       mediaLocation = "/mnt/immich";
     };
   };
