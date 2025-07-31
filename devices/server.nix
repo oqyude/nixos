@@ -8,7 +8,7 @@ let
       ...
     }:
     let
-      last-stable = import inputs.nixpkgs-last-unstable { system = "x86_64-linux"; };
+      last-stable = import inputs.nixpkgs-last-unstable { system = "x86_64-linux"; }; # temp
     in
     {
       imports = with inputs; [
@@ -148,7 +148,7 @@ let
         };
         calibre-web = {
           enable = true;
-          package = last-stable.calibre-web;
+          #package = last-stable.calibre-web; # temp
           group = "users";
           user = "${inputs.zeroq.devices.admin}";
           options = {
