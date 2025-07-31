@@ -17,6 +17,7 @@ let
         self.nixosModules.default
 
         self.nixosModules.software.wine
+        self.nixosModules.software.ai
         self.nixosModules.software.beets
         self.nixosModules.extra.self.fingerprint
         self.nixosModules.desktop

@@ -99,6 +99,7 @@
         default = import ./modules/default.nix flakeContext;
         desktop = import ./modules/desktop/default.nix flakeContext;
         software = {
+          ai = import ./modules/software/ai.nix flakeContext;
           beets = import ./modules/software/beets/default.nix flakeContext;
           daw = import ./modules/software/daw.nix flakeContext;
           virtual = import ./modules/software/virtual.nix flakeContext;
