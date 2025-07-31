@@ -68,6 +68,7 @@ in
       normcap
       handbrake
       zerotierone
+      nextcloud-client
 
       #tg
       #reaper
