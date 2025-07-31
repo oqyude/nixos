@@ -27,7 +27,7 @@ let
       ];
 
       boot = {
-        kernelPackages = pkgs.linuxPackages_xanmod_stable;
+        #kernelPackages = pkgs.linuxPackages_xanmod_stable;
         hardwareScan = true;
         loader = {
           systemd-boot.enable = lib.mkDefault true;
@@ -39,9 +39,9 @@ let
         bluetooth.enable = true;
       };
 
-      swapDevices = [
-        { device = "/dev/disk/by-partlabel/disk-main-swap"; }
-      ];
+      # swapDevices = [
+      #   { device = "/dev/disk/by-partlabel/disk-main-swap"; }
+      # ];
 
       users = {
         users = {
