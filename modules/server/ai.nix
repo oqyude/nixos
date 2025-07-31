@@ -6,13 +6,13 @@
   ...
 }:
 let
-  last-stable = import inputs.nixos { system = "x86_64-linux"; }; # temp
+  unfree = import inputs.nixpkgs-webui { system = "x86_64-linux"; config.allowUnfree = true; }; # temp
 in
 {
   services = {
     open-webui = {
-      enable = true;
-      #package = last-stable.open-webui;
+      enable = false;
+      package = unfree.open-webui;
       host = "0.0.0.0";
       port = 11111;
       openFirewall = true;
