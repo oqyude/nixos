@@ -69,6 +69,10 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.therima-drive}";
             target = "External";
           };
+          "LM Studio" = {
+            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/AI/LM Studio";
+            target = ".lmstudio";
+          };
         };
         pointerCursor = {
           enable = true;
