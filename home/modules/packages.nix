@@ -48,7 +48,6 @@ in
       #         ];
       #       })
       brave
-      nekoray
       v2rayn
 
       # Workflow

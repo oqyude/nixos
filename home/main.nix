@@ -21,10 +21,6 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/ludusavi/cfg";
             target = "ludusavi";
           };
-          "nekoray" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/Nekoray/${config.home.username}";
-            target = "nekoray";
-          };
           "solaar" = {
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/solaar";
             target = "solaar";
