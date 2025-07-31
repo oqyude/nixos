@@ -73,22 +73,6 @@ let
             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.therima-drive}";
             target = "External";
           };
-          #           "Music" = {
-          #             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Music";
-          #             target = "Music";
-          #           };
-          #           "Pictures" = {
-          #             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Pictures";
-          #             target = "Pictures";
-          #           };
-          #           "Deploy" = {
-          #             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Deploy";
-          #             target = "Deploy";
-          #           };
-          #           "Misc" = {
-          #             source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Misc";
-          #             target = "Misc";
-          #           };
         };
         pointerCursor = {
           enable = true;

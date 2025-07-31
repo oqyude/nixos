@@ -42,11 +42,12 @@ in
   home = {
     packages = with pkgs; [
       # Surfing
-      (brave.override {
-        commandLineArgs = [
-          "--password-store=basic" # on purpose to make it break "--password-store=gnome-libsecret"
-        ];
-      })
+      #       (brave.override {
+      #         commandLineArgs = [
+      #           "--password-store=basic" # on purpose to make it break "--password-store=gnome-libsecret"
+      #         ];
+      #       })
+      brave
       nekoray
       v2rayn
 
