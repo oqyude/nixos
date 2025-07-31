@@ -10,6 +10,13 @@
 }:
 
 {
+  nix.settings.extra-sandbox-paths = [
+    "/dev/kfd"
+    "/sys/devices/virtual/kfd"
+    "/dev/dri/renderD128"
+  ];
+
+
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
@@ -24,9 +31,21 @@
       "usbhid"
       "sd_mod"
     ];
-    kernelModules = [ "kvm-amd" ];
+    kernelModules = [ "kvm-amd" "amdgpu" ];
     extraModulePackages = [ ];
   };
+
+  hardware.graphics.extraPackages = with pkgs; [
+    rocmPackages.clr.icd
+    amdvlk
+  ];
+  systemd.tmpfiles.rules = [
+    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
+  ];
+#
+#   environment.systemPackages = with pkgs; [
+#     clinfo
+#   ];
 
   fileSystems = {
     "/" = {
