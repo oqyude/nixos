@@ -10,11 +10,14 @@
 }:
 
 {
-  nix.settings.extra-sandbox-paths = [
-    "/dev/kfd"
-    "/sys/devices/virtual/kfd"
-    "/dev/dri/renderD128"
+  nixpkgs.config.permittedInsecurePackages = [
+    "libsoup-2.74.3" # temp
   ];
+  # nix.settings.extra-sandbox-paths = [
+  #   "/dev/kfd"
+  #   "/sys/devices/virtual/kfd"
+  #   "/dev/dri/renderD128"
+  # ];
 
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")

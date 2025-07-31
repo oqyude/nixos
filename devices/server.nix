@@ -17,6 +17,7 @@ let
         self.nixosModules.default
 
         self.nixosModules.server.immich
+        self.nixosModules.server.ai
         self.nixosModules.server.nextcloud
         self.nixosModules.server.nginx
         self.nixosModules.software.beets

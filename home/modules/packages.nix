@@ -79,9 +79,11 @@ in
       prismlauncher
       lutris
 
+      # AI
+      lmstudio
+
       # Libs
       #libsecret
-
     ];
   };
 }
