@@ -148,7 +148,7 @@ let
         };
         calibre-web = {
           enable = true;
-          #package = last-stable.calibre-web; # temp
+          package = last-stable.calibre-web; # temp
           group = "users";
           user = "${inputs.zeroq.devices.admin}";
           options = {
