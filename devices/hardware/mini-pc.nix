@@ -16,7 +16,6 @@
     "/dev/dri/renderD128"
   ];
 
-
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
@@ -31,7 +30,10 @@
       "usbhid"
       "sd_mod"
     ];
-    kernelModules = [ "kvm-amd" "amdgpu" ];
+    kernelModules = [
+      "kvm-amd"
+      "amdgpu"
+    ];
     extraModulePackages = [ ];
   };
 
@@ -42,10 +44,6 @@
   systemd.tmpfiles.rules = [
     "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
   ];
-#
-#   environment.systemPackages = with pkgs; [
-#     clinfo
-#   ];
 
   fileSystems = {
     "/" = {
