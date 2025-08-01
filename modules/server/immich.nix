@@ -6,12 +6,12 @@
   ...
 }:
 let
-  unstable = import inputs.nixos { system = "x86_64-linux"; };
+  latest = import inputs.nixpkgs-master { system = "x86_64-linux"; };
 in
 {
   services = {
     immich = {
-      package = unstable.immich;
+      package = latest.immich;
       enable = true;
       port = 2283;
       host = "0.0.0.0";
