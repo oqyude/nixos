@@ -52,6 +52,7 @@ in
 
       # Workflow
       #cloudflared
+      amdgpu_top
       vscodium
       ayugram-desktop
       vesktop
