@@ -16,6 +16,7 @@ let
         ./hardware/logitech.nix
         self.nixosModules.default
 
+        self.nixosModules.server.ai
         self.nixosModules.software.wine
         self.nixosModules.software.ai
         self.nixosModules.software.beets
