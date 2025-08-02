@@ -17,7 +17,7 @@
         "immich.zeroq.ru" = {
           listen = [
             {
-              addr = "100.64.0.0";
+              addr = "sapphira.laxta-platy.ts.net";
               port = 2283;
             }
           ];
