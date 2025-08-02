@@ -42,11 +42,11 @@ in
   home = {
     packages = with pkgs; [
       # Surfing
-      #       (brave.override {
-      #         commandLineArgs = [
-      #           "--password-store=basic" # on purpose to make it break "--password-store=gnome-libsecret"
-      #         ];
-      #       })
+      # (brave.override {
+      #   commandLineArgs = [
+      #     "--password-store=basic" # on purpose to make it break "--password-store=gnome-libsecret"
+      #   ];
+      # })
       brave
       v2rayn
 
@@ -67,13 +67,19 @@ in
       transmission_4-gtk
       vlc
       normcap
-      handbrake
       zerotierone
       nextcloud-client
 
+      # (handbrake.overrideAttrs (old: {
+      #   configureFlags = old.configureFlags ++ [ "--enable-amf" ];
+      #   buildInputs = old.buildInputs ++ [
+      #     pkgs.amf
+      #     pkgs.ffmpeg-full
+      #   ];
+      # }))
+
       #tg
       #reaper
-      #discord
 
       # Games
       ludusavi

@@ -40,13 +40,21 @@
     extraModulePackages = [ ];
   };
 
-  hardware.graphics.extraPackages = with pkgs; [
-    rocmPackages.clr.icd
-    amdvlk
-  ];
-  systemd.tmpfiles.rules = [
-    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
-  ];
+  hardware = {
+    amdgpu = {
+      opencl.enable = true;
+      amdvlk = {
+        enable = true;
+      };
+    };
+    graphics.extraPackages = with pkgs; [
+      mesa
+      amf
+    ];
+  };
+  # systemd.tmpfiles.rules = [
+  #   "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
+  # ];
 
   fileSystems = {
     "/" = {
