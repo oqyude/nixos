@@ -8,39 +8,47 @@
 {
   services = {
     nginx = {
-      enable = false;
+      enable = true;
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
-        "vless-sub" = {
-
-          serverName = "${inputs.zeroq.devices.vds.hostname}.latxa-platy.ts.net";
+        "immich.zeroq.ru" = {
           listen = [
             {
-              addr = "0.0.0.0"; # Tailscale IP вашего VDS
-              port = 44444;
-              ssl = false;
-            }
-            {
-              addr = "0.0.0.0"; # Tailscale IP вашего VDS
-              port = 44443;
-              ssl = true;
+              addr = "100.64.0.0";
+              port = 2283;
             }
           ];
-          root = "${inputs.zeroq-credentials.paths.vless-subs.root}"; # "${inputs.zeroq-credentials}/services/xray/subs";
-          locations."/" = {
-            extraConfig = ''
-              if ($scheme = http) {
-                return 301 https://$host:44443$request_uri;
-              }
-            '';
-          };
-          enableACME = true;
-          forceSSL = true; # Принудительно HTTPS
-
         };
+        # "vless-sub" = {
+
+        #   serverName = "${inputs.zeroq.devices.vds.hostname}.latxa-platy.ts.net";
+        #   listen = [
+        #     {
+        #       addr = "0.0.0.0"; # Tailscale IP вашего VDS
+        #       port = 44444;
+        #       ssl = false;
+        #     }
+        #     {
+        #       addr = "0.0.0.0"; # Tailscale IP вашего VDS
+        #       port = 44443;
+        #       ssl = true;
+        #     }
+        #   ];
+        #   root = "${inputs.zeroq-credentials.paths.vless-subs.root}"; # "${inputs.zeroq-credentials}/services/xray/subs";
+        #   locations."/" = {
+        #     extraConfig = ''
+        #       if ($scheme = http) {
+        #         return 301 https://$host:44443$request_uri;
+        #       }
+        #     '';
+        #   };
+        #   enableACME = true;
+        #   forceSSL = true; # Принудительно HTTPS
+
+        # };
       };
     };
   };

@@ -8,7 +8,7 @@
 {
   services = {
     cloudflared = {
-      enable = true;
+      enable = false;
       certificateFile = "${inputs.zeroq-credentials}/services/cloudflared/cert.pem";
       tunnels = {
         "58b340ee-e98a-4af9-b786-74600c71f49e" = {
