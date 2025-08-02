@@ -12,7 +12,7 @@
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       recommendedProxySettings = true;
-      recommendedTlsSettings = false;
+      recommendedTlsSettings = true;
       virtualHosts = {
         "immich.zeroq.ru" = {
           forceSSL = true;
