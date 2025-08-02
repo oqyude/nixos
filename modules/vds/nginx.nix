@@ -12,27 +12,27 @@
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       recommendedProxySettings = true;
-      recommendedTlsSettings = true;
+      recommendedTlsSettings = false;
       virtualHosts = {
         "immich.zeroq.ru" = {
-          forceSSL = false;
-          enableACME = false;
+          forceSSL = true;
+          enableACME = true;
           locations."/" = {
             proxyPass = "http://sapphira.laxta-platy.ts.net:2283"; # Порт Immich
             proxyWebsockets = true; # Если Immich использует WebSockets
           };
         };
-        "nextcloud.zeroq.ru" = {
-          forceSSL = false;
-          enableACME = false;
-          locations."/" = {
-            proxyPass = "http://sapphira.laxta-platy.ts.net:10000"; # Порт Nextcloud
-            proxyWebsockets = true;
-          };
-        };
+#         "nextcloud.zeroq.ru" = {
+#           forceSSL = true;
+#           enableACME = true;
+#           locations."/" = {
+#             proxyPass = "http://sapphira.laxta-platy.ts.net:10000"; # Порт Nextcloud
+#             proxyWebsockets = true;
+#           };
+#         };
         "llm.zeroq.ru" = {
-          forceSSL = false;
-          enableACME = false;
+          forceSSL = true;
+          enableACME = true;
           locations."/" = {
             proxyPass = "http://atoridu.laxta-platy.ts.net:11111"; # Порт Open WebUI
             proxyWebsockets = true;
