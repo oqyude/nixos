@@ -146,6 +146,7 @@
         root = import ./home/root.nix flakeContext;
         main = import ./home/main.nix flakeContext;
         server = import ./home/server.nix flakeContext;
+        wsl = import ./home/wsl.nix flakeContext;
       };
       homeModules = {
         packages = import ./home/modules/packages.nix flakeContext;
