@@ -36,6 +36,7 @@
       usbutils
       rsync
       wget
+      tree
 
       # Monitoring
       smartmontools
