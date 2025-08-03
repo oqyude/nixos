@@ -10,63 +10,38 @@ let
     }:
     {
 
-      imports = [ <nixos-wsl/modules> ];
+      imports = with inputs;  [ <nixos-wsl/modules>
+        self.nixosModules.default
+       ];
 
       i18n = {
         defaultLocale = "en_US.UTF-8";
         supportedLocales = [
-          "ru_RU.UTF-8/UTF-8"
           "en_US.UTF-8/UTF-8"
+          "ru_RU.UTF-8/UTF-8"
         ];
       };
 
-      networking.hostName = "${inputs.zeroq.devices.wsl.username}";
-
-      users = {
-        defaultUserShell = pkgs.zsh;
-      };
-
-      nixpkgs.config.allowUnfree = true;
-      nix.settings.experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
-
-      environment.systemPackages = with pkgs; [
-        btop
-        fastfetch
-        yazi
-      ];
-
-      programs = {
-        lazygit.enable = true;
-        git.enable = true;
-        nh.enable = true;
-        zsh = {
-          enable = true;
-          enableCompletion = true;
-          enableBashCompletion = true;
-          syntaxHighlighting.enable = true;
-          zsh-autoenv.enable = true;
-          loginShellInit = "clear && fastfetch";
-          ohMyZsh = {
-            enable = true;
-            theme = "robbyrussell";
-          };
+      #zramSwap.enable = true;
+      services = {
+        journald = {
+          extraConfig = ''
+            SystemMaxUse=512M
+          '';
         };
+earlyoom.enable = true;
       };
-
-      zramSwap.enable = true;
-      services.earlyoom.enable = true;
+      
+      networking.hostName = "${inputs.zeroq.devices.wsl.hostname}";
 
       wsl = {
         enable = true;
         startMenuLaunchers = true;
         #useWindowsDriver = true;
-        defaultUser = "nixos";
+        defaultUser = "oqyude";
       };
 
-      system.stateVersion = "24.05";
+      system.stateVersion = "24.11";
     };
 in
 inputs.nixpkgs.lib.nixosSystem {
