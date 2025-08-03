@@ -13,10 +13,10 @@ let
       imports = with inputs; [
         nixos-wsl.nixosModules.default
         self.nixosModules.default
-        
+
         self.nixosModules.server.open-webui
       ];
-      
+
       #zramSwap.enable = true;
       services = {
         journald = {
