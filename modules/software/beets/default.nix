@@ -30,7 +30,7 @@ in
           beetsEnv
           pkgs.mp3gain
           pkgs.imagemagick
-          pkgs.ffmpeg
+          #pkgs.ffmpeg
         ];
       };
     };

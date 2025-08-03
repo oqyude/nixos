@@ -15,6 +15,7 @@ let
         nixos-wsl.nixosModules.default
         self.nixosModules.default
 
+        self.nixosModules.software.beets
         self.nixosModules.server.open-webui
       ];
 
