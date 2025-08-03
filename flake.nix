@@ -127,7 +127,7 @@
           };
         };
         server = {
-          ai = import ./modules/server/ai.nix flakeContext;
+          open-webui = import ./modules/server/open-webui.nix flakeContext;
           cloudflared = import ./modules/server/cloudflared.nix flakeContext;
           immich = import ./modules/server/immich.nix flakeContext;
           nextcloud = import ./modules/server/nextcloud.nix flakeContext;

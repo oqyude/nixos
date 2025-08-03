@@ -16,9 +16,8 @@ let
         ./hardware/logitech.nix
         self.nixosModules.default
 
-        self.nixosModules.server.ai
+        self.nixosModules.server.open-webui
         self.nixosModules.software.wine
-        self.nixosModules.software.ai
         self.nixosModules.software.beets
         #self.nixosModules.extra.self.fingerprint
         self.nixosModules.desktop
