@@ -20,8 +20,8 @@ let
       xdg = {
         configFile = {
           "beets" = {
-            enable = builtins.pathExists beetsPath;
-            source = config.lib.file.mkOutOfStoreSymlink beetsPath;
+            enable = builtins.pathExists ${beetsPath};
+            source = config.lib.file.mkOutOfStoreSymlink ${beetsPath};
             target = "beets";
           };
         };
@@ -43,13 +43,13 @@ let
       home = {
         file = {
           ".ssh" = {
-            enable = builtins.pathExists sshPath;
-            source = config.lib.file.mkOutOfStoreSymlink sshPath;
+            enable = builtins.pathExists ${sshPath};
+            source = config.lib.file.mkOutOfStoreSymlink ${sshPath};
             target = ".ssh";
           };
           "Music" = {
-            enable = builtins.pathExists musicPath;
-            source = config.lib.file.mkOutOfStoreSymlink musicPath;
+            enable = builtins.pathExists ${musicPath};
+            source = config.lib.file.mkOutOfStoreSymlink ${musicPath};
             target = "${config.home.homeDirectory}/Music";
           };
         };
