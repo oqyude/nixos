@@ -25,7 +25,7 @@
 
       # Base
       curl
-      efibootmgr
+      # efibootmgr
       fd
       fdupes
       fzf
@@ -33,8 +33,8 @@
       lsof
       mc
       pciutils
-      rsync
       usbutils
+      rsync
       wget
 
       # Monitoring

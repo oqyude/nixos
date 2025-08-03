@@ -4,6 +4,6 @@
 }:
 {
   services = {
-    tailscale.enable = true;
+    tailscale.enable = !(config.wsl.enable or false); # true, if not wsl
   };
 }

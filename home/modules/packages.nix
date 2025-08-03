@@ -9,7 +9,6 @@ let
 in
 {
   programs = {
-    fastfetch.enable = true;
     btop.enable = true;
     mangohud.enable = true;
     keepassxc.enable = true;
@@ -69,7 +68,7 @@ in
       nextcloud-client
 
       # (handbrake.overrideAttrs (old: {
-      #   configureFlags = old.configureFlags ++ [ "--enable-amf" ];
+      #   configureFlags = old.configureFlags ++ [ "--enable-vce" ];
       #   buildInputs = old.buildInputs ++ [
       #     pkgs.amf
       #     pkgs.ffmpeg-full
