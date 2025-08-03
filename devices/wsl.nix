@@ -9,6 +9,7 @@ let
       ...
     }:
     {
+      device.type = "wsl";
 
       imports = with inputs; [
         nixos-wsl.nixosModules.default

@@ -7,7 +7,6 @@
 {
   imports = [
     ./essentials
-    #./services
 
     # Flake modules
     inputs.home-manager.nixosModules.home-manager # home-manager module
@@ -35,5 +34,18 @@
         ];
       };
     };
+  };
+
+  # Options
+  options.device.type = lib.mkOption {
+    type = lib.types.enum [
+      "minimal"
+      "primary"
+      "server"
+      "vds"
+      "wsl"
+    ];
+    default = "minimal"; # Значение по умолчанию, если не указано
+    description = "Type of device for this host.";
   };
 }

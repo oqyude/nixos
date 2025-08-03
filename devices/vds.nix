@@ -9,6 +9,8 @@ let
       ...
     }:
     {
+      device.type = "vds";
+
       imports =
         with inputs;
         [

@@ -11,6 +11,8 @@ let
       ...
     }:
     {
+      device.type = "primary";
+
       imports = with inputs; [
         ./hardware/mini-pc.nix
         ./hardware/logitech.nix

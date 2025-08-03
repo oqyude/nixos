@@ -7,10 +7,9 @@ let
       pkgs,
       ...
     }:
-    let
-      last-stable = import inputs.nixpkgs-last-unstable { system = "x86_64-linux"; }; # temp
-    in
     {
+      device.type = "server";
+
       imports = with inputs; [
         sops-nix.nixosModules.sops
         ./hardware/server.nix
@@ -147,7 +146,6 @@ let
         };
         calibre-web = {
           enable = true;
-          #package = last-stable.calibre-web; # temp
           group = "users";
           user = "${inputs.zeroq.devices.admin}";
           options = {

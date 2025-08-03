@@ -7,16 +7,21 @@ let
       pkgs,
       ...
     }:
+    let
+      # Paths
+      beetsPath = "${inputs.zeroq.dirs.storage}/beets/linux";
+      sshPath = "${inputs.zeroq.dirs.storage}/ssh/${inputs.zeroq.devices.server.hostname}";
+      musicPath = "${config.home.homeDirectory}/External/Music";
+    in
     {
       imports = [
         inputs.self.homeModules.default
-        #inputs.self.homeModules.links
-      ] # ++ (builtins.attrValues inputs.self.homeModules)
-      ;
+      ];
       xdg = {
         configFile = {
           "beets" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.storage}/beets/linux";
+            enable = builtins.pathExists beetsPath;
+            source = config.lib.file.mkOutOfStoreSymlink beetsPath;
             target = "beets";
           };
         };
@@ -24,10 +29,10 @@ let
         autostart.enable = true;
         userDirs = {
           enable = true;
-          createDirectories = true;
+          createDirectories = false;
           desktop = null;
           documents = null;
-          download = "${config.home.homeDirectory}/Downloads";
+          download = null;
           music = null;
           pictures = null;
           publicShare = null;
@@ -37,12 +42,14 @@ let
       };
       home = {
         file = {
-          "ssh" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.storage}/ssh/${inputs.zeroq.devices.server.hostname}";
+          ".ssh" = {
+            enable = builtins.pathExists sshPath;
+            source = config.lib.file.mkOutOfStoreSymlink sshPath;
             target = ".ssh";
           };
           "Music" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/External/Music";
+            enable = builtins.pathExists musicPath;
+            source = config.lib.file.mkOutOfStoreSymlink musicPath;
             target = "${config.home.homeDirectory}/Music";
           };
         };
@@ -58,9 +65,6 @@ let
         useUserPackages = true;
         users.${inputs.zeroq.devices.admin} = homeModule;
         sharedModules = [ inputs.plasma-manager.homeManagerModules.plasma-manager ];
-        #         extraSpecialArgs = {
-        #           inherit (config.networking) hostName;
-        #         };
       };
     };
 in

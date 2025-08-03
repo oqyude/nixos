@@ -11,7 +11,7 @@ let
       ...
     }:
     {
-      system.nixos.label = "stock";
+      device.type = "primary";
 
       imports = with inputs; [
         self.nixosModules.default
