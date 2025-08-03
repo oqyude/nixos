@@ -16,6 +16,7 @@
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
     nixpkgs-fingerprint.url = "github:NixOS/nixpkgs/nixos-24.11";
     nixos.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
     # nix-community
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";

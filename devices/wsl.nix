@@ -11,6 +11,8 @@ let
     {
 
       imports = with inputs;  [ <nixos-wsl/modules>
+
+        nixos-wsl.nixosModules.default
         self.nixosModules.default
        ];
 
