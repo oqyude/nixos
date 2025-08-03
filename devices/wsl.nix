@@ -28,7 +28,10 @@ let
         earlyoom.enable = true;
       };
 
-      networking.hostName = "${inputs.zeroq.devices.wsl.hostname}";
+      networking = {
+        firewall.enable = false;
+        hostName = "${inputs.zeroq.devices.wsl.hostname}";
+      };
 
       wsl = {
         enable = true;
