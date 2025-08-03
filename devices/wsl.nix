@@ -20,10 +20,6 @@ let
         self.homeConfigurations.wsl.nixosModule
       ];
 
-      environment.systemPackages = with pkgs; [
-        gparted
-      ];
-
       fileSystems = {
         # beets
         "/mnt/beets/music" = {
