@@ -20,6 +20,22 @@ let
         self.homeConfigurations.wsl.nixosModule
       ];
 
+      fileSystems = {
+        # beets
+        "/mnt/beets/music" = {
+          device = "${inputs.zeroq.dirs.wsl-home}/Music";
+          options = [
+            "bind"
+            "uid=1000"
+            "gid=1000"
+            "fmask=0007"
+            "dmask=0007"
+            "nofail"
+            "x-systemd.device-timeout=0"
+          ];
+        };
+      };
+
       #zramSwap.enable = true;
       services = {
         journald = {
