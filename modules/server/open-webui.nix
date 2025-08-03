@@ -17,7 +17,7 @@ in
       enable = true;
       package = fix.open-webui;
       host = "0.0.0.0";
-      port = 11111;
+      port = 11112;
       openFirewall = true;
       environment = {
         ANONYMIZED_TELEMETRY = "False";
