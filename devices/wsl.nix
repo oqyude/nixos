@@ -11,8 +11,6 @@ let
     {
 
       imports = with inputs; [
-        #<nixos-wsl/modules>
-
         nixos-wsl.nixosModules.default
         self.nixosModules.default
       ];
@@ -41,7 +39,7 @@ let
         enable = true;
         startMenuLaunchers = true;
         #useWindowsDriver = true;
-        defaultUser = "oqyude";
+        defaultUser = "${inputs.zeroq.devices.admin}";
       };
 
       system.stateVersion = "24.11";

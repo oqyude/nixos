@@ -23,11 +23,11 @@ let
         ]
         ++ builtins.attrValues inputs.self.nixosModules.vds;
 
-      environment.systemPackages = map lib.lowPrio [
-        pkgs.curl
-        pkgs.gitMinimal
-        pkgs.lazygit
-      ];
+      # environment.systemPackages = map lib.lowPrio [
+      #   pkgs.curl
+      #   pkgs.gitMinimal
+      #   pkgs.lazygit
+      # ];
 
       boot = {
         kernelPackages = pkgs.linuxPackages_xanmod_stable;
