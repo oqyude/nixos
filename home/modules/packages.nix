@@ -5,9 +5,7 @@
   ...
 }:
 let
-  unstable = import inputs.nixpkgs-unstable { system = "x86_64-linux"; };
   last-stable = import inputs.nixpkgs-last-unstable { system = "x86_64-linux"; };
-  stable = import inputs.nixpkgs-stable { system = "x86_64-linux"; };
 in
 {
   programs = {
