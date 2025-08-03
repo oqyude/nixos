@@ -22,14 +22,14 @@
             proxyWebsockets = true; # Если Immich использует WebSockets
           };
         };
-#         "nextcloud.zeroq.ru" = {
-#           forceSSL = true;
-#           enableACME = true;
-#           locations."/" = {
-#             proxyPass = "http://sapphira.laxta-platy.ts.net:10000"; # Порт Nextcloud
-#             proxyWebsockets = true;
-#           };
-#         };
+        #         "nextcloud.zeroq.ru" = {
+        #           forceSSL = true;
+        #           enableACME = true;
+        #           locations."/" = {
+        #             proxyPass = "http://sapphira.laxta-platy.ts.net:10000"; # Порт Nextcloud
+        #             proxyWebsockets = true;
+        #           };
+        #         };
         "llm.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;

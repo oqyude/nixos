@@ -280,6 +280,30 @@
         "type": "github"
       }
     },
+    "nixos-wsl": {
+      "inputs": {
+        "flake-compat": [
+          "flake-compat"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1753704990,
+        "narHash": "sha256-5E14xuNWy2Un1nFR55k68hgbnD8U2x/rE5DXJtYKusw=",
+        "owner": "nix-community",
+        "repo": "NixOS-WSL",
+        "rev": "58c814cc6d4a789191f9c12e18277107144b0c91",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "main",
+        "repo": "NixOS-WSL",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1744536153,
@@ -517,6 +541,7 @@
         "nixos": "nixos",
         "nixos-facter-modules": "nixos-facter-modules",
         "nixos-hardware": "nixos-hardware",
+        "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-fingerprint": "nixpkgs-fingerprint",
         "nixpkgs-last-unstable": "nixpkgs-last-unstable",
@@ -602,14 +627,18 @@
     },
     "zeroq": {
       "locked": {
-        "path": "./modules/zeroq",
-        "type": "path"
+        "lastModified": 1754220611,
+        "narHash": "sha256-ZysBpRalunTputyht0PWhjheQGy6zgng9g3Km0edNdE=",
+        "ref": "refs/heads/master",
+        "rev": "43c852a7b730e25179a80ff4cc601b7f894294fa",
+        "revCount": 1,
+        "type": "git",
+        "url": "ssh://git@github.com/oqyude/zeroq.git"
       },
       "original": {
-        "path": "./modules/zeroq",
-        "type": "path"
-      },
-      "parent": []
+        "type": "git",
+        "url": "ssh://git@github.com/oqyude/zeroq.git"
+      }
     },
     "zeroq-credentials": {
       "locked": {

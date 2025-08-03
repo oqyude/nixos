@@ -16,9 +16,15 @@
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
     nixpkgs-fingerprint.url = "github:NixOS/nixpkgs/nixos-24.11";
     nixos.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
     # nix-community
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs = {
+        flake-compat.follows = "flake-compat";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     flake-compat.url = "github:edolstra/flake-compat";
@@ -39,8 +45,10 @@
     plasma-manager = {
       # https://github.com/nix-community/plasma-manager
       url = "github:nix-community/plasma-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
     };
     nix-index-database = {
       url = "github:nix-community/nix-index-database";

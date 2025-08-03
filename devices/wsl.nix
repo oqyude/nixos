@@ -10,11 +10,12 @@ let
     }:
     {
 
-      imports = with inputs;  [ <nixos-wsl/modules>
+      imports = with inputs; [
+        <nixos-wsl/modules>
 
         nixos-wsl.nixosModules.default
         self.nixosModules.default
-       ];
+      ];
 
       i18n = {
         defaultLocale = "en_US.UTF-8";
@@ -31,9 +32,9 @@ let
             SystemMaxUse=512M
           '';
         };
-earlyoom.enable = true;
+        earlyoom.enable = true;
       };
-      
+
       networking.hostName = "${inputs.zeroq.devices.wsl.hostname}";
 
       wsl = {
