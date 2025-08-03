@@ -14,7 +14,7 @@
   ];
 
   # defines global user
-  users = {
+  config.users = {
     users = {
       "${inputs.zeroq.devices.admin}" = {
         isNormalUser = true;
