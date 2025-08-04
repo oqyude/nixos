@@ -2,9 +2,9 @@
 let
   nixosModule =
     {
-      modulesPath,
       config,
       lib,
+      modulesPath,
       pkgs,
       ...
     }:
@@ -28,6 +28,12 @@ let
           self.homeConfigurations.default.nixosModule
         ]
         ++ builtins.attrValues inputs.self.nixosModules.vds;
+
+      home-manager = {
+        extraSpecialArgs = {
+          xlib = config.xlib;
+        };
+      };
 
       boot = {
         kernelPackages = pkgs.linuxPackages_xanmod_stable;

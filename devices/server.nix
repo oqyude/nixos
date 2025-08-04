@@ -27,7 +27,6 @@ let
 
       home-manager = {
         extraSpecialArgs = {
-          #inherit inputs;
           xlib = config.xlib;
         };
       };
