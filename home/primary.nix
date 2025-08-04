@@ -6,7 +6,11 @@
   ...
 }:
 {
-  imports = [ ] ++ (builtins.attrValues inputs.self.homeModules);
+  imports = [
+    ./modules/dconf.nix
+    ./modules/packages.nix
+    ./modules/plasma-manager.nix
+  ];
   xdg = {
     enable = true;
     autostart.enable = true;
