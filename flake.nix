@@ -4,7 +4,6 @@
   inputs = {
 
     # My
-    #zeroq.url = "git+ssh://git@github.com/oqyude/zeroq.git"; # flake of variables
     zeroq-credentials.url = "git+ssh://git@github.com/oqyude/zeroq-credentials.git"; # flake of creds
     zapret.url = "github:oqyude/zapret-easyflake"; # stupid flake of zapret
 
@@ -81,15 +80,15 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    #     stylix = {
-    #       url = "github:danth/stylix";
-    #       inputs = {
-    #         nixpkgs.follows = "nixpkgs";
-    #         home-manager.follows = "home-manager";
-    #         flake-compat.follows = "flake-compat";
-    #         flake-utils.follows = "flake-utils";
-    #       };
-    #     };
+    # stylix = {
+    #   url = "github:danth/stylix";
+    #   inputs = {
+    #     nixpkgs.follows = "nixpkgs";
+    #     home-manager.follows = "home-manager";
+    #     flake-compat.follows = "flake-compat";
+    #     flake-utils.follows = "flake-utils";
+    #   };
+    # };
 
   };
   outputs =

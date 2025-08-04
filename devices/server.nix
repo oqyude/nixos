@@ -32,7 +32,7 @@ let
           xlib = config.xlib;
         };
       };
-      
+
       boot = {
         kernelPackages = pkgs.linuxPackages_xanmod_stable;
         hardwareScan = true;
