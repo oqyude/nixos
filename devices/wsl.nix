@@ -9,7 +9,10 @@ let
       ...
     }:
     {
-      xlib.device.type = "wsl";
+      xlib.device = {
+        type = "wsl";
+        hostname = "wsl";
+      };
 
       imports = with inputs; [
         # Hardware
@@ -59,7 +62,7 @@ let
 
       networking = {
         firewall.enable = false;
-        hostName = "${inputs.zeroq.devices.wsl.hostname}";
+        hostName = "${config.xlib.device.hostname}";
       };
 
       wsl = {

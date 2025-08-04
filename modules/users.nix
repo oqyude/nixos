@@ -3,7 +3,9 @@
   ...
 }:
 {
-  config.users = {
+  xlib.device.username = "oqyude";
+
+  users = {
     users = {
       "${config.xlib.device.username}" = {
         isNormalUser = true;
