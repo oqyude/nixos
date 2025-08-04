@@ -6,8 +6,7 @@
   ...
 }:
 let
-  # Beets with plugins
-  depsOverlay = import ./dependencies.nix {
+  depsOverlay = import ./dependencies.nix { # ./dependencies-full.nix if broken
     inherit (pkgs) fetchurl fetchgit fetchhg;
     inherit pkgs;
   };
@@ -15,7 +14,7 @@ let
     packageOverrides = depsOverlay;
   };
   beetsEnv = python3.withPackages (ps: [
-    ps.beets # ps.gst-python ps.pygobject3
+    ps.beets
   ]);
 in
 {
