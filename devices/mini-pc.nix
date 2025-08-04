@@ -20,6 +20,7 @@ let
         ./hardware/mini-pc.nix
         ./hardware/logitech.nix
         self.nixosModules.default
+        self.homeConfigurations.default.nixosModule
 
         sops-nix.nixosModules.sops
         self.nixosModules.server.open-webui
@@ -27,7 +28,6 @@ let
         self.nixosModules.software.beets
         #self.nixosModules.extra.self.fingerprint
         self.nixosModules.desktop
-        self.homeConfigurations.default.nixosModule
         # self.homeConfigurations.main.nixosModule
         # self.homeConfigurations.root.nixosModule
       ];

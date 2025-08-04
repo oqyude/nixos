@@ -23,7 +23,6 @@ let
         self.nixosModules.server.nextcloud
         self.nixosModules.server.nginx
         self.nixosModules.software.beets
-        #self.nixosModules.server.zerotier
       ];
 
       home-manager = {

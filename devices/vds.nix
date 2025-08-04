@@ -9,7 +9,10 @@ let
       ...
     }:
     {
-      device.type = "vds";
+      xlib.device = {
+        type = "vds";
+        hostname = "otreca";
+      };
 
       imports =
         with inputs;
@@ -19,17 +22,12 @@ let
 
           ./disko/vds.nix
           ./hardware/vds.nix
-
           disko.nixosModules.disko
+
           self.nixosModules.default
+          self.homeConfigurations.default.nixosModule
         ]
         ++ builtins.attrValues inputs.self.nixosModules.vds;
-
-      # environment.systemPackages = map lib.lowPrio [
-      #   pkgs.curl
-      #   pkgs.gitMinimal
-      #   pkgs.lazygit
-      # ];
 
       boot = {
         kernelPackages = pkgs.linuxPackages_xanmod_stable;
