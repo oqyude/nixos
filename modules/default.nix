@@ -7,6 +7,7 @@
 {
   imports = with inputs; [
     ./essentials
+    (import ./options.nix { inherit inputs; })
 
     # Flake modules
     home-manager.nixosModules.home-manager # home-manager module
