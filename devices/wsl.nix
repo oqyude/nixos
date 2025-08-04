@@ -18,17 +18,6 @@ let
         self.nixosModules.software.beets
         self.nixosModules.server.open-webui
         self.homeConfigurations.default.nixosModule
-        # (self.homeConfigurations.default.nixosModule {
-        #   inherit inputs;
-        #   config.device.type = deviceType;
-        # })
-        # ( {
-        #   extraSpecialArgs = {
-        #     inherit inputs;
-        #     inherit (config.device) type;
-        #     #deviceType = config.device.type;
-        #   };
-        # })
       ];
 
       home-manager = {
