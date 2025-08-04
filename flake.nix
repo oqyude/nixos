@@ -1,8 +1,6 @@
 {
   description = "oqyude flake";
-
   inputs = {
-
     # My
     zeroq-credentials.url = "git+ssh://git@github.com/oqyude/zeroq-credentials.git"; # flake of creds
     zapret.url = "github:oqyude/zapret-easyflake"; # stupid flake of zapret
@@ -89,7 +87,6 @@
     #     flake-utils.follows = "flake-utils";
     #   };
     # };
-
   };
   outputs =
     inputs:
@@ -100,8 +97,8 @@
       nixosConfigurations = {
         atoridu = import ./devices/mini-pc.nix flakeContext; # atoridu
         lamet = import ./devices/mini-laptop.nix flakeContext; # lamet
-        sapphira = import ./devices/server.nix flakeContext; # sapphira
         otreca = import ./devices/vds.nix flakeContext; # vds
+        sapphira = import ./devices/server.nix flakeContext; # sapphira
         wsl = import ./devices/wsl.nix flakeContext; # wsl
       };
       nixosModules = {
@@ -121,16 +118,16 @@
           };
           musnix = import ./modules/extra/musnix.nix flakeContext; # https://github.com/musnix/musnix
           gaming = {
-            nix-gaming = import ./modules/extra/gaming/nix-gaming.nix flakeContext; # https://github.com/fufexan/nix-gaming
             aagl = import ./modules/extra/gaming/aagl.nix flakeContext; # https://github.com/ezKEa/aagl-gtk-on-nix
+            nix-gaming = import ./modules/extra/gaming/nix-gaming.nix flakeContext; # https://github.com/fufexan/nix-gaming
           };
         };
         server = {
-          open-webui = import ./modules/server/open-webui.nix flakeContext;
           cloudflared = import ./modules/server/cloudflared.nix flakeContext;
           immich = import ./modules/server/immich.nix flakeContext;
           nextcloud = import ./modules/server/nextcloud.nix flakeContext;
           nginx = import ./modules/server/nginx.nix flakeContext;
+          open-webui = import ./modules/server/open-webui.nix flakeContext;
           zerotier = import ./modules/server/zerotier.nix flakeContext;
         };
         vds = {
@@ -140,21 +137,10 @@
           xray = import ./modules/vds/xray.nix flakeContext;
         };
       };
-
       homeConfigurations = {
         default = import ./home/default.nix flakeContext;
-        # root = import ./home/root.nix flakeContext;
-        # main = import ./home/main.nix flakeContext;
-        # server = import ./home/server.nix flakeContext;
-        # wsl = import ./home/wsl.nix flakeContext;
       };
-      homeModules = {
-        # minimal = import ./home/modules/minimal.nix flakeContext;
-        # wsl = import ./home/modules/wsl.nix flakeContext;
-        # packages = import ./home/modules/packages.nix flakeContext;
-        # default = import ./home/modules/default.nix flakeContext;
-        # dconf = import ./home/modules/dconf.nix flakeContext;
-        # plasma-manager = import ./home/modules/plasma-manager.nix flakeContext;
-      };
+      # homeModules = {
+      # };
     };
 }
