@@ -26,6 +26,7 @@ let
           self.nixosModules.desktop
           self.homeConfigurations.main.nixosModule
           self.homeConfigurations.root.nixosModule
+          sops-nix.nixosModules.sops
         ]
         ++ builtins.attrValues inputs.self.nixosModules.extra.self;
 
@@ -182,7 +183,6 @@ in
 inputs.nixpkgs.lib.nixosSystem {
   modules = [
     nixosModule
-    inputs.sops-nix.nixosModules.sops
   ];
   system = "x86_64-linux";
 }

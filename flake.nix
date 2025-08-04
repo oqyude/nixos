@@ -150,6 +150,8 @@
         wsl = import ./home/wsl.nix flakeContext;
       };
       homeModules = {
+        minimal = import ./home/modules/minimal.nix flakeContext;
+        wsl = import ./home/modules/wsl.nix flakeContext;
         packages = import ./home/modules/packages.nix flakeContext;
         default = import ./home/modules/default.nix flakeContext;
         dconf = import ./home/modules/dconf.nix flakeContext;

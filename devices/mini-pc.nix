@@ -18,6 +18,7 @@ let
         ./hardware/logitech.nix
         self.nixosModules.default
 
+        sops-nix.nixosModules.sops
         self.nixosModules.server.open-webui
         self.nixosModules.software.wine
         self.nixosModules.software.beets
@@ -166,7 +167,6 @@ in
 inputs.nixpkgs.lib.nixosSystem {
   modules = [
     nixosModule
-    inputs.sops-nix.nixosModules.sops
   ];
   system = "x86_64-linux";
 }

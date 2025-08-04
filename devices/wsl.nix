@@ -17,12 +17,26 @@ let
 
         self.nixosModules.software.beets
         self.nixosModules.server.open-webui
-        #self.homeConfigurations.default.nixosModule
-        (inputs.self.homeConfigurations.default {
-          inherit inputs;
-          device.type = deviceType;
-        }).nixosModule
+        self.homeConfigurations.default.nixosModule
+        # (self.homeConfigurations.default.nixosModule {
+        #   inherit inputs;
+        #   config.device.type = deviceType;
+        # })
+        # ( {
+        #   extraSpecialArgs = {
+        #     inherit inputs;
+        #     inherit (config.device) type;
+        #     #deviceType = config.device.type;
+        #   };
+        # })
       ];
+
+      home-manager = {
+        extraSpecialArgs = {
+          inherit inputs;
+          deviceType = config.device.type; # Переименовываем type в deviceType
+        };
+      };
 
       fileSystems = {
         # beets

@@ -1,11 +1,11 @@
 { inputs, ... }@flakeContext:
 let
   homeModule =
-     {
+    {
       config,
       lib,
       pkgs,
-      deviceType
+      deviceType,
       ...
     }:
     {
@@ -13,7 +13,7 @@ let
         inputs.self.homeModules.${deviceType}
       ];
       home = {
-        username = inputs.zeroq.devices.admin;
+        username = "${inputs.zeroq.devices.admin}";
         stateVersion = lib.mkDefault "25.05";
         homeDirectory = lib.mkDefault "/home/${config.home.username}";
         enableNixpkgsReleaseCheck = false;
@@ -24,7 +24,7 @@ let
       config,
       lib,
       pkgs,
-      deviceType
+      deviceType,
       ...
     }:
     {
@@ -47,6 +47,10 @@ let
         users.${inputs.zeroq.devices.admin} = homeModule;
         users.root = rootModule;
         sharedModules = [ inputs.plasma-manager.homeManagerModules.plasma-manager ];
+        # extraSpecialArgs = {
+        #   inherit inputs;
+        #   inherit (config.device.type) deviceType;
+        # };
       };
     };
 in

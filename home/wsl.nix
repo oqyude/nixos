@@ -42,7 +42,7 @@ let
       };
 
       home = {
-        username = "${inputs.zeroq.devices.admin}";
+        #username = "${inputs.zeroq.devices.admin}";
         file = {
           "External" = {
             source = config.lib.file.mkOutOfStoreSymlink externalPath;
