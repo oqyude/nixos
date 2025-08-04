@@ -1,4 +1,3 @@
-# Setup DE, xserver and bootloader
 { inputs, ... }@flakeContext:
 {
   config,
@@ -8,13 +7,8 @@
 }:
 {
   imports = [
-    ./environment/kde.nix
-    #./environment/gnome.nix
-    #./environment/xfce.nix
-    #./environment/deepin.nix
-
-    ./environment/theming.nix
-
+    ./environment
+    ./theming.nix
     inputs.grub2-themes.nixosModules.default # grub2 themes module
   ];
 
@@ -77,24 +71,7 @@
       cups-pdf.enable = true;
     };
   };
-  environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-  };
-
-  #   environment = {
-  #     systemPackages = with pkgs; [
-  #     ];
-  #   };
-  #   systemd.services.xiccd = { # Color Profiler bus for x11
-  #     enable = false;
-  #     description = "Xiccd Screen Color Profiler";
-  #     serviceConfig = {
-  #       ExecStart = "${pkgs.xiccd}/bin/xiccd";
-  #       ExecStop = "pkill xiccd";
-  #       Restart = "always";
-  #     };
-  #     wantedBy = [ "dbus.service" ];
-  #     after = [ "dbus.service" ];
-  #     partOf = [ "dbus.service" ];
-  #   };
+  # environment.sessionVariables = {
+  #   NIXOS_OZONE_WL = "1";
+  # };
 }

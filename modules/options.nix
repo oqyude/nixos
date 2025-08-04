@@ -1,5 +1,5 @@
 {
-  config,
+  inputs,
   lib,
   ...
 }:
@@ -20,7 +20,7 @@
       username = lib.mkOption {
         type = lib.types.str;
         default = "${inputs.zeroq.devices.admin}";
-        description = "Username for host";
+        description = "Username for host.";
       };
     };
   };

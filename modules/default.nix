@@ -7,11 +7,11 @@
 {
   imports = with inputs; [
     ./essentials
-    (import ./options.nix { inherit inputs; })
+    (import ./options.nix { inherit lib inputs; }) # Options
 
     # Flake modules
     home-manager.nixosModules.home-manager # home-manager module
-    nix-index-database.nixosModules.nix-index
+    nix-index-database.nixosModules.nix-index # nix-index module
   ];
 
   # defines global user
@@ -36,26 +36,4 @@
       };
     };
   };
-
-  # Options
-  # options = {
-  #   device = {
-  #     type = lib.mkOption {
-  #       type = lib.types.enum [
-  #         "minimal"
-  #         "primary"
-  #         "server"
-  #         "vds"
-  #         "wsl"
-  #       ];
-  #       default = "minimal";
-  #       description = "Type of device for this host.";
-  #     };
-  #     username = lib.mkOption {
-  #       type = lib.types.str;
-  #       default = "${inputs.zeroq.devices.admin}";
-  #       description = "Username for host";
-  #     };
-  #   };
-  # };
 }
