@@ -23,12 +23,8 @@
 
       # Lazy
       lazycli
-      lazydocker
-      lazyjournal
       lazysql
-
-      gitui
-      broot
+      lazyjournal
 
       # Base
       curl
@@ -46,10 +42,7 @@
       tree
 
       # Monitoring
-      bottom
       smartmontools
-      btop
-      fastfetch
 
       # Disk
       parted

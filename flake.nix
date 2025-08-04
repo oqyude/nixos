@@ -143,6 +143,7 @@
       };
 
       homeConfigurations = {
+        default = import ./home/default.nix flakeContext;
         root = import ./home/root.nix flakeContext;
         main = import ./home/main.nix flakeContext;
         server = import ./home/server.nix flakeContext;

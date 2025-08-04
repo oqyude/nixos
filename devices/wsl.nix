@@ -17,7 +17,11 @@ let
 
         self.nixosModules.software.beets
         self.nixosModules.server.open-webui
-        self.homeConfigurations.wsl.nixosModule
+        #self.homeConfigurations.default.nixosModule
+        (inputs.self.homeConfigurations.default {
+          inherit inputs;
+          device.type = deviceType;
+        }).nixosModule
       ];
 
       fileSystems = {

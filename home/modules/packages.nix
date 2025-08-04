@@ -9,7 +9,6 @@ let
 in
 {
   programs = {
-    btop.enable = true;
     mangohud.enable = true;
     keepassxc.enable = true;
     zed-editor = {
@@ -65,7 +64,7 @@ in
       vlc
       normcap
       zerotierone
-      nextcloud-client
+      #nextcloud-client
 
       # (handbrake.overrideAttrs (old: {
       #   configureFlags = old.configureFlags ++ [ "--enable-vce" ];
@@ -74,9 +73,6 @@ in
       #     pkgs.ffmpeg-full
       #   ];
       # }))
-
-      #tg
-      #reaper
 
       # Games
       ludusavi
