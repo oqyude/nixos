@@ -56,7 +56,7 @@ let
           ];
         };
         "/mnt/beets/music" = {
-          device = "/home/${config.xlib.devices.admin}/Music"; # "${config.xlib.dirs.vetymae-drive}/Users/User/Music"
+          device = "/home/${config.xlib.device.username}/Music"; # "${config.xlib.dirs.vetymae-drive}/Users/User/Music"
           options = [
             "bind"
             #"uid=1000"
@@ -106,7 +106,7 @@ let
       # networking.firewall.allowedTCPPorts = [ ... ];
       # networking.firewall.allowedUDPPorts = [ ... ];
       networking = {
-        hostName = "${config.xlib.devices.laptop.hostname}";
+        hostName = "${config.xlib.device.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
       };
@@ -135,10 +135,10 @@ let
         syncthing = {
           enable = true;
           systemService = true;
-          configDir = "${config.xlib.dirs.user-storage}/Syncthing/${config.system.name}"; # ${config.xlib.devices.laptop.hostname}
+          configDir = "${config.xlib.dirs.user-storage}/Syncthing/${config.system.name}";
           dataDir = "${config.xlib.dirs.user-home}";
           group = "users";
-          user = "${config.xlib.devices.admin}";
+          user = "${config.xlib.device.username}";
         };
         pipewire = {
           enable = lib.mkDefault true;

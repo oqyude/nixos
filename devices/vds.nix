@@ -52,7 +52,7 @@ let
               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKduJia+unaQQdN6X5syaHvnpIutO+yZwvfiCP4qKQ/P"
             ];
           };
-          "${config.xlib.devices.admin}" = {
+          "${config.xlib.device.username}" = {
             openssh.authorizedKeys.keys = [
               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKduJia+unaQQdN6X5syaHvnpIutO+yZwvfiCP4qKQ/P"
             ];
@@ -81,19 +81,19 @@ let
               "path" = "/etc/nixos";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${config.xlib.devices.admin}";
+              "valid users" = "${config.xlib.device.username}";
               "guest ok" = "no";
               "writable" = "yes";
               "create mask" = 755;
               "directory mask" = 755;
-              "force user" = "${config.xlib.devices.admin}";
+              "force user" = "${config.xlib.device.username}";
               "force group" = "users";
             };
             root = {
               "path" = "/";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${config.xlib.devices.admin}";
+              "valid users" = "${config.xlib.device.username}";
               "guest ok" = "no";
               "writable" = "yes";
               #"create mask" = 0644;
@@ -101,16 +101,16 @@ let
               "force user" = "root";
               "force group" = "root";
             };
-            "${config.xlib.devices.admin}" = {
-              "path" = "/home/${config.xlib.devices.admin}";
+            "${config.xlib.device.username}" = {
+              "path" = "/home/${config.xlib.device.username}";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${config.xlib.devices.admin}";
+              "valid users" = "${config.xlib.device.username}";
               "guest ok" = "no";
               "writable" = "yes";
               "create mask" = 700;
               "directory mask" = 700;
-              "force user" = "${config.xlib.devices.admin}";
+              "force user" = "${config.xlib.device.username}";
               "force group" = "users";
             };
           };
@@ -138,7 +138,7 @@ let
       };
 
       networking = {
-        hostName = "${config.xlib.devices.vds.hostname}";
+        hostName = "${config.xlib.device.hostname}";
         networkmanager.enable = true;
         firewall.enable = true;
       };

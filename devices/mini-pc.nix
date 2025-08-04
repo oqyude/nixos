@@ -65,7 +65,7 @@ let
           ];
         };
         "/mnt/beets/music" = {
-          device = "/home/${config.xlib.devices.admin}/Music"; # "${config.xlib.dirs.vetymae-drive}/Users/User/Music"
+          device = "/home/${config.xlib.device.username}/Music"; # "${config.xlib.dirs.vetymae-drive}/Users/User/Music"
           options = [
             "bind"
             #"uid=1000"
@@ -127,7 +127,7 @@ let
         syncthing = {
           enable = true;
           systemService = true;
-          configDir = "${config.xlib.dirs.user-storage}/Syncthing/${config.system.name}"; # ${config.xlib.devices.laptop.hostname}
+          configDir = "${config.xlib.dirs.user-storage}/Syncthing/${config.system.name}";
           dataDir = "${config.xlib.dirs.user-home}";
           group = "users";
           user = "${config.xlib.device.username}";
