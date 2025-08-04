@@ -5,12 +5,12 @@
   ...
 }:
 {
-  imports = [
+  imports = with inputs; [
     ./essentials
 
     # Flake modules
-    inputs.home-manager.nixosModules.home-manager # home-manager module
-    inputs.nix-index-database.nixosModules.nix-index
+    home-manager.nixosModules.home-manager # home-manager module
+    nix-index-database.nixosModules.nix-index
   ];
 
   # defines global user
@@ -37,15 +37,17 @@
   };
 
   # Options
-  options.device.type = lib.mkOption {
-    type = lib.types.enum [
-      "minimal"
-      "primary"
-      "server"
-      "vds"
-      "wsl"
-    ];
-    default = "minimal"; # Значение по умолчанию, если не указано
-    description = "Type of device for this host.";
+  options = {
+    device.type = lib.mkOption {
+      type = lib.types.enum [
+        "minimal"
+        "primary"
+        "server"
+        "vds"
+        "wsl"
+      ];
+      default = "minimal"; # Значение по умолчанию, если не указано
+      description = "Type of device for this host.";
+    };
   };
 }

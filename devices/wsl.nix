@@ -17,6 +17,7 @@ let
 
         self.nixosModules.software.beets
         self.nixosModules.server.open-webui
+
         self.homeConfigurations.default.nixosModule
       ];
 
