@@ -7,6 +7,7 @@
 }:
 {
   imports = [
+    ./minimal.nix
     ./modules/dconf.nix
     ./modules/packages.nix
     ./modules/plasma-manager.nix
