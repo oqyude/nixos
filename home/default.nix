@@ -5,15 +5,15 @@ let
       config,
       lib,
       pkgs,
-      deviceType,
+      xlib,
       ...
     }:
     {
       imports = [
-        inputs.self.homeModules.${deviceType}
+        inputs.self.homeModules."${xlib.device.type}"
       ];
       home = {
-        username = "${inputs.zeroq.devices.admin}";
+        username = xlib.device.username;
         stateVersion = lib.mkDefault "25.05";
         homeDirectory = lib.mkDefault "/home/${config.home.username}";
         enableNixpkgsReleaseCheck = false;
@@ -24,12 +24,12 @@ let
       config,
       lib,
       pkgs,
-      deviceType,
+      xlib,
       ...
     }:
     {
       imports = [
-        inputs.self.homeModules.${deviceType}
+        inputs.self.homeModules."${xlib.device.type}"
       ];
       home = {
         username = "root";
@@ -39,18 +39,14 @@ let
       };
     };
   nixosModule =
-    { ... }:
+    { config, ... }:
     {
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
-        users.${inputs.zeroq.devices.admin} = homeModule;
+        users."${config.xlib.device.username}" = homeModule;
         users.root = rootModule;
         sharedModules = [ inputs.plasma-manager.homeManagerModules.plasma-manager ];
-        # extraSpecialArgs = {
-        #   inherit inputs;
-        #   inherit (config.device.type) deviceType;
-        # };
       };
     };
 in

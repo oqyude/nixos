@@ -12,7 +12,9 @@ let
   externalPath = "${inputs.zeroq.dirs.wsl-home}";
 in
 {
-
+  imports = [
+    inputs.self.homeModules.minimal
+  ];
   xdg = {
     enable = true;
     autostart.enable = true;

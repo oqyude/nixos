@@ -9,22 +9,25 @@ let
       ...
     }:
     {
-      device.type = "wsl";
+      xlib.device.type = "wsl";
 
       imports = with inputs; [
+        # Hardware
         nixos-wsl.nixosModules.default
+
+        # Base
+        self.homeConfigurations.default.nixosModule
         self.nixosModules.default
 
+        # Custom
         self.nixosModules.software.beets
         self.nixosModules.server.open-webui
-
-        self.homeConfigurations.default.nixosModule
       ];
 
       home-manager = {
         extraSpecialArgs = {
-          inherit inputs;
-          deviceType = config.device.type; # Переименовываем type в deviceType
+          #inherit inputs;
+          xlib = config.xlib;
         };
       };
 
@@ -63,7 +66,7 @@ let
         enable = true;
         startMenuLaunchers = true;
         #useWindowsDriver = true;
-        defaultUser = "${inputs.zeroq.devices.admin}";
+        defaultUser = config.xlib.device.username;
       };
 
       system.stateVersion = "24.11";
