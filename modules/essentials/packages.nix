@@ -6,6 +6,9 @@
 {
   environment = {
     systemPackages = with pkgs; [
+      # yazi
+      yaziPlugins.gitui
+
       # Encrypt
       age
       sops
@@ -16,12 +19,16 @@
       nix-tree
       nixfmt-tree
       nvd
+      nix-du
 
       # Lazy
       lazycli
       lazydocker
       lazyjournal
       lazysql
+
+      gitui
+      broot
 
       # Base
       curl
@@ -39,6 +46,7 @@
       tree
 
       # Monitoring
+      bottom
       smartmontools
       btop
       fastfetch
@@ -53,7 +61,7 @@
       unzip
       zstd
       zip
-      xarchiver
+      #xarchiver
 
       # Net
       ipset
