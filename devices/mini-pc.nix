@@ -32,6 +32,12 @@ let
         # self.homeConfigurations.root.nixosModule
       ];
 
+      home-manager = {
+        extraSpecialArgs = {
+          xlib = config.xlib;
+        };
+      };
+
       sops = {
         defaultSopsFile = ./secrets/example.yaml;
         age.keyFile = "/var/lib/sops-nix/key.txt";

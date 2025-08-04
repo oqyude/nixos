@@ -11,7 +11,9 @@ let
       ...
     }:
     {
-      device.type = "primary";
+      xlib.device = {
+        type = "primary";
+      };
 
       imports =
         with inputs;
@@ -27,6 +29,12 @@ let
           sops-nix.nixosModules.sops
         ]
         ++ builtins.attrValues inputs.self.nixosModules.extra.self;
+
+      home-manager = {
+        extraSpecialArgs = {
+          xlib = config.xlib;
+        };
+      };
 
       fileSystems = {
         "${config.xlib.dirs.therima-drive}" = {

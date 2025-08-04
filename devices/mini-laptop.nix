@@ -11,15 +11,24 @@ let
       ...
     }:
     {
-      device.type = "primary";
+      xlib.device = {
+        type = "primary";
+        hostname = "lamet";
+      };
 
       imports = with inputs; [
+        self.homeConfigurations.default.nixosModule
         self.nixosModules.default
 
         nixos-hardware.nixosModules.chuwi-minibook-x
-        home-manager.nixosModules.home-manager # home-manager module
-        self.homeConfigurations.oqyude.nixosModule # home-manager configuration module
       ];
+
+      home-manager = {
+        extraSpecialArgs = {
+          xlib = config.xlib;
+        };
+      };
+
       hardware.intel-gpu-tools.enable = true;
     };
 in
