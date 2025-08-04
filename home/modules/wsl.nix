@@ -1,4 +1,4 @@
-#{ inputs, ... }@flakeContext:
+{ inputs, ... }@flakeContext:
 {
   config,
   pkgs,
