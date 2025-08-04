@@ -14,33 +14,33 @@ let
         autostart.enable = true;
         configFile = {
           "beets" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/beets/linux";
+            source = config.lib.file.mkOutOfStoreSymlink "${config.xlib.dirs.user-storage}/beets/linux";
             target = "beets";
           };
           "ludusavi" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/ludusavi/cfg";
+            source = config.lib.file.mkOutOfStoreSymlink "${config.xlib.dirs.user-storage}/ludusavi/cfg";
             target = "ludusavi";
           };
           "solaar" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/solaar";
+            source = config.lib.file.mkOutOfStoreSymlink "${config.xlib.dirs.user-storage}/solaar";
             target = "solaar";
           };
           "easyeffects" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/easyeffects";
+            source = config.lib.file.mkOutOfStoreSymlink "${config.xlib.dirs.user-storage}/easyeffects";
             target = "easyeffects";
           };
           "keepassxc" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/KeePassXC";
+            source = config.lib.file.mkOutOfStoreSymlink "${config.xlib.dirs.user-storage}/KeePassXC";
             target = "keepassxc";
           };
         };
         dataFile = {
           "PrismLauncher" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/Games/PrismLauncher";
+            source = config.lib.file.mkOutOfStoreSymlink "${config.xlib.dirs.vetymae-drive}/Games/PrismLauncher";
             target = "PrismLauncher";
           };
           "v2rayN" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/v2rayN";
+            source = config.lib.file.mkOutOfStoreSymlink "${config.xlib.dirs.user-storage}/v2rayN";
             target = "v2rayN";
           };
         };
@@ -59,18 +59,18 @@ let
       };
 
       home = {
-        username = "${inputs.zeroq.devices.admin}";
+        username = "${config.xlib.devices.admin}";
         file = {
           "ssh" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.user-storage}/ssh/${config.home.username}";
+            source = config.lib.file.mkOutOfStoreSymlink "${config.xlib.dirs.user-storage}/ssh/${config.home.username}";
             target = ".ssh";
           };
           "External" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.therima-drive}";
+            source = config.lib.file.mkOutOfStoreSymlink "${config.xlib.dirs.therima-drive}";
             target = "External";
           };
           "LM Studio" = {
-            source = config.lib.file.mkOutOfStoreSymlink "${inputs.zeroq.dirs.vetymae-drive}/AI/LM Studio";
+            source = config.lib.file.mkOutOfStoreSymlink "${config.xlib.dirs.vetymae-drive}/AI/LM Studio";
             target = ".lmstudio";
           };
         };
@@ -90,7 +90,7 @@ let
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
-        users.${inputs.zeroq.devices.admin} = homeModule;
+        users.${config.xlib.devices.admin} = homeModule;
         sharedModules = [ inputs.plasma-manager.homeManagerModules.plasma-manager ];
         extraSpecialArgs = {
           inherit (config.networking) hostName;

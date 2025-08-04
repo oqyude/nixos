@@ -37,7 +37,7 @@ let
       fileSystems = {
         # beets
         "/mnt/beets/music" = {
-          device = "${inputs.zeroq.dirs.wsl-home}/Music";
+          device = "${config.xlib.dirs.wsl-home}/Music";
           options = [
             "bind"
             "uid=1000"
@@ -62,7 +62,7 @@ let
 
       networking = {
         firewall.enable = false;
-        hostName = "${config.xlib.device.hostname}";
+        hostName = config.xlib.device.hostname;
       };
 
       wsl = {

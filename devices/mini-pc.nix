@@ -24,8 +24,9 @@ let
         self.nixosModules.software.beets
         #self.nixosModules.extra.self.fingerprint
         self.nixosModules.desktop
-        self.homeConfigurations.main.nixosModule
-        self.homeConfigurations.root.nixosModule
+        self.homeConfigurations.default.nixosModule
+        # self.homeConfigurations.main.nixosModule
+        # self.homeConfigurations.root.nixosModule
       ];
 
       sops = {
@@ -34,7 +35,7 @@ let
       };
 
       fileSystems = {
-        "${inputs.zeroq.dirs.therima-drive}" = {
+        "${config.xlib.dirs.therima-drive}" = {
           device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
           fsType = "ntfs3";
           options = [
@@ -47,7 +48,7 @@ let
             #"x-systemd.device-timeout=0"
           ];
         };
-        "${inputs.zeroq.dirs.vetymae-drive}" = {
+        "${config.xlib.dirs.vetymae-drive}" = {
           device = "/dev/disk/by-uuid/38D63C6ED63C2E8E";
           fsType = "ntfs3";
           options = [
@@ -61,7 +62,7 @@ let
           ];
         };
         "/mnt/beets/music" = {
-          device = "/home/${inputs.zeroq.devices.admin}/Music"; # "${inputs.zeroq.dirs.vetymae-drive}/Users/User/Music"
+          device = "/home/${config.xlib.devices.admin}/Music"; # "${config.xlib.dirs.vetymae-drive}/Users/User/Music"
           options = [
             "bind"
             #"uid=1000"
@@ -93,7 +94,7 @@ let
       # networking.firewall.allowedTCPPorts = [ ... ];
       # networking.firewall.allowedUDPPorts = [ ... ];
       networking = {
-        hostName = "${inputs.zeroq.devices.laptop.hostname}";
+        hostName = "${config.xlib.devices.laptop.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
       };
@@ -123,10 +124,10 @@ let
         syncthing = {
           enable = true;
           systemService = true;
-          configDir = "${inputs.zeroq.dirs.user-storage}/Syncthing/${config.system.name}"; # ${inputs.zeroq.devices.laptop.hostname}
-          dataDir = "${inputs.zeroq.dirs.user-home}";
+          configDir = "${config.xlib.dirs.user-storage}/Syncthing/${config.system.name}"; # ${config.xlib.devices.laptop.hostname}
+          dataDir = "${config.xlib.dirs.user-home}";
           group = "users";
-          user = "${inputs.zeroq.devices.admin}";
+          user = "${config.xlib.devices.admin}";
         };
         pipewire = {
           enable = lib.mkDefault true;

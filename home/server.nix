@@ -9,8 +9,8 @@ let
     }:
     let
       # Paths
-      beetsPath = "${inputs.zeroq.dirs.storage}/beets/linux";
-      sshPath = "${inputs.zeroq.dirs.storage}/ssh/${inputs.zeroq.devices.server.hostname}";
+      beetsPath = "${config.xlib.dirs.storage}/beets/linux";
+      sshPath = "${config.xlib.dirs.storage}/ssh/${config.xlib.devices.server.hostname}";
       musicPath = "${config.home.homeDirectory}/External/Music";
     in
     {
@@ -50,7 +50,7 @@ let
             target = "${config.home.homeDirectory}/Music";
           };
         };
-        username = "${inputs.zeroq.devices.admin}";
+        username = "${config.xlib.devices.admin}";
       };
 
     };
@@ -60,7 +60,7 @@ let
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
-        users.${inputs.zeroq.devices.admin} = homeModule;
+        users.${config.xlib.devices.admin} = homeModule;
         sharedModules = [ inputs.plasma-manager.homeManagerModules.plasma-manager ];
       };
     };

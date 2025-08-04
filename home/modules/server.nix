@@ -7,8 +7,8 @@
 }:
 let
   # Paths
-  beetsPath = "${inputs.zeroq.dirs.storage}/beets/linux";
-  sshPath = "${inputs.zeroq.dirs.storage}/ssh/${inputs.zeroq.devices.server.hostname}";
+  beetsPath = "${config.xlib.dirs.storage}/beets/linux";
+  sshPath = "${config.xlib.dirs.storage}/ssh/${config.xlib.devices.server.hostname}";
   musicPath = "${config.home.homeDirectory}/External/Music";
 in
 {

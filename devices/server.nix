@@ -43,7 +43,7 @@ let
 
       users = {
         users = {
-          "${inputs.zeroq.devices.admin}" = {
+          "${config.xlib.devices.admin}" = {
             openssh.authorizedKeys.keys = [
               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKduJia+unaQQdN6X5syaHvnpIutO+yZwvfiCP4qKQ/P root@sapphira"
             ];
@@ -53,7 +53,7 @@ let
 
       fileSystems = {
         # External drive
-        "${inputs.zeroq.dirs.server-home}" = {
+        "${config.xlib.dirs.server-home}" = {
           device = "/dev/disk/by-uuid/37e53ebc-5343-a94d-9fe2-0ca39e13a8de";
           fsType = "ext4";
           options = [
@@ -74,7 +74,7 @@ let
         };
         # beets
         "/mnt/beets/music" = {
-          device = "${inputs.zeroq.dirs.server-home}/Music";
+          device = "${config.xlib.dirs.server-home}/Music";
           options = [
             "bind"
             "uid=1000"
@@ -110,19 +110,19 @@ let
               "path" = "/etc/nixos";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${inputs.zeroq.devices.admin}";
+              "valid users" = "${config.xlib.devices.admin}";
               "guest ok" = "no";
               "writable" = "yes";
               "create mask" = 755;
               "directory mask" = 755;
-              "force user" = "${inputs.zeroq.devices.admin}";
+              "force user" = "${config.xlib.devices.admin}";
               "force group" = "users";
             };
             root = {
               "path" = "/";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${inputs.zeroq.devices.admin}";
+              "valid users" = "${config.xlib.devices.admin}";
               "guest ok" = "no";
               "writable" = "yes";
               #"create mask" = 0644;
@@ -130,16 +130,16 @@ let
               "force user" = "root";
               "force group" = "root";
             };
-            "${inputs.zeroq.devices.admin}" = {
-              "path" = "${inputs.zeroq.dirs.server-home}";
+            "${config.xlib.devices.admin}" = {
+              "path" = "${config.xlib.dirs.server-home}";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${inputs.zeroq.devices.admin}";
+              "valid users" = "${config.xlib.devices.admin}";
               "guest ok" = "no";
               "writable" = "yes";
               "create mask" = 700;
               "directory mask" = 700;
-              "force user" = "${inputs.zeroq.devices.admin}";
+              "force user" = "${config.xlib.devices.admin}";
               "force group" = "users";
             };
           };
@@ -147,9 +147,9 @@ let
         calibre-web = {
           enable = true;
           group = "users";
-          user = "${inputs.zeroq.devices.admin}";
+          user = "${config.xlib.devices.admin}";
           options = {
-            calibreLibrary = "${inputs.zeroq.dirs.calibre-library}";
+            calibreLibrary = "${config.xlib.dirs.calibre-library}";
             enableBookUploading = true;
             enableKepubify = false;
           };
@@ -174,14 +174,14 @@ let
         };
         transmission = {
           enable = false;
-          credentialsFile = "${inputs.zeroq.dirs.server-home}/server/transmission/settings.json";
+          credentialsFile = "${config.xlib.dirs.server-home}/server/transmission/settings.json";
           openRPCPort = true;
           package = pkgs.transmission_4;
-          user = "${inputs.zeroq.devices.admin}";
+          user = "${config.xlib.devices.admin}";
           group = "users";
           settings = {
-            download-dir = "${inputs.zeroq.dirs.server-home}/Downloads";
-            incomplete-dir = "${inputs.zeroq.dirs.server-home}/Downloads/Temp";
+            download-dir = "${config.xlib.dirs.server-home}/Downloads";
+            incomplete-dir = "${config.xlib.dirs.server-home}/Downloads/Temp";
             incomplete-dir-enabled = true;
             rpc-bind-address = "0.0.0.0";
             rpc-port = 9091;
@@ -193,16 +193,16 @@ let
           enable = true;
           systemService = true;
           guiAddress = "0.0.0.0:8384";
-          configDir = "${inputs.zeroq.dirs.storage}/Syncthing/${inputs.zeroq.devices.server.hostname}";
-          dataDir = "${inputs.zeroq.dirs.server-home}";
+          configDir = "${config.xlib.dirs.storage}/Syncthing/${config.xlib.devices.server.hostname}";
+          dataDir = "${config.xlib.dirs.server-home}";
           group = "users";
-          user = "${inputs.zeroq.devices.admin}";
+          user = "${config.xlib.devices.admin}";
         };
         tailscale.enable = true;
       };
 
       networking = {
-        hostName = "${inputs.zeroq.devices.server.hostname}";
+        hostName = "${config.xlib.devices.server.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
       };

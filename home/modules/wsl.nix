@@ -6,10 +6,10 @@
 }:
 let
   # Paths
-  beetsPath = "${inputs.zeroq.dirs.wsl-storage}/beets/linux";
-  #sshPath = "${inputs.zeroq.dirs.storage}/ssh/${inputs.zeroq.devices.server.hostname}";
+  beetsPath = "${config.xlib.dirs.wsl-storage}/beets/linux";
+  #sshPath = "${config.xlib.dirs.storage}/ssh/${config.xlib.devices.server.hostname}";
   musicPath = "${config.home.homeDirectory}/External/Music";
-  externalPath = "${inputs.zeroq.dirs.wsl-home}";
+  externalPath = "${config.xlib.dirs.wsl-home}";
 in
 {
   imports = [
@@ -38,7 +38,7 @@ in
     # };
   };
   home = {
-    #username = "${inputs.zeroq.devices.admin}";
+    #username = "${config.xlib.devices.admin}";
     file = {
       "External" = {
         source = config.lib.file.mkOutOfStoreSymlink externalPath;

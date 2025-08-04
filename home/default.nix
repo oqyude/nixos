@@ -10,7 +10,8 @@ let
     }:
     {
       imports = [
-        inputs.self.homeModules."${xlib.device.type}" # -> (./type + "/${xlib.device.type}.nix")
+        (./type + "/${xlib.device.type}.nix")
+        #inputs.self.homeModules."${xlib.device.type}" # -> (./type + "/${xlib.device.type}.nix")
       ];
       home = {
         username = xlib.device.username;
@@ -29,7 +30,8 @@ let
     }:
     {
       imports = [
-        inputs.self.homeModules."${xlib.device.type}"
+        (./type + "/${xlib.device.type}.nix")
+        #inputs.self.homeModules."${xlib.device.type}"
       ];
       home = {
         username = "root";

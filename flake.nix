@@ -144,18 +144,18 @@
 
       homeConfigurations = {
         default = import ./home/default.nix flakeContext;
-        root = import ./home/root.nix flakeContext;
-        main = import ./home/main.nix flakeContext;
-        server = import ./home/server.nix flakeContext;
-        wsl = import ./home/wsl.nix flakeContext;
+        # root = import ./home/root.nix flakeContext;
+        # main = import ./home/main.nix flakeContext;
+        # server = import ./home/server.nix flakeContext;
+        # wsl = import ./home/wsl.nix flakeContext;
       };
       homeModules = {
-        minimal = import ./home/modules/minimal.nix flakeContext;
-        wsl = import ./home/modules/wsl.nix flakeContext;
-        packages = import ./home/modules/packages.nix flakeContext;
-        default = import ./home/modules/default.nix flakeContext;
-        dconf = import ./home/modules/dconf.nix flakeContext;
-        plasma-manager = import ./home/modules/plasma-manager.nix flakeContext;
+        # minimal = import ./home/modules/minimal.nix flakeContext;
+        # wsl = import ./home/modules/wsl.nix flakeContext;
+        # packages = import ./home/modules/packages.nix flakeContext;
+        # default = import ./home/modules/default.nix flakeContext;
+        # dconf = import ./home/modules/dconf.nix flakeContext;
+        # plasma-manager = import ./home/modules/plasma-manager.nix flakeContext;
       };
     };
 }

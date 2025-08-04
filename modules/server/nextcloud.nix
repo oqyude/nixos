@@ -76,7 +76,7 @@
   };
 
   fileSystems."/mnt/nextcloud" = {
-    device = "${inputs.zeroq.dirs.nextcloud-folder}";
+    device = "${config.xlib.dirs.nextcloud-folder}";
     options = [
       "bind"
       #"uid=1000"

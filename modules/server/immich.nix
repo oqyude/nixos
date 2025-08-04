@@ -20,7 +20,7 @@
   };
 
   fileSystems."${config.services.immich.mediaLocation}" = {
-    device = "${inputs.zeroq.dirs.immich-folder}";
+    device = "${config.xlib.dirs.immich-folder}";
     options = [
       "bind"
       #"uid=1000"

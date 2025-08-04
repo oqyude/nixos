@@ -9,10 +9,10 @@
   services = {
     cloudflared = {
       enable = false;
-      certificateFile = "${inputs.zeroq.dirs.server-credentials}/cloudflared/cert.pem";
+      certificateFile = "${config.xlib.dirs.server-credentials}/cloudflared/cert.pem";
       tunnels = {
         "58b340ee-e98a-4af9-b786-74600c71f49e" = {
-          credentialsFile = "${inputs.zeroq.dirs.server-credentials}/cloudflared/server.json";
+          credentialsFile = "${config.xlib.dirs.server-credentials}/cloudflared/server.json";
           warp-routing.enabled = true;
           ingress = {
             "immich.zeroq.ru" = {
@@ -25,7 +25,7 @@
           default = "http_status:404";
         };
         #         "58b340ee-e98a-4af9-b786-74600c71f49e" = {
-        #           credentialsFile = "${inputs.zeroq.dirs.server-credentials}/cloudflared/server.json";
+        #           credentialsFile = "${config.xlib.dirs.server-credentials}/cloudflared/server.json";
         #           warp-routing.enabled = true;
         #           ingress = {
         #             "nextcloud.zeroq.ru" = {
@@ -57,7 +57,7 @@
   #     ];
   #     wantedBy = [ "multi-user.target" ];
   #     serviceConfig = {
-  #       ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate --config=${inputs.zeroq.dirs.server-credentials}/cloudflared/config.yaml --origincert=${inputs.zeroq.dirs.server-credentials}/cloudflared/cert.pem --credentials-file=${inputs.zeroq.dirs.server-credentials}/cloudflared/server.json run";
+  #       ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate --config=${config.xlib.dirs.server-credentials}/cloudflared/config.yaml --origincert=${config.xlib.dirs.server-credentials}/cloudflared/cert.pem --credentials-file=${config.xlib.dirs.server-credentials}/cloudflared/server.json run";
   #       Group = "root";
   #       User = "root";
   #       Restart = "on-failure";
