@@ -8,22 +8,31 @@ let
       ...
     }:
     {
-      device.type = "server";
+      xlib.device = {
+        type = "server";
+        hostname = "sapphira";
+      };
 
       imports = with inputs; [
         sops-nix.nixosModules.sops
         ./hardware/server.nix
         self.nixosModules.default
+        self.homeConfigurations.default.nixosModule
 
         self.nixosModules.server.immich
         self.nixosModules.server.nextcloud
         self.nixosModules.server.nginx
         self.nixosModules.software.beets
         #self.nixosModules.server.zerotier
-
-        self.homeConfigurations.server.nixosModule # home-manager configuration module
       ];
 
+      home-manager = {
+        extraSpecialArgs = {
+          #inherit inputs;
+          xlib = config.xlib;
+        };
+      };
+      
       boot = {
         kernelPackages = pkgs.linuxPackages_xanmod_stable;
         hardwareScan = true;
@@ -43,7 +52,7 @@ let
 
       users = {
         users = {
-          "${config.xlib.devices.admin}" = {
+          "${config.xlib.device.username}" = {
             openssh.authorizedKeys.keys = [
               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKduJia+unaQQdN6X5syaHvnpIutO+yZwvfiCP4qKQ/P root@sapphira"
             ];
@@ -110,19 +119,19 @@ let
               "path" = "/etc/nixos";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${config.xlib.devices.admin}";
+              "valid users" = "${config.xlib.device.username}";
               "guest ok" = "no";
               "writable" = "yes";
               "create mask" = 755;
               "directory mask" = 755;
-              "force user" = "${config.xlib.devices.admin}";
+              "force user" = "${config.xlib.device.username}";
               "force group" = "users";
             };
             root = {
               "path" = "/";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${config.xlib.devices.admin}";
+              "valid users" = "${config.xlib.device.username}";
               "guest ok" = "no";
               "writable" = "yes";
               #"create mask" = 0644;
@@ -130,16 +139,16 @@ let
               "force user" = "root";
               "force group" = "root";
             };
-            "${config.xlib.devices.admin}" = {
+            "${config.xlib.device.username}" = {
               "path" = "${config.xlib.dirs.server-home}";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${config.xlib.devices.admin}";
+              "valid users" = "${config.xlib.device.username}";
               "guest ok" = "no";
               "writable" = "yes";
               "create mask" = 700;
               "directory mask" = 700;
-              "force user" = "${config.xlib.devices.admin}";
+              "force user" = "${config.xlib.device.username}";
               "force group" = "users";
             };
           };
@@ -147,7 +156,7 @@ let
         calibre-web = {
           enable = true;
           group = "users";
-          user = "${config.xlib.devices.admin}";
+          user = "${config.xlib.device.username}";
           options = {
             calibreLibrary = "${config.xlib.dirs.calibre-library}";
             enableBookUploading = true;
@@ -177,7 +186,7 @@ let
           credentialsFile = "${config.xlib.dirs.server-home}/server/transmission/settings.json";
           openRPCPort = true;
           package = pkgs.transmission_4;
-          user = "${config.xlib.devices.admin}";
+          user = "${config.xlib.device.username}";
           group = "users";
           settings = {
             download-dir = "${config.xlib.dirs.server-home}/Downloads";
@@ -196,13 +205,12 @@ let
           configDir = "${config.xlib.dirs.storage}/Syncthing/${config.xlib.devices.server.hostname}";
           dataDir = "${config.xlib.dirs.server-home}";
           group = "users";
-          user = "${config.xlib.devices.admin}";
+          user = "${config.xlib.device.username}";
         };
-        tailscale.enable = true;
       };
 
       networking = {
-        hostName = "${config.xlib.devices.server.hostname}";
+        hostName = "${config.xlib.device.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
       };

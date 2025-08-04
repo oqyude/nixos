@@ -8,7 +8,7 @@
 let
   # Paths
   beetsPath = "${xlib.dirs.storage}/beets/linux";
-  sshPath = "${xlib.dirs.storage}/ssh/${xlib.devices.server.hostname}";
+  sshPath = "${xlib.dirs.storage}/ssh/${xlib.device.hostname}";
   musicPath = "${config.home.homeDirectory}/External/Music";
 in
 {
