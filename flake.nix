@@ -4,7 +4,7 @@
   inputs = {
 
     # My
-    zeroq.url = "git+ssh://git@github.com/oqyude/zeroq.git"; # flake of variables
+    #zeroq.url = "git+ssh://git@github.com/oqyude/zeroq.git"; # flake of variables
     zeroq-credentials.url = "git+ssh://git@github.com/oqyude/zeroq-credentials.git"; # flake of creds
     zapret.url = "github:oqyude/zapret-easyflake"; # stupid flake of zapret
 

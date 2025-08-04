@@ -20,12 +20,12 @@ let
 in
 {
   systemd.tmpfiles.rules = [
-    "z /mnt/beets 0700 ${config.xlib.devices.admin} users -" # beets absolute paths
+    "z /mnt/beets 0700 ${config.xlib.device.username} users -" # beets absolute paths
   ];
 
   users = {
     users = {
-      "${config.xlib.devices.admin}" = {
+      "${config.xlib.device.username}" = {
         packages = [
           beetsEnv
           pkgs.mp3gain

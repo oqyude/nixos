@@ -10,7 +10,7 @@ let
     }:
     {
       imports = [
-        (./type + "/${xlib.device.type}.nix")
+        (./. + "/${xlib.device.type}.nix")
         #inputs.self.homeModules."${xlib.device.type}" # -> (./type + "/${xlib.device.type}.nix")
       ];
       home = {
@@ -30,7 +30,7 @@ let
     }:
     {
       imports = [
-        (./type + "/${xlib.device.type}.nix")
+        (./. + "/${xlib.device.type}.nix")
         #inputs.self.homeModules."${xlib.device.type}"
       ];
       home = {

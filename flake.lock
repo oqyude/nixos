@@ -358,7 +358,6 @@
         "plasma-manager": "plasma-manager",
         "sops-nix": "sops-nix",
         "zapret": "zapret",
-        "zeroq": "zeroq",
         "zeroq-credentials": "zeroq-credentials"
       }
     },
@@ -410,21 +409,6 @@
         "owner": "oqyude",
         "repo": "zapret-easyflake",
         "type": "github"
-      }
-    },
-    "zeroq": {
-      "locked": {
-        "lastModified": 1754248619,
-        "narHash": "sha256-/6BUL/pJnrQZd2S+a+UbF1ByiR5xQfdQTokUGZUyJGU=",
-        "ref": "refs/heads/master",
-        "rev": "44ba9d7980c87f8e90b7351f73dfe3483b0226b9",
-        "revCount": 2,
-        "type": "git",
-        "url": "ssh://git@github.com/oqyude/zeroq.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/oqyude/zeroq.git"
       }
     },
     "zeroq-credentials": {
