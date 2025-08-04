@@ -11,7 +11,10 @@ let
       ...
     }:
     {
-      device.type = "primary";
+      device = {
+        type = "primary";
+        hostname = "atoridu";
+      };
 
       imports = with inputs; [
         ./hardware/mini-pc.nix
@@ -94,7 +97,7 @@ let
       # networking.firewall.allowedTCPPorts = [ ... ];
       # networking.firewall.allowedUDPPorts = [ ... ];
       networking = {
-        hostName = "${config.xlib.devices.laptop.hostname}";
+        hostName = "${config.xlib.device.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
       };
@@ -127,7 +130,7 @@ let
           configDir = "${config.xlib.dirs.user-storage}/Syncthing/${config.system.name}"; # ${config.xlib.devices.laptop.hostname}
           dataDir = "${config.xlib.dirs.user-home}";
           group = "users";
-          user = "${config.xlib.devices.admin}";
+          user = "${config.xlib.device.username}";
         };
         pipewire = {
           enable = lib.mkDefault true;

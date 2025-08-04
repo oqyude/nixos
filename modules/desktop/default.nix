@@ -32,10 +32,10 @@
       systemd-boot.enable = lib.mkForce false;
       grub = {
         enable = lib.mkForce true;
-        useOSProber = true;
+        device = "nodev";
         efiInstallAsRemovable = true;
         efiSupport = true;
-        device = "nodev";
+        useOSProber = true;
       };
       grub2-theme = {
         enable = true;
