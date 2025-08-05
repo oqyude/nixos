@@ -1,19 +1,26 @@
 {
   config,
+  lib,
+  pkgs,
   ...
 }:
 {
   services = {
     tailscale.enable = config.xlib.device.type != "wsl"; # true, if not wsl
+  };
   systemd = {
     services.rsync-archive = lib.mkIf (config.xlib.device.type == "server") {
       description = "Backup data using rsync";
       after = [ "network.target" ];
-      requiresMountsFor = [ config.xlib.dirs.archive-drive ];
+      requisite = [ "mnt-archive.mount" ]; # hard-code
       serviceConfig = {
         Type = "oneshot";
-        #ExecStartPre = "/bin/sh -c 'if ! mountpoint -q ${config.xlib.dirs.archive-drive}; then exit 1; fi'";
-        ExecStart = "${pkgs.rsync}/bin/rsync -av --delete ${config.xlib.dirs.immich-folder} ${config.xlib.dirs.archive-drive}/Services/immich";
+        User = "root";
+        Group = "root";
+        ExecStart = ''
+          ${pkgs.rsync}/bin/rsync -rtv --delete ${config.xlib.dirs.immich-folder}/ ${config.xlib.dirs.archive-drive}/Services/immich/
+          ${pkgs.rsync}/bin/rsync -rtv --delete ${config.xlib.dirs.nextcloud-folder}/ ${config.xlib.dirs.archive-drive}/Services/nextcloud/
+        '';
         Nice = 19;
         IOSchedulingClass = "idle";
       };
@@ -24,8 +31,8 @@
       timerConfig = {
         OnCalendar = "weekly";
         Persistent = true;
+        Unit = "rsync-archive.service";
       };
     };
-  };
   };
 }
