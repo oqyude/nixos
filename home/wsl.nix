@@ -47,5 +47,8 @@ in
         target = "${config.home.homeDirectory}/Music";
       };
     };
+    packages = with pkgs; [
+      gramps
+    ];
   };
 }

@@ -8,6 +8,7 @@
     ./essentials
     ./users.nix
     ./options.nix
+    ./temp.nix
     #(import ./options.nix { inherit lib inputs; }) # Options
 
     home-manager.nixosModules.home-manager # home-manager module
