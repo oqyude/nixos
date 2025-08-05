@@ -11,7 +11,7 @@
   systemd = {
     services.rsync-archive = lib.mkIf (config.xlib.device.type == "server") {
       description = "Backup data using rsync";
-      after = [ "network.target" ];
+      #after = [ ];
       requisite = [ "mnt-archive.mount" ]; # hard-code
       serviceConfig = {
         Type = "oneshot";
