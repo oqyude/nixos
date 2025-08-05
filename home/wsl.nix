@@ -7,12 +7,13 @@
 let
   # Paths
   beetsPath = "${xlib.dirs.wsl-storage}/beets/linux";
-  musicPath = "${config.home.homeDirectory}/External/Music";
   externalPath = "${xlib.dirs.wsl-home}";
+  musicPath = "${config.home.homeDirectory}/External/Music";
 in
 {
   imports = [
     ./minimal.nix
+    ./wsl-apps/gramps.nix
   ];
   xdg = {
     enable = true;
@@ -47,8 +48,5 @@ in
         target = "${config.home.homeDirectory}/Music";
       };
     };
-    packages = with pkgs; [
-      gramps
-    ];
   };
 }
