@@ -32,79 +32,98 @@
       dirs = {
         user-home = lib.mkOption {
           type = lib.types.str;
+          default = "/home/${config.xlib.device.username}";
           description = "User home directory.";
         };
         user-storage = lib.mkOption {
           type = lib.types.str;
+          default = "${config.xlib.dirs.user-home}/Storage";
           description = "User storage directory.";
+        };
+        archive-drive = lib.mkOption {
+          type = lib.types.str;
+          default = "/mnt/archive";
+          description = "Archive drive mount point.";
         };
         therima-drive = lib.mkOption {
           type = lib.types.str;
+          default = "/mnt/therima";
           description = "Therima drive mount point.";
         };
         vetymae-drive = lib.mkOption {
           type = lib.types.str;
+          default = "/mnt/vetymae";
           description = "Vetymae drive mount point.";
         };
         wsl-home = lib.mkOption {
           type = lib.types.str;
+          default = "/mnt/c/Users/${config.xlib.device.username}";
           description = "WSL home directory.";
         };
         wsl-storage = lib.mkOption {
           type = lib.types.str;
+          default = "${config.xlib.dirs.wsl-home}/Storage";
           description = "WSL storage directory.";
         };
         server-home = lib.mkOption {
           type = lib.types.str;
+          default = "/home/${config.xlib.device.username}/External";
           description = "Server home directory.";
         };
         server-credentials = lib.mkOption {
           type = lib.types.str;
+          default = "${config.xlib.dirs.server-home}/Credentials/server";
           description = "Server credentials directory.";
         };
         storage = lib.mkOption {
           type = lib.types.str;
+          default = "${config.xlib.dirs.server-home}/Storage";
           description = "General storage directory.";
         };
         calibre-library = lib.mkOption {
           type = lib.types.str;
+          default = "${config.xlib.dirs.server-home}/Books-Library";
           description = "Calibre library directory.";
         };
         music-library = lib.mkOption {
           type = lib.types.str;
+          default = "${config.xlib.dirs.user-home}/Music";
           description = "Music library directory.";
         };
         immich-folder = lib.mkOption {
           type = lib.types.str;
+          default = "${config.xlib.dirs.server-home}/Services/immich";
           description = "Immich service folder.";
         };
         nextcloud-folder = lib.mkOption {
           type = lib.types.str;
+          default = "${config.xlib.dirs.server-home}/Services/nextcloud";
           description = "Nextcloud service folder.";
         };
         postgresql-folder = lib.mkOption {
           type = lib.types.str;
+          default = "${config.xlib.dirs.server-home}/Services/postgresql";
           description = "PostgreSQL service folder.";
         };
       };
     };
   };
-  config = {
-    xlib.dirs = {
-      user-home = "/home/${config.xlib.device.username}";
-      user-storage = "${config.xlib.dirs.user-home}/Storage";
-      therima-drive = "/mnt/therima";
-      vetymae-drive = "/mnt/vetymae";
-      wsl-home = "/mnt/c/Users/${config.xlib.device.username}";
-      wsl-storage = "${config.xlib.dirs.wsl-home}/Storage";
-      server-home = "/home/${config.xlib.device.username}/External";
-      server-credentials = "${config.xlib.dirs.server-home}/Credentials/server";
-      storage = "${config.xlib.dirs.server-home}/Storage";
-      calibre-library = "${config.xlib.dirs.server-home}/Books-Library";
-      music-library = "${config.xlib.dirs.user-home}/Music";
-      immich-folder = "${config.xlib.dirs.server-home}/Services/immich";
-      nextcloud-folder = "${config.xlib.dirs.server-home}/Services/nextcloud";
-      postgresql-folder = "${config.xlib.dirs.server-home}/Services/postgresql";
-    };
-  };
+  # config = {
+  #   xlib.dirs = {
+  #     user-home = "/home/${config.xlib.device.username}";
+  #     user-storage = "${config.xlib.dirs.user-home}/Storage";
+  #     therima-drive = "/mnt/therima";
+  #     vetymae-drive = "/mnt/vetymae";
+  #     wsl-home = "/mnt/c/Users/${config.xlib.device.username}";
+  #     wsl-storage = "${config.xlib.dirs.wsl-home}/Storage";
+  #     server-home = "/home/${config.xlib.device.username}/External";
+  #     server-credentials = "${config.xlib.dirs.server-home}/Credentials/server";
+  #     storage = "${config.xlib.dirs.server-home}/Storage";
+  #     calibre-library = "${config.xlib.dirs.server-home}/Books-Library";
+  #     music-library = "${config.xlib.dirs.user-home}/Music";
+  #     immich-folder = "${config.xlib.dirs.server-home}/Services/immich";
+  #     nextcloud-folder = "${config.xlib.dirs.server-home}/Services/nextcloud";
+  #     postgresql-folder = "${config.xlib.dirs.server-home}/Services/postgresql";
+  #   };
+  # };
 }
