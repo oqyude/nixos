@@ -6,7 +6,8 @@
   ...
 }:
 let
-  depsOverlay = import ./dependencies.nix { # ./dependencies-full.nix if broken
+  depsOverlay = import ./dependencies.nix {
+    # ./dependencies-full.nix if broken
     inherit (pkgs) fetchurl fetchgit fetchhg;
     inherit pkgs;
   };
