@@ -1,20 +1,25 @@
 {
   config,
   pkgs,
+  xlib,
   ...
 }:
 let
-  grampsSource = "${xlib.dirs.wsl-storage}/gramps";
+  grampsPath = "${xlib.dirs.wsl-storage}/gramps";
 in
 {
   xdg = {
-    enable = true;
-    autostart.enable = true;
     configFile = {
-      # "gramps" = {
-      #   source = config.lib.file.mkOutOfStoreSymlink grampsPath;
-      #   target = "gramps";
-      # };
+      "grampsConfig" = {
+        source = config.lib.file.mkOutOfStoreSymlink grampsPath;
+        target = "gramps";
+      };
+    };
+    dataFile = {
+      "grampsData" = {
+        source = config.lib.file.mkOutOfStoreSymlink grampsPath;
+        target = "gramps";
+      };
     };
   };
   home.packages = [

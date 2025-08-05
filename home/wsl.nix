@@ -12,8 +12,8 @@ let
 in
 {
   imports = [
+    ./wsl-apps
     ./minimal.nix
-    ./wsl-apps/gramps.nix
   ];
   xdg = {
     enable = true;
