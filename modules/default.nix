@@ -14,7 +14,7 @@
     ./options.nix
     #./overlays.nix
     ./temp.nix
-    ../nixosModules/server
+    ../nixosModules/server.nix
 
     home-manager.nixosModules.home-manager # home-manager module
     nix-index-database.nixosModules.nix-index # nix-index module

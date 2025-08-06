@@ -5,6 +5,6 @@
 }:
 {
   imports = [
-    ./stirling-pdf.nix
+    ./server
   ];
 }
