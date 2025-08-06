@@ -94,42 +94,42 @@
       flakeContext = { inherit inputs; };
     in
     {
-      nixosModules = {
-        default = import ./modules/default.nix flakeContext;
-        desktop = import ./modules/desktop/default.nix flakeContext;
-        software = {
-          ai = import ./modules/software/ai.nix flakeContext;
-          beets = import ./modules/software/beets/default.nix flakeContext;
-          daw = import ./modules/software/daw.nix flakeContext;
-          virtual = import ./modules/software/virtual.nix flakeContext;
-          wine = import ./modules/software/wine.nix flakeContext;
-        };
-        extra = {
-          self = {
-            fingerprint = import ./modules/extra/self/fingerprint.nix flakeContext;
-            zapret = import ./modules/extra/self/zapret.nix flakeContext;
-          };
-          musnix = import ./modules/extra/musnix.nix flakeContext; # https://github.com/musnix/musnix
-          gaming = {
-            aagl = import ./modules/extra/gaming/aagl.nix flakeContext; # https://github.com/ezKEa/aagl-gtk-on-nix
-            nix-gaming = import ./modules/extra/gaming/nix-gaming.nix flakeContext; # https://github.com/fufexan/nix-gaming
-          };
-        };
-        server = {
-          cloudflared = import ./modules/server/cloudflared.nix flakeContext;
-          immich = import ./modules/server/immich.nix flakeContext;
-          nextcloud = import ./modules/server/nextcloud.nix flakeContext;
-          nginx = import ./modules/server/nginx.nix flakeContext;
-          open-webui = import ./modules/server/open-webui.nix flakeContext;
-          zerotier = import ./modules/server/zerotier.nix flakeContext;
-        };
-        vds = {
-          cloudflared = import ./modules/vds/cloudflared.nix flakeContext;
-          netbird = import ./modules/vds/netbird.nix flakeContext;
-          nginx = import ./modules/vds/nginx.nix flakeContext;
-          xray = import ./modules/vds/xray.nix flakeContext;
-        };
-      };
+      # nixosModules = {
+      #   default = import ./modules/default.nix flakeContext;
+      #   desktop = import ./modules/desktop/default.nix flakeContext;
+      #   software = {
+      #     ai = import ./modules/software/ai.nix flakeContext;
+      #     beets = import ./modules/software/beets/default.nix flakeContext;
+      #     daw = import ./modules/software/daw.nix flakeContext;
+      #     virtual = import ./modules/software/virtual.nix flakeContext;
+      #     wine = import ./modules/software/wine.nix flakeContext;
+      #   };
+      #   extra = {
+      #     self = {
+      #       fingerprint = import ./modules/extra/self/fingerprint.nix flakeContext;
+      #       zapret = import ./modules/extra/self/zapret.nix flakeContext;
+      #     };
+      #     musnix = import ./modules/extra/musnix.nix flakeContext; # https://github.com/musnix/musnix
+      #     gaming = {
+      #       aagl = import ./modules/extra/gaming/aagl.nix flakeContext; # https://github.com/ezKEa/aagl-gtk-on-nix
+      #       nix-gaming = import ./modules/extra/gaming/nix-gaming.nix flakeContext; # https://github.com/fufexan/nix-gaming
+      #     };
+      #   };
+      #   server = {
+      #     cloudflared = import ./modules/server/cloudflared.nix flakeContext;
+      #     immich = import ./modules/server/immich.nix flakeContext;
+      #     nextcloud = import ./modules/server/nextcloud.nix flakeContext;
+      #     nginx = import ./modules/server/nginx.nix flakeContext;
+      #     open-webui = import ./modules/server/open-webui.nix flakeContext;
+      #     zerotier = import ./modules/server/zerotier.nix flakeContext;
+      #   };
+      #   vds = {
+      #     cloudflared = import ./modules/vds/cloudflared.nix flakeContext;
+      #     netbird = import ./modules/vds/netbird.nix flakeContext;
+      #     nginx = import ./modules/vds/nginx.nix flakeContext;
+      #     xray = import ./modules/vds/xray.nix flakeContext;
+      #   };
+      # };
     }
     // (import ./homeConfigurations flakeContext)
     // (import ./nixosConfigurations flakeContext)

@@ -5,8 +5,11 @@
 }:
 {
   imports = [
-    ./stirling-pdf.nix
     #./cloudflared.nix
+    #./nextcloud.nix
+    ../software/beets
     ./immich.nix
+    ./nginx.nix
+    ./stirling-pdf.nix
   ];
 }
