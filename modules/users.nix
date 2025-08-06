@@ -1,5 +1,6 @@
 {
   config,
+  xlib,
   ...
 }:
 {
@@ -7,7 +8,7 @@
 
   users = {
     users = {
-      "${config.xlib.device.username}" = {
+      "${xlib.device.username}" = {
         isNormalUser = true;
         description = "Jor Oqyude";
         initialPassword = "1234";

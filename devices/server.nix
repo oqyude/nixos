@@ -14,10 +14,7 @@ let
       };
 
       imports = with inputs; [
-        sops-nix.nixosModules.sops
         ./hardware/server.nix
-        self.nixosModules.default
-        self.homeConfigurations.default.nixosModule
 
         self.nixosModules.server.immich
         self.nixosModules.server.nextcloud
@@ -221,6 +218,13 @@ in
 inputs.nixpkgs.lib.nixosSystem {
   modules = with inputs; [
     nixosModule
+
+    self.nixosModules.default
+    self.homeConfigurations.default.nixosModule
+    sops-nix.nixosModules.sops
   ];
   system = "x86_64-linux";
+  specialArgs = {
+    deviceType = "server";
+  };
 }

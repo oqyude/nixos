@@ -157,4 +157,7 @@ inputs.nixpkgs.lib.nixosSystem {
     nixosModule
   ];
   system = "x86_64-linux";
+  specialArgs = {
+    deviceType = "vds";
+  };
 }
