@@ -15,7 +15,10 @@
 #     version = "1.1.1";
 #   });
 # in
-lib.mkIf (config.xlib.device.type == "server") {
+
+# lib.mkIf (config.xlib.device.type == "server")
+
+{
   services.stirling-pdf = {
     enable = true;
     #package = customPackage;
