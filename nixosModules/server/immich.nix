@@ -2,12 +2,13 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 {
   services = {
     immich = {
-      #package = pkgs-src.immich;
+      package = inputs.self.packages.x86_64-linux.immich;
       enable = true;
       port = 2283;
       host = "0.0.0.0";

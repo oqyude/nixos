@@ -6,9 +6,9 @@
 {
   imports = [
     #./cloudflared.nix
-    #./nextcloud.nix
     ../software/beets
     ./immich.nix
+    ./nextcloud.nix
     ./nginx.nix
     ./stirling-pdf.nix
   ];
