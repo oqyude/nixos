@@ -10,6 +10,7 @@
     ./server
     ./users.nix
     ./options.nix
+    #./overlays.nix
     ./temp.nix
     #(lib.mkIf (config.xlib.device.type == "server") (import ./server { inherit inputs config lib pkgs ; }))
 
@@ -17,4 +18,5 @@
     nix-index-database.nixosModules.nix-index # nix-index module
   ];
   _module.args.inputs = inputs;
+  services.immich.package = lib.mkIf (config.xlib.device.type == "server") inputs.self.packages.x86_64-linux.immich;
 }

@@ -92,6 +92,7 @@
     inputs:
     let
       flakeContext = { inherit inputs; };
+      immich = import ./pkgs/immich; #{ inherit pkgs; };
     in
     {
       nixosConfigurations = {
@@ -142,5 +143,8 @@
       };
       # homeModules = {
       # };
+     packages."x86_64-linux" = {
+        immich = immich.package;
+      };
     };
 }

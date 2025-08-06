@@ -3,12 +3,13 @@
   config,
   lib,
   pkgs,
+  #pkgs-src,
   ...
 }:
 {
   services = {
     immich = {
-      #package = latest.immich;
+      #package = pkgs-src.immich;
       enable = true;
       port = 2283;
       host = "0.0.0.0";
