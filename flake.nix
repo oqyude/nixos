@@ -92,21 +92,11 @@
     inputs:
     let
       flakeContext = { inherit inputs; };
-      system = "x86_64-linux"; # Замени, если нужно
-      pkgs = import inputs.nixpkgs { inherit system; };
-      immich-s = import ./pkgs/immich/default.nix { inherit pkgs; };
+      # system = "x86_64-linux"; # Замени, если нужно
+      # pkgs = import inputs.nixpkgs { inherit system; };
+      # immich-s = import ./pkgs/immich/default.nix { inherit pkgs; };
     in
     {
-
-      #(import ./flake-part1.nix { inherit nixpkgs home-manager; system = "x86_64-linux"; })
-      # (import ./flake-part1.nix flakeContext)
-      # nixosConfigurations = {
-      #   atoridu = import ./devices/mini-pc.nix flakeContext; # atoridu
-      #   lamet = import ./devices/mini-laptop.nix flakeContext; # lamet
-      #   otreca = import ./devices/vds.nix flakeContext; # vds
-      #   sapphira = import ./devices/server.nix flakeContext; # sapphira
-      #   wsl = import ./devices/wsl.nix flakeContext; # wsl
-      # };
       nixosModules = {
         default = import ./modules/default.nix flakeContext;
         desktop = import ./modules/desktop/default.nix flakeContext;
@@ -148,9 +138,7 @@
       };
       # homeModules = {
       # };
-      packages."x86_64-linux" = {
-        immich = immich-s.package;
-      };
-    } // (import ./nixosConfigurations flakeContext);
+    } // (import ./nixosConfigurations flakeContext)
+     // (import ./pkgs flakeContext);
 }
 
