@@ -7,8 +7,10 @@
 { pkgs }:
 let
   sources = pkgs.lib.importJSON ./sources.json;
-in {
-  package = pkgs.callPackage ./package.nix {
+in 
+{
+  package = pkgs.callPackage ./package.nix
+  {
     # src = pkgs.fetchFromGitHub {
     #   owner = "immich-app";
     #   repo = "immich";
