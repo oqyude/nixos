@@ -1,9 +1,10 @@
+{...}@flakeContext:
 {
   nixosConfigurations = {
-    atoridu = import ./devices/mini-pc.nix flakeContext; # atoridu
-    lamet = import ./devices/mini-laptop.nix flakeContext; # lamet
-    otreca = import ./devices/vds.nix flakeContext; # vds
-    sapphira = import ./devices/server.nix flakeContext; # sapphira
-    wsl = import ./devices/wsl.nix flakeContext; # wsl
+    atoridu = import ./hosts/mini-pc.nix flakeContext; # atoridu
+    lamet = import ./hosts/mini-laptop.nix flakeContext; # lamet
+    otreca = import ./hosts/vds.nix flakeContext; # vds
+    sapphira = import ./hosts/server.nix flakeContext; # sapphira
+    wsl = import ./hosts/wsl.nix flakeContext; # wsl
   };
 }
