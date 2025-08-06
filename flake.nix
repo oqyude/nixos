@@ -145,7 +145,7 @@
       };
       # homeModules = {
       # };
-     packages."x86_64-linux" = {
+      packages."x86_64-linux" = {
         immich = immich-s.package;
       };
     };
