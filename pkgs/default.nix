@@ -1,11 +1,9 @@
-{ inputs, ...}@flakeContext:
+{ inputs, ... }@flakeContext:
 let
-  system = "x86_64-linux"; # Замени, если нужно
-  pkgs = import inputs.nixpkgs { inherit system; };
-  immich-s = import ./pkgs/immich/default.nix { inherit pkgs; };
+  pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
 in
 {
-      packages."x86_64-linux" = {
-        immich = immich-s.package;
-      };
+  packages."x86_64-linux" = {
+    immich = pkgs.callPackage ./immich/package.nix {};
+  };
 }

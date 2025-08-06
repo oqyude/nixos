@@ -92,9 +92,6 @@
     inputs:
     let
       flakeContext = { inherit inputs; };
-      # system = "x86_64-linux"; # Замени, если нужно
-      # pkgs = import inputs.nixpkgs { inherit system; };
-      # immich-s = import ./pkgs/immich/default.nix { inherit pkgs; };
     in
     {
       nixosModules = {
@@ -133,12 +130,8 @@
           xray = import ./modules/vds/xray.nix flakeContext;
         };
       };
-      homeConfigurations = {
-        default = import ./home/default.nix flakeContext;
-      };
-      # homeModules = {
-      # };
-    } // (import ./nixosConfigurations flakeContext)
-     // (import ./pkgs flakeContext);
+    }
+    // (import ./homeConfigurations flakeContext)
+    // (import ./nixosConfigurations flakeContext)
+    // (import ./pkgs flakeContext);
 }
-

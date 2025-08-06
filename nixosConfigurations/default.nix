@@ -1,4 +1,4 @@
-{...}@flakeContext:
+{ ... }@flakeContext:
 {
   nixosConfigurations = {
     atoridu = import ./hosts/mini-pc.nix flakeContext; # atoridu
