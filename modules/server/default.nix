@@ -4,7 +4,5 @@
   ...
 }:
 {
- config = lib.mkIf (config.xlib.device.type == "server") {
-    imports = [ ./stirling-pdf.nix ];
-  };
+  imports = [ ./stirling-pdf.nix ];
 }

@@ -9,7 +9,7 @@
 #     config.allowUnfree = true;
 #   }; # temp
 # in
-{
+lib.mkIf (config.xlib.device.type == "server") {
   services.stirling-pdf = {
     enable = true;
     environment = {
