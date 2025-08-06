@@ -1,4 +1,3 @@
-{ inputs, ... }@flakeContext:
 {
   config,
   lib,
@@ -8,7 +7,7 @@
 {
   services = {
     zerotierone = {
-      enable = enable;
+      enable = false;
       joinNetworks = [
         "db64858fedde087e"
       ];

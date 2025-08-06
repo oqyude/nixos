@@ -1,15 +1,18 @@
 {
-  config,
   lib,
   ...
 }:
 {
   imports = [
     #./cloudflared.nix
+    #./open-webui.nix
     ../software/beets
     ./immich.nix
+    ./mealie.nix
+    ./miniflux.nix
     ./nextcloud.nix
     ./nginx.nix
     ./stirling-pdf.nix
+    ./zerotier.nix
   ];
 }

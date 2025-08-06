@@ -1,6 +1,6 @@
-{ inputs, ... }@flakeContext:
 {
   config,
+  inputs,
   lib,
   pkgs,
   ...

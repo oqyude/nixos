@@ -14,20 +14,7 @@ let
         hostname = "otreca";
       };
 
-      imports =
-        with inputs;
-        [
-          (modulesPath + "/installer/scan/not-detected.nix")
-          (modulesPath + "/profiles/qemu-guest.nix")
-
-          ./disko/vds.nix
-          ./hardware/vds.nix
-          disko.nixosModules.disko
-
-          self.nixosModules.default
-          self.homeConfigurations.default.nixosModule
-        ]
-        ++ builtins.attrValues inputs.self.nixosModules.vds;
+      #imports = [];
 
       home-manager = {
         extraSpecialArgs = {
@@ -153,8 +140,18 @@ let
     };
 in
 inputs.nixpkgs.lib.nixosSystem {
-  modules = with inputs; [
+  modules = [
     nixosModule
+
+    (modulesPath + "/installer/scan/not-detected.nix")
+    (modulesPath + "/profiles/qemu-guest.nix")
+
+    ./disko/vds.nix
+    ./hardware/vds.nix
+    inputs.disko.nixosModules.disko
+
+    inputs.self.nixosModules.default
+    inputs.self.homeConfigurations.default.nixosModule
   ];
   system = "x86_64-linux";
   specialArgs = {

@@ -6,13 +6,13 @@
 {
   environment = {
     systemPackages = with pkgs; [
+      #qogir-kde
+      #qogir-theme
+      #whitesur-cursors
+      qogir-icon-theme
       whitesur-gtk-theme
       whitesur-icon-theme
-      #whitesur-cursors
       whitesur-kde
-      qogir-icon-theme
-      #qogir-theme
-      #qogir-kde
     ];
   };
 }
