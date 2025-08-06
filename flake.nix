@@ -133,5 +133,6 @@
     }
     // (import ./homeConfigurations flakeContext)
     // (import ./nixosConfigurations flakeContext)
+    // (import ./nixosModules flakeContext)
     // (import ./pkgs flakeContext);
 }

@@ -4,6 +4,6 @@ let
 in
 {
   packages."x86_64-linux" = {
-    immich = pkgs.callPackage ./immich/package.nix {};
+    immich = pkgs.callPackage ./immich/package.nix { };
   };
 }

@@ -1,9 +1,7 @@
-{ inputs, ... }@flakeContext:
 {
   config,
   lib,
   pkgs,
-  #pkgs-src,
   ...
 }:
 {

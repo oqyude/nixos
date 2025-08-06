@@ -13,7 +13,7 @@ let
         hostname = "sapphira";
       };
 
-      imports = with inputs; [
+      imports = [
         ./hardware/server.nix
 
         self.nixosModules.server.immich
