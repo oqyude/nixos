@@ -14,8 +14,14 @@ let
         hostname = "wsl";
       };
 
-      # imports = [
-      # ];
+      imports = [
+        nixosModule
+
+        inputs.nixos-wsl.nixosModules.default
+
+        inputs.self.homeConfigurations.default.nixosModule
+        inputs.self.nixosModules.default
+      ];
 
       home-manager = {
         extraSpecialArgs = {
@@ -66,12 +72,6 @@ let
 in
 inputs.nixpkgs.lib.nixosSystem {
   modules = [
-    nixosModule
-
-    inputs.nixos-wsl.nixosModules.default
-
-    inputs.self.homeConfigurations.default.nixosModule
-    inputs.self.nixosModules.default
   ];
   system = "x86_64-linux";
   specialArgs = {
