@@ -151,6 +151,6 @@
       packages."x86_64-linux" = {
         immich = immich-s.package;
       };
-    };
+    } // (import ./nixosConfigurations flakeContext);
 }
-// (import ./flake-part1.nix flakeContext)
+
