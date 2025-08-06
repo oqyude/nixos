@@ -20,6 +20,7 @@
       nixfmt-tree
       nvd
       nix-du
+      nix-prefetch-scripts
 
       # Lazy
       lazycli
