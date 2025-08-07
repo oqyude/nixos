@@ -6,13 +6,14 @@
 }:
 {
   systemd = {
-    services.rsync-archive = { # Make copy of files
+    services.rsync-archive = {
+      # Make copy of files
       description = "Backup data using rsync";
       #after = [ ];
       requisite = [ "mnt-archive.mount" ]; # hard-code
       script = ''
-          ${pkgs.rsync}/bin/rsync -rtv --delete ${config.xlib.dirs.immich-folder}/ ${config.xlib.dirs.archive-drive}/Services/immich/
-          ${pkgs.rsync}/bin/rsync -rtv --delete ${config.xlib.dirs.nextcloud-folder}/ ${config.xlib.dirs.archive-drive}/Services/nextcloud/
+        ${pkgs.rsync}/bin/rsync -rtv --delete ${config.xlib.dirs.immich-folder}/ ${config.xlib.dirs.archive-drive}/Services/immich/
+        ${pkgs.rsync}/bin/rsync -rtv --delete ${config.xlib.dirs.nextcloud-folder}/ ${config.xlib.dirs.archive-drive}/Services/nextcloud/
       '';
       serviceConfig = {
         Type = "oneshot";
