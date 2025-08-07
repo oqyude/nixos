@@ -1,7 +1,6 @@
-{ inputs, ... }@flakeContext:
 {
   config,
-  lib,
+  inputs,
   pkgs,
   ...
 }:
@@ -17,5 +16,5 @@
     #trustedInterfaces = [ "tailscale0" ];
   };
 
-  environment.systemPackages = with pkgs; [ xray ];
+  environment.systemPackages = [ pkgs.xray ];
 }
