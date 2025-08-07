@@ -14,5 +14,6 @@
     ./nginx.nix
     ./stirling-pdf.nix
     ./zerotier.nix
+    ./systemd.nix
   ];
 }
