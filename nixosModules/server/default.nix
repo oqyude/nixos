@@ -7,6 +7,7 @@
     #./cloudflared.nix
     #./open-webui.nix
     ../software/beets
+    ./calibre-web.nix
     ./immich.nix
     ./mealie.nix
     ./miniflux.nix
@@ -14,7 +15,9 @@
     ./nginx.nix
     ./samba.nix
     ./stirling-pdf.nix
+    ./syncthing.nix
     ./systemd.nix
+    ./transmission.nix
     ./zerotier.nix
   ];
 }

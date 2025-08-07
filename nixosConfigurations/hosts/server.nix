@@ -40,16 +40,6 @@ let
       #   { device = "/dev/disk/by-partlabel/disk-main-swap"; }
       # ];
 
-      users = {
-        users = {
-          "${config.xlib.device.username}" = {
-            openssh.authorizedKeys.keys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKduJia+unaQQdN6X5syaHvnpIutO+yZwvfiCP4qKQ/P root@sapphira"
-            ];
-          };
-        };
-      };
-
       fileSystems = {
         # External drive
         "${config.xlib.dirs.server-home}" = {
@@ -97,19 +87,6 @@ let
             SystemMaxUse=512M
           '';
         };
-        calibre-web = {
-          enable = true;
-          group = "users";
-          user = "${config.xlib.device.username}";
-          options = {
-            calibreLibrary = "${config.xlib.dirs.calibre-library}";
-            enableBookUploading = true;
-            enableKepubify = false;
-          };
-          listen.ip = "0.0.0.0";
-          listen.port = 8083;
-          openFirewall = true;
-        };
         openssh = {
           enable = true;
           allowSFTP = true;
@@ -124,32 +101,6 @@ let
             PermitRootLogin = "yes";
             UsePAM = true;
           };
-        };
-        transmission = {
-          enable = false;
-          credentialsFile = "${config.xlib.dirs.server-home}/server/transmission/settings.json";
-          openRPCPort = true;
-          package = pkgs.transmission_4;
-          user = "${config.xlib.device.username}";
-          group = "users";
-          settings = {
-            download-dir = "${config.xlib.dirs.server-home}/Downloads";
-            incomplete-dir = "${config.xlib.dirs.server-home}/Downloads/Temp";
-            incomplete-dir-enabled = true;
-            rpc-bind-address = "0.0.0.0";
-            rpc-port = 9091;
-            rpc-whitelist-enabled = false;
-            umask = 0;
-          };
-        };
-        syncthing = {
-          enable = true;
-          systemService = true;
-          guiAddress = "0.0.0.0:8384";
-          configDir = "${config.xlib.dirs.storage}/Syncthing/${config.xlib.device.hostname}";
-          dataDir = "${config.xlib.dirs.server-home}";
-          group = "users";
-          user = "${config.xlib.device.username}";
         };
       };
 
