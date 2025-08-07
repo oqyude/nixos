@@ -15,8 +15,6 @@ let
       };
 
       imports = [
-        nixosModule
-
         inputs.nixos-wsl.nixosModules.default
 
         inputs.self.homeConfigurations.default.nixosModule
@@ -72,6 +70,7 @@ let
 in
 inputs.nixpkgs.lib.nixosSystem {
   modules = [
+    nixosModule
   ];
   system = "x86_64-linux";
   specialArgs = {
