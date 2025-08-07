@@ -15,11 +15,6 @@ let
 
       imports = [
         ./hardware/server.nix
-
-        # self.nixosModules.server.immich
-        # self.nixosModules.server.nextcloud
-        # self.nixosModules.server.nginx
-        # self.nixosModules.software.beets
       ];
 
       home-manager = {
