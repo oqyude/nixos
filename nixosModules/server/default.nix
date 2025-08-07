@@ -12,8 +12,9 @@
     ./miniflux.nix
     ./nextcloud.nix
     ./nginx.nix
+    ./samba.nix
     ./stirling-pdf.nix
-    ./zerotier.nix
     ./systemd.nix
+    ./zerotier.nix
   ];
 }

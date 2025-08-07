@@ -19,8 +19,6 @@
         Type = "oneshot";
         User = "root";
         Group = "root";
-        # ExecStart = ''
-        # '';
         Nice = 19;
         IOSchedulingClass = "idle";
       };
