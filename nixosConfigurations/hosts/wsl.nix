@@ -17,6 +17,7 @@ let
 
       imports = [
         inputs.nixos-wsl.nixosModules.default
+        inputs.self.nixosModules.default
       ];
 
       #zramSwap.enable = true;
@@ -47,7 +48,6 @@ in
 inputs.nixpkgs.lib.nixosSystem {
   modules = [
     nixosModule
-    inputs.self.nixosModules.default
   ];
   system = "x86_64-linux";
   specialArgs = {
