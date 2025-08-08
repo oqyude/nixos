@@ -54,7 +54,6 @@ in
       vesktop
       gramps
       kdePackages.filelight
-      libreoffice-qt6
       localsend
       lollypop
       obsidian
@@ -62,8 +61,9 @@ in
       stretchly
       transmission_4-gtk
       vlc
-      normcap
-      zerotierone
+      #libreoffice-qt6
+      #normcap
+      #zerotierone
       #nextcloud-client
 
       # (handbrake.overrideAttrs (old: {
@@ -75,12 +75,12 @@ in
       # }))
 
       # Games
-      ludusavi
+      #ludusavi
       prismlauncher
-      lutris
+      #lutris
 
       # AI
-      lmstudio
+      #lmstudio
 
       # Libs
       #libsecret
