@@ -21,19 +21,7 @@ let
         ./hardware/mini-pc.nix
         ./hardware/logitech.nix
         self.nixosModules.default
-
-        #         self.nixosModules.software.wine
-        #         self.nixosModules.software.beets
-        #self.nixosModules.extra.self.fingerprint
-        # self.homeConfigurations.main.nixosModule
-        # self.homeConfigurations.root.nixosModule
       ];
-
-      home-manager = {
-        extraSpecialArgs = {
-          xlib = config.xlib;
-        };
-      };
 
       sops = {
         defaultSopsFile = ./secrets/example.yaml;
@@ -51,7 +39,6 @@ let
             "fmask=0007"
             "dmask=0007"
             "nofail"
-            #"x-systemd.device-timeout=0"
           ];
         };
         "${config.xlib.dirs.vetymae-drive}" = {
@@ -64,19 +51,6 @@ let
             "fmask=0007"
             "dmask=0007"
             "nofail"
-            #"x-systemd.device-timeout=0"
-          ];
-        };
-        "/mnt/beets/music" = {
-          device = "/home/${config.xlib.device.username}/Music"; # "${config.xlib.dirs.vetymae-drive}/Users/User/Music"
-          options = [
-            "bind"
-            #"uid=1000"
-            #"gid=1000"
-            "fmask=0077"
-            "dmask=0077"
-            "nofail"
-            #"x-systemd.device-timeout=0"
           ];
         };
       };

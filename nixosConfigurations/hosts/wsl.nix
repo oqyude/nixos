@@ -16,32 +16,7 @@ let
 
       imports = [
         inputs.nixos-wsl.nixosModules.default
-
-        inputs.self.homeConfigurations.default.nixosModule
-        inputs.self.nixosModules.default
       ];
-
-      home-manager = {
-        extraSpecialArgs = {
-          xlib = config.xlib;
-        };
-      };
-
-      fileSystems = {
-        # beets
-        "/mnt/beets/music" = {
-          device = "${config.xlib.dirs.wsl-home}/Music";
-          options = [
-            "bind"
-            "uid=1000"
-            "gid=1000"
-            "fmask=0007"
-            "dmask=0007"
-            "nofail"
-            "x-systemd.device-timeout=0"
-          ];
-        };
-      };
 
       #zramSwap.enable = true;
       services = {
@@ -71,6 +46,7 @@ in
 inputs.nixpkgs.lib.nixosSystem {
   modules = [
     nixosModule
+    inputs.self.nixosModules.default
   ];
   system = "x86_64-linux";
   specialArgs = {

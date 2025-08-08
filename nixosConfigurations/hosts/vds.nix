@@ -20,17 +20,9 @@ let
 
         ./disko/vds.nix
         ./hardware/vds.nix
-        inputs.disko.nixosModules.disko
 
         inputs.self.nixosModules.default
-        inputs.self.homeConfigurations.default.nixosModule
       ];
-
-      home-manager = {
-        extraSpecialArgs = {
-          xlib = config.xlib;
-        };
-      };
 
       boot = {
         kernelPackages = pkgs.linuxPackages_xanmod_stable;

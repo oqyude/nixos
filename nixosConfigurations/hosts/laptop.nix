@@ -15,27 +15,10 @@ let
         type = "primary";
       };
 
-      imports =
-        with inputs;
-        [
-          ./hardware/laptop.nix
-          ./hardware/logitech.nix
-          self.nixosModules.default
-          #nixos-hardware.nixosModules.asus-fa506ic
-
-          self.nixosModules.software.wine
-          self.nixosModules.software.beets
-          self.nixosModules.desktop
-          sops-nix.nixosModules.sops
-        ]
-        ++ builtins.attrValues inputs.self.nixosModules.extra.self;
-
-      home-manager = {
-        extraSpecialArgs = {
-          xlib = config.xlib;
-        };
-      };
-
+      imports = [
+        ./hardware/laptop.nix
+        ./hardware/logitech.nix
+      ];
       fileSystems = {
         "${config.xlib.dirs.therima-drive}" = {
           device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
@@ -59,18 +42,6 @@ let
             "gid=1000"
             "fmask=0007"
             "dmask=0007"
-            "nofail"
-            #"x-systemd.device-timeout=0"
-          ];
-        };
-        "/mnt/beets/music" = {
-          device = "/home/${config.xlib.device.username}/Music"; # "${config.xlib.dirs.vetymae-drive}/Users/User/Music"
-          options = [
-            "bind"
-            #"uid=1000"
-            #"gid=1000"
-            "fmask=0077"
-            "dmask=0077"
             "nofail"
             #"x-systemd.device-timeout=0"
           ];
@@ -189,6 +160,7 @@ in
 inputs.nixpkgs.lib.nixosSystem {
   modules = [
     nixosModule
+    inputs.self.nixosModules.default
   ];
   system = "x86_64-linux";
   specialArgs = {

@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  xlib,
   ...
 }:
 let
@@ -19,12 +20,12 @@ let
 in
 {
   systemd.tmpfiles.rules = [
-    "z /mnt/beets 0700 ${config.xlib.device.username} users -" # beets absolute paths
+    "z /mnt/beets 0700 ${xlib.device.username} users -" # beets absolute paths
   ];
 
   users = {
     users = {
-      "${config.xlib.device.username}" = {
+      "${xlib.device.username}" = {
         packages = [
           beetsEnv
           pkgs.mp3gain
@@ -33,5 +34,17 @@ in
         ];
       };
     };
+  };
+  fileSystems."/mnt/beets/music" = {
+    device = "/home/${xlib.device.username}/Music"; # "${xlib.dirs.vetymae-drive}/Users/User/Music"
+    options = [
+      "bind"
+      "uid=1000"
+      "gid=1000"
+      "fmask=0077"
+      "dmask=0077"
+      "nofail"
+      #"x-systemd.device-timeout=0"
+    ];
   };
 }

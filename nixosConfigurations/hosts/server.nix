@@ -17,12 +17,6 @@ let
         ./hardware/server.nix
       ];
 
-      home-manager = {
-        extraSpecialArgs = {
-          xlib = config.xlib;
-        };
-      };
-
       boot = {
         kernelPackages = pkgs.linuxPackages_xanmod_stable;
         hardwareScan = true;
@@ -47,7 +41,7 @@ let
           fsType = "ext4";
           options = [
             #"nofail"
-            "x-systemd.device-timeout=0"
+            #"x-systemd.device-timeout=0"
           ];
         };
         # Archive drive
@@ -56,22 +50,9 @@ let
           fsType = "exfat";
           options = [
             "nofail"
-            "x-systemd.device-timeout=0"
+            #"x-systemd.device-timeout=0"
             "uid=1000"
             "gid=1000"
-          ];
-        };
-        # beets
-        "/mnt/beets/music" = {
-          device = "${config.xlib.dirs.server-home}/Music";
-          options = [
-            "bind"
-            "uid=1000"
-            "gid=1000"
-            "fmask=0007"
-            "dmask=0007"
-            "nofail"
-            "x-systemd.device-timeout=0"
           ];
         };
       };
@@ -116,12 +97,10 @@ let
     };
 in
 inputs.nixpkgs.lib.nixosSystem {
-  modules = with inputs; [
+  modules = [
     nixosModule
 
-    self.nixosModules.default
-    self.homeConfigurations.default.nixosModule
-    sops-nix.nixosModules.sops
+    inputs.self.nixosModules.default
   ];
   system = "x86_64-linux";
   specialArgs = {
