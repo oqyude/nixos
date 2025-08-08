@@ -1,7 +1,7 @@
-{ inputs, ... }@flakeContext:
 {
   config,
   pkgs,
+  inputs,
   ...
 }:
 let

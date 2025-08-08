@@ -38,10 +38,6 @@
       };
     };
     dataFile = {
-      "PrismLauncher" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.vetymae-drive}/Games/PrismLauncher";
-        target = "PrismLauncher";
-      };
       "v2rayN" = {
         source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.user-storage}/v2rayN";
         target = "v2rayN";

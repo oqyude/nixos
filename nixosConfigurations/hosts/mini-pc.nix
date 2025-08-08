@@ -8,10 +8,11 @@ let
       config,
       lib,
       pkgs,
+      xlib,
       ...
     }:
     {
-      device = {
+      xlib.device = {
         type = "primary";
         hostname = "atoridu";
       };
@@ -21,8 +22,8 @@ let
         ./hardware/logitech.nix
         self.nixosModules.default
 
-#         self.nixosModules.software.wine
-#         self.nixosModules.software.beets
+        #         self.nixosModules.software.wine
+        #         self.nixosModules.software.beets
         #self.nixosModules.extra.self.fingerprint
         # self.homeConfigurations.main.nixosModule
         # self.homeConfigurations.root.nixosModule
