@@ -1,4 +1,4 @@
-{ ... }@flakeContext:
+{ inputs, ... }@flakeContext:
 let
   defaultModule =
     {
