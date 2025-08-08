@@ -2,10 +2,11 @@
   config,
   lib,
   pkgs,
+  xlib,
   ...
 }:
 {
   services = {
-    tailscale.enable = config.xlib.device.type != "wsl"; # true, if not wsl
+    tailscale.enable = xlib.device.type != "wsl"; # true, if not wsl
   };
 }

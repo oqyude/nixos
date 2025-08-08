@@ -6,6 +6,7 @@ let
       lib,
       pkgs,
       modulesPath,
+      xlib,
       ...
     }:
     {
@@ -30,14 +31,14 @@ let
 
       networking = {
         firewall.enable = false;
-        hostName = config.xlib.device.hostname;
+        hostName = xlib.device.hostname;
       };
 
       wsl = {
         enable = true;
         startMenuLaunchers = true;
         #useWindowsDriver = true;
-        defaultUser = config.xlib.device.username;
+        defaultUser = xlib.device.username;
       };
 
       system.stateVersion = "24.11";

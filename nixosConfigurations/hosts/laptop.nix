@@ -8,6 +8,7 @@ let
       config,
       lib,
       pkgs,
+      xlib,
       ...
     }:
     {
@@ -20,7 +21,7 @@ let
         ./hardware/logitech.nix
       ];
       fileSystems = {
-        "${config.xlib.dirs.therima-drive}" = {
+        "${xlib.dirs.therima-drive}" = {
           device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
           fsType = "ntfs3";
           options = [
@@ -33,7 +34,7 @@ let
             #"x-systemd.device-timeout=0"
           ];
         };
-        "${config.xlib.dirs.vetymae-drive}" = {
+        "${xlib.dirs.vetymae-drive}" = {
           device = "/dev/disk/by-uuid/6E04EA7F04EA49A3";
           fsType = "ntfs3";
           options = [
@@ -85,7 +86,7 @@ let
       # networking.firewall.allowedTCPPorts = [ ... ];
       # networking.firewall.allowedUDPPorts = [ ... ];
       networking = {
-        hostName = "${config.xlib.device.hostname}";
+        hostName = "${xlib.device.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
       };
@@ -114,10 +115,10 @@ let
         syncthing = {
           enable = true;
           systemService = true;
-          configDir = "${config.xlib.dirs.user-storage}/Syncthing/${config.system.name}";
-          dataDir = "${config.xlib.dirs.user-home}";
+          configDir = "${xlib.dirs.user-storage}/Syncthing/${config.system.name}";
+          dataDir = "${xlib.dirs.user-home}";
           group = "users";
-          user = "${config.xlib.device.username}";
+          user = "${xlib.device.username}";
         };
         pipewire = {
           enable = lib.mkDefault true;

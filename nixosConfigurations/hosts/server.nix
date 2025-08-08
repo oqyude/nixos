@@ -5,6 +5,7 @@ let
       config,
       lib,
       pkgs,
+      xlib,
       ...
     }:
     {
@@ -36,7 +37,7 @@ let
 
       fileSystems = {
         # External drive
-        "${config.xlib.dirs.server-home}" = {
+        "${xlib.dirs.server-home}" = {
           device = "/dev/disk/by-uuid/37e53ebc-5343-a94d-9fe2-0ca39e13a8de";
           fsType = "ext4";
           #           options = [
@@ -86,7 +87,7 @@ let
       };
 
       networking = {
-        hostName = "${config.xlib.device.hostname}";
+        hostName = "${xlib.device.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
       };

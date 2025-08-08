@@ -1,5 +1,6 @@
 {
   config,
+  xlib,
   ...
 }:
 {
@@ -7,9 +8,9 @@
     enable = true;
     systemService = true;
     guiAddress = "0.0.0.0:8384";
-    configDir = "${config.xlib.dirs.storage}/Syncthing/${config.xlib.device.hostname}";
-    dataDir = "${config.xlib.dirs.server-home}";
+    configDir = "${xlib.dirs.storage}/Syncthing/${xlib.device.hostname}";
+    dataDir = "${xlib.dirs.server-home}";
     group = "users";
-    user = "${config.xlib.device.username}";
+    user = "${xlib.device.username}";
   };
 }

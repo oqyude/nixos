@@ -1,14 +1,15 @@
 {
   config,
+  xlib,
   ...
 }:
 {
   services.calibre-web = {
     enable = true;
     group = "users";
-    user = "${config.xlib.device.username}";
+    user = "${xlib.device.username}";
     options = {
-      calibreLibrary = "${config.xlib.dirs.calibre-library}";
+      calibreLibrary = "${xlib.dirs.calibre-library}";
       enableBookUploading = true;
       enableKepubify = false;
     };

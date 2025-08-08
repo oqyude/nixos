@@ -3,6 +3,7 @@
   lib,
   pkgs,
   inputs,
+  xlib,
   ...
 }:
 {
@@ -20,7 +21,7 @@
   };
 
   fileSystems."${config.services.immich.mediaLocation}" = {
-    device = "${config.xlib.dirs.immich-folder}";
+    device = "${xlib.dirs.immich-folder}";
     options = [
       "bind"
       #"uid=1000"

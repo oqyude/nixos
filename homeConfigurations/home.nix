@@ -39,12 +39,12 @@ let
       };
     };
   nixosModule =
-    { config, ... }:
+    { xlib, ... }:
     {
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
-        users."${config.xlib.device.username}" = homeModule;
+        users."${xlib.device.username}" = homeModule;
         users.root = rootModule;
         sharedModules = [ inputs.plasma-manager.homeManagerModules.plasma-manager ];
       };

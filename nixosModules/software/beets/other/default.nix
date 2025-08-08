@@ -1,8 +1,8 @@
-{ inputs, ... }@flakeContext:
 {
   config,
   lib,
   pkgs,
+  xlib,
   ...
 }:
 let
@@ -38,12 +38,12 @@ let
 in
 {
   systemd.tmpfiles.rules = [
-    "z /mnt/beets 0700 ${config.xlib.device.username} users -" # beets absolute paths
+    "z /mnt/beets 0700 ${xlib.device.username} users -" # beets absolute paths
   ];
 
   users = {
     users = {
-      "${config.xlib.device.username}" = {
+      "${xlib.device.username}" = {
         packages = [
           beetsEnv
           pkgs.beets

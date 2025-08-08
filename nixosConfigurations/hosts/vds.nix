@@ -6,6 +6,7 @@ let
       lib,
       modulesPath,
       pkgs,
+      xlib,
       ...
     }:
     {
@@ -59,19 +60,19 @@ let
               "path" = "/etc/nixos";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${config.xlib.device.username}";
+              "valid users" = "${xlib.device.username}";
               "guest ok" = "no";
               "writable" = "yes";
               "create mask" = 755;
               "directory mask" = 755;
-              "force user" = "${config.xlib.device.username}";
+              "force user" = "${xlib.device.username}";
               "force group" = "users";
             };
             root = {
               "path" = "/";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${config.xlib.device.username}";
+              "valid users" = "${xlib.device.username}";
               "guest ok" = "no";
               "writable" = "yes";
               #"create mask" = 0644;
@@ -79,16 +80,16 @@ let
               "force user" = "root";
               "force group" = "root";
             };
-            "${config.xlib.device.username}" = {
-              "path" = "/home/${config.xlib.device.username}";
+            "${xlib.device.username}" = {
+              "path" = "/home/${xlib.device.username}";
               "browseable" = "yes";
               "read only" = "no";
-              "valid users" = "${config.xlib.device.username}";
+              "valid users" = "${xlib.device.username}";
               "guest ok" = "no";
               "writable" = "yes";
               "create mask" = 700;
               "directory mask" = 700;
-              "force user" = "${config.xlib.device.username}";
+              "force user" = "${xlib.device.username}";
               "force group" = "users";
             };
           };
@@ -116,7 +117,7 @@ let
       };
 
       networking = {
-        hostName = "${config.xlib.device.hostname}";
+        hostName = "${xlib.device.hostname}";
         networkmanager.enable = true;
         firewall.enable = true;
       };

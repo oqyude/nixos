@@ -3,6 +3,7 @@
   lib,
   pkgs,
   inputs,
+  xlib,
   ...
 }:
 {
@@ -76,7 +77,7 @@
   };
 
   fileSystems."/mnt/nextcloud" = {
-    device = "${config.xlib.dirs.nextcloud-folder}";
+    device = "${xlib.dirs.nextcloud-folder}";
     options = [
       "bind"
       #"uid=1000"
