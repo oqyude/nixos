@@ -38,6 +38,6 @@ let
 in
 {
   nixosModules = {
-    default = defaultModule; # import ./base.nix flakeContext;
+    default = defaultModule;
   };
 }
