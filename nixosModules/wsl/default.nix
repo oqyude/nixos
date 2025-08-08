@@ -6,6 +6,6 @@
 {
   imports = [
     ../software/beets
-    ../server/open-webui.nix
+    #../server/open-webui.nix
   ];
 }
