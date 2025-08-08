@@ -39,7 +39,7 @@ let
         enable = true;
         startMenuLaunchers = true;
         #useWindowsDriver = true;
-        defaultUser = xlib.device.username;
+        defaultUser = config.xlib.device.username;
       };
 
       system.stateVersion = "24.11";
