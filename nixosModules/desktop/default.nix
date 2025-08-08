@@ -2,14 +2,12 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }:
 {
   imports = [
     ./environment
     ./theming.nix
-    inputs.grub2-themes.nixosModules.default # grub2 themes module
   ];
 
   boot = {

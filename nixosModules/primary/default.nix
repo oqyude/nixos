@@ -1,10 +1,9 @@
 {
-  config,
   lib,
   ...
 }:
 {
   imports = [
-    ./desktop
+    ../desktop
   ];
 }

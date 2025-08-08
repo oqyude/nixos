@@ -16,6 +16,9 @@
 
     home-manager.nixosModules.home-manager # home-manager module
     nix-index-database.nixosModules.nix-index # nix-index module
+    grub2-themes.nixosModules.default # grub2 themes module
+    sops-nix.nixosModules.sops
+    self.homeConfigurations.default.nixosModule
   ];
   _module.args = {
     inputs = inputs;
