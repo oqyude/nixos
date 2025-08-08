@@ -16,6 +16,7 @@ let
 
       imports = [
         ./hardware/server.nix
+        inputs.self.nixosModules.default
       ];
 
       boot = {
@@ -100,8 +101,6 @@ in
 inputs.nixpkgs.lib.nixosSystem {
   modules = [
     nixosModule
-
-    inputs.self.nixosModules.default
   ];
   system = "x86_64-linux";
   specialArgs = {
