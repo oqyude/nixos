@@ -30,6 +30,12 @@ let
         earlyoom.enable = true;
       };
 
+      hardware = {
+        graphics.enable = true;
+        amdgpu.opencl.enable = true;
+        amdgpu.amdvlk.enable = true;
+      };
+
       networking = {
         firewall.enable = false;
         hostName = xlib.device.hostname;
