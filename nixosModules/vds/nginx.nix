@@ -9,7 +9,7 @@ in
 {
   services = {
     nginx = {
-      enable = true;
+      enable = false;
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       recommendedProxySettings = true;
@@ -50,38 +50,38 @@ in
         # };
       };
     };
-    blocky = {
-      enable = true;
-      settings = {
-        ports.dns = 53; # Port for incoming DNS Queries.
-        upstreams.groups.default = [
-          "https://dns.quad9.net/dns-query" # Using Cloudflare's DNS over HTTPS server for resolving queries.
-        ];
-        # For initially solving DoH/DoT Requests when no system Resolver is available.
-        bootstrapDns = {
-          upstream = "https://dns.quad9.net/dns-query";
-          ips = [ "9.9.9.9" ];
-        };
-        # Custom DNS entries
-        customDNS = {
-          mapping = {
-            "immich.zeroq.ru" = "100.90.0.0";
-          };
-        };
-      };
-    };
+    # blocky = {
+    #   enable = true;
+    #   settings = {
+    #     ports.dns = 53; # Port for incoming DNS Queries.
+    #     upstreams.groups.default = [
+    #       "https://dns.quad9.net/dns-query" # Using Cloudflare's DNS over HTTPS server for resolving queries.
+    #     ];
+    #     # For initially solving DoH/DoT Requests when no system Resolver is available.
+    #     bootstrapDns = {
+    #       upstream = "https://dns.quad9.net/dns-query";
+    #       ips = [ "9.9.9.9" ];
+    #     };
+    #     # Custom DNS entries
+    #     customDNS = {
+    #       mapping = {
+    #         "immich.zeroq.ru" = "100.90.0.0";
+    #       };
+    #     };
+    #   };
+    # };
   };
-  security.acme = {
-    acceptTerms = true;
-    defaults.email = "go.bin043120@gmail.com";
-    certs."immich.zeroq.ru" = {
-      email = "go.bin043120@gmail.com";
-      dnsProvider = "cloudflare";
-      dnsResolver = "1.1.1.1";
-      environmentFile = "${inputs.zeroq-credentials}/accounts/cloudflare.txt";
-      webroot = null; # Required in my case
-    };
-  };
+  # security.acme = {
+  #   acceptTerms = true;
+  #   defaults.email = "go.bin043120@gmail.com";
+  #   certs."immich.zeroq.ru" = {
+  #     email = "go.bin043120@gmail.com";
+  #     dnsProvider = "cloudflare";
+  #     dnsResolver = "1.1.1.1";
+  #     environmentFile = "${inputs.zeroq-credentials}/accounts/cloudflare.txt";
+  #     webroot = null; # Required in my case
+  #   };
+  # };
   networking.firewall.allowedTCPPorts = [
     80
     443
