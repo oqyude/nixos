@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   ...
 }:
 let
@@ -16,29 +17,22 @@ in
       virtualHosts = {
         "immich.zeroq.ru" = {
           # 31.57.105.253
-          addSSL = true;
+          forceSSL = true;
           enableACME = true;
           locations."/" = {
             proxyPass = "http://${server}:2283"; # Порт Immich
             proxyWebsockets = true; # Если Immich использует WebSockets
           };
-          locations."/.well-known/acme-challenge/" = {
-            root = "/var/lib/acme/acme-challenge";
-            tryFiles = "$uri $uri/ =404";
-          };
         };
-        "nextcloud.zeroq.ru" = {
-          addSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:10000"; # Порт Nextcloud
-            proxyWebsockets = true;
-          };
-          locations."/.well-known/acme-challenge/" = {
-            root = "/var/lib/acme/acme-challenge";
-            tryFiles = "$uri $uri/ =404";
-          };
-        };
+        # "nextcloud.zeroq.ru" = {
+        #   addSSL = true;
+        #   forceSSL = false;
+        #   enableACME = false;
+        #   locations."/" = {
+        #     proxyPass = "http://${server}:10000"; # Порт Nextcloud
+        #     proxyWebsockets = true;
+        #   };
+        # };
         # "llm.zeroq.ru" = {
         #   addSSL = true;
         #   enableACME = true;
@@ -52,7 +46,14 @@ in
   };
   security.acme = {
     acceptTerms = true;
-    defaults.email = "oqyude@gmail.com";
+    defaults.email = "go.bin043120@gmail.com";
+    certs."immich.zeroq.ru" = {
+      email = "oqyude@gmail.com";
+      dnsProvider = "cloudflare";
+      dnsResolver = "1.1.1.1";
+      environmentFile = "${inputs.zeroq-credentials}/accounts/cloudflare.txt";
+      #webroot = null; # Required in my case
+    };
   };
   networking.firewall.allowedTCPPorts = [
     80
