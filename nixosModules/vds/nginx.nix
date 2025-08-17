@@ -12,6 +12,7 @@
       recommendedTlsSettings = true;
       virtualHosts = {
         "immich.zeroq.ru" = {
+          # 31.57.105.253
           forceSSL = true;
           enableACME = true;
           locations."/" = {
@@ -19,14 +20,14 @@
             proxyWebsockets = true; # Если Immich использует WebSockets
           };
         };
-        #         "nextcloud.zeroq.ru" = {
-        #           forceSSL = true;
-        #           enableACME = true;
-        #           locations."/" = {
-        #             proxyPass = "http://sapphira.laxta-platy.ts.net:10000"; # Порт Nextcloud
-        #             proxyWebsockets = true;
-        #           };
-        #         };
+        "nextcloud.zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://sapphira.laxta-platy.ts.net:10000"; # Порт Nextcloud
+            proxyWebsockets = true;
+          };
+        };
         "llm.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
@@ -45,6 +46,8 @@
   networking.firewall.allowedTCPPorts = [
     #44443
     #44444
+    2283
+    10000
     80
     443
   ];
