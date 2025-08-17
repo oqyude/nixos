@@ -17,6 +17,13 @@ in
       virtualHosts = {
         "immich.zeroq.ru" = {
           # 31.57.105.253
+          listen = [
+            {
+              addr = "0.0.0.0";
+              port = 8443;
+              ssl = true;
+            }
+          ];
           forceSSL = true;
           enableACME = true;
           locations."/" = {
@@ -48,11 +55,11 @@ in
     acceptTerms = true;
     defaults.email = "go.bin043120@gmail.com";
     certs."immich.zeroq.ru" = {
-      email = "oqyude@gmail.com";
+      email = "go.bin043120@gmail.com";
       dnsProvider = "cloudflare";
       dnsResolver = "1.1.1.1";
       environmentFile = "${inputs.zeroq-credentials}/accounts/cloudflare.txt";
-      #webroot = null; # Required in my case
+      webroot = null; # Required in my case
     };
   };
   networking.firewall.allowedTCPPorts = [
