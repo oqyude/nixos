@@ -47,10 +47,8 @@ in
     defaults.email = "oqyude@gmail.com";
   };
   networking.firewall.allowedTCPPorts = [
-    #44443
-    #44444
-    2283
-    10000
+    # 2283
+    # 10000
     80
     443
   ];
