@@ -36,6 +36,9 @@ let
         amdgpu.amdvlk.enable = true;
       };
 
+      nixpkgs.config.rocmSupport = true;
+      nixpkgs.config.cudaSupport = false;
+
       networking = {
         firewall.enable = false;
         hostName = xlib.device.hostname;
