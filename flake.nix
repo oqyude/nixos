@@ -9,7 +9,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-last-unstable.url = "github:NixOS/nixpkgs/6b4955211758ba47fac850c040a27f23b9b4008f"; # 6027c30c8e9810896b92429f0092f624f7b1aace
     #nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    #nixpkgs-master.url = "github:NixOS/nixpkgs/master"; # e63467437ce61d8d9a36e09254e8d07b472da0c6 # 72353fc1fa61189fb76133d50c519e871c858c39 # 5b38c7435fb1112a8b36b1652286996a7998c5b5
+    nixpkgs-master.url = "github:NixOS/nixpkgs/master"; # e63467437ce61d8d9a36e09254e8d07b472da0c6 # 72353fc1fa61189fb76133d50c519e871c858c39 # 5b38c7435fb1112a8b36b1652286996a7998c5b5
     #nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
     #nixpkgs-fingerprint.url = "github:NixOS/nixpkgs/nixos-24.11";
     #nixos.url = "github:NixOS/nixpkgs/nixos-unstable";
