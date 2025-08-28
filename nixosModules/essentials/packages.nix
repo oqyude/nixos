@@ -42,6 +42,10 @@
       wget
       tree
 
+      # Net Diagnostic
+      mtr
+      dnsutils
+
       # Monitoring
       smartmontools
 
