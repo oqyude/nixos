@@ -7,7 +7,7 @@
 
   nix = {
     channel = {
-      enable = false;
+      enable = true;
     };
     settings = {
       substituters = [
