@@ -9,6 +9,7 @@ let
       ...
     }:
     {
+
       imports = [
         (./. + "/${xlib.device.type}.nix")
       ];
@@ -47,6 +48,7 @@ let
         users."${xlib.device.username}" = homeModule;
         users.root = rootModule;
         sharedModules = [ inputs.plasma-manager.homeManagerModules.plasma-manager ];
+        extraSpecialArgs = { inherit inputs; };
       };
     };
 in

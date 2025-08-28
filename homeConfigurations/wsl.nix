@@ -2,6 +2,7 @@
   config,
   pkgs,
   xlib,
+  inputs,
   ...
 }:
 let

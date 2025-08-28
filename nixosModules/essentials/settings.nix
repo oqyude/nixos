@@ -14,7 +14,7 @@
         "https://cache.nixos.org"
         "https://nix-community.cachix.org"
         "https://nixos-cache-proxy.cofob.dev" # https://gist.github.com/cofob/9b1fd205e6d961a45c225ae9f0af1394
-        "https://nixos.snix.store" # https://nixos.snix.store/
+        #"https://nixos.snix.store" # https://nixos.snix.store/
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
