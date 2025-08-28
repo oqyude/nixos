@@ -23,7 +23,6 @@
       experimental-features = [
         "flakes"
         "nix-command"
-        "repl-flake"
       ];
     };
   };
