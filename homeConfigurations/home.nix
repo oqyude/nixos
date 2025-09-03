@@ -47,7 +47,7 @@ let
         useUserPackages = true;
         users."${xlib.device.username}" = homeModule;
         users.root = rootModule;
-        sharedModules = [ inputs.plasma-manager.homeManagerModules.plasma-manager ];
+        sharedModules = [ inputs.plasma-manager.homeModules.plasma-manager ];
         extraSpecialArgs = { inherit inputs; };
       };
     };
