@@ -18,6 +18,11 @@
       enable = true;
       theme = "robbyrussell";
     };
+    shellInit = ''
+      beetn() {
+        echo "$*" | aichat -cer beets
+      }
+    '';
     shellAliases = {
       # shell
       ff = "clear && fastfetch";
