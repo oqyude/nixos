@@ -6,13 +6,13 @@
   xlib,
   ...
 }:
-let
-  pkgsn = import inputs.nixpkgs-master { system = "x86_64-linux"; };
-in
+# let
+#   pkgsn = import inputs.nixpkgs-master { system = "x86_64-linux"; };
+# in
 {
   services = {
     immich = {
-      package = pkgsn.immich; # inputs.self.packages.x86_64-linux.immich;
+      #package = pkgsn.immich; # inputs.self.packages.x86_64-linux.immich;
       enable = true;
       port = 2283;
       host = "0.0.0.0";
