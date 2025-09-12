@@ -9,7 +9,7 @@ in
 {
   services = {
     nginx = {
-      enable = false;
+      enable = true;
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       recommendedProxySettings = true;
@@ -71,17 +71,17 @@ in
     #   };
     # };
   };
-  # security.acme = {
-  #   acceptTerms = true;
-  #   defaults.email = "go.bin043120@gmail.com";
-  #   certs."immich.zeroq.ru" = {
-  #     email = "go.bin043120@gmail.com";
-  #     dnsProvider = "cloudflare";
-  #     dnsResolver = "1.1.1.1";
-  #     environmentFile = "${inputs.zeroq-credentials}/accounts/cloudflare.txt";
-  #     webroot = null; # Required in my case
-  #   };
-  # };
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = "oqyude@gmail.com";
+    # certs."immich.zeroq.ru" = {
+    #   email = "go.bin043120@gmail.com";
+    #   dnsProvider = "cloudflare";
+    #   dnsResolver = "1.1.1.1";
+    #   environmentFile = "${inputs.zeroq-credentials}/accounts/cloudflare.txt";
+    #   webroot = null; # Required in my case
+    # };
+  };
   networking.firewall.allowedTCPPorts = [
     80
     443
