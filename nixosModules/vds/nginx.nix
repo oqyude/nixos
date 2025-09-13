@@ -9,10 +9,6 @@ in
 {
   users.users.nginx.extraGroups = [ "acme" ];
   services = {
-    certbot = {
-      enable = true;
-      agreeTerms = true;
-    };
     nginx = {
       enable = true;
       recommendedGzipSettings = true;
@@ -21,6 +17,7 @@ in
       recommendedTlsSettings = true;
       virtualHosts = {
         "immich.zeroq.ru" = {
+          root = "/www/immich";
           # 31.57.105.253
           listen = [
             {
