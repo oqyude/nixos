@@ -26,6 +26,7 @@
       lazycli
       lazysql
       lazyjournal
+      systemctl-tui
 
       # Base
       curl
