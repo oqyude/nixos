@@ -7,7 +7,12 @@ let
   server = "100.64.0.0";
 in
 {
+  users.users.nginx.extraGroups = [ "acme" ];
   services = {
+    certbot = {
+      enable = true;
+      agreeTerms = true;
+    };
     nginx = {
       enable = true;
       recommendedGzipSettings = true;
@@ -20,16 +25,26 @@ in
           listen = [
             {
               addr = "0.0.0.0";
-              port = 8443;
+              port = 80;
+            }
+            {
+              addr = "0.0.0.0";
+              port = 443;
               ssl = true;
             }
           ];
-          forceSSL = true;
+          #forceSSL = true;
+          addSSL = true;
           enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:2283"; # Порт Immich
-            proxyWebsockets = true; # Если Immich использует WebSockets
+          locations = {
+            "/" = {
+              proxyPass = "http://${server}:2283"; # Порт Immich
+              proxyWebsockets = true; # Если Immich использует WebSockets
+            };
           };
+          # locations."/.well-known/acme-challenge" = {
+          #   root = "/var/www/acme/acme-challenge";
+          # };
         };
         # "nextcloud.zeroq.ru" = {
         #   addSSL = true;
@@ -73,7 +88,13 @@ in
   };
   security.acme = {
     acceptTerms = true;
-    defaults.email = "oqyude@gmail.com";
+    defaults = {
+      email = "oqyude@gmail.com";
+      webroot = "/var/lib/acme/acme-challenge";
+      group = config.services.nginx.group;
+      server = "https://acme-staging-v02.api.letsencrypt.org/directory";
+      #listenHTTP = ":1360";
+    };
     # certs."immich.zeroq.ru" = {
     #   email = "go.bin043120@gmail.com";
     #   dnsProvider = "cloudflare";
