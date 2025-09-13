@@ -17,7 +17,6 @@ in
       recommendedTlsSettings = true;
       virtualHosts = {
         "immich.zeroq.ru" = {
-          root = "/www/immich";
           # 31.57.105.253
           listen = [
             {
@@ -87,9 +86,9 @@ in
     acceptTerms = true;
     defaults = {
       email = "oqyude@gmail.com";
-      webroot = "/var/lib/acme/acme-challenge";
-      group = config.services.nginx.group;
-      server = "https://acme-staging-v02.api.letsencrypt.org/directory";
+      #webroot = "/var/lib/acme/acme-challenge";
+      #group = config.services.nginx.group;
+      #server = "https://acme-staging-v02.api.letsencrypt.org/directory";
       #listenHTTP = ":1360";
     };
     # certs."immich.zeroq.ru" = {
