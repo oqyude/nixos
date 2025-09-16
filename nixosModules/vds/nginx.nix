@@ -37,6 +37,9 @@ in
               proxyWebsockets = true; # Если Immich использует WebSockets
             };
           };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
         };
         "nextcloud.zeroq.ru" = {
           forceSSL = true;
@@ -45,6 +48,9 @@ in
             proxyPass = "http://${server}:10000"; # Порт Nextcloud
             proxyWebsockets = true;
           };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
         };
         "flux.zeroq.ru" = {
           forceSSL = true;
@@ -53,6 +59,9 @@ in
             proxyPass = "http://${server}:6061"; # Порт Nextcloud
             proxyWebsockets = true;
           };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
         };
         "calibre.zeroq.ru" = {
           forceSSL = true;
@@ -61,6 +70,9 @@ in
             proxyPass = "http://${server}:8083"; # Порт Nextcloud
             proxyWebsockets = true;
           };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
         };
         "pdf.zeroq.ru" = {
           forceSSL = true;
@@ -69,6 +81,9 @@ in
             proxyPass = "http://${server}:6060"; # Порт Nextcloud
             proxyWebsockets = true;
           };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
         };
         # "llm.zeroq.ru" = {
         #   addSSL = true;
@@ -79,9 +94,6 @@ in
         #   };
         # };
       };
-      extraConfig = ''
-        client_max_body_size 5G;
-      '';
     };
     # blocky = {
     #   enable = true;
