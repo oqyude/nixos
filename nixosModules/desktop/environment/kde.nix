@@ -5,11 +5,11 @@
   ...
 }:
 {
-  qt = {
-    enable = true;
-    style = "breeze";
-    platformTheme = "kde6"; # kde6
-  };
+  # qt = {
+  #   enable = true;
+  #   style = "breeze";
+  #   platformTheme = "kde6"; # kde6
+  # };
   environment.plasma6.excludePackages = with pkgs; [
     kdePackages.plasma-browser-integration
     kdePackages.elisa
