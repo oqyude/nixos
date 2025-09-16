@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  xlib,
+  ...
+}:
 {
   systemd.services.zapret = {
     enable = true;
