@@ -65,7 +65,7 @@
         target = "External";
       };
       "LM Studio" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.vetymae-drive}/AI/LM Studio";
+        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.soptur-drive}/AI/LM Studio";
         target = ".lmstudio";
       };
     };

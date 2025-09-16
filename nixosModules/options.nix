@@ -35,11 +35,6 @@
           default = "/home/${config.xlib.device.username}";
           description = "User home directory.";
         };
-        user-services = lib.mkOption {
-          type = lib.types.str;
-          default = "${config.xlib.dirs.user-home}/.other";
-          description = "User services directory.";
-        };
         user-storage = lib.mkOption {
           type = lib.types.str;
           default = "${config.xlib.dirs.user-home}/Storage";
