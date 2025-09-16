@@ -60,10 +60,6 @@
 
   home = {
     file = {
-      "ssh" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.user-storage}/ssh/${config.home.username}";
-        target = ".ssh";
-      };
       "External" = {
         source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.therima-drive}";
         target = "External";
