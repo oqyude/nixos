@@ -18,19 +18,18 @@ in
       virtualHosts = {
         "immich.zeroq.ru" = {
           # 31.57.105.253
-          listen = [
-            {
-              addr = "0.0.0.0";
-              port = 80;
-            }
-            {
-              addr = "0.0.0.0";
-              port = 443;
-              ssl = true;
-            }
-          ];
-          #forceSSL = true;
-          addSSL = true;
+          # listen = [
+          #   {
+          #     addr = "0.0.0.0";
+          #     port = 80;
+          #   }
+          #   {
+          #     addr = "0.0.0.0";
+          #     port = 443;
+          #     ssl = true;
+          #   }
+          # ];
+          forceSSL = true;
           enableACME = true;
           locations = {
             "/" = {
@@ -38,19 +37,39 @@ in
               proxyWebsockets = true; # Если Immich использует WebSockets
             };
           };
-          # locations."/.well-known/acme-challenge" = {
-          #   root = "/var/www/acme/acme-challenge";
-          # };
         };
-        # "nextcloud.zeroq.ru" = {
-        #   addSSL = true;
-        #   forceSSL = false;
-        #   enableACME = false;
-        #   locations."/" = {
-        #     proxyPass = "http://${server}:10000"; # Порт Nextcloud
-        #     proxyWebsockets = true;
-        #   };
-        # };
+        "nextcloud.zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://${server}:10000"; # Порт Nextcloud
+            proxyWebsockets = true;
+          };
+        };
+        "flux.zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://${server}:6061"; # Порт Nextcloud
+            proxyWebsockets = true;
+          };
+        };
+        "calibre.zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://${server}:8083"; # Порт Nextcloud
+            proxyWebsockets = true;
+          };
+        };
+        "pdf.zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://${server}:6060"; # Порт Nextcloud
+            proxyWebsockets = true;
+          };
+        };
         # "llm.zeroq.ru" = {
         #   addSSL = true;
         #   enableACME = true;
@@ -85,7 +104,7 @@ in
   security.acme = {
     acceptTerms = true;
     defaults = {
-      email = "oqyude@gmail.com";
+      email = "go.bin043120@gmail.com";
       #webroot = "/var/lib/acme/acme-challenge";
       #group = config.services.nginx.group;
       #server = "https://acme-staging-v02.api.letsencrypt.org/directory";
