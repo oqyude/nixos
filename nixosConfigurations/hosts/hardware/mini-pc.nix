@@ -10,9 +10,9 @@
 }:
 
 {
-  nixpkgs.config.permittedInsecurePackages = [
-    "libsoup-2.74.3" # temp
-  ];
+  # nixpkgs.config.permittedInsecurePackages = [
+  #   "libsoup-2.74.3" # temp
+  # ];
   # nix.settings.extra-sandbox-paths = [
   #   "/dev/kfd"
   #   "/sys/devices/virtual/kfd"
@@ -40,18 +40,18 @@
     extraModulePackages = [ ];
   };
 
-  hardware = {
-    amdgpu = {
-      opencl.enable = true;
-      amdvlk = {
-        enable = true;
-      };
-    };
-    graphics.extraPackages = with pkgs; [
-      mesa
-      amf
-    ];
-  };
+  # hardware = {
+  #   # amdgpu = {
+  #   #   opencl.enable = true;
+  #   #   amdvlk = {
+  #   #     enable = true;
+  #   #   };
+  #   # };
+  #   # graphics.extraPackages = with pkgs; [
+  #   #   mesa
+  #   #   amf
+  #   # ];
+  # };
   # systemd.tmpfiles.rules = [
   #   "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
   # ];
