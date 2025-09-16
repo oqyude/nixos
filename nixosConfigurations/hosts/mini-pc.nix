@@ -29,32 +29,32 @@ let
         age.keyFile = "/var/lib/sops-nix/key.txt";
       };
 
-      fileSystems = {
-        "${xlib.dirs.therima-drive}" = {
-          device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
-          fsType = "ntfs3";
-          options = [
-            "defaults"
-            "uid=1000"
-            "gid=1000"
-            "fmask=0007"
-            "dmask=0007"
-            "nofail"
-          ];
-        };
-        "${xlib.dirs.vetymae-drive}" = {
-          device = "/dev/disk/by-uuid/38D63C6ED63C2E8E";
-          fsType = "ntfs3";
-          options = [
-            "defaults"
-            "uid=1000"
-            "gid=1000"
-            "fmask=0007"
-            "dmask=0007"
-            "nofail"
-          ];
-        };
-      };
+      # fileSystems = {
+      #   "${xlib.dirs.therima-drive}" = {
+      #     device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
+      #     fsType = "ntfs3";
+      #     options = [
+      #       "defaults"
+      #       "uid=1000"
+      #       "gid=1000"
+      #       "fmask=0007"
+      #       "dmask=0007"
+      #       "nofail"
+      #     ];
+      #   };
+      #   "${xlib.dirs.vetymae-drive}" = {
+      #     device = "/dev/disk/by-uuid/38D63C6ED63C2E8E";
+      #     fsType = "ntfs3";
+      #     options = [
+      #       "defaults"
+      #       "uid=1000"
+      #       "gid=1000"
+      #       "fmask=0007"
+      #       "dmask=0007"
+      #       "nofail"
+      #     ];
+      #   };
+      # };
 
       boot = {
         kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_latest;
