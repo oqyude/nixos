@@ -37,7 +37,7 @@
         };
         user-services = lib.mkOption {
           type = lib.types.str;
-          default = "${config.xlib.dirs.user-home}/Misc/Devices/Services";
+          default = "${config.xlib.dirs.user-home}/.other";
           description = "User services directory.";
         };
         user-storage = lib.mkOption {

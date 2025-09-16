@@ -27,6 +27,7 @@
       # shell
       ff = "clear && fastfetch";
       l = "ls -l";
+      st = "systemctl-tui";
 
       # ssh
       s-1 = "ssh sapphira-1";

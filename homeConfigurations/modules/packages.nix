@@ -52,6 +52,7 @@ in
       vscodium
       ayugram-desktop
       vesktop
+      discord
       gramps
       kdePackages.filelight
       localsend

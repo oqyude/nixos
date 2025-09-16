@@ -17,16 +17,16 @@
       iproute2
       coreutils
     ];
+    unitConfig = {
+      After = [ "network-online.target" ];
+      Wants = [ "network-online.target" ];
+    };
     serviceConfig = {
       Type = "simple";
-      WorkingDirectory = "${xlib.dirs.user-services}/Misc/Devices/Services/zapret/137";
+      WorkingDirectory = "${xlib.dirs.user-services}/zapret";
       User = "root";
-      ExecStart = ''
-        ${pkgs.bash}/bin/bash ${xlib.dirs.user-services}/Misc/Devices/Services/zapret/main_script.sh -nointeractive
-      '';
-      ExecStop = ''
-        ${pkgs.bash}/bin/bash ${xlib.dirs.user-services}/Misc/Devices/Services/zapret/stop_and_clean_nft.sh
-      '';
+      ExecStart = "${pkgs.bash}/bin/bash ${xlib.dirs.user-services}/zapret/main_script.sh -nointeractive";
+      ExecStop = "${pkgs.bash}/bin/bash ${xlib.dirs.user-services}/zapret/stop_and_clean_nft.sh";
       ExecStopPost = ''
         ${pkgs.coreutils}/bin/echo  "Сервис завершён"
       '';
