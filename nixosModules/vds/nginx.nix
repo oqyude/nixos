@@ -79,6 +79,9 @@ in
         #   };
         # };
       };
+      extraConfig = ''
+        client_max_body_size 5G;
+      '';
     };
     # blocky = {
     #   enable = true;
