@@ -6,6 +6,14 @@
   ...
 }:
 {
+  xdg = {
+    dataFile = {
+      "PrismLauncher" = {
+        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.soptur-drive}/Games/PrismLauncher";
+        target = "PrismLauncher";
+      };
+    };
+  };
   home.file = {
     "Storage" = {
       source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.vetymae-drive}/Users/oqyude/Storage";
