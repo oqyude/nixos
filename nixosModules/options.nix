@@ -55,6 +55,11 @@
           default = "/mnt/vetymae";
           description = "Vetymae drive mount point.";
         };
+        soptur-drive = lib.mkOption {
+          type = lib.types.str;
+          default = "/mnt/soptur";
+          description = "Soptur drive mount point.";
+        };
         wsl-home = lib.mkOption {
           type = lib.types.str;
           default = "/mnt/c/Users/${config.xlib.device.username}";
