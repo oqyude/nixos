@@ -2,24 +2,23 @@
   disko.devices = {
     disk = {
       main = {
-        device = "/dev/mmcblk0";
+        device = "/dev/sda";
         type = "disk";
         content = {
           type = "gpt";
           partitions = {
+            #boot = {
+            #  type = "EF02";
+            #  size = "1M";
+            #;
             ESP = {
+              size = "500M";
               type = "EF00";
-              size = "512M";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-              };
-            };
-            swap = {
-              size = "2G";
-              content = {
-                type = "swap";
+                mountOptions = [ "umask=0077" ];
               };
             };
             root = {
@@ -28,6 +27,12 @@
                 type = "filesystem";
                 format = "ext4";
                 mountpoint = "/";
+              };
+            };
+            swap = {
+              size = "2048M";
+              content = {
+                type = "swap";
               };
             };
           };

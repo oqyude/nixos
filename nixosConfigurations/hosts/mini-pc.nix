@@ -19,6 +19,7 @@ let
 
       imports = with inputs; [
         ./hardware/mini-pc.nix
+        ./disko/mini-pc.nix
         ./hardware/logitech.nix
         self.nixosModules.default
       ];
