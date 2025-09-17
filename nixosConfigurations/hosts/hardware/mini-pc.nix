@@ -59,11 +59,11 @@
 
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-root";
+      device = "/dev/disk/by-partlabel/${xlib.device.hostname}";
       fsType = "ext4";
     };
     "/boot" = {
-      device = "/dev/disk/by-partlabel/${xlib.device.hostname}";
+      device = "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-ESP";
       fsType = "vfat";
       options = [
         "fmask=0077"
