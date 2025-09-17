@@ -5,5 +5,6 @@
 {
   imports = [
     ../desktop
+    ../services/nekoray.nix
   ];
 }
