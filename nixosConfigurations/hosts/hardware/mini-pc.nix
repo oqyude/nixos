@@ -6,6 +6,7 @@
   lib,
   pkgs,
   modulesPath,
+  xlib,
   ...
 }:
 
@@ -58,11 +59,11 @@
 
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-partlabel/disk-main-root";
+      device = "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-root";
       fsType = "ext4";
     };
     "/boot" = {
-      device = "/dev/disk/by-partlabel/disk-main-ESP";
+      device = "/dev/disk/by-partlabel/${xlib.device.hostname}";
       fsType = "vfat";
       options = [
         "fmask=0077"
@@ -72,7 +73,7 @@
   };
 
   swapDevices = [
-    { device = "/dev/disk/by-partlabel/disk-main-swap"; }
+    { device = "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-swap"; }
   ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
