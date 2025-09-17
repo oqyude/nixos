@@ -59,7 +59,7 @@
 
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-partlabel/${xlib.device.hostname}";
+      device = "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-root";
       fsType = "ext4";
     };
     "/boot" = {

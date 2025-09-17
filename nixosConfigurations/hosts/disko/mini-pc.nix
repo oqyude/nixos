@@ -1,4 +1,4 @@
-{ xlib, ...}:
+{ xlib, ... }:
 {
   disko.devices = {
     disk = {
@@ -28,9 +28,9 @@
                 type = "filesystem";
                 format = "ext4";
                 mountpoint = "/";
-                extraArgs = [
-                  "-L ${xlib.device.hostname}" # Filesystem label
-                ];
+                # extraArgs = [
+                #   "-L ${xlib.device.hostname}" # Filesystem label
+                # ];
               };
             };
             swap = {
