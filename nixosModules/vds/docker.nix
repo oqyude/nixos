@@ -6,7 +6,7 @@
 }:
 {
   imports = [
-    ./3x-ui.nix
+    # ./3x-ui.nix
   ];
 
   # virtualisation = {
