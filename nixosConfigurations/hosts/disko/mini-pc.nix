@@ -1,7 +1,7 @@
 {
   disko.devices = {
     disk = {
-      main = {
+      "${xlib.device.hostname}" = {
         device = "/dev/sda";
         type = "disk";
         content = {
@@ -27,6 +27,9 @@
                 type = "filesystem";
                 format = "ext4";
                 mountpoint = "/";
+                extraArgs = [
+                  "-L ${xlib.device.hostname}" # Filesystem label
+                ];
               };
             };
             swap = {
