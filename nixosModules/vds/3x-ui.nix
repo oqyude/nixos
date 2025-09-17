@@ -1,13 +1,11 @@
-# Auto-generated using compose2nix v0.3.2-pre.
+# Auto-generated using compose2nix v0.3.3-pre.
 {
   pkgs,
   lib,
   config,
   ...
 }:
-let
-  docker-source = "/home/oqyude/3x-ui";
-in
+
 {
   # Runtime
   virtualisation.podman = {
@@ -35,8 +33,8 @@ in
       "XUI_ENABLE_FAIL2BAN" = "true";
     };
     volumes = [
-      "${docker-source}/cert/:/root/cert:rw"
-      "${docker-source}/db/:/etc/x-ui:rw"
+      "/mnt/containers/3x-ui/cert/:/root/cert:rw"
+      "/mnt/containers/3x-ui/db/:/etc/x-ui:rw"
     ];
     log-driver = "journald";
     extraOptions = [
@@ -66,7 +64,7 @@ in
       TimeoutSec = 300;
     };
     script = ''
-      cd ${docker-source}
+      cd /mnt/containers/3x-ui
       podman build -t compose2nix/3xui_app -f ./Dockerfile .
     '';
   };
