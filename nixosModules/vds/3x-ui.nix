@@ -5,7 +5,9 @@
   config,
   ...
 }:
-
+let
+  docker-source = "/home/oqyude/3x-ui";
+in
 {
   # Runtime
   virtualisation.podman = {
@@ -33,8 +35,8 @@
       "XUI_ENABLE_FAIL2BAN" = "true";
     };
     volumes = [
-      "/home/oqyude/3x-ui/cert/:/root/cert:rw"
-      "/home/oqyude/3x-ui/db/:/etc/x-ui:rw"
+      "${docker-source}/cert/:/root/cert:rw"
+      "${docker-source}/db/:/etc/x-ui:rw"
     ];
     log-driver = "journald";
     extraOptions = [
@@ -64,7 +66,7 @@
       TimeoutSec = 300;
     };
     script = ''
-      cd /home/oqyude/3x-ui
+      cd ${docker-source}
       podman build -t compose2nix/3xui_app -f ./Dockerfile .
     '';
   };
