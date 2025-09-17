@@ -13,7 +13,7 @@ let
         ./essentials
         ./users.nix
         ./options.nix
-        ./temp.nix
+        # ./temp.nix
         (./. + "/${deviceType}") # specific modules
 
         home-manager.nixosModules.home-manager # home-manager module

@@ -15,14 +15,6 @@
       device = lib.mkForce "/dev/disk/by-partlabel/disk-main-root"; # "/dev/disk/by-partlabel/disk-main-root";
       fsType = "ext4";
     };
-    #     "/boot" = {
-    #       device = lib.mkForce "/dev/disk/by-partlabel/disk-main-ESP";
-    #       fsType = "vfat";
-    #       options = [
-    #         "fmask=0022"
-    #         "dmask=0022"
-    #       ];
-    #     };
   };
 
   # swapDevices = [

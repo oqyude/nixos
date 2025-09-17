@@ -4,7 +4,6 @@
 }:
 {
   imports = [
-    #./cloudflared.nix
     ./docker.nix
     ./netbird.nix
     ./nginx.nix

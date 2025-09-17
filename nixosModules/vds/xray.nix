@@ -12,7 +12,7 @@
 
   networking.firewall = {
     allowedTCPPorts = [ 8443 ];
-    allowedUDPPorts = [ 8443 ]; # 41641
+    allowedUDPPorts = [ 8443 ];
     #trustedInterfaces = [ "tailscale0" ];
   };
 

@@ -125,13 +125,6 @@ in
       #server = "https://acme-staging-v02.api.letsencrypt.org/directory";
       #listenHTTP = ":1360";
     };
-    # certs."immich.zeroq.ru" = {
-    #   email = "go.bin043120@gmail.com";
-    #   dnsProvider = "cloudflare";
-    #   dnsResolver = "1.1.1.1";
-    #   environmentFile = "${inputs.zeroq-credentials}/accounts/cloudflare.txt";
-    #   webroot = null; # Required in my case
-    # };
   };
   networking.firewall.allowedTCPPorts = [
     80

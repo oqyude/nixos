@@ -8,13 +8,13 @@
 }:
 {
   services = {
-    # nextcloud-whiteboard-server = {
-    #   enable = true;
-    #   settings = {
-    #     NEXTCLOUD_URL = "http://localhost:10000";
-    #   };
-    #   secrets = [ "${inputs.zeroq-credentials}/services/nextcloud/jwt-secret.txt" ];
-    # };
+    nextcloud-whiteboard-server = {
+      enable = true;
+      settings = {
+        NEXTCLOUD_URL = "https://nextcloud.zeroq.ru";
+      };
+      secrets = [ "${inputs.zeroq-credentials}/services/nextcloud/jwt-secret.txt" ];
+    };
     nextcloud = {
       enable = true;
       package = pkgs.nextcloud31;

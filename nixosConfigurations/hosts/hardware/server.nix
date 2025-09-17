@@ -40,27 +40,12 @@
       device = "/dev/disk/by-partlabel/disk-main-ESP";
       fsType = "vfat";
       options = [
+        # maybe 700?
         "fmask=0022"
         "dmask=0022"
       ];
     };
   };
-
-  #   fileSystems."/" =
-  #     { device = "/dev/disk/by-uuid/8acccc34-edc6-4934-886c-ef4b778ca24a";
-  #       fsType = "ext4";
-  #     };
-  #
-  #   fileSystems."/boot" =
-  #     { device = "/dev/disk/by-uuid/DDF2-C940";
-  #       fsType = "vfat";
-  #       options = [ "fmask=0022" "dmask=0022" ];
-  #     };
-  #
-  #   fileSystems."/home/otreca/External" =
-  #     { device = "/dev/disk/by-uuid/37e53ebc-5343-a94d-9fe2-0ca39e13a8de";
-  #       fsType = "ext4";
-  #     };
 
   swapDevices = [ ];
 
