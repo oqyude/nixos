@@ -1,3 +1,4 @@
+{ xlib, ...}:
 {
   disko.devices = {
     disk = {
