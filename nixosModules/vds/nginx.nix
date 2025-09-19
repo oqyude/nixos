@@ -16,6 +16,14 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
+        "collabora.zeroq.ru" =  {
+          enableACME = true;
+          forceSSL = true;
+          locations."/" = {
+            proxyPass = "http://${server}:9980";
+            proxyWebsockets = true; # collabora uses websockets
+          };
+        };
         "immich.zeroq.ru" = {
           # 31.57.105.253
           # listen = [

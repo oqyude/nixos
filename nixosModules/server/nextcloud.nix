@@ -86,7 +86,7 @@
       port = 9980;
       settings = {
         # Rely on reverse proxy for SSL
-        server_name = "localhost";
+        server_name = "100.64.0.0";
         ssl = {
           enable = false;
           termination = true;
