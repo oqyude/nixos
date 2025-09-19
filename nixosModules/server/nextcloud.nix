@@ -36,7 +36,6 @@
         adminpassFile = "${inputs.zeroq-credentials}/services/nextcloud/admin-pass.txt";
       };
       settings = {
-        appstoreEnable = false;
         log_type = "file";
         trusted_domains = [
           "nextcloud.zeroq.ru"
