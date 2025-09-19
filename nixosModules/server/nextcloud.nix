@@ -9,7 +9,7 @@
 {
   services = {
     nextcloud-whiteboard-server = {
-      enable = true;
+      enable = false;
       settings = {
         NEXTCLOUD_URL = "http://localhost:10000";
       };
@@ -82,7 +82,7 @@
       };
     };
     collabora-online = {
-      enable = true;
+      enable = false;
       port = 9980;
       settings = {
         # Rely on reverse proxy for SSL
@@ -105,6 +105,7 @@
       enable = true;
       hostname = "localhost:8980";
     };
+    rabbitmq.enable = true;
   };
 
   networking.hosts = {
