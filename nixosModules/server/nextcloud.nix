@@ -81,6 +81,10 @@
           ;
       };
     };
+    collabora-online = {
+      enable = true;
+      port = 9980;
+    };
   };
 
   fileSystems."/mnt/nextcloud" = {
