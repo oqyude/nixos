@@ -101,23 +101,23 @@
         };
       };
     };
-    onlyoffice = {
-      enable = true;
-      hostname = "localhost";
-    };
-    rabbitmq.enable = true;
+    # onlyoffice = {
+    #   enable = false;
+    #   hostname = "localhost";
+    # };
+    # rabbitmq.enable = false;
   };
 
-  networking.hosts = {
-    "127.0.0.1" = [
-      "nextcloud.zeroq.ru"
-      "collabora.zeroq.com"
-    ];
-    "::1" = [
-      "nextcloud.zeroq.ru"
-      "collabora.zeroq.ru"
-    ];
-  };
+  # networking.hosts = {
+  #   "127.0.0.1" = [
+  #     "nextcloud.zeroq.ru"
+  #     "collabora.zeroq.com"
+  #   ];
+  #   "::1" = [
+  #     "nextcloud.zeroq.ru"
+  #     "collabora.zeroq.ru"
+  #   ];
+  # };
 
   # systemd.services.nextcloud-config-collabora =
   #   let
