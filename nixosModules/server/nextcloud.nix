@@ -11,7 +11,7 @@
     nextcloud-whiteboard-server = {
       enable = true;
       settings = {
-        NEXTCLOUD_URL = "https://nextcloud.zeroq.ru";
+        NEXTCLOUD_URL = "http://localhost:10000";
       };
       secrets = [ "${inputs.zeroq-credentials}/services/nextcloud/jwt-secret.txt" ];
     };
@@ -21,6 +21,12 @@
       hostName = "localhost:10000";
       database.createLocally = true;
       home = "/mnt/nextcloud";
+      configureRedis = true;
+      caching = {
+        redis = true;
+        memcached = true;
+      };
+      maxUploadSize = "2G";
       config = {
         dbtype = "pgsql";
         dbuser = "nextcloud";
