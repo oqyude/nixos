@@ -93,11 +93,11 @@
         };
         net = {
           listen = "loopback";
-          post_allow.host = ["::1"];
+          post_allow.host = [ "::1" ];
         };
         storage.wopi = {
           "@allow" = true;
-          host = ["nextcloud.zeroq.ru"];
+          host = [ "nextcloud.zeroq.ru" ];
         };
       };
     };
