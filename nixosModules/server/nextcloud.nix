@@ -84,6 +84,22 @@
     collabora-online = {
       enable = true;
       port = 9980;
+      settings = {
+        # Rely on reverse proxy for SSL
+        server_name = "localhost";
+        ssl = {
+          enable = false;
+          termination = true;
+        };
+        net = {
+          listen = "loopback";
+          post_allow.host = ["::1"];
+        };
+        storage.wopi = {
+          "@allow" = true;
+          host = ["nextcloud.zeroq.ru"];
+        };
+      };
     };
   };
 
