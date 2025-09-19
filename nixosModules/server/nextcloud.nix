@@ -131,7 +131,7 @@
         Type = "oneshot";
       };
     };
-  }
+  };
 
   fileSystems."/mnt/nextcloud" = {
     device = "${xlib.dirs.nextcloud-folder}";
