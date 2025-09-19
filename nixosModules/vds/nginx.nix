@@ -20,23 +20,12 @@ in
           enableACME = true;
           forceSSL = true;
           locations."/" = {
-            proxyPass = "http://${server}:9980";
+            proxyPass = "http://${server}:8080";
             proxyWebsockets = true; # collabora uses websockets
           };
         };
         "immich.zeroq.ru" = {
           # 31.57.105.253
-          # listen = [
-          #   {
-          #     addr = "0.0.0.0";
-          #     port = 80;
-          #   }
-          #   {
-          #     addr = "0.0.0.0";
-          #     port = 443;
-          #     ssl = true;
-          #   }
-          # ];
           forceSSL = true;
           enableACME = true;
           locations = {

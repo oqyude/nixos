@@ -27,17 +27,17 @@
             }
           ];
         };
-        "localhost:9980" = {
+        "localhost" = {
           forceSSL = false;
           enableACME = false;
           listen = [
             {
               addr = "100.64.0.0";
-              port = 9980;
+              port = 8080;
             }
             {
               addr = "192.168.1.20";
-              port = 9980;
+              port = 8080;
             }
           ];
         };
