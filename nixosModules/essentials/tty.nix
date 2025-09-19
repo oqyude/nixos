@@ -27,6 +27,7 @@
       # shell
       ff = "clear && fastfetch";
       l = "ls -l";
+      lg = "lazygit";
       st = "systemctl-tui";
 
       # ssh
