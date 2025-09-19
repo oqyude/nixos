@@ -101,6 +101,9 @@
         };
       };
     };
+    onlyoffice = {
+      enable = true;
+    };
   };
 
   networking.hosts = {
