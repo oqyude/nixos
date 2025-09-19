@@ -42,7 +42,7 @@
         overwriteprotocol = "https";
       };
       extraAppsEnable = true;
-      #appstoreEnable = true;
+      appstoreEnable = true;
       extraApps = {
         inherit (pkgs.nextcloud31Packages.apps)
           deck
