@@ -16,7 +16,7 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
-        "collabora.zeroq.ru" =  {
+        "collabora.zeroq.ru" = {
           enableACME = true;
           forceSSL = true;
           locations."/" = {

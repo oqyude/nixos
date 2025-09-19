@@ -86,7 +86,7 @@
       port = 9980;
       settings = {
         # Rely on reverse proxy for SSL
-        server_name = "100.64.0.0";
+        server_name = "collabora.zeroq.ru";
         ssl = {
           enable = false;
           termination = true;
