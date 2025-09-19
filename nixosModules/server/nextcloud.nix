@@ -42,14 +42,14 @@
         overwriteprotocol = "https";
       };
       extraAppsEnable = true;
-      appstoreEnable = true;
+      appstoreEnable = false;
       extraApps = {
         inherit (pkgs.nextcloud31Packages.apps)
           deck
           end_to_end_encryption
           groupfolders
           impersonate
-          onlyoffice
+          #onlyoffice
           bookmarks
           calendar
           contacts
@@ -92,5 +92,9 @@
 
   systemd.tmpfiles.rules = [
     "z /mnt/nextcloud 0755 nextcloud nextcloud -"
+  ];
+
+  environment.systemPackages = [
+    pkgs.nc4nix # Packaging helper for Nextcloud apps
   ];
 }
