@@ -41,6 +41,20 @@
             }
           ];
         };
+        "localhost:8980" = {
+          forceSSL = false;
+          enableACME = false;
+          listen = [
+            {
+              addr = "100.64.0.0";
+              port = 8980;
+            }
+            {
+              addr = "192.168.1.20";
+              port = 8980;
+            }
+          ];
+        };
       };
     };
   };
