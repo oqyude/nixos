@@ -48,7 +48,7 @@
         overwriteprotocol = "https";
       };
       extraAppsEnable = true;
-      appstoreEnable = false;
+      appstoreEnable = true;
       extraApps = {
         inherit (pkgs.nextcloud31Packages.apps)
           deck
@@ -102,6 +102,36 @@
       };
     };
   };
+
+  # networking.hosts = {
+  #   "127.0.0.1" = ["nextcloud.zeroq.ru" "collabora.zeroq.com"];
+  #   "::1" = ["nextcloud.zeroq.ru" "collabora.zeroq.ru"];
+  # };
+
+  # systemd.services.nextcloud-config-collabora = let
+  #     inherit (config.services.nextcloud) occ;
+
+  #     wopi_url = "http://[::1]:${toString config.services.collabora-online.port}";
+  #     public_wopi_url = "https://collabora.zeroq.ru";
+  #     wopi_allowlist = lib.concatStringsSep "," [
+  #       "127.0.0.1"
+  #       "::1"
+  #     ];
+  #   in {
+  #     wantedBy = ["multi-user.target"];
+  #     after = ["nextcloud-setup.service" "coolwsd.service"];
+  #     requires = ["coolwsd.service"];
+  #     script = ''
+  #       ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_url --value ${lib.escapeShellArg wopi_url}
+  #       ${occ}/bin/nextcloud-occ config:app:set richdocuments public_wopi_url --value ${lib.escapeShellArg public_wopi_url}
+  #       ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_allowlist --value ${lib.escapeShellArg wopi_allowlist}
+  #       ${occ}/bin/nextcloud-occ richdocuments:setup
+  #     '';
+  #     serviceConfig = {
+  #       Type = "oneshot";
+  #     };
+  #   };
+  # }
 
   fileSystems."/mnt/nextcloud" = {
     device = "${xlib.dirs.nextcloud-folder}";
