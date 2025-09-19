@@ -43,6 +43,7 @@
       pip2nix = "nix run github:nix-community/pip2nix --"; # https://github.com/nix-community/pip2nix
       pip2nix-g = "nix run github:nix-community/pip2nix -- generate -r";
       json2nix = "nix run github:sempruijs/json2nix";
+      nc2nix = "nix run github:helsinki-systems/nc4nix";
     };
   };
 }
