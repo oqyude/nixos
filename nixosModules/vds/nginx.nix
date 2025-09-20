@@ -122,10 +122,10 @@ in
         # };
       };
     };
-      caddy = {
-        enable = true;
-      };
+    caddy = {
+      enable = true;
     };
+  };
   security.acme = {
     acceptTerms = true;
     defaults = {

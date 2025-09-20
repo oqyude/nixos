@@ -155,7 +155,6 @@
   #     };
   #   };
 
-
   fileSystems."/mnt/nextcloud" = {
     device = "${xlib.dirs.nextcloud-folder}";
     options = [
