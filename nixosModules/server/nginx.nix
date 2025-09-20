@@ -27,6 +27,14 @@
             }
           ];
         };
+        # "localhost:8890" = {
+        #   listen = [
+        #     {
+        #       addr = "127.0.0.1";
+        #       port = 8890;
+        #     }
+        #   ];
+        # };
         "localhost:8890" = {
           forceSSL = false;
           enableACME = false;

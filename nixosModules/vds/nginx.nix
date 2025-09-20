@@ -36,7 +36,7 @@ in
             proxyPass = "http://${server}:8890";
             proxyWebsockets = true; # collabora uses websockets
           };
-          # listen = [
+          # listen = [  
           #   {
           #     addr = "0.0.0.0";
           #     port = 443;
@@ -118,6 +118,17 @@ in
         # };
       };
     };
+    caddy = {
+      enable = true;
+  virtualHosts = {
+    "collabora.zeroq.ru".extraConfig = ''
+      reverse_proxy http://100.64.0.0:8890 {
+        # Required to circumvent bug of Onlyoffice loading mixed non-https content
+        header_up X-Forwarded-Proto https
+      }
+    '';
+  };
+};
   };
   security.acme = {
     acceptTerms = true;
