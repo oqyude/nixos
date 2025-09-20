@@ -27,21 +27,8 @@
             }
           ];
         };
-        "localhost:8890" = {
-          listen = [
-            {
-              addr = "127.0.0.1";
-              port = 8890;
-            }
-            {
-              addr = "0.0.0.0";
-              port = 80;
-            }
-            {
-              addr = "0.0.0.0";
-              port = 443;
-            }
-          ];
+        "localhost" = {
+          listen  = [{ addr = "127.0.0.1"; port = 8890; }];
         };
         "localhost:8890" = {
           forceSSL = false;
@@ -54,6 +41,18 @@
             {
               addr = "192.168.1.20";
               port = 8890;
+            }
+            {
+              addr = "127.0.0.1";
+              port = 8890;
+            }
+            {
+              addr = "0.0.0.0";
+              port = 80;
+            }
+            {
+              addr = "0.0.0.0";
+              port = 443;
             }
           ];
         };
