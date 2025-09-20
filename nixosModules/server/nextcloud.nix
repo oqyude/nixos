@@ -44,6 +44,9 @@
           "localhost"
           "sapphira.latxa-platy.ts.net"
         ];
+        trusted_proxies = [
+          "100.64.1.0"
+        ];
         overwriteprotocol = "https";
       };
       extraAppsEnable = true;
