@@ -84,7 +84,7 @@
       };
     };
     collabora-online = {
-      enable = false;
+      enable = true;
       port = 9980;
       settings = {
         # Rely on reverse proxy for SSL
@@ -96,7 +96,10 @@
         };
         net = {
           listen = "loopback";
-          post_allow.host = [ "::1" ];
+          post_allow.host = [
+            "localhost"
+            "100.64.0.0"
+          ]; # "::1"
         };
         storage.wopi = {
           "@allow" = true;
