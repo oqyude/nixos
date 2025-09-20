@@ -109,8 +109,8 @@
     # };
     onlyoffice = {
       enable = true;
-      hostname = "localhost";
-      port = 8890;
+      hostname = "collabora.zeroq.ru";
+      port = 8000;
     };
     #rabbitmq.enable = false;
   };
