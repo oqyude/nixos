@@ -109,8 +109,7 @@
     # };
     onlyoffice = {
       enable = true;
-      hostname = "localhost";
-      port = 8890;
+      hostname = "onlyoffice";
     };
     #rabbitmq.enable = false;
   };

@@ -27,7 +27,7 @@
             }
           ];
         };
-        "localhost:8890" = {
+        "onlyoffice" = {
           forceSSL = false;
           enableACME = false;
           listen = [
@@ -37,6 +37,10 @@
             }
             {
               addr = "192.168.1.20";
+              port = 8890;
+            }
+            {
+              addr = "localhost";
               port = 8890;
             }
           ];
