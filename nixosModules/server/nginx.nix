@@ -27,34 +27,34 @@
             }
           ];
         };
-        "127.0.0.1" = {
-          forceSSL = false;
-          enableACME = false;
-          listen = [
-            {
-              addr = "100.64.0.0";
-              port = 8000;
-            }
-            {
-              addr = "192.168.1.20";
-              port = 8000;
-            }
-          ];
-        };
-        "localhost:9980" = {
-          forceSSL = false;
-          enableACME = false;
-          listen = [
-            {
-              addr = "100.64.0.0";
-              port = 9980;
-            }
-            {
-              addr = "192.168.1.20";
-              port = 9980;
-            }
-          ];
-        };
+        # "127.0.0.1" = {
+        #   forceSSL = false;
+        #   enableACME = false;
+        #   listen = [
+        #     {
+        #       addr = "100.64.0.0";
+        #       port = 8000;
+        #     }
+        #     {
+        #       addr = "192.168.1.20";
+        #       port = 8000;
+        #     }
+        #   ];
+        # };
+        # "localhost:9980" = {
+        #   forceSSL = false;
+        #   enableACME = false;
+        #   listen = [
+        #     {
+        #       addr = "100.64.0.0";
+        #       port = 9980;
+        #     }
+        #     {
+        #       addr = "192.168.1.20";
+        #       port = 9980;
+        #     }
+        #   ];
+        # };
       };
     };
   };
