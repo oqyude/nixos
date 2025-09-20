@@ -33,7 +33,7 @@ in
           forceSSL = true;
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://${server}:8890";
+            proxyPass = "http://${server}:8080";
             proxyWebsockets = true; # collabora uses websockets
           };
           # listen = [
