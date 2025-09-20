@@ -27,8 +27,8 @@
             }
           ];
         };
-        "localhost:8000" = {
-          forceSSL = false;
+        "localhost:8890" = {
+          forceSSL = true;
           enableACME = false;
           listen = [
             {
