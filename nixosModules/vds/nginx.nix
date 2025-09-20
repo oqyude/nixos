@@ -36,7 +36,7 @@ in
             proxyPass = "http://${server}:8890";
             proxyWebsockets = true; # collabora uses websockets
           };
-          # listen = [  
+          # listen = [
           #   {
           #     addr = "0.0.0.0";
           #     port = 443;

@@ -28,7 +28,12 @@
           ];
         };
         "localhost:8890" = {
-          listen  = [{ addr = "127.0.0.1"; port = 8080; }];
+          listen = [
+            {
+              addr = "127.0.0.1";
+              port = 8080;
+            }
+          ];
         };
         "localhost:8000" = {
           forceSSL = false;
