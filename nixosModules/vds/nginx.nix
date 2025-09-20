@@ -30,7 +30,7 @@ in
               port = 443;
               ssl = true;
             }
-          };
+          ];
           extraConfig = ''
             client_max_body_size 5G;
           '';
