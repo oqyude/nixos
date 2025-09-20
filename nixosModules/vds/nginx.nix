@@ -16,6 +16,22 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
+        "office.zeroq.ru" = {
+          enableACME = true;
+          forceSSL = true;
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://${server}:8000";
+            proxyWebsockets = true; # onlyoffice uses websockets
+          };
+          extraConfig = ''
+            reverse_proxy http://${server}:8000 {
+              # Required to circumvent bug of Onlyoffice loading mixed non-https content
+              header_up X-Forwarded-Proto https
+              client_max_body_size 5G;
+            }
+          '';
+        };
         "collabora.zeroq.ru" = {
           enableACME = true;
           forceSSL = true;
@@ -105,25 +121,6 @@ in
         #   };
         # };
       };
-    };
-    caddy = {
-      enable = true;
-        virtualHosts."office.zeroq.ru" = {
-          enableACME = true;
-          forceSSL = true;
-          kTLS = true;
-          # locations."/" = {
-          #   proxyPass = "http://${server}:8000";
-          #   proxyWebsockets = true; # onlyoffice uses websockets
-          # };
-          extraConfig = ''
-            reverse_proxy http://${server}:8000 {
-              # Required to circumvent bug of Onlyoffice loading mixed non-https content
-              header_up X-Forwarded-Proto https
-              client_max_body_size 5G;
-            }
-          '';
-        };
     };
   };
   security.acme = {
