@@ -16,6 +16,22 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
+        "office.zeroq.ru" = {
+          enableACME = true;
+          forceSSL = true;
+          kTLS = true;
+          # locations."/" = {
+          #   proxyPass = "http://${server}:8000";
+          #   proxyWebsockets = true; # onlyoffice uses websockets
+          # };
+          extraConfig = ''
+            reverse_proxy http://${server}:8000 {
+              # Required to circumvent bug of Onlyoffice loading mixed non-https content
+              header_up X-Forwarded-Proto https
+              client_max_body_size 5G;
+            }
+          '';
+        };
         "collabora.zeroq.ru" = {
           enableACME = true;
           forceSSL = true;
@@ -106,27 +122,9 @@ in
         # };
       };
     };
-    # blocky = {
-    #   enable = true;
-    #   settings = {
-    #     ports.dns = 53; # Port for incoming DNS Queries.
-    #     upstreams.groups.default = [
-    #       "https://dns.quad9.net/dns-query" # Using Cloudflare's DNS over HTTPS server for resolving queries.
-    #     ];
-    #     # For initially solving DoH/DoT Requests when no system Resolver is available.
-    #     bootstrapDns = {
-    #       upstream = "https://dns.quad9.net/dns-query";
-    #       ips = [ "9.9.9.9" ];
-    #     };
-    #     # Custom DNS entries
-    #     customDNS = {
-    #       mapping = {
-    #         "immich.zeroq.ru" = "100.90.0.0";
-    #       };
-    #     };
-    #   };
-    # };
-  };
+    caddy = {
+      enable = true
+    };
   security.acme = {
     acceptTerms = true;
     defaults = {
