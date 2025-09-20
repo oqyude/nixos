@@ -44,6 +44,7 @@ in
           #   }
           # ];
           extraConfig = ''
+            proxy_set_header X-Forwarded-Proto https;
             client_max_body_size 5G;
           '';
         };
