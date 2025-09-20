@@ -123,7 +123,7 @@
     "::1" = [
       "nextcloud.zeroq.ru"
       "collabora.zeroq.ru"
-      "collabora.zeroq.ru"
+      "office.zeroq.com"
     ];
   };
 
