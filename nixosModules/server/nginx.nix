@@ -39,18 +39,6 @@
               addr = "192.168.1.20";
               port = 8080;
             }
-            {
-              addr = "localhost";
-              port = 8080;
-            }
-            {
-              addr = "localhost";
-              port = 80;
-            }
-            {
-              addr = "localhost";
-              port = 443;
-            }
           ];
         };
         # "localhost:9980" = {
