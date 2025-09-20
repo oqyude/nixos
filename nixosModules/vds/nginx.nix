@@ -16,23 +16,33 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
-        # "collabora.zeroq.ru" = {
-        #   enableACME = true;
-        #   forceSSL = true;
-        #   locations."/" = {
-        #     proxyPass = "http://${server}:8080";
-        #     proxyWebsockets = true; # collabora uses websockets
-        #   };
-        # };
+        "collabora.zeroq.ru" = {
+          enableACME = true;
+          forceSSL = true;
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://${server}:9980";
+            proxyWebsockets = true; # collabora uses websockets
+          };
+          listen = [
+            {
+              addr = "0.0.0.0";
+              port = 443;
+              ssl = true;
+            }
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
         "immich.zeroq.ru" = {
           # 31.57.105.253
           forceSSL = true;
           enableACME = true;
-          locations = {
-            "/" = {
-              proxyPass = "http://${server}:2283"; # Порт Immich
-              proxyWebsockets = true; # Если Immich использует WebSockets
-            };
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://${server}:2283"; # Порт Immich
+            proxyWebsockets = true; # Если Immich использует WebSockets
           };
           extraConfig = ''
             client_max_body_size 5G;
@@ -41,6 +51,7 @@ in
         "nextcloud.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
+          kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:10000"; # Порт Nextcloud
             proxyWebsockets = true;
@@ -52,6 +63,7 @@ in
         "flux.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
+          kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:6061"; # Порт Nextcloud
             proxyWebsockets = true;
@@ -63,6 +75,7 @@ in
         "calibre.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
+          kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:8083"; # Порт Nextcloud
             proxyWebsockets = true;
@@ -74,6 +87,7 @@ in
         "pdf.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
+          kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:6060"; # Порт Nextcloud
             proxyWebsockets = true;
