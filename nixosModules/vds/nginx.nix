@@ -25,11 +25,7 @@ in
             proxyWebsockets = true; # onlyoffice uses websockets
           };
           extraConfig = ''
-            reverse_proxy http://${server}:8000 {
-              # Required to circumvent bug of Onlyoffice loading mixed non-https content
-              header_up X-Forwarded-Proto https
-              client_max_body_size 5G;
-            }
+            client_max_body_size 5G;
           '';
         };
         "collabora.zeroq.ru" = {

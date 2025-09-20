@@ -108,7 +108,7 @@
     #   };
     # };
     onlyoffice = {
-      enable = true;
+      enable = false;
       hostname = "127.0.0.1";
     };
     #rabbitmq.enable = false;
