@@ -21,7 +21,7 @@ in
           forceSSL = true;
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://${server}:8000";
+            proxyPass = "http://${server}:8890";
             proxyWebsockets = true; # onlyoffice uses websockets
           };
           extraConfig = ''
@@ -33,16 +33,16 @@ in
           forceSSL = true;
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://${server}:9980";
+            proxyPass = "http://${server}:8890";
             proxyWebsockets = true; # collabora uses websockets
           };
-          listen = [
-            {
-              addr = "0.0.0.0";
-              port = 443;
-              ssl = true;
-            }
-          ];
+          # listen = [
+          #   {
+          #     addr = "0.0.0.0";
+          #     port = 443;
+          #     ssl = true;
+          #   }
+          # ];
           extraConfig = ''
             client_max_body_size 5G;
           '';

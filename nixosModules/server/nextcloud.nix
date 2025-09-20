@@ -74,7 +74,7 @@
           notify_push
           polls
           previewgenerator
-          richdocuments
+          #richdocuments
           spreed
           tasks
           user_oidc
@@ -108,24 +108,25 @@
     #   };
     # };
     onlyoffice = {
-      enable = false;
-      hostname = "127.0.0.1";
+      enable = true;
+      hostname = "localhost";
+      port = 8890;
     };
     #rabbitmq.enable = false;
   };
 
-  networking.hosts = {
-    "127.0.0.1" = [
-      "nextcloud.zeroq.ru"
-      "office.zeroq.com"
-      "collabora.zeroq.ru"
-    ];
-    "::1" = [
-      "nextcloud.zeroq.ru"
-      "collabora.zeroq.ru"
-      "office.zeroq.com"
-    ];
-  };
+  # networking.hosts = {
+  #   "127.0.0.1" = [
+  #     "nextcloud.zeroq.ru"
+  #     "office.zeroq.com"
+  #     "collabora.zeroq.ru"
+  #   ];
+  #   "::1" = [
+  #     "nextcloud.zeroq.ru"
+  #     "collabora.zeroq.ru"
+  #     "office.zeroq.com"
+  #   ];
+  # };
 
   # systemd.services.nextcloud-config-collabora =
   #   let
