@@ -7,7 +7,7 @@
   ...
 }:
 let
-  last-stable = import inputs.nixpkgs-stable { system = "x86_64-linux"; };
+  stable = import inputs.nixpkgs-stable { system = "x86_64-linux"; };
 in
 {
   services = {
@@ -88,6 +88,7 @@ in
     };
     collabora-online = {
       enable = true;
+      package = stable.collabora-online;
       port = 9980;
       settings = {
         # Rely on reverse proxy for SSL
