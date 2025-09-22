@@ -33,7 +33,7 @@ in
           forceSSL = true;
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://${server}:8080";
+            proxyPass = "http://${server}:9980";
             proxyWebsockets = true; # collabora uses websockets
           };
           # listen = [
@@ -43,8 +43,8 @@ in
           #     ssl = true;
           #   }
           # ];
+          #proxy_set_header X-Forwarded-Proto https;
           extraConfig = ''
-            proxy_set_header X-Forwarded-Proto https;
             client_max_body_size 5G;
           '';
         };
