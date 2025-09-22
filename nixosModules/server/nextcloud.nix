@@ -55,12 +55,12 @@ in
       extraAppsEnable = true;
       appstoreEnable = true;
       extraApps = {
-        inherit (pkgs.nextcloud31Packages.apps)
+        inherit (pkgs.nextcloud31Packages.apps) # (config.services.nextcloud.package.packages.apps)
           deck
           end_to_end_encryption
           groupfolders
           impersonate
-          onlyoffice
+          # onlyoffice
           bookmarks
           calendar
           contacts
@@ -77,7 +77,7 @@ in
           notify_push
           polls
           previewgenerator
-          #richdocuments
+          richdocuments
           spreed
           tasks
           user_oidc
