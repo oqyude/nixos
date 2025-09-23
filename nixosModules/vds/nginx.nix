@@ -48,6 +48,18 @@ in
             client_max_body_size 5G;
           '';
         };
+        "memos.zeroq.ru" = {
+          enableACME = true;
+          forceSSL = true;
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://${server}:5230";
+            proxyWebsockets = true; # collabora uses websockets
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
         "immich.zeroq.ru" = {
           # 31.57.105.253
           forceSSL = true;
