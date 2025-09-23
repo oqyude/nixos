@@ -92,22 +92,23 @@ in
       port = 9980;
       settings = {
         # Rely on reverse proxy for SSL
-        server_name = "collabora.zeroq.ru";
+        server_name = "0.0.0.0";
         ssl = {
           enable = false;
           termination = true;
           ssl_verification = false;
         };
         net = {
-          listen = "loopback";
+          listen = "0.0.0.0";
           post_allow.host = [
             "localhost"
             "100.64.0.0"
+            "0.0.0.0"
           ]; # "::1"
         };
         storage.wopi = {
           "@allow" = true;
-          host = [ "nextcloud.zeroq.ru" ];
+          host = [ "nextcloud.zeroq.ru" "0.0.0.0" ];
         };
       };
     };
