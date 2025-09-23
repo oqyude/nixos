@@ -9,6 +9,7 @@
     ../software/beets
     ./calibre-web.nix
     ./memos.nix
+    ./trilium.nix
     ./immich.nix
     ./mealie.nix
     ./miniflux.nix

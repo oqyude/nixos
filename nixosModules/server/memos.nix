@@ -21,6 +21,6 @@
   };
   
   systemd.tmpfiles.rules = [
-    "z /mnt/services/memos 0755 memos memos -"
+    "z /mnt/services/memos 0750 memos memos -"
   ];
 }
