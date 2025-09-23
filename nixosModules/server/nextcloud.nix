@@ -86,36 +86,38 @@ in
           ;
       };
     };
-    collabora-online = {
-      enable = false;
-      #package = stable.collabora-online;
-      port = 9980;
-      settings = {
-        # Rely on reverse proxy for SSL
-        server_name = "https://collabora.zeroq.ru";
-        ssl = {
-          enable = false;
-          termination = true;
-          ssl_verification = false;
-        };
-        net = {
-          listen = "0.0.0.0";
-          post_allow.host = [
-            "localhost"
-            "127.0.0.1"
-            "0.0.0.0"
-            "nextcloud.zeroq.ru"
-          ]; # "::1"
-        };
-        storage.wopi = {
-          "@allow" = true;
-          host = [ "nextcloud.zeroq.ru" "127.0.0.1" "0.0.0.0" ];
-        };
-      };
-    };
+    # collabora-online = {
+    #   enable = false;
+    #   #package = stable.collabora-online;
+    #   port = 9980;
+    #   settings = {
+    #     # Rely on reverse proxy for SSL
+    #     server_name = "https://collabora.zeroq.ru";
+    #     ssl = {
+    #       enable = false;
+    #       termination = true;
+    #       ssl_verification = false;
+    #     };
+    #     net = {
+    #       listen = "0.0.0.0";
+    #       post_allow.host = [
+    #         "localhost"
+    #         "127.0.0.1"
+    #         "0.0.0.0"
+    #         "nextcloud.zeroq.ru"
+    #       ]; # "::1"
+    #     };
+    #     storage.wopi = {
+    #       "@allow" = true;
+    #       host = [ "nextcloud.zeroq.ru" "127.0.0.1" "0.0.0.0" ];
+    #     };
+    #   };
+    # };
     onlyoffice = {
       enable = true;
       hostname = "onlyoffice.local";
+      port = 8000;
+      package = stable.onlyoffice-documentserver;
     };
     #rabbitmq.enable = false;
   };
