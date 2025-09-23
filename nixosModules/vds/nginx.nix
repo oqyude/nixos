@@ -21,7 +21,7 @@ in
           forceSSL = true;
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://${server}:8999";
+            proxyPass = "http://${server}:8080";
             proxyWebsockets = true; # onlyoffice uses websockets
           };
           extraConfig = ''

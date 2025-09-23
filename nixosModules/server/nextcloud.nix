@@ -80,7 +80,7 @@ in
           notify_push
           polls
           previewgenerator
-          # richdocuments
+          richdocuments
           spreed
           tasks
           user_oidc
@@ -118,16 +118,16 @@ in
     # };
     onlyoffice = {
       enable = true;
-      hostname = "office.zeroq.ru";
-      port = 8999;
-      package = stable.onlyoffice-documentserver;
+      hostname = "onlyoffice.local";
+      #port = 8999;
+      #package = stable.onlyoffice-documentserver;
     };
     #rabbitmq.enable = false;
   };
 
   networking.hosts = {
     "0.0.0.0" = [
-      "office.zeroq.ru"
+      "onlyoffice.local"
     ];
     # "127.0.0.1" = [
     #   "nextcloud.zeroq.ru"
