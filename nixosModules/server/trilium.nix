@@ -8,7 +8,7 @@
     enable = true;
     nginx = {
       enable = true;
-      hostName = "trilium"
+      hostName = "trilium";
     };
     dataDir = "/mnt/services/trilium";
   };
