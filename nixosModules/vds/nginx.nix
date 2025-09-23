@@ -54,7 +54,19 @@ in
           kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:5230";
-            proxyWebsockets = true; # collabora uses websockets
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
+        "trilium.zeroq.ru" = {
+          enableACME = true;
+          forceSSL = true;
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://${server}:11000";
+            proxyWebsockets = true;
           };
           extraConfig = ''
             client_max_body_size 5G;
