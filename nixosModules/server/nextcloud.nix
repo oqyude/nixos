@@ -77,7 +77,7 @@ in
           notify_push
           polls
           previewgenerator
-          richdocuments
+          # richdocuments
           spreed
           tasks
           user_oidc
@@ -87,7 +87,7 @@ in
       };
     };
     collabora-online = {
-      enable = true;
+      enable = false;
       #package = stable.collabora-online;
       port = 9980;
       settings = {
@@ -114,24 +114,27 @@ in
       };
     };
     onlyoffice = {
-      enable = false;
+      enable = true;
       hostname = "onlyoffice";
     };
     #rabbitmq.enable = false;
   };
 
-  # networking.hosts = {
-  #   "127.0.0.1" = [
-  #     "nextcloud.zeroq.ru"
-  #     "collabora.zeroq.ru"
-  #     # "office.zeroq.com"
-  #   ];
-  #   "::1" = [
-  #     "nextcloud.zeroq.ru"
-  #     "collabora.zeroq.ru"
-  #     # "office.zeroq.com"
-  #   ];
-  # };
+  networking.hosts = {
+    "0.0.0.0" = [
+      "onlyoffice"
+    ];
+    # "127.0.0.1" = [
+    #   "nextcloud.zeroq.ru"
+    #   "collabora.zeroq.ru"
+    #   "office.zeroq.com"
+    # ];
+    # "::1" = [
+    #   "nextcloud.zeroq.ru"
+    #   "collabora.zeroq.ru"
+    #   # "office.zeroq.com"
+    # ];
+  };
 
   # systemd.services.nextcloud-config-collabora =
   #   let

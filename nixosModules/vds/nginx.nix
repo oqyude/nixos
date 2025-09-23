@@ -16,18 +16,18 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
-        # "office.zeroq.ru" = {
-        #   enableACME = true;
-        #   forceSSL = true;
-        #   kTLS = true;
-        #   locations."/" = {
-        #     proxyPass = "http://${server}:8890";
-        #     proxyWebsockets = true; # onlyoffice uses websockets
-        #   };
-        #   extraConfig = ''
-        #     client_max_body_size 5G;
-        #   '';
-        # };
+        "office.zeroq.ru" = {
+          enableACME = true;
+          forceSSL = true;
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://${server}:8000";
+            proxyWebsockets = true; # onlyoffice uses websockets
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
         "collabora.zeroq.ru" = {
           enableACME = true;
           forceSSL = true;
