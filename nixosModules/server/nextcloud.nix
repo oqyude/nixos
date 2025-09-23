@@ -60,7 +60,7 @@ in
           end_to_end_encryption
           groupfolders
           impersonate
-          # onlyoffice
+          onlyoffice
           bookmarks
           calendar
           contacts
