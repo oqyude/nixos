@@ -17,7 +17,7 @@
     };
     user = "${xlib.device.username}";
     group = "users";
-    dataDir = "${xlib.dirs.server-home}/Services/immich";
+    dataDir = "${xlib.dirs.server-home}/Services/memos";
   };
   
 }
