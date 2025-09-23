@@ -15,9 +15,12 @@
         MEMOS_DRIVER = "sqlite";
         MEMOS_INSTANCE_URL = "http://0.0.0.0:5230";
     };
-    user = "${xlib.device.username}";
-    group = "users";
-    dataDir = "${xlib.dirs.server-home}/Services/memos";
+    # user = "${xlib.device.username}";
+    # group = "users";
+    dataDir = "/mnt/services/memos";
   };
   
+  systemd.tmpfiles.rules = [
+    "z /mnt/services/memos 0755 memos memos -"
+  ];
 }
