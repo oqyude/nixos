@@ -5,7 +5,7 @@
 }:
 {
   services.trilium-server = {
-    enable = true;
+    enable = false;
     nginx = {
       enable = true;
       hostName = "trilium";

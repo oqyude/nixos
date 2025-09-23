@@ -27,28 +27,20 @@
             }
           ];
         };
-        "trilium" = {
-          forceSSL = false;
-          enableACME = false;
-          listen = [
-            {
-              addr = "100.64.0.0";
-              port = 11000;
-            }
-            {
-              addr = "192.168.1.20";
-              port = 11000;
-            }
-            # {
-            #   addr = "0.0.0.0";
-            #   port = 80;
-            # }
-            # {
-            #   addr = "0.0.0.0";
-            #   port = 443;
-            # }
-          ];
-        };
+        # "trilium" = {
+        #   forceSSL = false;
+        #   enableACME = false;
+        #   listen = [
+        #     {
+        #       addr = "100.64.0.0";
+        #       port = 11000;
+        #     }
+        #     {
+        #       addr = "192.168.1.20";
+        #       port = 11000;
+        #     }
+        #   ];
+        # };
         # "onlyoffice" = {
         #   forceSSL = false;
         #   enableACME = false;
@@ -63,20 +55,20 @@
         #     }
         #   ];
         # };
-        # "localhost:9980" = {
-        #   forceSSL = false;
-        #   enableACME = false;
-        #   listen = [
-        #     {
-        #       addr = "100.64.0.0";
-        #       port = 9980;
-        #     }
-        #     {
-        #       addr = "192.168.1.20";
-        #       port = 9980;
-        #     }
-        #   ];
-        # };
+        "localhost:9980" = {
+          forceSSL = false;
+          enableACME = false;
+          listen = [
+            {
+              addr = "100.64.0.0";
+              port = 9980;
+            }
+            {
+              addr = "192.168.1.20";
+              port = 9980;
+            }
+          ];
+        };
         # "localhost:5230" = {
         #   forceSSL = false;
         #   enableACME = false;

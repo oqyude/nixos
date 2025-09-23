@@ -34,15 +34,8 @@ in
           kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:9980";
-            proxyWebsockets = true; # collabora uses websockets
+            proxyWebsockets = true;
           };
-          # listen = [
-          #   {
-          #     addr = "0.0.0.0";
-          #     port = 443;
-          #     ssl = true;
-          #   }
-          # ];
           #proxy_set_header X-Forwarded-Proto https;
           extraConfig = ''
             client_max_body_size 5G;
