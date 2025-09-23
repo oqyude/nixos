@@ -41,7 +41,7 @@
         #     }
         #   ];
         # };
-        "onlyoffice.local" = {
+        "office.zeroq.ru" = {
           forceSSL = false;
           enableACME = false;
           listen = [
