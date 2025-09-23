@@ -115,14 +115,14 @@ in
     };
     onlyoffice = {
       enable = true;
-      hostname = "onlyoffice";
+      hostname = "onlyoffice.local";
     };
     #rabbitmq.enable = false;
   };
 
   networking.hosts = {
     "0.0.0.0" = [
-      "onlyoffice"
+      "onlyoffice.local"
     ];
     # "127.0.0.1" = [
     #   "nextcloud.zeroq.ru"
