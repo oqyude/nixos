@@ -53,7 +53,7 @@ in
         overwriteprotocol = "https";
       };
       extraAppsEnable = true;
-      appstoreEnable = true;
+      appstoreEnable = false;
       extraApps = {
         inherit (pkgs.nextcloud31Packages.apps) # (config.services.nextcloud.package.packages.apps)
           deck
@@ -88,11 +88,11 @@ in
     };
     collabora-online = {
       enable = true;
-      package = stable.collabora-online;
+      #package = stable.collabora-online;
       port = 9980;
       settings = {
         # Rely on reverse proxy for SSL
-        server_name = "0.0.0.0";
+        server_name = "https://collabora.zeroq.ru";
         ssl = {
           enable = false;
           termination = true;
@@ -103,12 +103,12 @@ in
           post_allow.host = [
             "localhost"
             "100.64.0.0"
-            "0.0.0.0"
+            "127.0.0.1"
           ]; # "::1"
         };
         storage.wopi = {
           "@allow" = true;
-          host = [ "nextcloud.zeroq.ru" "0.0.0.0" ];
+          host = [ "nextcloud.zeroq.ru" "127.0.0.1" ];
         };
       };
     };
@@ -135,7 +135,7 @@ in
   systemd.services.nextcloud-config-collabora =
     let
       inherit (config.services.nextcloud) occ;
-      wopi_url = "http://[::1]:${toString config.services.collabora-online.port}";
+      wopi_url = "http://127.0.0.1:${toString config.services.collabora-online.port}";
       public_wopi_url = "https://collabora.zeroq.ru";
       wopi_allowlist = lib.concatStringsSep "," [
         "127.0.0.1"
