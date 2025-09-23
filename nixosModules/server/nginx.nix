@@ -55,6 +55,20 @@
             }
           ];
         };
+        "localhost:5230" = {
+          forceSSL = false;
+          enableACME = false;
+          listen = [
+            {
+              addr = "100.64.0.0";
+              port = 5230;
+            }
+            {
+              addr = "192.168.1.20";
+              port = 5230;
+            }
+          ];
+        };
       };
     };
   };

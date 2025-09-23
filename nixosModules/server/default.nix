@@ -8,6 +8,7 @@
     # ./open-webui.nix
     ../software/beets
     ./calibre-web.nix
+    ./memos.nix
     ./immich.nix
     ./mealie.nix
     ./miniflux.nix
