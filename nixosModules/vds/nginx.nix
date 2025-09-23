@@ -21,11 +21,12 @@ in
           forceSSL = true;
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://${server}:8000";
+            proxyPass = "http://${server}:8999";
             proxyWebsockets = true; # onlyoffice uses websockets
           };
           extraConfig = ''
             client_max_body_size 5G;
+            absolute_redirect off;
           '';
         };
         "collabora.zeroq.ru" = {

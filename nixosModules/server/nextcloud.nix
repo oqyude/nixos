@@ -119,7 +119,7 @@ in
     onlyoffice = {
       enable = true;
       hostname = "onlyoffice.local";
-      port = 8000;
+      port = 8999;
       package = stable.onlyoffice-documentserver;
     };
     #rabbitmq.enable = false;
