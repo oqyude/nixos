@@ -29,6 +29,9 @@
       l = "ls -l";
       lg = "lazygit";
       st = "systemctl-tui";
+      gp = "git pull";
+      ns = "nh os switch";
+      gp-ns = "gp && ns";
 
       # ssh
       s-1 = "ssh sapphira-1";
