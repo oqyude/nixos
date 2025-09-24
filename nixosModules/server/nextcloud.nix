@@ -15,9 +15,9 @@ in
 {
   services = {
     nextcloud-whiteboard-server = {
-      enable = false;
+      enable = true;
       settings = {
-        NEXTCLOUD_URL = "http://localhost:10000";
+        NEXTCLOUD_URL = "https://nextcloud.zeroq.ru";
       };
       secrets = [ "${inputs.zeroq-credentials}/services/nextcloud/jwt-secret.txt" ];
     };
@@ -48,7 +48,6 @@ in
           "100.64.0.0"
           "192.168.1.20"
           "localhost"
-          "sapphira.latxa-platy.ts.net"
         ];
         trusted_proxies = [
           "100.64.1.0"
@@ -63,7 +62,7 @@ in
           end_to_end_encryption
           groupfolders
           impersonate
-          onlyoffice
+          # onlyoffice
           bookmarks
           calendar
           contacts
@@ -80,7 +79,7 @@ in
           notify_push
           polls
           previewgenerator
-          richdocuments
+          # richdocuments
           spreed
           tasks
           user_oidc
@@ -116,30 +115,27 @@ in
     #     };
     #   };
     # };
-    onlyoffice = {
-      enable = true;
-      hostname = "onlyoffice.local";
-      #port = 8999;
-      #package = stable.onlyoffice-documentserver;
-    };
-    #rabbitmq.enable = false;
+    # onlyoffice = {
+    #   enable = false;
+    #   hostname = "onlyoffice.local";
+    # };
   };
 
-  networking.hosts = {
-    "0.0.0.0" = [
-      "onlyoffice.local"
-    ];
-    # "127.0.0.1" = [
-    #   "nextcloud.zeroq.ru"
-    #   "collabora.zeroq.ru"
-    #   "office.zeroq.com"
-    # ];
-    # "::1" = [
-    #   "nextcloud.zeroq.ru"
-    #   "collabora.zeroq.ru"
-    #   # "office.zeroq.com"
-    # ];
-  };
+  # networking.hosts = {
+  #   "0.0.0.0" = [
+  #     "onlyoffice.local"
+  #   ];
+  #   # "127.0.0.1" = [
+  #   #   "nextcloud.zeroq.ru"
+  #   #   "collabora.zeroq.ru"
+  #   #   "office.zeroq.com"
+  #   # ];
+  #   # "::1" = [
+  #   #   "nextcloud.zeroq.ru"
+  #   #   "collabora.zeroq.ru"
+  #   #   # "office.zeroq.com"
+  #   # ];
+  # };
 
   # systemd.services.nextcloud-config-collabora =
   #   let
@@ -183,7 +179,7 @@ in
   };
 
   systemd.tmpfiles.rules = [
-    "z /mnt/nextcloud 0755 nextcloud nextcloud -"
+    "z /mnt/nextcloud 0750 nextcloud nextcloud -"
   ];
 
   environment.systemPackages = [

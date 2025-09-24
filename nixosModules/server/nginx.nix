@@ -41,26 +41,26 @@
         #     }
         #   ];
         # };
-        "onlyoffice.local" = {
-          forceSSL = false;
-          enableACME = false;
-          listen = [
-            {
-              addr = "100.64.0.0";
-              port = 8080;
-            }
-            {
-              addr = "192.168.1.20";
-              port = 8080;
-            }
-          ];
-          extraConfig = ''
-            # Force nginx to return relative redirects. This lets the browser
-            # figure out the full URL. This ends up working better because it's in
-            # front of the reverse proxy and has the right protocol, hostname & port.
-            absolute_redirect off;
-          '';
-        };
+        # "onlyoffice.local" = {
+        #   forceSSL = false;
+        #   enableACME = false;
+        #   listen = [
+        #     {
+        #       addr = "100.64.0.0";
+        #       port = 8080;
+        #     }
+        #     {
+        #       addr = "192.168.1.20";
+        #       port = 8080;
+        #     }
+        #   ];
+        #   extraConfig = ''
+        #     # Force nginx to return relative redirects. This lets the browser
+        #     # figure out the full URL. This ends up working better because it's in
+        #     # front of the reverse proxy and has the right protocol, hostname & port.
+        #     absolute_redirect off;
+        #   '';
+        # };
         # "localhost:9980" = {
         #   forceSSL = false;
         #   enableACME = false;

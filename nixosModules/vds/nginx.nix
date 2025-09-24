@@ -16,18 +16,6 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
-        "mealie.zeroq.ru" = {
-          forceSSL = true;
-          enableACME = true;
-          kTLS = true;
-          locations."/" = {
-            proxyPass = "http://${server}:9000";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
         "flux.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
@@ -101,14 +89,14 @@ in
             client_max_body_size 5G;
           '';
         };
-        # "llm.zeroq.ru" = {
-        #   addSSL = true;
-        #   enableACME = true;
-        #   locations."/" = {
-        #     proxyPass = "http://atoridu.laxta-platy.ts.net:11111";
-        #     proxyWebsockets = true;
-        #   };
-        # };
+        "llm.zeroq.ru" = {
+          addSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://atoridu.laxta-platy.ts.net:11112";
+            proxyWebsockets = true;
+          };
+        };
       };
     };
   };
