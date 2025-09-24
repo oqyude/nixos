@@ -26,7 +26,7 @@
               port = 10000;
             }
             locations."/whiteboard" = {
-              proxyPass = "http://${server}:3002";
+              proxyPass = "http://localhost:3002";
               proxyWebsockets = true;
             };
           ];
