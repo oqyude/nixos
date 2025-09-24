@@ -90,10 +90,10 @@ in
           '';
         };
         "llm.zeroq.ru" = {
-          addSSL = true;
+          forceSSL = true;
           enableACME = true;
           locations."/" = {
-            proxyPass = "http://atoridu.laxta-platy.ts.net:11112";
+            proxyPass = "http://100.86.62.4:11112";
             proxyWebsockets = true;
           };
         };

@@ -4,14 +4,9 @@
 }:
 {
   imports = [
-    #./cloudflared.nix
-    # ./open-webui.nix
     ../software/beets
     ./calibre-web.nix
-    # ./memos.nix
-    # ./trilium.nix
     ./immich.nix
-    # ./mealie.nix
     ./miniflux.nix
     ./nextcloud.nix
     ./nginx.nix
@@ -20,6 +15,11 @@
     ./syncthing.nix
     ./systemd.nix
     ./transmission.nix
+    # ./mealie.nix
+    # ./memos.nix
+    # ./open-webui.nix
+    # ./trilium.nix
     # ./zerotier.nix
+    #./cloudflared.nix
   ];
 }
