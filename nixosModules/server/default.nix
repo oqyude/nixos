@@ -5,7 +5,7 @@
 {
   imports = [
     #./cloudflared.nix
-    ./open-webui.nix
+    # ./open-webui.nix
     ../software/beets
     ./calibre-web.nix
     # ./memos.nix
