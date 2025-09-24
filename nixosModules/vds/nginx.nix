@@ -28,19 +28,19 @@ in
             client_max_body_size 5G;
           '';
         };
-        # "office.zeroq.ru" = {
-        #   enableACME = true;
-        #   forceSSL = true;
-        #   kTLS = true;
-        #   locations."/" = {
-        #     proxyPass = "http://${server}:8080";
-        #     proxyWebsockets = true;
-        #   };
-        #   extraConfig = ''
-        #     client_max_body_size 5G;
-        #     absolute_redirect off;
-        #   '';
-        # };
+        "office.zeroq.ru" = {
+          enableACME = true;
+          forceSSL = true;
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://${server}:8000";
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+            absolute_redirect off;
+          '';
+        };
         "immich.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;

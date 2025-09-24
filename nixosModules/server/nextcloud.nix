@@ -62,7 +62,7 @@ in
           end_to_end_encryption
           groupfolders
           impersonate
-          # onlyoffice
+          onlyoffice
           bookmarks
           calendar
           contacts
@@ -79,7 +79,7 @@ in
           notify_push
           polls
           previewgenerator
-          # richdocuments
+          richdocuments
           spreed
           tasks
           user_oidc
@@ -115,27 +115,27 @@ in
     #     };
     #   };
     # };
-    # onlyoffice = {
-    #   enable = false;
-    #   hostname = "onlyoffice.local";
-    # };
+    onlyoffice = {
+      enable = true;
+      hostname = "onlyoffice.local";
+    };
   };
 
-  # networking.hosts = {
-  #   "0.0.0.0" = [
-  #     "onlyoffice.local"
-  #   ];
-  #   # "127.0.0.1" = [
-  #   #   "nextcloud.zeroq.ru"
-  #   #   "collabora.zeroq.ru"
-  #   #   "office.zeroq.com"
-  #   # ];
-  #   # "::1" = [
-  #   #   "nextcloud.zeroq.ru"
-  #   #   "collabora.zeroq.ru"
-  #   #   # "office.zeroq.com"
-  #   # ];
-  # };
+  networking.hosts = {
+    "0.0.0.0" = [
+      "onlyoffice.local"
+    ];
+    # "127.0.0.1" = [
+    #   "nextcloud.zeroq.ru"
+    #   "collabora.zeroq.ru"
+    #   "office.zeroq.com"
+    # ];
+    # "::1" = [
+    #   "nextcloud.zeroq.ru"
+    #   "collabora.zeroq.ru"
+    #   # "office.zeroq.com"
+    # ];
+  };
 
   # systemd.services.nextcloud-config-collabora =
   #   let
