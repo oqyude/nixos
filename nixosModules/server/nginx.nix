@@ -25,11 +25,11 @@
               addr = "192.168.1.20";
               port = 10000;
             }
-            locations."/whiteboard" = {
-              proxyPass = "http://localhost:3002";
-              proxyWebsockets = true;
-            };
           ];
+          locations."/whiteboard" = {
+            proxyPass = "http://localhost:3002";
+            proxyWebsockets = true;
+          };
         };
         # "trilium" = {
         #   forceSSL = false;
