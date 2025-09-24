@@ -9,7 +9,7 @@
     port = 9000;
     database.createLocally = true;
     settings = {
-      ALLOW_SIGNUP = "true";
+      ALLOW_SIGNUP = "false";
     };
   };
 }
