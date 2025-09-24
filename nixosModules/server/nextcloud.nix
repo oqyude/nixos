@@ -21,7 +21,7 @@ in
       };
       secrets = [ "${inputs.zeroq-credentials}/services/nextcloud/jwt-secret.txt" ];
     };
-    nextcloud = {
+    nextcloud = { # в рот манал
       enable = true;
       package = pkgs.nextcloud31;
       hostName = "nextcloud.local";
