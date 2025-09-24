@@ -16,18 +16,6 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
-        "zeroq.ru" = {
-          forceSSL = true;
-          enableACME = true;
-          kTLS = true;
-          locations."/" = {
-            proxyPass = "http://${server}:6060";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
         "mealie.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
@@ -128,20 +116,6 @@ in
     acceptTerms = true;
     defaults = {
       email = "go.bin043120@gmail.com";
-    };
-    certs."zeroq.ru" = {
-      # DNS challenge обязательно для wildcard
-      dnsProvider = "regru"; # нужен плагин acme.sh для REG.RU
-      # Подключаем креды
-      credentials = {
-        REGRU_USERNAME = inputs.zeroq-credentials.services.acme.username;
-        REGRU_PASSWORD = inputs.zeroq-credentials.services.acme.password;
-      };
-      # wildcard домен
-      identifiers = [
-        "*.zeroq.ru"
-        "zeroq.ru"
-      ];
     };
   };
   networking.firewall.allowedTCPPorts = [
