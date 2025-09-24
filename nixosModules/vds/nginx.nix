@@ -128,17 +128,17 @@ in
     acceptTerms = true;
     defaults = {
       email = "go.bin043120@gmail.com";
-      certs."zeroq.ru" = {
-        # DNS challenge обязательно для wildcard
-        dnsProvider = "regru"; # нужен плагин acme.sh для REG.RU
-        # Подключаем креды
-        credentials = {
-          REGRU_USERNAME = inputs.zeroq-credentials.services.acme.username;
-          REGRU_PASSWORD = inputs.zeroq-credentials.services.acme.password;
-        };
-        # wildcard домен
-        identifiers = [ "*.zeroq.ru" "zeroq.ru" ];
+    };
+    certs."zeroq.ru" = {
+      # DNS challenge обязательно для wildcard
+      dnsProvider = "regru"; # нужен плагин acme.sh для REG.RU
+      # Подключаем креды
+      credentials = {
+        REGRU_USERNAME = inputs.zeroq-credentials.services.acme.username;
+        REGRU_PASSWORD = inputs.zeroq-credentials.services.acme.password;
       };
+      # wildcard домен
+      identifiers = [ "*.zeroq.ru" "zeroq.ru" ];
     };
   };
   networking.firewall.allowedTCPPorts = [
