@@ -47,11 +47,11 @@
           listen = [
             {
               addr = "100.64.0.0";
-              port = 8000;
+              port = 8001;
             }
             {
               addr = "192.168.1.20";
-              port = 8000;
+              port = 8001;
             }
           ];
           extraConfig = ''

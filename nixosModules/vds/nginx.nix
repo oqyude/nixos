@@ -33,7 +33,7 @@ in
           forceSSL = true;
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://${server}:8000";
+            proxyPass = "http://${server}:8001";
             proxyWebsockets = true;
           };
           extraConfig = ''
