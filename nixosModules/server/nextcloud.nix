@@ -17,7 +17,7 @@ in
     nextcloud-whiteboard-server = {
       enable = true;
       settings = {
-        NEXTCLOUD_URL = "http://nextcloud.local";
+        NEXTCLOUD_URL = "http://localhost";
       };
       secrets = [ "${inputs.zeroq-credentials}/services/nextcloud/jwt-secret.txt" ];
     };

@@ -25,6 +25,10 @@
               addr = "192.168.1.20";
               port = 10000;
             }
+            {
+              addr = "localhost";
+              port = 3002;
+            }
           ];
         };
         # "localhost:3002" = {
