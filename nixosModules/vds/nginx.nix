@@ -20,39 +20,33 @@ in
           forceSSL = true;
           enableACME = true;
           kTLS = true;
-          locations = {
-            "/mealie" = {
-              proxyPass = "http://${server}:9000";
-              proxyWebsockets = true;
-            };
-            "/memos" = {
-              proxyPass = "http://${server}:5230";
-              proxyWebsockets = true;
-            };
-            "/trilium" = {
-              proxyPass = "http://${server}:11000";
-              proxyWebsockets = true;
-            };
-            "/flux" = {
-              proxyPass = "http://${server}:6061";
-              proxyWebsockets = true;
-            };
-            "/calibre" = {
-              proxyPass = "http://${server}:8083";
-              proxyWebsockets = true;
-            };
-            "/pdf" = {
-              proxyPass = "http://${server}:6060";
-              proxyWebsockets = true;
-            };
-            "/immich" = {
-              proxyPass = "http://${server}:2283";
-              proxyWebsockets = true;
-            };
-            "/nextcloud" = {
-              proxyPass = "http://${server}:10000";
-              proxyWebsockets = true;
-            };
+          locations."/" = {
+            proxyPass = "http://${server}:6060";
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
+        "mealie.zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://${server}:9000";
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
+        "flux.zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://${server}:6061";
+            proxyWebsockets = true;
           };
           extraConfig = ''
             client_max_body_size 5G;
@@ -134,10 +128,17 @@ in
     acceptTerms = true;
     defaults = {
       email = "go.bin043120@gmail.com";
-      #webroot = "/var/lib/acme/acme-challenge";
-      #group = config.services.nginx.group;
-      #server = "https://acme-staging-v02.api.letsencrypt.org/directory";
-      #listenHTTP = ":1360";
+      certs."zeroq.ru" = {
+        # DNS challenge обязательно для wildcard
+        dnsProvider = "regru"; # нужен плагин acme.sh для REG.RU
+        # Подключаем креды
+        credentials = {
+          REGRU_USERNAME = inputs.zeroq-credentials.services.acme.username;
+          REGRU_PASSWORD = inputs.zeroq-credentials.services.acme.password;
+        };
+        # wildcard домен
+        identifiers = [ "*.zeroq.ru" "zeroq.ru" ];
+      };
     };
   };
   networking.firewall.allowedTCPPorts = [
