@@ -138,7 +138,10 @@ in
         REGRU_PASSWORD = inputs.zeroq-credentials.services.acme.password;
       };
       # wildcard домен
-      identifiers = [ "*.zeroq.ru" "zeroq.ru" ];
+      identifiers = [
+        "*.zeroq.ru"
+        "zeroq.ru"
+      ];
     };
   };
   networking.firewall.allowedTCPPorts = [
