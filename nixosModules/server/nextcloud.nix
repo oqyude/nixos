@@ -17,14 +17,14 @@ in
     nextcloud-whiteboard-server = {
       enable = true;
       settings = {
-        NEXTCLOUD_URL = "https://nextcloud.zeroq.ru";
+        NEXTCLOUD_URL = "https://nextcloud.local";
       };
       secrets = [ "${inputs.zeroq-credentials}/services/nextcloud/jwt-secret.txt" ];
     };
     nextcloud = {
       enable = true;
       package = pkgs.nextcloud31;
-      hostName = "localhost:10000";
+      hostName = "nextcloud.local";
       database.createLocally = true;
       home = "/mnt/nextcloud";
       configureRedis = true;

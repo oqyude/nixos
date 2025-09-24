@@ -13,7 +13,7 @@
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
-        "localhost:10000" = {
+        "nextcloud.local" = {
           forceSSL = false;
           enableACME = false;
           listen = [
@@ -25,6 +25,10 @@
               addr = "192.168.1.20";
               port = 10000;
             }
+            locations."/whiteboard" = {
+              proxyPass = "http://${server}:3002";
+              proxyWebsockets = true;
+            };
           ];
         };
         # "trilium" = {
@@ -45,7 +49,7 @@
           forceSSL = false;
           enableACME = false;
           locations."/" = {
-            proxyPass = "onlyoffice.local";
+            proxyPass = "http://onlyoffice.local:8000";
             proxyWebsockets = true;
           };
           extraConfig = ''
