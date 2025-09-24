@@ -117,13 +117,13 @@ in
     # };
     onlyoffice = {
       enable = true;
-      hostname = "office.zeroq.ru";
+      hostname = "onlyoffice.local";
     };
   };
 
   networking.hosts = {
     "0.0.0.0" = [
-      "office.zeroq.ru"
+      "onlyoffice.local"
     ];
     # "127.0.0.1" = [
     #   "nextcloud.zeroq.ru"
