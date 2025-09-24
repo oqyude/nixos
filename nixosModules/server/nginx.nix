@@ -27,20 +27,20 @@
             }
           ];
         };
-        "localhost:3002" = {
-          forceSSL = false;
-          enableACME = false;
-          listen = [
-            {
-              addr = "100.64.0.0";
-              port = 3002;
-            }
-            {
-              addr = "192.168.1.20";
-              port = 3002;
-            }
-          ];
-        };
+        # "localhost:3002" = {
+        #   forceSSL = false;
+        #   enableACME = false;
+        #   listen = [
+        #     {
+        #       addr = "100.64.0.0";
+        #       port = 3002;
+        #     }
+        #     {
+        #       addr = "192.168.1.20";
+        #       port = 3002;
+        #     }
+        #   ];
+        # };
         # "trilium" = {
         #   forceSSL = false;
         #   enableACME = false;
