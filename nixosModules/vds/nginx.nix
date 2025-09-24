@@ -16,6 +16,18 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
+        "whiteboard.zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://${server}:3002";
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
         "flux.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
