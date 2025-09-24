@@ -38,8 +38,7 @@ in
           };
           extraConfig = ''
             client_max_body_size 5G;
-            absolute_redirect off;
-          '';
+          ''; # absolute_redirect off;
         };
         "immich.zeroq.ru" = {
           forceSSL = true;
@@ -57,9 +56,19 @@ in
           forceSSL = true;
           enableACME = true;
           kTLS = true;
-          locations."/" = {
-            proxyPass = "http://${server}:10000";
-            proxyWebsockets = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://${server}:10000";
+              proxyWebsockets = true;
+            };
+            "/whiteboard" = {
+              proxyPass = "http://${server}:3002";
+              proxyWebsockets = true;
+            };
+            "/onlyoffice" = {
+              proxyPass = "http://${server}:8000";
+              proxyWebsockets = true;
+            };
           };
           extraConfig = ''
             client_max_body_size 5G;
