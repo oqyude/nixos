@@ -16,64 +16,68 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
-        "office.zeroq.ru" = {
-          enableACME = true;
+        "zeroq.ru" = {
           forceSSL = true;
-          kTLS = true;
-          locations."/" = {
-            proxyPass = "http://${server}:8080";
-            proxyWebsockets = true; # onlyoffice uses websockets
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-            absolute_redirect off;
-          '';
-        };
-        "collabora.zeroq.ru" = {
           enableACME = true;
-          forceSSL = true;
           kTLS = true;
-          locations."/" = {
-            proxyPass = "http://${server}:9980";
-            proxyWebsockets = true;
-          };
-          #proxy_set_header X-Forwarded-Proto https;
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
-        "memos.zeroq.ru" = {
-          enableACME = true;
-          forceSSL = true;
-          kTLS = true;
-          locations."/" = {
-            proxyPass = "http://${server}:5230";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
-        "trilium.zeroq.ru" = {
-          enableACME = true;
-          forceSSL = true;
-          kTLS = true;
-          locations."/" = {
-            proxyPass = "http://${server}:11000";
-            proxyWebsockets = true;
+          locations = {
+            "/mealie" = {
+              proxyPass = "http://${server}:9000";
+              proxyWebsockets = true;
+            };
+            "/memos" = {
+              proxyPass = "http://${server}:5230";
+              proxyWebsockets = true;
+            };
+            "/trilium" = {
+              proxyPass = "http://${server}:11000";
+              proxyWebsockets = true;
+            };
+            "/flux" = {
+              proxyPass = "http://${server}:6061";
+              proxyWebsockets = true;
+            };
+            "/calibre" = {
+              proxyPass = "http://${server}:8083";
+              proxyWebsockets = true;
+            };
+            "/pdf" = {
+              proxyPass = "http://${server}:6060";
+              proxyWebsockets = true;
+            };
+            "/immich" = {
+              proxyPass = "http://${server}:2283";
+              proxyWebsockets = true;
+            };
+            "/nextcloud" = {
+              proxyPass = "http://${server}:10000";
+              proxyWebsockets = true;
+            };
           };
           extraConfig = ''
             client_max_body_size 5G;
           '';
         };
+        # "office.zeroq.ru" = {
+        #   enableACME = true;
+        #   forceSSL = true;
+        #   kTLS = true;
+        #   locations."/" = {
+        #     proxyPass = "http://${server}:8080";
+        #     proxyWebsockets = true;
+        #   };
+        #   extraConfig = ''
+        #     client_max_body_size 5G;
+        #     absolute_redirect off;
+        #   '';
+        # };
         "immich.zeroq.ru" = {
-          # 31.57.105.253
           forceSSL = true;
           enableACME = true;
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://${server}:2283"; # Порт Immich
-            proxyWebsockets = true; # Если Immich использует WebSockets
+            proxyPass = "http://${server}:2283";
+            proxyWebsockets = true;
           };
           extraConfig = ''
             client_max_body_size 5G;
@@ -84,19 +88,7 @@ in
           enableACME = true;
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://${server}:10000"; # Порт Nextcloud
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
-        "flux.zeroq.ru" = {
-          forceSSL = true;
-          enableACME = true;
-          kTLS = true;
-          locations."/" = {
-            proxyPass = "http://${server}:6061"; # Порт Nextcloud
+            proxyPass = "http://${server}:10000";
             proxyWebsockets = true;
           };
           extraConfig = ''
@@ -108,7 +100,7 @@ in
           enableACME = true;
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://${server}:8083"; # Порт Nextcloud
+            proxyPass = "http://${server}:8083";
             proxyWebsockets = true;
           };
           extraConfig = ''
@@ -120,7 +112,7 @@ in
           enableACME = true;
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://${server}:6060"; # Порт Nextcloud
+            proxyPass = "http://${server}:6060";
             proxyWebsockets = true;
           };
           extraConfig = ''
@@ -131,7 +123,7 @@ in
         #   addSSL = true;
         #   enableACME = true;
         #   locations."/" = {
-        #     proxyPass = "http://atoridu.laxta-platy.ts.net:11111"; # Порт Open WebUI
+        #     proxyPass = "http://atoridu.laxta-platy.ts.net:11111";
         #     proxyWebsockets = true;
         #   };
         # };

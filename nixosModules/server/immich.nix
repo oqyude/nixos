@@ -6,13 +6,9 @@
   xlib,
   ...
 }:
-# let
-#   pkgsn = import inputs.nixpkgs-master { system = "x86_64-linux"; };
-# in
 {
   services = {
     immich = {
-      #package = pkgsn.immich; # inputs.self.packages.x86_64-linux.immich;
       enable = true;
       port = 2283;
       host = "0.0.0.0";
@@ -37,7 +33,7 @@
   };
 
   systemd.tmpfiles.rules = [
-    "z /mnt/immich 0755 immich immich -" # beets absolute paths
+    "z /mnt/immich 0755 immich immich -"
   ];
 
   users.users.immich.extraGroups = [
