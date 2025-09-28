@@ -7,12 +7,12 @@
 {
   services.xray = {
     enable = true;
-    settings = inputs.zeroq-credentials.services.xray;
+    settings = inputs.zeroq-credentials.public.services.xray;
   };
 
   networking.firewall = {
-    allowedTCPPorts = [ 8443 ];
-    allowedUDPPorts = [ 8443 ];
+    allowedTCPPorts = [ 443 ];
+    allowedUDPPorts = [ 443 ];
   };
 
   environment.systemPackages = [ pkgs.xray ];

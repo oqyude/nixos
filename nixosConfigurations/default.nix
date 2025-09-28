@@ -6,5 +6,7 @@
     otreca = import ./hosts/vds.nix flakeContext; # vds
     sapphira = import ./hosts/server.nix flakeContext; # sapphira
     wsl = import ./hosts/wsl.nix flakeContext; # wsl
+
+    pub-vds = import ./hosts/pub-vds.nix flakeContext;
   };
 }

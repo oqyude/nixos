@@ -14,6 +14,7 @@
             "server"
             "vds"
             "wsl"
+            "pub-vds"
           ];
           default = "minimal";
           description = "Type of device for this host.";

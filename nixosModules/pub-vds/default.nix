@@ -1,0 +1,9 @@
+{
+  lib,
+  ...
+}:
+{
+  imports = [
+    ./xray.nix
+  ];
+}
