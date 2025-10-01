@@ -96,6 +96,16 @@
           default = "${config.xlib.dirs.user-home}/Music";
           description = "Music library directory.";
         };
+        services-folder = lib.mkOption {
+          type = lib.types.str;
+          default = "${config.xlib.dirs.server-home}/Services";
+          description = "All services folder.";
+        };
+        services-mnt-folder = lib.mkOption {
+          type = lib.types.str;
+          default = "/mnt/services";
+          description = "All services folder.";
+        };
         immich-folder = lib.mkOption {
           type = lib.types.str;
           default = "${config.xlib.dirs.server-home}/Services/immich";
