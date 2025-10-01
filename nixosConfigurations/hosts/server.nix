@@ -66,6 +66,10 @@ let
         };
       };
 
+      systemd.tmpfiles.rules = [
+        "z /mnt/services 0755 root root -"
+      ];
+
       services = {
         power-profiles-daemon.enable = lib.mkForce false;
         earlyoom.enable = true;
