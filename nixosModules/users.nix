@@ -22,7 +22,6 @@
           "pipewire"
           "qemu-libvirtd"
           "wheel"
-          "immich" # rm?
         ];
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKduJia+unaQQdN6X5syaHvnpIutO+yZwvfiCP4qKQ/P"
