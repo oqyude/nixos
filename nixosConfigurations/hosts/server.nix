@@ -67,7 +67,7 @@ let
       };
 
       systemd.tmpfiles.rules = [
-        "z /mnt/services 0755 root root -"
+        "z ${xlib.dirs.services-mnt-folder} 0755 root root -"
       ];
 
       services = {

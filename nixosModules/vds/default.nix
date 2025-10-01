@@ -5,7 +5,7 @@
 {
   imports = [
     ./docker.nix
-    ./netbird.nix
+    # ./netbird.nix
     ./nginx.nix
     ./xray.nix
   ];

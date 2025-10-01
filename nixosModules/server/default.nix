@@ -21,6 +21,5 @@
     # ./open-webui.nix
     # ./trilium.nix
     # ./zerotier.nix
-    #./cloudflared.nix
   ];
 }
