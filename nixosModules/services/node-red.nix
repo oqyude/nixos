@@ -3,6 +3,7 @@
   lib,
   pkgs,
   xlib,
+  inputs,
   ...
 }:
 {
