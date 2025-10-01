@@ -5,6 +5,7 @@
 {
   imports = [
     ../software/beets
+    ../services/node-red.nix
     ./calibre-web.nix
     ./immich.nix
     ./miniflux.nix

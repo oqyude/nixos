@@ -57,7 +57,7 @@ let
             "gid=1000"
           ];
         };
-        fileSystems."${xlib.dirs.services-mnt-folder}" = {
+        "${xlib.dirs.services-mnt-folder}" = {
           device = "${xlib.dirs.services-folder}";
           options = [
             "bind"
