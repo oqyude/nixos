@@ -9,7 +9,7 @@
         description = "Auto rebuild NixOS config";
         serviceConfig = {
         Type = "oneshot";
-        User = "${xlib.device.admin}";
+        User = "${xlib.device.username}";
         WorkingDirectory = "/etc/nixos";
         ExecStart = "gp-ns";
         };
