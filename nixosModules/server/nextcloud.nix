@@ -94,7 +94,7 @@ in
       };
     };
     collabora-online = {
-      enable = false;
+      enable = true;
       #package = stable.collabora-online;
       port = 9980;
       settings = {
@@ -124,14 +124,14 @@ in
       };
     };
     onlyoffice = {
-      enable = true;
-      package = work.onlyoffice-documentserver;
+      enable = false;
+      # package = work.onlyoffice-documentserver;
       hostname = "0.0.0.0";
       jwtSecretFile = "${inputs.zeroq-credentials}/services/onlyoffice/jwt.txt";
     };
   };
 
-  fonts.fonts = [ work.corefonts ];
+  fonts.packages = [ work.corefonts ];
 
 
   networking.hosts = {
