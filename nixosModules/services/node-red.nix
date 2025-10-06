@@ -8,7 +8,7 @@
 }:
 {
   services.node-red = {
-    enable = true;
+    enable = false;
     port = 1880;
     openFirewall = true;
     userDir = "${xlib.dirs.services-mnt-folder}/node-red";

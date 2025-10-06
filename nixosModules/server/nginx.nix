@@ -27,34 +27,6 @@
             }
           ];
         };
-        # "localhost:3002" = {
-        #   forceSSL = false;
-        #   enableACME = false;
-        #   listen = [
-        #     {
-        #       addr = "100.64.0.0";
-        #       port = 3002;
-        #     }
-        #     {
-        #       addr = "192.168.1.20";
-        #       port = 3002;
-        #     }
-        #   ];
-        # };
-        # "trilium" = {
-        #   forceSSL = false;
-        #   enableACME = false;
-        #   listen = [
-        #     {
-        #       addr = "100.64.0.0";
-        #       port = 11000;
-        #     }
-        #     {
-        #       addr = "192.168.1.20";
-        #       port = 11000;
-        #     }
-        #   ];
-        # };
         # "office.zeroq.ru" = {
         #   forceSSL = false;
         #   enableACME = false;
@@ -68,54 +40,6 @@
         #     # front of the reverse proxy and has the right protocol, hostname & port.
         #     absolute_redirect off;
         #   '';
-        # };
-        # "onlyoffice.local" = {
-        #   forceSSL = false;
-        #   enableACME = false;
-        #   listen = [
-        #     {
-        #       addr = "100.64.0.0";
-        #       port = 8001;
-        #     }
-        #     {
-        #       addr = "192.168.1.20";
-        #       port = 8001;
-        #     }
-        #   ];
-        #   extraConfig = ''
-        #     # Force nginx to return relative redirects. This lets the browser
-        #     # figure out the full URL. This ends up working better because it's in
-        #     # front of the reverse proxy and has the right protocol, hostname & port.
-        #     absolute_redirect off;
-        #   '';
-        # };
-        # "localhost:9980" = {
-        #   forceSSL = false;
-        #   enableACME = false;
-        #   listen = [
-        #     {
-        #       addr = "100.64.0.0";
-        #       port = 9980;
-        #     }
-        #     {
-        #       addr = "192.168.1.20";
-        #       port = 9980;
-        #     }
-        #   ];
-        # };
-        # "localhost:5230" = {
-        #   forceSSL = false;
-        #   enableACME = false;
-        #   listen = [
-        #     {
-        #       addr = "100.64.0.0";
-        #       port = 5230;
-        #     }
-        #     {
-        #       addr = "192.168.1.20";
-        #       port = 5230;
-        #     }
-        #   ];
         # };
       };
     };

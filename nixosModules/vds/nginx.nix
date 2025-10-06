@@ -28,18 +28,18 @@ in
             client_max_body_size 5G;
           '';
         };
-        "node-red.zeroq.ru" = {
-          forceSSL = true;
-          enableACME = true;
-          kTLS = true;
-          locations."/" = {
-            proxyPass = "http://${server}:1880";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
+        # "node-red.zeroq.ru" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   kTLS = true;
+        #   locations."/" = {
+        #     proxyPass = "http://${server}:1880";
+        #     proxyWebsockets = true;
+        #   };
+        #   extraConfig = ''
+        #     client_max_body_size 5G;
+        #   '';
+        # };
         "flux.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
@@ -57,7 +57,7 @@ in
           forceSSL = true;
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://${server}:8000";
+            proxyPass = "http://${server}:9980";
             proxyWebsockets = true;
           };
           extraConfig = ''
@@ -122,14 +122,14 @@ in
             client_max_body_size 5G;
           '';
         };
-        "llm.zeroq.ru" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://100.86.62.4:11112";
-            proxyWebsockets = true;
-          };
-        };
+        # "llm.zeroq.ru" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   locations."/" = {
+        #     proxyPass = "http://100.86.62.4:11112";
+        #     proxyWebsockets = true;
+        #   };
+        # };
       };
     };
   };
