@@ -62,7 +62,7 @@ in
           end_to_end_encryption
           groupfolders
           impersonate
-          # onlyoffice
+          onlyoffice
           bookmarks
           calendar
           contacts
@@ -89,7 +89,7 @@ in
       };
     };
     collabora-online = {
-      enable = true;
+      enable = false;
       #package = stable.collabora-online;
       port = 9980;
       settings = {
@@ -118,22 +118,24 @@ in
         };
       };
     };
-    # onlyoffice = {
-    #   enable = false;
-    #   hostname = "onlyoffice.local";
-    # };
+    onlyoffice = {
+      enable = true;
+      hostname = "onlyoffice.local";
+    };
   };
 
-  # networking.hosts = {
-  #   # "localhost" = [
-  #   #   "nextcloud.zeroq.ru"
-  #   #   "office.zeroq.ru"
-  #   # ];
-  #   # "::1" = [
-  #   #   "office.zeroq.ru"
-  #   #   "nextcloud.zeroq.ru"
-  #   # ];
-  # };
+  networking.hosts = {
+    # "localhost" = [
+    #   "nextcloud.zeroq.ru"
+    #   "office.zeroq.ru"
+    # ];
+    "nextcloud.local" = [
+      "nextcloud.zeroq.ru"
+    ];
+    "0.0.0.0" = [
+      "onlyoffice.local"
+    ];
+  };
 
   systemd.services.nextcloud-config-collabora =
     let
