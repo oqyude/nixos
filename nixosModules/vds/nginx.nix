@@ -56,9 +56,19 @@ in
           enableACME = true;
           forceSSL = true;
           kTLS = true;
-          locations."/" = {
-            proxyPass = "http://${server}:8000";
-            proxyWebsockets = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://${server}:8000"; # API и coauthoring
+              proxyWebsockets = true;
+            };
+            "/web-apps/" = {
+              proxyPass = "http://${server}:8000/web-apps/"; # фронтенд
+              proxyWebsockets = true;
+            };
+            "/coauthoring/" = {
+              proxyPass = "http://${server}:8000/coauthoring/"; # coauthoring WS
+              proxyWebsockets = true;
+            };
           };
           extraConfig = ''
             client_max_body_size 5G;
