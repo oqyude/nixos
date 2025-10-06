@@ -120,7 +120,8 @@ in
     };
     onlyoffice = {
       enable = true;
-      hostname = "localhost";
+      hostname = "0.0.0.0";
+      jwtSecretFile = "${inputs.zeroq-credentials}/services/onlyoffice/jwt.txt";
     };
   };
 
@@ -129,9 +130,6 @@ in
     #   "nextcloud.zeroq.ru"
     #   "office.zeroq.ru"
     # ];
-    "nextcloud.local" = [
-      "nextcloud.zeroq.ru"
-    ];
     # "0.0.0.0" = [
     #   "onlyoffice.local"
     # ];
