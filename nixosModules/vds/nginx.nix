@@ -72,6 +72,7 @@ in
           };
           extraConfig = ''
             client_max_body_size 5G;
+            proxy_set_header Host $host
           ''; # absolute_redirect off;
         };
         "immich.zeroq.ru" = {
