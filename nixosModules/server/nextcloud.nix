@@ -135,6 +135,9 @@ in
     "0.0.0.0" = [
       "onlyoffice.local"
     ];
+    "100.64.0.0:9980" = [
+      "onlyoffice.local"
+    ];
   };
 
   systemd.services.nextcloud-config-collabora =
