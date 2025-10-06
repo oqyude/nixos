@@ -103,10 +103,10 @@ in
         net = {
           listen = "0.0.0.0";
           post_allow.host = [
-            "localhost"
-            "nextcloud.zeroq.ru"
-            "nextcloud.local"
-            "100.64.1.0"
+            # "localhost"
+            # "nextcloud.zeroq.ru"
+            # "nextcloud.local"
+            # "100.64.1.0"
             "0.0.0.0"
           ];
         };
@@ -118,22 +118,22 @@ in
         };
       };
     };
-    onlyoffice = {
-      enable = false;
-      hostname = "onlyoffice.local";
-    };
+    # onlyoffice = {
+    #   enable = false;
+    #   hostname = "onlyoffice.local";
+    # };
   };
 
-  networking.hosts = {
-    # "localhost" = [
-    #   "nextcloud.zeroq.ru"
-    #   "office.zeroq.ru"
-    # ];
-    # "::1" = [
-    #   "office.zeroq.ru"
-    #   "nextcloud.zeroq.ru"
-    # ];
-  };
+  # networking.hosts = {
+  #   # "localhost" = [
+  #   #   "nextcloud.zeroq.ru"
+  #   #   "office.zeroq.ru"
+  #   # ];
+  #   # "::1" = [
+  #   #   "office.zeroq.ru"
+  #   #   "nextcloud.zeroq.ru"
+  #   # ];
+  # };
 
   systemd.services.nextcloud-config-collabora =
     let
