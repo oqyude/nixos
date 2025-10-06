@@ -120,7 +120,7 @@ in
     };
     onlyoffice = {
       enable = true;
-      hostname = "0.0.0.0";
+      hostname = "localhost";
     };
   };
 

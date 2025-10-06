@@ -27,6 +27,20 @@
             }
           ];
         };
+        "localhost:8000" = {
+          forceSSL = false;
+          enableACME = false;
+          listen = [
+            {
+              addr = "100.64.0.0";
+              port = 8000;
+            }
+            {
+              addr = "192.168.1.20";
+              port = 8000;
+            }
+          ];
+        };
         # "office.zeroq.ru" = {
         #   forceSSL = false;
         #   enableACME = false;
