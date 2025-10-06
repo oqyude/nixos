@@ -57,11 +57,12 @@ in
           forceSSL = true;
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://${server}:9980";
+            proxyPass = "http://${server}:8000";
             proxyWebsockets = true;
           };
           extraConfig = ''
             client_max_body_size 5G;
+            absolute_redirect off;
           ''; # absolute_redirect off;
         };
         "immich.zeroq.ru" = {

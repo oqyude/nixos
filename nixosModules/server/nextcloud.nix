@@ -120,7 +120,7 @@ in
     };
     onlyoffice = {
       enable = true;
-      hostname = "onlyoffice.local";
+      hostname = "0.0.0.0";
     };
   };
 
@@ -132,40 +132,37 @@ in
     "nextcloud.local" = [
       "nextcloud.zeroq.ru"
     ];
-    "0.0.0.0" = [
-      "onlyoffice.local"
-    ];
-    "100.64.0.0:9980" = [
-      "onlyoffice.local"
-    ];
+    # "0.0.0.0" = [
+    #   "onlyoffice.local"
+    # ];
   };
 
   systemd.services.nextcloud-config-collabora =
-    let
-      inherit (config.services.nextcloud) occ;
-      wopi_url = "http://localhost:${toString config.services.collabora-online.port}";
-      public_wopi_url = "https://office.zeroq.ru";
-      wopi_allowlist = lib.concatStringsSep "," [
-        "0.0.0.0/0"
-      ];
-    in
-    {
-      wantedBy = [ "multi-user.target" ];
-      after = [
-        "nextcloud-setup.service"
-        "coolwsd.service"
-      ];
-      requires = [ "coolwsd.service" ];
-      script = ''
-        ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_url --value ${lib.escapeShellArg wopi_url}
-        ${occ}/bin/nextcloud-occ config:app:set richdocuments public_wopi_url --value ${lib.escapeShellArg public_wopi_url}
-        ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_allowlist --value ${lib.escapeShellArg wopi_allowlist}
-        ${occ}/bin/nextcloud-occ richdocuments:setup
-      '';
-      serviceConfig = {
-        Type = "oneshot";
-      };
+  let
+    inherit (config.services.nextcloud) occ;
+    wopi_url = "http://localhost:${toString config.services.collabora-online.port}";
+    public_wopi_url = "https://office.zeroq.ru";
+    wopi_allowlist = lib.concatStringsSep "," [
+      "0.0.0.0/0"
+    ];
+  in
+  {
+    wantedBy = [ "multi-user.target" ];
+    after = [
+      "nextcloud-setup.service"
+      "coolwsd.service"
+    ];
+    requires = [ "coolwsd.service" ];
+    script = ''
+      ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_url --value ${lib.escapeShellArg wopi_url}
+      ${occ}/bin/nextcloud-occ config:app:set richdocuments public_wopi_url --value ${lib.escapeShellArg public_wopi_url}
+      ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_allowlist --value ${lib.escapeShellArg wopi_allowlist}
+      ${occ}/bin/nextcloud-occ richdocuments:setup
+    '';
+    serviceConfig = {
+      Type = "oneshot";
     };
+  };
 
   fileSystems."/mnt/nextcloud" = {
     device = "${xlib.dirs.nextcloud-folder}";
