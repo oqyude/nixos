@@ -104,9 +104,8 @@ in
           listen = "0.0.0.0";
           post_allow.host = [
             "localhost"
-            "0.0.0.0"
             "nextcloud.zeroq.ru"
-            "nextcloud.local"
+            "100.64.1.0"
           ];
         };
         storage.wopi = {
@@ -114,9 +113,7 @@ in
           host = [
             "nextcloud.zeroq.ru"
             "localhost"
-            "localhost:10000"
-            "0.0.0.0"
-            "nextcloud.local"
+            "100.64.1.0"
           ];
         };
       };
@@ -128,25 +125,12 @@ in
   };
 
   networking.hosts = {
-    # "0.0.0.0" = [
-    #   # "nextcloud.local"
-    #   # "nextcloud.zeroq.ru"
-    #   # "office.zeroq.ru"
-    # ];
-    # "localhost" = [
-    #   # "nextcloud.local"
-    #   "nextcloud.zeroq.ru"
-    #   # "office.zeroq.ru"
-    # ];
-    "nextcloud.local" = [
+    "localhost:10000" = [
       "nextcloud.zeroq.ru"
     ];
     "localhost:9980" = [
       "office.zeroq.ru"
     ];
-    # "0.0.0.0" = [
-    #   "onlyoffice.local"
-    # ];
   };
 
   systemd.services.nextcloud-config-collabora =
@@ -156,10 +140,8 @@ in
       public_wopi_url = "https://office.zeroq.ru";
       wopi_allowlist = lib.concatStringsSep "," [
         "nextcloud.zeroq.ru"
-        "localhost:10000"
         "localhost"
-        "0.0.0.0"
-        "nextcloud.local"
+        "100.64.1.0"
       ];
     in
     {
