@@ -11,6 +11,11 @@ let
     system = "x86_64-linux";
     config.allowUnfree = true;
   };
+  work = import inputs.nixpkgs-stable {
+    system = "x86_64-linux";
+    config.allowUnfree = true;
+    config.allowUnfreePredicate = true;
+  };
 in
 {
   services = {
@@ -120,10 +125,14 @@ in
     };
     onlyoffice = {
       enable = true;
+      package = work.onlyoffice-documentserver;
       hostname = "0.0.0.0";
       jwtSecretFile = "${inputs.zeroq-credentials}/services/onlyoffice/jwt.txt";
     };
   };
+
+  fonts.fonts = [ work.corefonts ];
+
 
   networking.hosts = {
     # "localhost" = [
