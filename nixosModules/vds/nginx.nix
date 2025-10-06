@@ -61,18 +61,20 @@ in
               proxyPass = "http://${server}:8000"; # API и coauthoring
               proxyWebsockets = true;
             };
-            "/web-apps/" = {
-              proxyPass = "http://${server}:8000/web-apps/"; # фронтенд
-              proxyWebsockets = true;
-            };
-            "/coauthoring/" = {
-              proxyPass = "http://${server}:8000/coauthoring/"; # coauthoring WS
-              proxyWebsockets = true;
-            };
+            # "/web-apps/" = {
+            #   proxyPass = "http://${server}:8000/web-apps/"; # фронтенд
+            #   proxyWebsockets = true;
+            # };
+            # "/coauthoring/" = {
+            #   proxyPass = "http://${server}:8000/coauthoring/"; # coauthoring WS
+            #   proxyWebsockets = true;
+            # };
           };
           extraConfig = ''
             client_max_body_size 5G;
-            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           ''; # absolute_redirect off;
         };
         "immich.zeroq.ru" = {
@@ -100,10 +102,10 @@ in
               proxyPass = "http://${server}:3002";
               proxyWebsockets = true;
             };
-            "/onlyoffice" = {
-              proxyPass = "http://${server}:8000";
-              proxyWebsockets = true;
-            };
+            # "/onlyoffice" = {
+            #   proxyPass = "http://${server}:8000";
+            #   proxyWebsockets = true;
+            # };
           };
           extraConfig = ''
             client_max_body_size 5G;
