@@ -11,6 +11,7 @@
     enable = true;
     settings = {
       PORT = "4001";
+      HOST = "0.0.0.0";
     };
   };
 
