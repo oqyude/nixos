@@ -125,11 +125,13 @@ in
   };
 
   networking.hosts = {
-    "localhost:10000" = [
+    "localhost" = [
       "nextcloud.zeroq.ru"
-    ];
-    "localhost:9980" = [
       "office.zeroq.ru"
+    ];
+    "::1" = [
+      "office.zeroq.ru"
+      "nextcloud.zeroq.ru"
     ];
   };
 
