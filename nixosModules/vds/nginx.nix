@@ -16,6 +16,18 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
+        "kuma.zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://${server}:4001";
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
         "node-red.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
