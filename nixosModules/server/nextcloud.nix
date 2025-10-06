@@ -128,14 +128,20 @@ in
   };
 
   networking.hosts = {
-    "0.0.0.0" = [
-      "nextcloud.local"
+    # "0.0.0.0" = [
+    #   # "nextcloud.local"
+    #   # "nextcloud.zeroq.ru"
+    #   # "office.zeroq.ru"
+    # ];
+    # "localhost" = [
+    #   # "nextcloud.local"
+    #   "nextcloud.zeroq.ru"
+    #   # "office.zeroq.ru"
+    # ];
+    "nextcloud.local" = [
       "nextcloud.zeroq.ru"
-      "office.zeroq.ru"
     ];
-    "localhost" = [
-      "nextcloud.local"
-      "nextcloud.zeroq.ru"
+    "localhost:9980" = [
       "office.zeroq.ru"
     ];
     # "0.0.0.0" = [
