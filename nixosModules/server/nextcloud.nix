@@ -106,12 +106,17 @@ in
             "localhost"
             "0.0.0.0"
             "nextcloud.zeroq.ru"
-            "nextcloud.local" 
+            "nextcloud.local"
           ]; # "::1"
         };
         storage.wopi = {
           "@allow" = true;
-          host = [ "nextcloud.zeroq.ru" "localhost" "0.0.0.0" "nextcloud.local" ];
+          host = [
+            "nextcloud.zeroq.ru"
+            "localhost"
+            "0.0.0.0"
+            "nextcloud.local"
+          ];
         };
       };
     };
