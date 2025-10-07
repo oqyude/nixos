@@ -46,7 +46,7 @@ let
         ./essentials
         ./users.nix
         ./options.nix
-        
+
         disko.nixosModules.disko # disko module
         sops-nix.nixosModules.sops # sops module
       ];
