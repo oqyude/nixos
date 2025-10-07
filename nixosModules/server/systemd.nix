@@ -13,8 +13,10 @@
       #after = [ ];
       requisite = [ "mnt-archive.mount" ]; # hard-code
       script = ''
-        ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.immich-folder}/ ${xlib.dirs.archive-drive}/Services/immich/
-        ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.nextcloud-folder}/ ${xlib.dirs.archive-drive}/Services/nextcloud/
+        ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.services-folder}/immich/ ${xlib.dirs.archive-drive}/Services/immich/
+        ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.services-folder}/nextcloud/ ${xlib.dirs.archive-drive}/Services/nextcloud/
+        ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.services-folder}/node-red/ ${xlib.dirs.archive-drive}/Services/node-red/
+        ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.services-folder}/uptime-kuma/ ${xlib.dirs.archive-drive}/Services/node-red/
       '';
       serviceConfig = {
         Type = "oneshot";
