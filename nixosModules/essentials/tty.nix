@@ -29,15 +29,13 @@
       l = "ls -l";
       lg = "lazygit";
       st = "systemctl-tui";
-      gp = "git pull";
-      ns = "nh os switch";
-      gp-ns = "gp && ns";
 
       # ssh
-      s-1 = "ssh sapphira-1";
-      s-1t = "ssh sapphira-1t";
-      o-0 = "ssh otreca-0";
-      o-0t = "ssh otreca-0t";
+ z-s="ssh sapphira";
+ z-st="ssh sapphira-tailscale";
+ z-o="ssh otreca";
+ z-ot="ssh otreca-tailscale";
+ z-p-1="ssh pubray-1";
 
       # Somethings
       reboot-bios = "sudo systemctl reboot --firmware-setup";
