@@ -39,7 +39,6 @@ let
       config,
       lib,
       xlib,
-      deviceType,
       ...
     }:
     {
@@ -47,12 +46,9 @@ let
         ./essentials
         ./users.nix
         ./options.nix
-        (./. + "/${deviceType}") # specific modules
-
-        home-manager.nixosModules.home-manager # home-manager module
-        sops-nix.nixosModules.sops # sops module
-        self.homeConfigurations.default.nixosModule # default homeConfigurations
+        
         disko.nixosModules.disko # disko module
+        sops-nix.nixosModules.sops # sops module
       ];
 
       home-manager = {

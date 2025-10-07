@@ -16,6 +16,6 @@
   };
 
   systemd.tmpfiles.rules = [
-    "z ${xlib.dirs.services-mnt-folder}/node-red 0750 node-red node-red -"
+    "z ${config.services.node-red.userDir} 0750 node-red node-red -"
   ];
 }

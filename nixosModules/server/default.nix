@@ -5,7 +5,7 @@
 {
   imports = [
     ../software/beets
-    ../services/node-red.nix
+    ./node-red.nix
     ./uptime-kuma.nix
     ./calibre-web.nix
     ./immich.nix

@@ -106,16 +106,6 @@
           default = "/mnt/services";
           description = "All services folder.";
         };
-        immich-folder = lib.mkOption {
-          type = lib.types.str;
-          default = "${config.xlib.dirs.server-home}/Services/immich";
-          description = "Immich service folder.";
-        };
-        nextcloud-folder = lib.mkOption {
-          type = lib.types.str;
-          default = "${config.xlib.dirs.server-home}/Services/nextcloud";
-          description = "Nextcloud service folder.";
-        };
         postgresql-folder = lib.mkOption {
           type = lib.types.str;
           default = "${config.xlib.dirs.server-home}/Services/postgresql";
