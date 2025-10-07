@@ -63,7 +63,7 @@ in
           end_to_end_encryption
           groupfolders
           impersonate
-          onlyoffice
+          # onlyoffice
           bookmarks
           calendar
           contacts
@@ -120,7 +120,7 @@ in
     };
   };
 
-  fonts.packages = [ work.corefonts ];
+  # fonts.packages = [ work.corefonts ];
 
   # networking.hosts = {
   # };
