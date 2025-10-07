@@ -19,9 +19,10 @@
       theme = "robbyrussell";
     };
     shellInit = ''
-      beetn() {
-        echo "$*" | aichat -cer beets
-      }
+      
+            beetn() {
+              echo "$*" | aichat -cer beets
+            }
     '';
     shellAliases = {
       # shell
@@ -31,11 +32,11 @@
       st = "systemctl-tui";
 
       # ssh
- z-s="ssh sapphira";
- z-st="ssh sapphira-tailscale";
- z-o="ssh otreca";
- z-ot="ssh otreca-tailscale";
- z-p-1="ssh pubray-1";
+      z-s = "ssh sapphira";
+      z-st = "ssh sapphira-tailscale";
+      z-o = "ssh otreca";
+      z-ot = "ssh otreca-tailscale";
+      z-p-1 = "ssh pubray-1";
 
       # Somethings
       reboot-bios = "sudo systemctl reboot --firmware-setup";
