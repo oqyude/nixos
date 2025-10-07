@@ -12,9 +12,9 @@ let
   musicPath = "${config.home.homeDirectory}/External/Music";
 in
 {
-  imports = [
-    ./minimal.nix
-  ];
+  # imports = [
+  #   ./minimal.nix
+  # ];
   xdg = {
     configFile = {
       "beets" = {

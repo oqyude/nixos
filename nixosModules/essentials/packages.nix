@@ -6,6 +6,12 @@
 {
   environment = {
     systemPackages = with pkgs; [
+      # Minimal
+      btop
+      broot
+      bottom
+      fastfetchMinimal
+
       # yazi
       yaziPlugins.gitui
 
