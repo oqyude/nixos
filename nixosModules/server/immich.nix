@@ -21,25 +21,20 @@ in
       openFirewall = true;
       accelerationDevices = null;
       machine-learning.enable = true;
-      mediaLocation = "/mnt/immich";
+      mediaLocation = "${xlib.dirs.services-mnt-folder}/immich";
     };
   };
 
   fileSystems."${config.services.immich.mediaLocation}" = {
-    device = "${xlib.dirs.immich-folder}";
+    device = "${xlib.dirs.services-folder}/immich";
     options = [
       "bind"
-      #"uid=1000"
-      #"gid=1000"
-      #"fmask=0007"
-      #"dmask=0007"
       "nofail"
-      "x-systemd.device-timeout=0"
     ];
   };
 
   systemd.tmpfiles.rules = [
-    "z /mnt/immich 0755 immich immich -"
+    "z ${config.services.immich.mediaLocation} 0755 immich immich -"
   ];
 
   users.users.immich.extraGroups = [

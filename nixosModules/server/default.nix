@@ -6,7 +6,7 @@
   imports = [
     ../software/beets
     ../services/node-red.nix
-    ../services/uptime-kuma.nix
+    ./uptime-kuma.nix
     ./calibre-web.nix
     ./immich.nix
     ./miniflux.nix

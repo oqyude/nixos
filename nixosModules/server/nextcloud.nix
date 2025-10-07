@@ -31,7 +31,7 @@ in
       package = pkgs.nextcloud31;
       hostName = "nextcloud.local";
       database.createLocally = true;
-      home = "/mnt/nextcloud";
+      home = "${xlib.dirs.services-mnt-folder}/nextcloud";
       configureRedis = true;
       caching = {
         redis = true;
@@ -95,10 +95,8 @@ in
     };
     collabora-online = {
       enable = true;
-      #package = stable.collabora-online;
       port = 9980;
       settings = {
-        # Rely on reverse proxy for SSL
         server_name = "office.zeroq.ru";
         ssl = {
           enable = false;
@@ -108,10 +106,6 @@ in
         net = {
           listen = "0.0.0.0";
           post_allow.host = [
-            # "localhost"
-            # "nextcloud.zeroq.ru"
-            # "nextcloud.local"
-            # "100.64.1.0"
             "0.0.0.0"
           ];
         };
@@ -125,7 +119,6 @@ in
     };
     onlyoffice = {
       enable = false;
-      # package = work.onlyoffice-documentserver;
       hostname = "0.0.0.0";
       jwtSecretFile = "${inputs.zeroq-credentials}/services/onlyoffice/jwt.txt";
     };
@@ -134,15 +127,8 @@ in
   fonts.packages = [ work.corefonts ];
 
 
-  networking.hosts = {
-    # "localhost" = [
-    #   "nextcloud.zeroq.ru"
-    #   "office.zeroq.ru"
-    # ];
-    # "0.0.0.0" = [
-    #   "onlyoffice.local"
-    # ];
-  };
+  # networking.hosts = {
+  # };
 
   systemd.services.nextcloud-config-collabora =
   let
@@ -171,21 +157,16 @@ in
     };
   };
 
-  fileSystems."/mnt/nextcloud" = {
-    device = "${xlib.dirs.nextcloud-folder}";
+  fileSystems."${config.services.nextcloud.home}" = {
+    device = "${xlib.dirs.services-folder}/nextcloud";
     options = [
       "bind"
-      #"uid=1000"
-      #"gid=1000"
-      #"fmask=0007"
-      #"dmask=0007"
       "nofail"
-      "x-systemd.device-timeout=0"
     ];
   };
 
   systemd.tmpfiles.rules = [
-    "z /mnt/nextcloud 0750 nextcloud nextcloud -"
+    "z ${config.services.nextcloud.home} 0750 nextcloud nextcloud -"
   ];
 
   environment.systemPackages = [
