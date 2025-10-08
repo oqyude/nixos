@@ -19,7 +19,7 @@ in
         "kuma.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
-          kTLS = true;
+          # kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:4001";
             proxyWebsockets = true;
@@ -44,7 +44,7 @@ in
         "flux.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
-          kTLS = true;
+          # kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:6061";
             proxyWebsockets = true;
@@ -57,7 +57,7 @@ in
         "office.zeroq.ru" = {
           enableACME = true;
           forceSSL = true;
-          kTLS = true;
+          # kTLS = true;
           locations = {
             "/" = {
               proxyPass = "http://${server}:9980"; # API и coauthoring
@@ -75,7 +75,7 @@ in
         "immich.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
-          kTLS = true;
+          # kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:2283";
             proxyWebsockets = true;
@@ -88,7 +88,7 @@ in
         "nextcloud.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
-          kTLS = true;
+          # kTLS = true;
           locations = {
             "/" = {
               proxyPass = "http://${server}:10000";
@@ -111,7 +111,7 @@ in
         "calibre.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
-          kTLS = true;
+          # kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:8083";
             proxyWebsockets = true;
@@ -124,7 +124,7 @@ in
         "pdf.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
-          kTLS = true;
+          # kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:6060";
             proxyWebsockets = true;
