@@ -18,7 +18,7 @@
     autostart.enable = true;
     configFile = {
       "beets" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.user-storage}/beets/linux";
+        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.user-storage}/beets";
         target = "beets";
       };
       "ludusavi" = {
