@@ -62,12 +62,6 @@
         group = config.users.users."${xlib.device.username}".group;
         mode = "0600";
       };
-      ssh_key_private_host = {
-        format = "yaml";
-        key = "ssh_key_private";
-        path = "/etc/ssh/id_ed25519";
-        mode = "0600";
-      };
       ssh_key_public = {
         format = "yaml";
         key = "ssh_key_public";
