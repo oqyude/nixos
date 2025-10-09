@@ -33,6 +33,7 @@
   sops = {
     age = {
       sshKeyPaths = [ "/etc/ssh/id_ed25519" ];
+      generateKey = true;
     };
     defaultSopsFile = ../secrets/example.yaml;      # наш зашифрованный файл
     # Указываем секрет SSH-ключа:
