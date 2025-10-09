@@ -39,8 +39,6 @@
       sshKeyPaths = [
         "/etc/ssh/id_ed25519"
       ];
-      # keyFile = "/var/lib/sops-nix/key.txt";
-      # generateKey = true;
     };
     defaultSopsFile = ../secrets/default.yaml;
     secrets = {
@@ -58,12 +56,16 @@
       };
       ssh_key_private = {
         format = "yaml";
-        # sopsFile = ../secrets/default.yaml;
         key = "ssh_key_private";
-
         path = "/home/${xlib.device.username}/.ssh/id_ed25519";
         owner = config.users.users."${xlib.device.username}".name;
         group = config.users.users."${xlib.device.username}".group;
+        mode = "0600";
+      };
+      ssh_key_private_host = {
+        format = "yaml";
+        key = "ssh_key_private";
+        path = "/etc/ssh/id_ed25519";
         mode = "0600";
       };
       ssh_key_public = {
