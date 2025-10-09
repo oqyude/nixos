@@ -66,6 +66,21 @@
         group = config.users.users."${xlib.device.username}".group;
         mode = "0600";
       };
+      ssh_key_public = {
+        format = "yaml";
+        key = "ssh_key_public";
+
+        path = "/home/${xlib.device.username}/.ssh/id_ed25519.pub";
+        owner = config.users.users."${xlib.device.username}".name;
+        group = config.users.users."${xlib.device.username}".group;
+        mode = "0655";
+      };
+      ssh_key_public_host = {
+        format = "yaml";
+        key = "ssh_key_public";
+        path = "/etc/ssh/id_ed25519.pub";
+        mode = "0655";
+      };
     };
   };
 }

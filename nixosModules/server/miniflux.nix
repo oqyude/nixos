@@ -17,10 +17,12 @@
   };
 
   sops.secrets.minifluxenv = {
+    format = "dotenv";
     sopsFile = ./secrets/miniflux.env;
-    # key = null;
-    owner = "miniflux"; 
-    group = "miniflux";
-    mode = "0600";
+    # key = null; 
+    # owner = "miniflux"; 
+    # group = "miniflux";
+    mode = "0650";
+    # path = "/run/secrets/miniflux.env";
   };
 }
