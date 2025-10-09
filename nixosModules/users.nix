@@ -8,10 +8,13 @@
 
   users = {
     users = {
-      "${xlib.device.username}" = {
+      main = {
+        name = "${xlib.device.username}";
         isNormalUser = true;
         description = "Jor Oqyude";
         initialPassword = "1234";
+        homeMode = "700";
+        home = "/home/${config.users.users.main.name}";
         extraGroups = [
           "beets"
           "audio"
@@ -33,21 +36,36 @@
   sops = {
     age = {
       sshKeyPaths = [ "/etc/ssh/id_ed25519" ];
+      keyFile = "/var/lib/sops-nix/key.txt";
       generateKey = true;
     };
     defaultSopsFile = ../secrets/default.yaml;      # наш зашифрованный файл
     # Указываем секрет SSH-ключа:
-    secrets.ssh_key = {
-      # формат секрета (YAML по умолчанию)
-      format = "yaml";
-      sopsFile = ../secrets/default.yaml;
-      # (имя ключа в YAML: "ssh_key", т.е. ключ из файла выше)
-      key = "ssh_key";
+    secrets = {
+      age_key = {
+        # формат секрета (YAML по умолчанию)
+        format = "yaml";
+        sopsFile = ../secrets/age.yaml;
+        # (имя ключа в YAML: "ssh_key", т.е. ключ из файла выше)
+        key = "age_key";
 
-      path = "/home/test/.ssh/id_ed25519";
-      owner = "root";   # владелец – наш пользователь
-      group = "root";  # группа пользователя
-      mode = "0600";                           # права 600
+        path = "${config.users.users.main.home}/.config/sops/age/keys.txt";
+        owner = config.users.users.main.name;   # владелец – наш пользователь
+        group = config.users.users.main.group;  # группа пользователя
+        mode = "0600"; 
+      };
+      ssh_key = {
+        # формат секрета (YAML по умолчанию)
+        format = "yaml";
+        sopsFile = ../secrets/default.yaml;
+        # (имя ключа в YAML: "ssh_key", т.е. ключ из файла выше)
+        key = "ssh_key";
+
+        path = "/home/test/.ssh/id_ed25519";
+        owner = config.users.users.main.name;   # владелец – наш пользователь
+        group = config.users.users.main.group;  # группа пользователя
+        mode = "0600";                           # права 600
+      };
     };
   };
 }
