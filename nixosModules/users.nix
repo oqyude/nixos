@@ -37,9 +37,10 @@
     age = {
       sshKeyPaths = [
         "/etc/ssh/id_ed25519"
+        "${config.users.users.main.home}/.ssh/id_ed25519"
       ];
-      keyFile = "/var/lib/sops-nix/key.txt";
-      generateKey = false;
+      # keyFile = "/var/lib/sops-nix/key.txt";
+      generateKey = true;
     };
     defaultSopsFile = ../secrets/default.yaml; # наш зашифрованный файл
     # Указываем секрет SSH-ключа:
@@ -52,6 +53,16 @@
         path = "${config.users.users.main.home}/.config/sops/age/keys.txt";
         owner = config.users.users.main.name; # владелец – наш пользователь
         group = config.users.users.main.group; # группа пользователя
+        mode = "0600";
+      };
+      age_key_root = {
+        format = "yaml";
+        sopsFile = ../secrets/age.yaml;
+        key = "age_key";
+
+        path = "/var/lib/sops-nix/key.txt";
+        owner = "root"; # владелец – наш пользователь
+        group = "root"; # группа пользователя
         mode = "0600";
       };
       ssh_key = {
