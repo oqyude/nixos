@@ -35,19 +35,19 @@
       sshKeyPaths = [ "/etc/ssh/id_ed25519" ];
       generateKey = true;
     };
-    defaultSopsFile = ../secrets/example.yaml;      # наш зашифрованный файл
+    defaultSopsFile = ../secrets/default.yaml;      # наш зашифрованный файл
     # Указываем секрет SSH-ключа:
-    # secrets.ssh_key = {
-    #   # формат секрета (YAML по умолчанию)
-    #   format = "yaml";
-    #   sopsFile = ../secrets/default.yaml;
-    #   # (имя ключа в YAML: "ssh_key", т.е. ключ из файла выше)
-    #   key = "ssh_key";
+    secrets.ssh_key = {
+      # формат секрета (YAML по умолчанию)
+      format = "yaml";
+      sopsFile = ../secrets/default.yaml;
+      # (имя ключа в YAML: "ssh_key", т.е. ключ из файла выше)
+      key = "ssh_key";
 
-    #   path = "/home/test/.ssh/id_ed25519";
-    #   owner = "root";   # владелец – наш пользователь
-    #   group = "root";  # группа пользователя
-    #   mode = "0600";                           # права 600
-    # };
+      path = "/home/test/.ssh/id_ed25519";
+      owner = "root";   # владелец – наш пользователь
+      group = "root";  # группа пользователя
+      mode = "0600";                           # права 600
+    };
   };
 }
