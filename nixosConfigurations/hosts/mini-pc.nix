@@ -24,11 +24,6 @@ let
         self.nixosModules.default
       ];
 
-      sops = {
-        defaultSopsFile = ./secrets/example.yaml;
-        age.keyFile = "/var/lib/sops-nix/key.txt";
-      };
-
       fileSystems = {
         "${xlib.dirs.therima-drive}" = {
           device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
