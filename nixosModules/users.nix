@@ -12,7 +12,8 @@
         name = "${xlib.device.username}";
         isNormalUser = true;
         description = "Jor Oqyude";
-        initialPassword = "1234";
+        # initialPassword = "1234";
+        hashedPasswordFile = config.sops.secrets.hashed_password.path; # hashed_password
         homeMode = "700";
         home = "/home/${config.users.users.main.name}";
         extraGroups = [
@@ -37,45 +38,33 @@
     age = {
       sshKeyPaths = [
         "/etc/ssh/id_ed25519"
-        "${config.users.users.main.home}/.ssh/id_ed25519"
       ];
       # keyFile = "/var/lib/sops-nix/key.txt";
-      generateKey = true;
+      # generateKey = true;
     };
-    defaultSopsFile = ../secrets/default.yaml; # наш зашифрованный файл
-    # Указываем секрет SSH-ключа:
+    defaultSopsFile = ../secrets/default.yaml;
     secrets = {
-      age_key = {
+      hashed_password = {
+        key = "hashed_password";
         format = "yaml";
-        sopsFile = ../secrets/age.yaml;
-        key = "age_key";
-
+      };
+      age_key_private = {
+        format = "yaml";
+        key = "age_key_private";
         path = "${config.users.users.main.home}/.config/sops/age/keys.txt";
-        owner = config.users.users.main.name; # владелец – наш пользователь
-        group = config.users.users.main.group; # группа пользователя
+        owner = config.users.users.main.name;
+        group = config.users.users.main.group;
         mode = "0600";
       };
-      age_key_root = {
+      ssh_key_private = {
         format = "yaml";
-        sopsFile = ../secrets/age.yaml;
-        key = "age_key";
-
-        path = "/var/lib/sops-nix/key.txt";
-        owner = "root"; # владелец – наш пользователь
-        group = "root"; # группа пользователя
-        mode = "0600";
-      };
-      ssh_key = {
-        # формат секрета (YAML по умолчанию)
-        format = "yaml";
-        sopsFile = ../secrets/default.yaml;
-        # (имя ключа в YAML: "ssh_key", т.е. ключ из файла выше)
-        key = "ssh_key";
+        # sopsFile = ../secrets/default.yaml;
+        key = "ssh_key_private";
 
         path = "${config.users.users.main.home}/.ssh/id_ed25519";
-        owner = config.users.users.main.name; # владелец – наш пользователь
-        group = config.users.users.main.group; # группа пользователя
-        mode = "0600"; # права 600
+        owner = config.users.users.main.name;
+        group = config.users.users.main.group;
+        mode = "0600";
       };
     };
   };
