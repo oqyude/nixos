@@ -79,4 +79,6 @@
       };
     };
   };
+  
+  fileSystems."/etc/ssh".neededForBoot = true;
 }
