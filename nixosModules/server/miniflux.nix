@@ -18,7 +18,7 @@
 
   sops.secrets.minifluxenv = {
     sopsFile = ./secrets/miniflux.env;
-    key = null;
+    # key = null;
     owner = "miniflux"; 
     group = "miniflux";
     mode = "0600";
