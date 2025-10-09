@@ -36,8 +36,8 @@
   sops = {
     age = {
       sshKeyPaths = [ "/etc/ssh/id_ed25519" "${config.users.users.main.home}/.ssh/id_ed25519" ];
-      # keyFile = "/var/lib/sops-nix/key.txt";
-      generateKey = false;
+      keyFile = "/var/lib/sops-nix/key.txt";
+      generateKey = true;
     };
     defaultSopsFile = ../secrets/default.yaml;      # наш зашифрованный файл
     # Указываем секрет SSH-ключа:
