@@ -43,6 +43,7 @@
     defaultSopsFile = ../secrets/default.yaml;
     secrets = {
       hashed_password = {
+        neededForUsers = true;
         key = "hashed_password";
         format = "yaml";
       };
@@ -79,6 +80,6 @@
       };
     };
   };
-  
+
   fileSystems."/etc/ssh".neededForBoot = true;
 }
