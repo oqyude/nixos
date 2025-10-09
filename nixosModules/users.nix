@@ -35,9 +35,9 @@
 
   sops = {
     age = {
-      sshKeyPaths = [ "/etc/ssh/id_ed25519" ];
-      keyFile = "/var/lib/sops-nix/key.txt";
-      generateKey = true;
+      sshKeyPaths = [ "/etc/ssh/id_ed25519" "${config.users.users.main.home}/.ssh/id_ed25519" ];
+      # keyFile = "/var/lib/sops-nix/key.txt";
+      generateKey = false;
     };
     defaultSopsFile = ../secrets/default.yaml;      # наш зашифрованный файл
     # Указываем секрет SSH-ключа:
@@ -61,7 +61,7 @@
         # (имя ключа в YAML: "ssh_key", т.е. ключ из файла выше)
         key = "ssh_key";
 
-        path = "/home/test/.ssh/id_ed25519";
+        path = "${config.users.users.main.home}/.ssh/id_ed25519";
         owner = config.users.users.main.name;   # владелец – наш пользователь
         group = config.users.users.main.group;  # группа пользователя
         mode = "0600";                           # права 600
