@@ -45,10 +45,8 @@
     # Указываем секрет SSH-ключа:
     secrets = {
       age_key = {
-        # формат секрета (YAML по умолчанию)
         format = "yaml";
         sopsFile = ../secrets/age.yaml;
-        # (имя ключа в YAML: "ssh_key", т.е. ключ из файла выше)
         key = "age_key";
 
         path = "${config.users.users.main.home}/.config/sops/age/keys.txt";
