@@ -88,7 +88,7 @@
     after = [ "network-online.target" ];
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = [ "${pkgs.nixos-rebuild}/bin/nixos-rebuild switch --no-reexec" ];
+      ExecStart = [ "${pkgs.nixos-rebuild}/bin/nixos-rebuild switch" ];
     };
   };
 
