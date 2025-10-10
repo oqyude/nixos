@@ -87,8 +87,9 @@
     wantedBy = [ "multi-user.target" ];
     after = [ "network-online.target" ];
     serviceConfig = {
-      Type = "oneshot";
-      ExecStart = [ "${pkgs.nixos-rebuild}/bin/nixos-rebuild switch" ];
+      Type = "simple";
+      User = "${xlib.device.username}";
+      ExecStart = [ "${pkgs.nh}/bin/nh os switch" ];
     };
   };
 
