@@ -78,10 +78,10 @@ in
       mode = "0444";
       format = "yaml";
       sopsFile = ./secrets/xray.yaml;
-      path = /etc/xray/uuid;
+      path = "/etc/xray/uuid";
     };
     xray_private-key = {
-      path = /etc/xray/private-key;
+      path = "/etc/xray/private-key";
       key = "private-key";
       mode = "0444";
       format = "yaml";
