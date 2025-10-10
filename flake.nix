@@ -98,8 +98,8 @@
       flakeContext = { inherit inputs; };
     in
     { }
-    // (import ./homeConfigurations flakeContext)
-    // (import ./nixosConfigurations flakeContext)
-    // (import ./nixosModules flakeContext)
+    // (import ./home flakeContext)
+    // (import ./configurations flakeContext)
+    // (import ./modules flakeContext)
     // (import ./pkgs flakeContext);
 }

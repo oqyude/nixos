@@ -13,7 +13,7 @@ let
 in
 {
   imports = [
-    ./wsl-apps
+    ./apps
     ./minimal.nix
   ];
   xdg = {
