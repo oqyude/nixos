@@ -51,12 +51,6 @@ let
         sops-nix.nixosModules.sops # sops module
       ];
 
-      home-manager = {
-        extraSpecialArgs = {
-          xlib = config.xlib;
-        };
-      };
-
       _module.args = {
         inputs = inputs;
         xlib = config.xlib;
