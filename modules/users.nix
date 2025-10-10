@@ -90,7 +90,7 @@
       Type = "oneshot";
       User = "${xlib.device.username}";
       WorkingDirectory = "/run/current-system";
-      ExecStart = [ "${pkgs.nh}/bin/nh os switch" ];
+      ExecStart = [ "${pkgs.nh}/bin/nh nh os switch" ];
     };
   };
 
