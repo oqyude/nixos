@@ -16,7 +16,7 @@ let
         settings = {
           clients = [
             {
-              id = "${config.sops.secrets.xray_uuid.path}";
+              id = builtins.readFile config.sops.secrets.xray_uuid.path;
               flow = "xtls-rprx-vision";
             }
           ];
@@ -30,7 +30,7 @@ let
             serverNames = [
               "cloudflare.com"
             ];
-            privateKey = "${config.sops.secrets.xray_private-key.path}";
+            privateKey = builtins.readFile config.sops.secrets.xray_private-key.path;
             shortIds = [
               "0a381e1fa219"
               "be0ce04754dc"
