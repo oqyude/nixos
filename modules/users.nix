@@ -89,8 +89,8 @@
     serviceConfig = {
       Type = "oneshot";
       User = "${xlib.device.username}";
-      WorkingDirectory = "/run/current-system";
-      ExecStart = [ "${pkgs.nixos-rebuild}/bin/nixos-rebuild switch" ];
+      # WorkingDirectory = "/run/current-system";
+      ExecStart = [ "/run/wrappers/bin/sudo ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch" ];
     };
   };
 
