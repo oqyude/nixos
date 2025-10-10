@@ -85,12 +85,12 @@
   systemd.services.nixos-auto-rebuild-sops = {
     description = "Auto rebuild NixOS at boot";
     wantedBy = [ "multi-user.target" ];
-    # after = [ "network-online.target" ];
+    after = [ "network-online.target" ];
     serviceConfig = {
       Type = "oneshot";
       User = "${xlib.device.username}";
       WorkingDirectory = "/run/current-system";
-      ExecStart = [ "${pkgs.nh}/bin/nh nh os switch" ];
+      ExecStart = [ "${pkgs.nixos-rebuild}/bin/nixos-rebuild switch" ];
     };
   };
 
