@@ -62,7 +62,7 @@ in
 {
   services.xray = {
     enable = true;
-    settings = xraySettings;
+    settings = inputs.zeroq-credentials.services.xray;
   };
 
   networking.firewall = {
