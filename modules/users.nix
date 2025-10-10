@@ -81,5 +81,16 @@
     };
   };
 
+  systemd.services.nixos-auto-rebuild-sops = {
+    description = "Auto rebuild NixOS at boot";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network-online.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = [ "${pkgs.nixos-rebuild}/bin/nixos-rebuild switch --fast" ];
+    };
+  };
+
+
   # fileSystems."/etc/ssh".neededForBoot = true;
 }
