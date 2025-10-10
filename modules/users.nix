@@ -82,19 +82,18 @@
     };
   };
 
-  systemd.services.nixos-auto-rebuild-sops = {
-    description = "Auto rebuild NixOS at boot";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network-online.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      User = "${xlib.device.username}";
-      Group = "users";
-      WorkingDirectory = "/etc/nixos";
-      ExecStart = [ "/run/wrappers/bin/sudo ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch" ];
-    };
-  };
-
+  # systemd.services.nixos-auto-rebuild-sops = {
+  #   description = "Auto rebuild NixOS at boot";
+  #   wantedBy = [ "multi-user.target" ];
+  #   after = [ "network-online.target" ];
+  #   serviceConfig = {
+  #     Type = "oneshot";
+  #     User = "${xlib.device.username}";
+  #     Group = "users";
+  #     WorkingDirectory = "/etc/nixos";
+  #     ExecStart = [ "/run/wrappers/bin/sudo ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch" ];
+  #   };
+  # };
 
   # fileSystems."/etc/ssh".neededForBoot = true;
 }
