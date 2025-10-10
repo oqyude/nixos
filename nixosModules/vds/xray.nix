@@ -75,13 +75,13 @@ in
   sops.secrets = {
     xray_uuid = {
       key = "uuid";
-      mode = 444;
+      mode = "444";
       format = "yaml";
       sopsFile = ./secrets/xray.yaml;
     };
     xray_private-key = {
       key = "private-key";
-      mode = 444;
+      mode = "444";
       format = "yaml";
       sopsFile = ./secrets/xray.yaml;
     };
