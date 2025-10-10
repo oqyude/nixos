@@ -89,7 +89,7 @@
     serviceConfig = {
       Type = "oneshot";
       User = "${xlib.device.username}";
-      WorkingDirectory = "/etc/nixos";
+      WorkingDirectory = "/run/current-system";
       ExecStart = [ "${pkgs.nh}/bin/nh os switch" ];
     };
   };
