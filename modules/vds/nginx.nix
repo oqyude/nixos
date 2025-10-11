@@ -40,6 +40,17 @@ in
         #     client_max_body_size 5G;
         #   '';
         # };
+        "zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          # kTLS = true;
+          locations."/.well-known/discord" = {
+            extraConfig = ''
+              default_type text/plain;
+              return 200 "dh=c2d103553a4cfdaa1b7952a87a7d8120a1e167cc";
+            '';
+          };
+        };
         "flux.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
