@@ -59,30 +59,40 @@ in
       appstoreEnable = true;
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps) # (config.services.nextcloud.package.packages.apps)
-          deck
           # end_to_end_encryption
-          groupfolders
-          impersonate
+          # maps
           # onlyoffice
+          # tasks
           bookmarks
           calendar
+          collectives
           contacts
           cookbook
           cospend
+          dav_push
+          deck
+          files_retention
           forms
           gpoddersync
+          groupfolders
+          groupfolders
+          impersonate
           integration_paperless
           mail
-          # maps
           memories
           music
+          news
+          nextpod
           notes
           notify_push
+          phonetrack
           polls
           previewgenerator
+          repod
           richdocuments
+          sociallogin
           spreed
-          # tasks
+          tables
           user_oidc
           user_saml
           whiteboard
