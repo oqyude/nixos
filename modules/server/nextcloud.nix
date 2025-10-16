@@ -24,7 +24,7 @@ in
     };
     nextcloud = {
       enable = true;
-      package = pkgs.nextcloud31;
+      package = pkgs.nextcloud32;
       hostName = "nextcloud.local";
       database.createLocally = true;
       home = "${xlib.dirs.services-mnt-folder}/nextcloud";
@@ -58,7 +58,7 @@ in
       extraAppsEnable = true;
       appstoreEnable = false;
       extraApps = {
-        inherit (pkgs.nextcloud31Packages.apps) # (config.services.nextcloud.package.packages.apps)
+        inherit (config.services.nextcloud.package.packages.apps) # (config.services.nextcloud.package.packages.apps)
           deck
           end_to_end_encryption
           groupfolders
