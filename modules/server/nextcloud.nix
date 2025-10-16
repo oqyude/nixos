@@ -59,10 +59,7 @@ in
       appstoreEnable = true;
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps) # (config.services.nextcloud.package.packages.apps)
-          # end_to_end_encryption
-          # maps
           # onlyoffice
-          # tasks
           bookmarks
           calendar
           collectives
@@ -74,7 +71,6 @@ in
           files_retention
           forms
           gpoddersync
-          groupfolders
           groupfolders
           impersonate
           integration_paperless
@@ -96,6 +92,11 @@ in
           user_oidc
           user_saml
           whiteboard
+          ;
+        inherit (pkgs.nextcloud31Packages.apps)
+          # end_to_end_encryption
+          maps
+          tasks
           ;
       };
     };
