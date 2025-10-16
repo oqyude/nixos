@@ -95,7 +95,7 @@ in
           ;
         inherit (pkgs.nextcloud31Packages.apps)
           # end_to_end_encryption
-          maps
+          # maps
           tasks
           ;
       };
