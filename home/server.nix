@@ -40,11 +40,11 @@ in
   home = {
     file = {
       "ssh-config" = {
-        source = config.lib.file.mkOutOfStoreSymlink ${sshPath}/config;
+        source = config.lib.file.mkOutOfStoreSymlink "${sshPath}/config";
         target = ".ssh/config";
       };
       "ssh-known" = {
-        source = config.lib.file.mkOutOfStoreSymlink ${sshPath}/known_hosts;
+        source = config.lib.file.mkOutOfStoreSymlink "${sshPath}/known_hosts";
         target = ".ssh/known_hosts";
       };
       "Music" = {
