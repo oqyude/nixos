@@ -56,7 +56,7 @@ in
         overwriteprotocol = "https";
       };
       extraAppsEnable = true;
-      appstoreEnable = false;
+      appstoreEnable = true;
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps) # (config.services.nextcloud.package.packages.apps)
           deck
