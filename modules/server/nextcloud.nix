@@ -60,7 +60,7 @@ in
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps) # (config.services.nextcloud.package.packages.apps)
           deck
-          end_to_end_encryption
+          # end_to_end_encryption
           groupfolders
           impersonate
           # onlyoffice
@@ -73,7 +73,7 @@ in
           gpoddersync
           integration_paperless
           mail
-          maps
+          # maps
           memories
           music
           notes
@@ -82,7 +82,7 @@ in
           previewgenerator
           richdocuments
           spreed
-          tasks
+          # tasks
           user_oidc
           user_saml
           whiteboard
