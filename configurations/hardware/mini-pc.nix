@@ -29,18 +29,15 @@
     extraModulePackages = [ ];
   };
 
-  hardware = {
-    amdgpu = {
-      opencl.enable = true;
-      amdvlk = {
-        enable = true;
-      };
-    };
-    graphics.extraPackages = with pkgs; [
-      mesa
-      amf
-    ];
-  };
+  # hardware = {
+  #   amdgpu = {
+  #     opencl.enable = true;
+  #   };
+  #   graphics.extraPackages = with pkgs; [
+  #     mesa
+  #     amf
+  #   ];
+  # };
   # systemd.tmpfiles.rules = [
   #   "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
   # ];
