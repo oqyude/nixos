@@ -56,10 +56,17 @@ in
         overwriteprotocol = "https";
       };
       extraAppsEnable = true;
-      appstoreEnable = true;
+      appstoreEnable = false;
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps) # (config.services.nextcloud.package.packages.apps)
+          # gpoddersync
+          # integration_paperless
+          # memories
+          # nextpod
           # onlyoffice
+          # phonetrack
+          # repod
+          # sociallogin
           bookmarks
           calendar
           collectives
@@ -70,23 +77,16 @@ in
           deck
           files_retention
           forms
-          gpoddersync
           groupfolders
           impersonate
-          integration_paperless
           mail
-          memories
           music
           news
-          nextpod
           notes
           notify_push
-          phonetrack
           polls
           previewgenerator
-          repod
           richdocuments
-          sociallogin
           spreed
           tables
           user_oidc
