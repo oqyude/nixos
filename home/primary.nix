@@ -22,7 +22,7 @@
         target = "beets";
       };
       "ludusavi" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.user-storage}/ludusavi/cfg";
+        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.user-storage}/ludusavi";
         target = "ludusavi";
       };
       "solaar" = {

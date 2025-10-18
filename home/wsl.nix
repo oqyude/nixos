@@ -7,7 +7,7 @@
 }:
 let
   # Paths
-  beetsPath = "${xlib.dirs.wsl-storage}/beets/linux";
+  beetsPath = "${xlib.dirs.wsl-storage}/beets";
   externalPath = "${xlib.dirs.wsl-home}";
   musicPath = "${config.home.homeDirectory}/External/Music";
 in
