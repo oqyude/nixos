@@ -5,7 +5,7 @@
   ...
 }:
 let
-  fix = import inputs.calibre {
+  fix = import inputs.nixpkgs-master {
     system = "x86_64-linux";
   }; # temp
 in
