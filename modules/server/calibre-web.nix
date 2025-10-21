@@ -10,10 +10,10 @@ let
   }; # temp
 in
 {
-  services.calibre-server.package = fix.calibre;
+  # services.calibre-server.package = fix.calibre;
   services.calibre-web = {
-    enable = false;
-    package = fix.calibre-web;
+    enable = enable;
+    # package = fix.calibre-web;
     group = "users";
     user = "${xlib.device.username}";
     options = {
