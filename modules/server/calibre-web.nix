@@ -12,7 +12,7 @@ in
 {
   services.calibre-server.package = fix.calibre;
   services.calibre-web = {
-    enable = true;
+    enable = false;
     package = fix.calibre-web;
     group = "users";
     user = "${xlib.device.username}";
