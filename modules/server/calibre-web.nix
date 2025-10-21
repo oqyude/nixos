@@ -3,9 +3,15 @@
   xlib,
   ...
 }:
+let
+  fix = import inputs.calibre {
+    system = "x86_64-linux";
+  }; # temp
+in
 {
   services.calibre-web = {
     enable = true;
+    package = fix.calibre-web;
     group = "users";
     user = "${xlib.device.username}";
     options = {
