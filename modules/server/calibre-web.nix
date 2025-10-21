@@ -10,6 +10,7 @@ let
   }; # temp
 in
 {
+  services.calibre-server.package = fix.calibre;;
   services.calibre-web = {
     enable = true;
     package = fix.calibre-web;
