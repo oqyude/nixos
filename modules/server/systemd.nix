@@ -7,7 +7,8 @@
 }:
 {
   systemd = {
-    services.rsync-archive = { # Archivesta
+    services.rsync-archive = {
+      # Archivesta
       # Make copy of files
       description = "Backup data using rsync";
       #after = [ ];
