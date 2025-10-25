@@ -5,15 +5,15 @@
   ...
 }:
 let
-  fix = import inputs.nixpkgs-master {
+  stable = import inputs.nixpkgs-calibre {
     system = "x86_64-linux";
   }; # temp
 in
 {
-  # services.calibre-server.package = fix.calibre;
+  services.calibre-server.package = stable.calibre;
   services.calibre-web = {
     enable = true;
-    # package = fix.calibre-web;
+    package = stable.calibre-web;
     group = "users";
     user = "${xlib.device.username}";
     options = {
