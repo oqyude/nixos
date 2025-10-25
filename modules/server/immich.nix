@@ -15,17 +15,17 @@ in
   services = {
     immich = {
       enable = true;
-      package = pkgs.immich;
+      # package = pkgs.immich;
       port = 2283;
       host = "0.0.0.0";
       openFirewall = true;
       accelerationDevices = null;
       machine-learning.enable = true;
       mediaLocation = "${xlib.dirs.services-mnt-folder}/immich";
-      # database = {
-      #   enableVectors = true;
-      #   enableVectorChord = true;
-      # };
+      database = {
+        enableVectors = false;
+        enableVectorChord = true;
+      };
     };
     # postgresql.package = master.postgresql_16;
   };
