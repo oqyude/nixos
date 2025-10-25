@@ -7,10 +7,10 @@
   ...
 }:
 let
-  work = import inputs.nixpkgs-stable {
+  master = import inputs.nixpkgs-master {
     system = "x86_64-linux";
-    config.allowUnfree = true;
-    config.allowUnfreePredicate = true;
+    # config.allowUnfree = true;
+    # config.allowUnfreePredicate = true;
   };
 in
 {
@@ -24,7 +24,7 @@ in
     };
     nextcloud = {
       enable = true;
-      package = pkgs.nextcloud32;
+      package = master.nextcloud32;
       hostName = "nextcloud.local";
       database.createLocally = true;
       home = "${xlib.dirs.services-mnt-folder}/nextcloud";
@@ -103,6 +103,7 @@ in
     collabora-online = {
       enable = true;
       port = 9980;
+      package = master.collabora-online;
       settings = {
         server_name = "office.zeroq.ru";
         ssl = {
