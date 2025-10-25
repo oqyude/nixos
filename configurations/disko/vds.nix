@@ -20,7 +20,7 @@
               };
             };
             swap = {
-              size = "256M";
+              size = "1G";
               content = {
                 type = "swap";
               };
