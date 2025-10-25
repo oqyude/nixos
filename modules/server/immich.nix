@@ -23,7 +23,7 @@ in
       machine-learning.enable = true;
       mediaLocation = "${xlib.dirs.services-mnt-folder}/immich";
       database = {
-        # enableVectors = false;
+        enableVectors = true;
         enableVectorChord = false;
       };
     };
