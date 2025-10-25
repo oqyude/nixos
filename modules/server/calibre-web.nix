@@ -13,7 +13,7 @@ in
   # services.calibre-server.package = stable.calibre;
   services.calibre-web = {
     enable = true;
-    package = stable.calibre-web;
+    # package = stable.calibre-web;
     group = "users";
     user = "${xlib.device.username}";
     options = {
