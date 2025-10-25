@@ -22,6 +22,7 @@ in
       accelerationDevices = null;
       machine-learning.enable = true;
       mediaLocation = "${xlib.dirs.services-mnt-folder}/immich";
+      database.enableVectors = false;
     };
     postgresql.package = master.postgresql_16;
   };
