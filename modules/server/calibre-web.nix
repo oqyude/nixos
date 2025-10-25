@@ -5,7 +5,7 @@
   ...
 }:
 let
-  stable = import inputs.nixpkgs-last-unstable {
+  stable = import inputs.nixpkgs-stable {
     system = "x86_64-linux";
   }; # temp
 in
