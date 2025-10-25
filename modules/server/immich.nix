@@ -7,7 +7,7 @@
   ...
 }:
 let
-  master = import inputs.nixpkgs-immich {
+  master = import inputs.nixpkgs-master {
     system = "x86_64-linux";
   };
 in
@@ -27,7 +27,7 @@ in
         enableVectorChord = true;
       };
     };
-    postgresql.package = pkgs.postgresql_17;
+    postgresql.package = master.postgresql;
   };
 
   fileSystems."${config.services.immich.mediaLocation}" = {
