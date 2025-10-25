@@ -37,7 +37,6 @@ in
       config = {
         dbtype = "pgsql";
         dbuser = "nextcloud";
-        #dbhost = "/run/postgresql";
         dbname = "nextcloud";
         adminuser = "oqyude";
         adminpassFile = "${inputs.zeroq-credentials}/services/nextcloud/admin-pass.txt";

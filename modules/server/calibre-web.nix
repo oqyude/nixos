@@ -20,7 +20,7 @@ in
       calibreLibrary = "${xlib.dirs.calibre-library}";
       enableBookUploading = true;
       enableKepubify = true;
-      enableBookConversion = true;
+      enableBookConversion = false;
     };
     listen.ip = "0.0.0.0";
     listen.port = 8083;
