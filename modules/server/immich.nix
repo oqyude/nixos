@@ -24,7 +24,7 @@ in
       mediaLocation = "${xlib.dirs.services-mnt-folder}/immich";
       database = {
         # enableVectors = false;
-        database.enableVectorChord = false;
+        enableVectorChord = false;
       };
     };
     postgresql.package = master.postgresql;
