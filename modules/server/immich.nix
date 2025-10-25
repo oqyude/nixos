@@ -15,7 +15,7 @@ in
   services = {
     immich = {
       enable = true;
-      package = master.immich;
+      package = pkgs.immich;
       port = 2283;
       host = "0.0.0.0";
       openFirewall = true;
@@ -27,7 +27,7 @@ in
         enableVectorChord = false;
       };
     };
-    postgresql.package = master.postgresql;
+    postgresql.package = pkgs.postgresql;
   };
 
   fileSystems."${config.services.immich.mediaLocation}" = {
