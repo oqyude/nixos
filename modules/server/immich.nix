@@ -14,7 +14,7 @@ in
 {
   services = {
     immich = {
-      enable = false;
+      enable = true;
       package = pkgs.immich;
       port = 2283;
       host = "0.0.0.0";
@@ -22,12 +22,12 @@ in
       accelerationDevices = null;
       machine-learning.enable = true;
       mediaLocation = "${xlib.dirs.services-mnt-folder}/immich";
-      database = {
-        enableVectors = true;
-        enableVectorChord = false;
-      };
+      # database = {
+      #   enableVectors = true;
+      #   enableVectorChord = false;
+      # };
     };
-    postgresql.package = pkgs.postgresql;
+    postgresql.package = pkgs.postgresql_16;
   };
 
   fileSystems."${config.services.immich.mediaLocation}" = {
