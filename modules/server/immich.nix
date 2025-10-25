@@ -22,12 +22,12 @@ in
       accelerationDevices = null;
       machine-learning.enable = true;
       mediaLocation = "${xlib.dirs.services-mnt-folder}/immich";
-      database = {
-        enableVectors = true;
-        enableVectorChord = false;
-      };
+      # database = {
+      #   enableVectors = true;
+      #   enableVectorChord = true;
+      # };
     };
-    postgresql.package = master.postgresql_16;
+    # postgresql.package = master.postgresql_16;
   };
 
   fileSystems."${config.services.immich.mediaLocation}" = {
