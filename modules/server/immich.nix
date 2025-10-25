@@ -23,6 +23,7 @@ in
       machine-learning.enable = true;
       mediaLocation = "${xlib.dirs.services-mnt-folder}/immich";
     };
+    postgresql.package = master.postgresql_17;
   };
 
   fileSystems."${config.services.immich.mediaLocation}" = {
