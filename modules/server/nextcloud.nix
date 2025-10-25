@@ -102,7 +102,7 @@ in
     collabora-online = {
       enable = true;
       port = 9980;
-      package = master.collabora-online;
+      # package = master.collabora-online;
       settings = {
         server_name = "office.zeroq.ru";
         ssl = {
