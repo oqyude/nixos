@@ -6,9 +6,9 @@
     zapret.url = "github:oqyude/zapret-easyflake"; # stupid flake of zapret
 
     # nixpkgs
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-last-unstable.url = "github:NixOS/nixpkgs/6b4955211758ba47fac850c040a27f23b9b4008f";
-    nixpkgs-calibre.url = "github:NixOS/nixpkgs/35f590344ff791e6b1d6d6b8f3523467c9217caf";
+    # nixpkgs-calibre.url = "github:NixOS/nixpkgs/35f590344ff791e6b1d6d6b8f3523467c9217caf";
     #nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master"; # e63467437ce61d8d9a36e09254e8d07b472da0c6 # 72353fc1fa61189fb76133d50c519e871c858c39 # 5b38c7435fb1112a8b36b1652286996a7998c5b5
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
