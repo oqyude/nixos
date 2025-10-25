@@ -27,7 +27,7 @@ in
         # enableVectorChord = false;
       };
     };
-    postgresql.package = master.postgresql_16;
+    postgresql.package = pkgs.postgresql_16;
   };
 
   fileSystems."${config.services.immich.mediaLocation}" = {
