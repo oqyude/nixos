@@ -5,7 +5,7 @@
   ...
 }:
 let
-  stable = import inputs.nixpkgs-calibre {
+  stable = import inputs.nixpkgs-last-unstable {
     system = "x86_64-linux";
   }; # temp
 in
