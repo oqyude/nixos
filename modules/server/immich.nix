@@ -23,11 +23,11 @@ in
       machine-learning.enable = true;
       mediaLocation = "${xlib.dirs.services-mnt-folder}/immich";
       database = {
-        # enableVectors = true;
-        # enableVectorChord = false;
+        enableVectors = true;
+        enableVectorChord = false;
       };
     };
-    postgresql.package = pkgs.postgresql_16;
+    postgresql.package = master.postgresql_16;
   };
 
   fileSystems."${config.services.immich.mediaLocation}" = {
