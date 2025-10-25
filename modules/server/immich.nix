@@ -7,7 +7,7 @@
   ...
 }:
 let
-  master = import inputs.nixpkgs-master {
+  master = import inputs.nixpkgs-immich {
     system = "x86_64-linux";
   };
 in
