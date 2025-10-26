@@ -12,7 +12,7 @@ in
 {
   services.syncthing = {
     enable = true;
-    package = pkgs.syncthing;
+    # package = master.syncthing;
     systemService = true;
     guiAddress = "0.0.0.0:8384";
     configDir = "${xlib.dirs.storage}/Syncthing/${xlib.device.hostname}";
