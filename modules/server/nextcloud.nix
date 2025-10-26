@@ -24,7 +24,7 @@ in
     };
     nextcloud = {
       enable = true;
-      package = pkgs.nextcloud32;
+      package = master.nextcloud32;
       hostName = "nextcloud.local";
       database.createLocally = true;
       home = "${xlib.dirs.services-mnt-folder}/nextcloud";
