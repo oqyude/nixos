@@ -24,9 +24,9 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    # nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
+    flake-compat.url = "github:edolstra/flake-compat";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    # flake-compat.url = "github:edolstra/flake-compat";
+    # nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     # flake-utils.url = "github:numtide/flake-utils";
     # flake-parts.url = "github:hercules-ci/flake-parts";
     # nur = {
