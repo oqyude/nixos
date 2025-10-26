@@ -39,7 +39,7 @@
       z-o = "ssh otreca";
       z-ot = "ssh otreca-tailscale";
       z-p-1 = "ssh pubray-1";
-      z-p-2 = "ssh pubray-2";
+      # z-p-2 = "ssh pubray-2";
 
       # Somethings
       reboot-bios = "sudo systemctl reboot --firmware-setup";
