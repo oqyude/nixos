@@ -10,6 +10,7 @@
       enable = true;
     };
     settings = {
+      require-sigs = false;
       substituters = [
         "https://cache.nixos.org"
         "https://nix-community.cachix.org"
