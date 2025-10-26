@@ -14,7 +14,7 @@ in
 {
   services = {
     immich = {
-      enable = false;
+      enable = true;
       package = pkgs.immich;
       port = 2283;
       host = "0.0.0.0";
@@ -38,9 +38,9 @@ in
     ];
   };
 
-  # systemd.tmpfiles.rules = [
-  #   "z ${config.services.immich.mediaLocation} 0755 immich immich -"
-  # ];
+  systemd.tmpfiles.rules = [
+    "z ${config.services.immich.mediaLocation} 0755 immich immich -"
+  ];
 
   users.users.immich.extraGroups = [
     "video"
