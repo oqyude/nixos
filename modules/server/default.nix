@@ -9,7 +9,6 @@
     ./immich.nix
     ./nextcloud.nix
     ./nginx.nix
-    ./node-red.nix
     ./postgresql.nix
     ./samba.nix
     ./stirling-pdf.nix
@@ -20,6 +19,7 @@
     # ./mealie.nix
     # ./memos.nix
     # ./miniflux.nix
+    # ./node-red.nix
     # ./open-webui.nix
     # ./trilium.nix
     # ./zerotier.nix
