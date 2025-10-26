@@ -5,21 +5,21 @@
 {
   imports = [
     ../software/beets
-    ./node-red.nix
-    ./uptime-kuma.nix
     ./calibre-web.nix
     ./immich.nix
-    ./miniflux.nix
     ./nextcloud.nix
     ./nginx.nix
+    ./node-red.nix
+    ./postgresql.nix
     ./samba.nix
     ./stirling-pdf.nix
     ./syncthing.nix
     ./systemd.nix
     ./transmission.nix
-    ./postgresql.nix
+    ./uptime-kuma.nix
     # ./mealie.nix
     # ./memos.nix
+    # ./miniflux.nix
     # ./open-webui.nix
     # ./trilium.nix
     # ./zerotier.nix
