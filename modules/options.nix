@@ -108,7 +108,7 @@
         };
         postgresql-folder = lib.mkOption {
           type = lib.types.str;
-          default = "${config.xlib.dirs.server-home}/Services/postgresql";
+          default = "${config.xlib.dirs.services-mnt-folder}/postgresql";
           description = "PostgreSQL service folder.";
         };
       };
