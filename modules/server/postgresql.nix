@@ -1,8 +1,9 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
-  inputs,
+  xlib,
   ...
 }:
 let
@@ -11,5 +12,16 @@ let
   };
 in
 {
-  services.postgresql.package = pkgs.postgresql_17;
+  services = {
+    postgresql = {
+      enable = true;
+      package = pkgs.postgresql_17;
+      dataDir = "${xlib.dirs.services-mnt-folder}/postgresql/${config.services.postgresql.package.psqlSchema}";
+    };
+    # postgresqlBackup.enable = true;
+  };
+  
+  systemd.tmpfiles.rules = [
+    "z ${config.services.postgresql.dataDir} 0760 postgres postgres -"
+  ];
 }
