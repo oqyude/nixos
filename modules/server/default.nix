@@ -17,6 +17,7 @@
     ./syncthing.nix
     ./systemd.nix
     ./transmission.nix
+    ./postgresql.nix
     # ./mealie.nix
     # ./memos.nix
     # ./open-webui.nix
