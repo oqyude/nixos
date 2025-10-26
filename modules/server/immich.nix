@@ -38,9 +38,9 @@ in
     ];
   };
 
-  systemd.tmpfiles.rules = [
-    "z ${config.services.immich.mediaLocation} 0755 immich immich -"
-  ];
+  # systemd.tmpfiles.rules = [
+  #   "z ${config.services.immich.mediaLocation} 0755 immich immich -"
+  # ];
 
   users.users.immich.extraGroups = [
     "video"
