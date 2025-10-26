@@ -20,7 +20,7 @@ in
     };
     # postgresqlBackup.enable = true;
   };
-  
+
   systemd.tmpfiles.rules = [
     "z ${xlib.dirs.postgresql-folder} 0760 postgres postgres -"
     "z ${config.services.postgresql.dataDir} 0760 postgres postgres -"
