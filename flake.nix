@@ -24,15 +24,15 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
+    # nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    flake-compat.url = "github:edolstra/flake-compat";
-    flake-utils.url = "github:numtide/flake-utils";
-    flake-parts.url = "github:hercules-ci/flake-parts";
-    nur = {
-      url = "github:nix-community/NUR";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # flake-compat.url = "github:edolstra/flake-compat";
+    # flake-utils.url = "github:numtide/flake-utils";
+    # flake-parts.url = "github:hercules-ci/flake-parts";
+    # nur = {
+    #   url = "github:nix-community/NUR";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     home-manager = {
       url = "github:nix-community/home-manager"; # flake:home-manager
       inputs.nixpkgs.follows = "nixpkgs";
