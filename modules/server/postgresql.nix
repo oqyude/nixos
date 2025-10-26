@@ -21,7 +21,7 @@ in
     # postgresqlBackup.enable = true;
   };
   
-  fileSystems."${config.services.postgresql.dataDir}" = {
+  fileSystems."/var/lib/postgresql" = {
     device = "${xlib.dirs.services-mnt-folder}/postgresql";
     options = [
       "bind"
