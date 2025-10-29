@@ -20,7 +20,7 @@
     # ./memos.nix
     # ./miniflux.nix
     # ./node-red.nix
-    # ./open-webui.nix
+    ./open-webui.nix
     # ./trilium.nix
     # ./zerotier.nix
   ];
