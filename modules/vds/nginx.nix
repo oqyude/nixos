@@ -138,14 +138,17 @@ in
             client_max_body_size 5G;
           '';
         };
-        # "llm.zeroq.ru" = {
-        #   forceSSL = true;
-        #   enableACME = true;
-        #   locations."/" = {
-        #     proxyPass = "http://100.86.62.4:11112";
-        #     proxyWebsockets = true;
-        #   };
-        # };
+        "ai.zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://${server}:11112";
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
       };
     };
   };
