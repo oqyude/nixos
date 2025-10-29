@@ -110,11 +110,9 @@
     in
     { 
       deploy.nodes = {
+        sshUser = "oqyude";
         sapphira = {
           hostname = "sapphira";
-          deploy = {
-            sshUser = "oqyude";
-          };
           profiles.system = {
             # user = "root";
             path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.sapphira;
