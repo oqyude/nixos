@@ -122,7 +122,7 @@
         };
       };
       # This is highly advised, and will prevent many possible mistakes
-      checks = builtins.mapAttrs (system: deployLib: inputs.deployLib.deployChecks inputs.self.deploy) inputs.deploy-rs.lib;
+      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks inputs.self.deploy) inputs.deploy-rs.lib;
     }
     // (import ./home flakeContext)
     // (import ./configurations flakeContext)
