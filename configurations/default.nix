@@ -9,7 +9,7 @@
 
     # pub-vds = import ./pub-vds.nix flakeContext;
   };
-  inputs.deploy.nodes = {
+  nodes = {
     sapphira = {
       hostname = "sapphira";
       deploy = {
