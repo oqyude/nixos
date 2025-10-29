@@ -24,6 +24,15 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+    
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs = {
+        flake-compat.follows = "flake-compat";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+  
     flake-compat.url = "github:edolstra/flake-compat";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     # nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
