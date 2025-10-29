@@ -27,6 +27,7 @@
       nvd
       nix-du
       nix-prefetch-scripts
+      deploy-rs
 
       # Lazy
       lazycli
