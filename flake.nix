@@ -117,12 +117,12 @@
           };
           profiles.system = {
             # user = "root";
-            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.sapphira;
+            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.sapphira;
           };
         };
       };
       # This is highly advised, and will prevent many possible mistakes
-      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks inputs.self.deploy) deploy-rs.lib;
+      checks = builtins.mapAttrs (system: inputs.deployLib: inputs.deployLib.deployChecks inputs.self.deploy) inputs.deploy-rs.lib;
     }
     // (import ./home flakeContext)
     // (import ./configurations flakeContext)
