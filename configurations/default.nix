@@ -7,7 +7,7 @@
     sapphira = import ./server.nix flakeContext; # sapphira
     wsl = import ./wsl.nix flakeContext; # wsl
 
-    pub-vds = import ./pub-vds.nix flakeContext;
+    # pub-vds = import ./pub-vds.nix flakeContext;
   };
   deploy.nodes = {
     sapphira = {
