@@ -26,7 +26,7 @@
         OPENAI_API_BASE_URL = "http://192.168.1.100:1234/v1";
         #OLLAMA_API_BASE_URL = "http://127.0.0.1:1234";
         WEBUI_AUTH = "True";
-        ENABLE_SIGNUP = "True";
+        ENABLE_SIGNUP = "False";
         ENABLE_SIGNUP_PASSWORD_CONFIRMATION = "True";
         ENABLE_VERSION_UPDATE_CHECK = "False";
       };
