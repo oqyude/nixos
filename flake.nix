@@ -119,6 +119,12 @@
               path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.sapphira;
             };
           };
+          otreca = {
+            hostname = "otreca";
+            profiles.system = {
+              path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.otreca;
+            };
+          };
         };
       };
       # This is highly advised, and will prevent many possible mistakes
