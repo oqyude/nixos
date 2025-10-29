@@ -109,13 +109,15 @@
       flakeContext = { inherit inputs; };
     in
     { 
-      deploy.nodes = {
+      deploy = {
         sshUser = "oqyude";
-        sapphira = {
-          hostname = "sapphira";
-          profiles.system = {
-            user = "root";
-            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.sapphira;
+        nodes = {
+          sapphira = {
+            hostname = "sapphira";
+            profiles.system = {
+              # user = "root";
+              path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.sapphira;
+            };
           };
         };
       };
