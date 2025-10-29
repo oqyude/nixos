@@ -114,7 +114,7 @@
         sapphira = {
           hostname = "sapphira";
           profiles.system = {
-            # user = "root";
+            user = "root";
             path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.sapphira;
           };
         };
