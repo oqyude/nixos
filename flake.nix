@@ -108,7 +108,22 @@
     let
       flakeContext = { inherit inputs; };
     in
-    { }
+    { 
+      deploy.nodes = {
+        sapphira = {
+          hostname = "sapphira";
+          deploy = {
+            sshUser = "oqyude";
+          };
+          profiles.system = {
+            # user = "root";
+            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.sapphira;
+          };
+        };
+      };
+      # This is highly advised, and will prevent many possible mistakes
+      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks inputs.self.deploy) deploy-rs.lib;
+    }
     // (import ./home flakeContext)
     // (import ./configurations flakeContext)
     // (import ./modules flakeContext)
