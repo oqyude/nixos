@@ -1,8 +1,8 @@
 { inputs, ... }@flakeContext:
 let
-  user = "${inputs.zeroq-vars.devices.username}";
-  server = "${inputs.zeroq-vars.devices.server.hostname}";
-  vds = "${inputs.zeroq-vars.devices.vds.hostname}";
+  user = "${inputs.zeroq-deploy.devices.username}";
+  server = "${inputs.zeroq-deploy.devices.server.hostname}";
+  vds = "${inputs.zeroq-deploy.devices.vds.hostname}";
 in
 {
   deploy = {
