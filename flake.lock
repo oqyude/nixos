@@ -390,7 +390,8 @@
         "sops-nix": "sops-nix",
         "utils": "utils",
         "zapret": "zapret",
-        "zeroq-credentials": "zeroq-credentials"
+        "zeroq-credentials": "zeroq-credentials",
+        "zeroq-vars": "zeroq-vars"
       }
     },
     "sops-nix": {
@@ -475,6 +476,18 @@
         "type": "git",
         "url": "ssh://git@github.com/oqyude/zeroq-credentials.git"
       }
+    },
+    "zeroq-vars": {
+      "flake": false,
+      "locked": {
+        "path": "vars.nix",
+        "type": "path"
+      },
+      "original": {
+        "path": "vars.nix",
+        "type": "path"
+      },
+      "parent": []
     }
   },
   "root": "root",
