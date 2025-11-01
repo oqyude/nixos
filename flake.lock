@@ -480,11 +480,11 @@
     "zeroq-vars": {
       "flake": false,
       "locked": {
-        "path": "vars.nix",
+        "path": "./vars.nix",
         "type": "path"
       },
       "original": {
-        "path": "vars.nix",
+        "path": "./vars.nix",
         "type": "path"
       },
       "parent": []
