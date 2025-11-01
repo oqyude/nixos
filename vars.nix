@@ -3,10 +3,10 @@
   outputs =
     { self }:
     {
-        devices = {
-            username = "oqyude";
-            server.hostname = "sapphira";
-            vds.hostname = "otreca";
-        };
+      devices = {
+        username = "oqyude";
+        server.hostname = "sapphira";
+        vds.hostname = "otreca";
+      };
     };
 }
