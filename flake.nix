@@ -113,7 +113,7 @@
     {
     }
     // (import ./configurations flakeContext)
-    // (import ./deploy.nix flakeContext)
+    // (import ./deploy flakeContext)
     // (import ./home flakeContext)
     // (import ./modules flakeContext)
     // (import ./pkgs flakeContext);
