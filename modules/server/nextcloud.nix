@@ -80,7 +80,7 @@ in
           impersonate
           mail
           music
-          news
+          # news
           notes
           notify_push
           polls

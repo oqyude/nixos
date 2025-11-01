@@ -7,8 +7,10 @@
     ../software/beets
     ./calibre-web.nix
     ./immich.nix
+    ./miniflux.nix
     ./nextcloud.nix
     ./nginx.nix
+    ./open-webui.nix
     ./postgresql.nix
     ./samba.nix
     ./stirling-pdf.nix
@@ -18,9 +20,7 @@
     ./uptime-kuma.nix
     # ./mealie.nix
     # ./memos.nix
-    # ./miniflux.nix
     # ./node-red.nix
-    ./open-webui.nix
     # ./trilium.nix
     # ./zerotier.nix
   ];
