@@ -5,7 +5,7 @@
     zeroq-credentials.url = "git+ssh://git@github.com/oqyude/zeroq-credentials.git"; # flake of creds
     zeroq-vars = {
       url = ./vars.nix;
-      isFlake = false;
+      flake = false;
     };
     zapret.url = "github:oqyude/zapret-easyflake"; # stupid flake of zapret
 
