@@ -478,13 +478,12 @@
       }
     },
     "zeroq-vars": {
-      "flake": false,
       "locked": {
-        "path": "./vars.nix",
+        "path": "./configurations",
         "type": "path"
       },
       "original": {
-        "path": "./vars.nix",
+        "path": "./configurations",
         "type": "path"
       },
       "parent": []
