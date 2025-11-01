@@ -6,16 +6,16 @@
   xlib,
   ...
 }:
-# let
-#   master = import inputs.nixpkgs-master {
-#     system = "x86_64-linux";
-#   };
-# in
+let
+  master = import inputs.nixpkgs-master {
+    system = "x86_64-linux";
+  };
+in
 {
   services = {
     immich = {
       enable = true;
-      # package = pkgs.immich;
+      package = master.immich;
       port = 2283;
       host = "0.0.0.0";
       openFirewall = true;
