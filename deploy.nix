@@ -12,7 +12,7 @@ in
       "${server}" = {
         hostname = "${server}";
         profiles.system = {
-          path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.sapphira;
+          path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.${server};
         };
       };
       "${vds}" = {
