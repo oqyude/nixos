@@ -90,8 +90,8 @@
       enable = true;
     };
     bat.enable = true;
-    command-not-found.enable = false;
-    nix-index.enable = true;
+    # command-not-found.enable = false;
+    # nix-index.enable = true;
     nh = {
       enable = true;
       flake = "/etc/nixos";
