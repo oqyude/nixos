@@ -5,15 +5,7 @@
   ...
 }:
 let
-  # work = import (builtins.fetchGit {
-  #     # Descriptive name to make the store path easier to identify
-  #     name = "my-old-revision";
-  #     url = "https://github.com/NixOS/nixpkgs/";
-  #     ref = "refs/heads/nixpkgs-unstable";
-  #     rev = "e6f23dc08d3624daab7094b701aa3954923c6bbb";
-  # }) {};
-  # myPkg = work.calibre-web;
-  work = import inputs.nixpkgs-calibre { system = "x86_64-linux"; };
+  work = import inputs.nixpkgs-master { system = "x86_64-linux"; };
 in
 {
   # services.calibre-server.package = stable.calibre;
