@@ -5,15 +5,16 @@
   ...
 }:
 let
-  stable = import inputs.nixpkgs-stable {
-    system = "x86_64-linux";
-  };
+    work = import (builtins.fetchTarball {
+        url = "https://github.com/NixOS/nixpkgs/archive/e6f23dc08d3624daab7094b701aa3954923c6bbb.tar.gz";
+    }) {};
+    # myPkg = work.calibre-web;
 in
 {
   # services.calibre-server.package = stable.calibre;
   services.calibre-web = {
     enable = true;
-    # package = stable.calibre-web;
+    package = work.calibre-web;
     group = "users";
     user = "${xlib.device.username}";
     options = {
