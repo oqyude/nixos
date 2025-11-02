@@ -4,14 +4,14 @@
   inputs,
   ...
 }:
-let
-  work = import inputs.nixpkgs-master { system = "x86_64-linux"; };
-in
+# let
+#   work = import inputs.nixpkgs-master { system = "x86_64-linux"; };
+# in
 {
   # services.calibre-server.package = stable.calibre;
   services.calibre-web = {
     enable = true;
-    package = work.calibre-web;
+    # package = work.calibre-web;
     group = "users";
     user = "${xlib.device.username}";
     options = {
