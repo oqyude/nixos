@@ -49,6 +49,8 @@
       rsync
       wget
       tree
+      ncdu
+      dust
 
       # Net Diagnostic
       mtr
