@@ -4,9 +4,9 @@
   inputs,
   ...
 }:
-let
-  last-stable = import inputs.nixpkgs-last-unstable { system = "x86_64-linux"; };
-in
+# let
+#   last-stable = import inputs.nixpkgs-last-unstable { system = "x86_64-linux"; };
+# in
 {
   programs = {
     mangohud.enable = true;
