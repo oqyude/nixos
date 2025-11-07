@@ -124,7 +124,7 @@ let
           allowPing = true;
         };
         enableIPv6 = true;
-        interfaces.ens3.useDHCPv6 = true;
+        interfaces.ens3.useDHCP = true;
       };
 
       system = {
