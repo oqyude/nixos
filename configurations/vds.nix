@@ -44,7 +44,8 @@ let
         preload.enable = true;
         journald = {
           extraConfig = ''
-            SystemMaxUse=512M
+            
+                        SystemMaxUse=512M
           '';
         };
         samba = {
@@ -124,8 +125,8 @@ let
           allowPing = true;
         };
         enableIPv6 = true;
-        interfaces.ens3 = {
-          useDHCP = true;
+        interfaces.enp0s3 = {
+          useDHCP = false;
           ipv6.addresses = [
             {
               address = "2a13:7c00:10:6:f816:3eff:fe36:fe1b";
@@ -133,7 +134,10 @@ let
             }
           ];
         };
-        defaultGateway6 = "2a13:7c00:10:6::1";
+        defaultGateway6 = {
+          address = "2a13:7c00:10:6::1";
+          interface = "enp0s3";
+        };
       };
 
       system = {
