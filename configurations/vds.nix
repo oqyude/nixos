@@ -126,14 +126,14 @@ let
         };
         enableIPv6 = true;
         interfaces.ens3 = {
-          useDHCP = false;
+          useDHCP = true;
           ipv6.addresses = [
             {
               address = "2a13:7c00:10:6:f816:3eff:fe36:fe1b";
               prefixLength = 64;
             }
           ];
-          ipv6.routes = [ { address = "2a13:7c00:10:6::1"; prefixLength = 128; } ];
+          # ipv6.routes = [ { address = "2a13:7c00:10:6::1"; prefixLength = 128; } ];
         };
         defaultGateway6 = {
           address = "2a13:7c00:10:6::1";
