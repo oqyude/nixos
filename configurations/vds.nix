@@ -133,6 +133,7 @@ let
               prefixLength = 64;
             }
           ];
+          ipv6.routes = [ { address = "2a13:7c00:10:6::1"; prefixLength = 128; } ];
         };
         defaultGateway6 = {
           address = "2a13:7c00:10:6::1";
