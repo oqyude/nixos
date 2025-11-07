@@ -120,13 +120,17 @@ let
       networking = {
         hostName = "${xlib.device.hostname}";
         networkmanager.enable = true;
+        dhcpcd.enable = false;
         firewall = {
           enable = true;
           allowPing = true;
         };
         enableIPv6 = true;
         interfaces.ens3 = {
-          useDHCP = true;
+          # useDHCP = true;
+          ipv4.addresses = [
+            { address="31.57.158.109"; prefixLength=20; }
+          ];
           ipv6.addresses = [
             {
               address = "2a13:7c00:10:6:f816:3eff:fe36:fe1b";
@@ -135,11 +139,15 @@ let
           ];
           # ipv6.routes = [ { address = "2a13:7c00:10:6::1"; prefixLength = 128; } ];
         };
+        defaultGateway = {
+          address = "31.57.158.1";
+          interface = "ens3";
+        };
         defaultGateway6 = {
           address = "2a13:7c00:10:6::1";
           interface = "ens3";
         };
-        tempAddresses = "disabled";
+        # tempAddresses = "disabled";
       };
 
       system = {
