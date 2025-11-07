@@ -124,7 +124,16 @@ let
           allowPing = true;
         };
         enableIPv6 = true;
-        interfaces.ens3.useDHCP = true;
+        interfaces.ens3 = {
+          useDHCP = true;
+          addresses = [
+            {
+              address = "2a13:7c00:10:6:f816:3eff:fe36:fe1b";
+              prefixLength = 64;
+            }
+          ];
+        };
+        defaultGateway6 = "2a13:7c00:10:6::1";
       };
 
       system = {
