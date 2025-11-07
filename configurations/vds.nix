@@ -126,7 +126,7 @@ let
         enableIPv6 = true;
         interfaces.ens3 = {
           useDHCP = true;
-          addresses = [
+          addresses.ipv6 = [
             {
               address = "2a13:7c00:10:6:f816:3eff:fe36:fe1b";
               prefixLength = 64;
