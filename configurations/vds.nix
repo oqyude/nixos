@@ -139,6 +139,7 @@ let
           address = "2a13:7c00:10:6::1";
           interface = "ens3";
         };
+        tempAddresses = false;
       };
 
       system = {
