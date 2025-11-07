@@ -125,8 +125,8 @@ let
           allowPing = true;
         };
         enableIPv6 = true;
-        interfaces.enp0s3 = {
-          useDHCP = true;
+        interfaces.ens3 = {
+          useDHCP = false;
           ipv6.addresses = [
             {
               address = "2a13:7c00:10:6:f816:3eff:fe36:fe1b";
@@ -136,7 +136,7 @@ let
         };
         defaultGateway6 = {
           address = "2a13:7c00:10:6::1";
-          interface = "enp0s3";
+          interface = "ens3";
         };
       };
 
