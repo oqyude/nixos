@@ -119,7 +119,12 @@ let
       networking = {
         hostName = "${xlib.device.hostname}";
         networkmanager.enable = true;
-        firewall.enable = true;
+        firewall = {
+          enable = true;
+          allowPing = true;
+        };
+        enableIPv6 = true;
+        interfaces.ens3.useDHCPv6 = true;
       };
 
       system = {
