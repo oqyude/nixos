@@ -130,7 +130,7 @@ let
           allowPing = true;
         };
         enableIPv6 = true;
-        interfaces.eth0 = {
+        interfaces.ens3 = {
           # useDHCP = true;
           ipv4.addresses = [
             { address="31.57.158.109"; prefixLength=20; }
@@ -144,11 +144,11 @@ let
         };
         # defaultGateway = {
         #   address = "31.57.158.1";
-        #   interface = "eth0";
+        #   interface = "ens3";
         # };
         defaultGateway6 = {
           address = "2a13:7c00:10:6::1";
-          interface = "eth0";
+          interface = "ens3";
         };
       };
 
