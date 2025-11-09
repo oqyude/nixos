@@ -121,6 +121,8 @@ let
           "1.1.1.1"
           "2001:4860:4860::8844"
           "2001:4860:4860::8888"
+          "2606:4700:4700::1111"
+          "2606:4700:4700::1001"
         ];
         hostName = "${xlib.device.hostname}";
         networkmanager.enable = true;
@@ -132,18 +134,18 @@ let
         enableIPv6 = true;
         interfaces.ens3 = {
           useDHCP = true;
-          ipv4.addresses = [
-            {
-              address = "31.57.158.109";
-              prefixLength = 24;
-            }
-          ];
-          ipv6.addresses = [
-            {
-              address = "2a13:7c00:10:6:f816:3eff:fe36:fe1b";
-              prefixLength = 64;
-            }
-          ];
+          # ipv4.addresses = [
+          #   {
+          #     address = "31.57.158.109";
+          #     prefixLength = 24;
+          #   }
+          # ];
+          # ipv6.addresses = [
+          #   {
+          #     address = "2a13:7c00:10:6:f816:3eff:fe36:fe1b";
+          #     prefixLength = 64;
+          #   }
+          # ];
         };
         # defaultGateway = {
         #   address = "31.57.158.1";
