@@ -55,6 +55,7 @@
       # Net Diagnostic
       mtr
       dnsutils
+      inetutils
 
       # Monitoring
       smartmontools
