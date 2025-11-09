@@ -133,9 +133,9 @@ let
         interfaces.ens3 = {
           useDHCP = true;
           ipv4.addresses = [
-            { 
-              address="31.57.158.109"; 
-            prefixLength=24; 
+            {
+              address = "31.57.158.109";
+              prefixLength = 24;
             }
           ];
           ipv6.addresses = [
