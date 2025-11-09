@@ -140,12 +140,12 @@ let
           #     prefixLength = 24;
           #   }
           # ];
-          # ipv6.addresses = [
-          #   {
-          #     address = "2a13:7c00:10:6:f816:3eff:fe36:fe1b";
-          #     prefixLength = 64;
-          #   }
-          # ];
+          ipv6.addresses = [
+            {
+              address = "2a13:7c00:6:0:f816:3eff:fe58:2ab";
+              prefixLength = 64;
+            }
+          ];
         };
         # defaultGateway = {
         #   address = "31.57.158.1";
