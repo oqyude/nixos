@@ -126,7 +126,7 @@ let
         networkmanager.enable = true;
         # dhcpcd.enable = false;
         firewall = {
-          enable = true;
+          enable = false;
           allowPing = true;
         };
         enableIPv6 = true;
