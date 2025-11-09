@@ -64,9 +64,8 @@
       TimeoutSec = 300;
     };
     script = ''
-      
-            cd /mnt/containers/3x-ui
-            podman build -t compose2nix/3xui_app -f ./Dockerfile .
+cd /mnt/containers/3x-ui
+podman build -t compose2nix/3xui_app -f ./Dockerfile .
     '';
   };
 
