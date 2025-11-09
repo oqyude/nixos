@@ -132,7 +132,7 @@ let
           IPv6rs = true;
         };
         firewall = {
-          enable = false;
+          enable = true;
           allowPing = true;
         };
         enableIPv6 = true;
