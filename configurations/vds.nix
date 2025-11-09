@@ -136,29 +136,29 @@ let
           allowPing = true;
         };
         enableIPv6 = true;
-        interfaces.ens3 = {
-          useDHCP = true;
-          # ipv4.addresses = [
-          #   {
-          #     address = "31.57.158.109";
-          #     prefixLength = 24;
-          #   }
-          # ];
-          ipv6.addresses = [
-            {
-              address = "2a13:7c00:10:6:f816:3eff:fe36:fe1b";
-              prefixLength = 64;
-            }
-          ];
-        };
+        # interfaces.ens3 = {
+        #   useDHCP = true;
+        #   # ipv4.addresses = [
+        #   #   {
+        #   #     address = "31.57.158.109";
+        #   #     prefixLength = 24;
+        #   #   }
+        #   # ];
+        #   # ipv6.addresses = [
+        #   #   {
+        #   #     address = "2a13:7c00:10:6:f816:3eff:fe36:fe1b";
+        #   #     prefixLength = 64;
+        #   #   }
+        #   # ];
+        # };
         # defaultGateway = {
         #   address = "31.57.158.1";
         #   interface = "ens3";
         # };
-        defaultGateway6 = {
-          address = "2a13:7c00:10:6::1";
-          interface = "ens3";
-        };
+        # defaultGateway6 = {
+        #   address = "2a13:7c00:10:6::1";
+        #   interface = "ens3";
+        # };
       };
 
       system = {
