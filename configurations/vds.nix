@@ -146,7 +146,7 @@ let
           # ];
           ipv6.addresses = [
             {
-              address = "2a13:7c00:6:0:f816:3eff:fe58:2ab";
+              address = "2a13:7c00:10:6:f816:3eff:fe36:fe1b";
               prefixLength = 64;
             }
           ];
