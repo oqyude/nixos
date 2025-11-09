@@ -117,6 +117,11 @@ let
       };
 
       networking = {
+        nameservers = [
+          "1.1.1.1"
+          "2001:4860:4860::8844"
+          "2001:4860:4860::8888"
+        ];
         hostName = "${xlib.device.hostname}";
         networkmanager.enable = true;
         # dhcpcd.enable = false;
