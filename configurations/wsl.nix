@@ -48,10 +48,10 @@ let
         hostName = "${xlib.device.hostname}";
         networkmanager.enable = true;
         tempAddresses = "disabled";
-        dhcpcd = {
-          enable = true;
-          IPv6rs = true;
-        };
+        # dhcpcd = {
+        #   enable = true;
+        #   IPv6rs = true;
+        # };
         firewall = {
           enable = false;
           allowPing = true;
