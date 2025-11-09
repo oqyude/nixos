@@ -37,17 +37,17 @@ let
       };
 
       networking = {
-        nameservers = [
-          "1.1.1.1"
-          "8.8.8.8"
-          "2001:4860:4860::8844"
-          "2001:4860:4860::8888"
-          "2606:4700:4700::1111"
-          "2606:4700:4700::1001"
-        ];
+        # nameservers = [
+        #   "1.1.1.1"
+        #   "8.8.8.8"
+        #   "2001:4860:4860::8844"
+        #   "2001:4860:4860::8888"
+        #   "2606:4700:4700::1111"
+        #   "2606:4700:4700::1001"
+        # ];
         hostName = "${xlib.device.hostname}";
-        networkmanager.enable = true;
-        tempAddresses = "disabled";
+        # networkmanager.enable = true;
+        # tempAddresses = "disabled";
         # dhcpcd = {
         #   enable = true;
         #   IPv6rs = true;
