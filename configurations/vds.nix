@@ -145,21 +145,21 @@ let
           #     prefixLength = 24;
           #   }
           # ];
-          # ipv6.addresses = [
-          #   {
-          #     address = "2a13:7c00:10:6:f816:3eff:fe36:fe1b";
-          #     prefixLength = 64;
-          #   }
-          # ];
+          ipv6.addresses = [
+            {
+              address = "2a13:7c00:10:6:f816:3eff:fe36:fe1b";
+              prefixLength = 64;
+            }
+          ];
         };
         # defaultGateway = {
         #   address = "31.57.158.1";
         #   interface = "ens3";
         # };
-        # defaultGateway6 = {
-        #   address = "2a13:7c00:10:6::1";
-        #   interface = "ens3";
-        # };
+        defaultGateway6 = {
+          address = "2a13:7c00:10:6::1";
+          interface = "ens3";
+        };
       };
 
       system = {
