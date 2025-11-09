@@ -126,7 +126,11 @@ let
         ];
         hostName = "${xlib.device.hostname}";
         networkmanager.enable = true;
-        # dhcpcd.enable = false;
+        tempAddresses = "disabled";
+        dhcpcd = {
+          enable = true;
+          IPv6rs = true;
+        };
         firewall = {
           enable = false;
           allowPing = true;
