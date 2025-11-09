@@ -19,9 +19,9 @@
       theme = "robbyrussell";
     };
     shellInit = ''
-beetn() {
-  echo "$*" | aichat -cer beets
-}
+      beetn() {
+        echo "$*" | aichat -cer beets
+      }
     '';
     shellAliases = {
       # shell
