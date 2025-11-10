@@ -12,9 +12,9 @@ in
 {
   xdg = {
     dataFile = {
-      "grampsData" = {
+      "v2raynData" = {
         source = config.lib.file.mkOutOfStoreSymlink v2raynPath;
-        target = "gramps";
+        target = "v2rayN";
       };
     };
   };
