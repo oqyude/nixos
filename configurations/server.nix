@@ -30,6 +30,15 @@ let
 
       hardware = {
         bluetooth.enable = true;
+        graphics = {
+          enable = true;
+          extraPackages = with pkgs; [
+            intel-media-driver 
+            intel-ocl
+            intel-vaapi-driver
+          ];
+        };
+        intel-gpu-tools.enable = true;
       };
 
       # swapDevices = [
