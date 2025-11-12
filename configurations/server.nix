@@ -33,7 +33,7 @@ let
         graphics = {
           enable = true;
           extraPackages = with pkgs; [
-            intel-media-driver 
+            intel-media-driver
             intel-ocl
             intel-vaapi-driver
           ];
