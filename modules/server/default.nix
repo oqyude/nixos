@@ -18,7 +18,6 @@
     ./systemd.nix
     ./transmission.nix
     ./uptime-kuma.nix
-    ./outline.nix
     # ./mealie.nix
     # ./memos.nix
     # ./node-red.nix
