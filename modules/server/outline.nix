@@ -1,11 +1,11 @@
 {
-    config,
+  config,
   lib,
   pkgs,
   ...
 }:
 {
-    services.outline = {
-        enable = true;
-    };
+  services.outline = {
+    enable = true;
+  };
 }
