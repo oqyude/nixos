@@ -22,6 +22,9 @@
       beetn() {
         echo "$*" | aichat -cer beets
       }
+      beetp() {
+        beet mod path:. playlist="$*"
+      }
     '';
     shellAliases = {
       # shell
