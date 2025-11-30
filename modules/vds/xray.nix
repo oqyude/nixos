@@ -4,135 +4,6 @@
   pkgs,
   ...
 }:
-let
-  xraySettings = {
-    log = {
-      loglevel = "warning";
-    };
-    inbounds = [
-      {
-        port = 8443;
-        protocol = "vless";
-        settings = {
-          clients = [
-            {
-              id = builtins.readFile config.sops.secrets.xray_uuid.path;
-              flow = "xtls-rprx-vision";
-            }
-          ];
-          decryption = "none";
-        };
-        streamSettings = {
-          network = "tcp";
-          security = "reality";
-          realitySettings = {
-            dest = "cloudflare.com:443";
-            serverNames = [
-              "cloudflare.com"
-            ];
-            privateKey = builtins.readFile config.sops.secrets.xray_private-key.path;
-            shortIds = [
-              "0a381e1fa219"
-              "be0ce04754dc"
-              "41beec74f4bc"
-            ];
-          };
-        };
-        sniffing = {
-          enabled = true;
-          destOverride = [
-            "http"
-            "tls"
-          ];
-        };
-      }
-      {
-        port = 8444;
-        protocol = "vless";
-        settings = {
-          clients = [
-            {
-              id = builtins.readFile config.sops.secrets.xray_uuid.path;
-              flow = "";
-              level = 0;
-            }
-          ];
-          decryption = "none";
-          fallbacks = [
-            {
-              dest = "cloudflare.com:443";
-            }
-            {
-              dest = "@xhttp";
-            }
-          ];
-        };
-        streamSettings = {
-          fingerprint = "chrome";
-          network = "raw";
-          security = "reality";
-          realitySettings = {
-            show = false;
-            dest = "cloudflare.com:443";
-            xver = 0;
-            serverNames = [
-              "cloudflare.com"
-            ];
-            privateKey = builtins.readFile config.sops.secrets.xray_private-key.path;
-            shortIds = [
-              "0a381e1fa219"
-              "be0ce04754dc"
-              "41beec74f4bc"
-            ];
-          };
-        };
-        sniffing = {
-          enabled = true;
-          routeOnly = true;
-          destOverride = [
-            "http"
-            "tls"
-            "quic"
-          ];
-        };
-      }
-      {
-        listen = "@xhttp";
-        protocol = "vless";
-        settings = {
-          clients = [
-            {
-              id = builtins.readFile config.sops.secrets.xray_uuid.path;
-            }
-          ];
-        };
-        streamSettings = {
-          network = "xhttp";
-          xhttpSettings.path = "/";
-        };
-        sniffing = {
-          enabled = true;
-          routeOnly = true;
-          destOverride = [
-            "http"
-            "tls"
-            "quic"
-          ];
-        };
-      }
-    ];
-    outbounds = [
-      {
-        protocol = "freedom";
-        tag = "direct";
-      }
-      {
-        protocol = "blackhole";
-        tag = "block";
-      }
-    ];
-  };
-in
 {
   services.xray = {
     enable = true;
@@ -140,26 +11,26 @@ in
   };
 
   networking.firewall = {
-    allowedTCPPorts = [ 8443 ];
-    allowedUDPPorts = [ 8443 ];
+    allowedTCPPorts = [ 8443 9443 ];
+    allowedUDPPorts = [ 8443 9443 ];
   };
 
   environment.systemPackages = [ pkgs.xray ];
 
-  sops.secrets = {
-    xray_uuid = {
-      key = "uuid";
-      mode = "0444";
-      format = "yaml";
-      sopsFile = ./secrets/xray.yaml;
-      path = "/etc/xray/uuid";
-    };
-    xray_private-key = {
-      path = "/etc/xray/private-key";
-      key = "private-key";
-      mode = "0444";
-      format = "yaml";
-      sopsFile = ./secrets/xray.yaml;
-    };
-  };
+  # sops.secrets = {
+  #   xray_uuid = {
+  #     key = "uuid";
+  #     mode = "0444";
+  #     format = "yaml";
+  #     sopsFile = ./secrets/xray.yaml;
+  #     path = "/etc/xray/uuid";
+  #   };
+  #   xray_private-key = {
+  #     path = "/etc/xray/private-key";
+  #     key = "private-key";
+  #     mode = "0444";
+  #     format = "yaml";
+  #     sopsFile = ./secrets/xray.yaml;
+  #   };
+  # };
 }
