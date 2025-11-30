@@ -52,10 +52,9 @@ let
         settings = {
           clients = [
             {
-              id = builtins.readFile config.sops.secrets.xray_x-uuid.path;
+              id = builtins.readFile config.sops.secrets.xray_uuid.path;
               flow = "";
               level = 0;
-              email = "552@552.com";
             }
           ];
           decryption = "none";
@@ -79,7 +78,7 @@ let
             serverNames = [
               "cloudflare.com"
             ];
-            privateKey = builtins.readFile config.sops.secrets.xray_x-private-key.path;
+            privateKey = builtins.readFile config.sops.secrets.xray_private-key.path;
             shortIds = [
               "0a381e1fa219"
               "be0ce04754dc"
@@ -103,8 +102,7 @@ let
         settings = {
           clients = [
             {
-              id = builtins.readFile config.sops.secrets.xray_x-uuid.path;
-              email = "552@552.com";
+              id = builtins.readFile config.sops.secrets.xray_uuid.path;
             }
           ];
         };
