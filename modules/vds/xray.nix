@@ -47,7 +47,7 @@ let
         };
       }
       {
-        port = 9443;
+        port = 8444;
         protocol = "vless";
         settings = {
           clients = [
