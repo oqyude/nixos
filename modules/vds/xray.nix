@@ -46,6 +46,82 @@ let
           ];
         };
       }
+      {
+        port = 9443;
+        protocol = "vless";
+        settings = {
+          clients = [
+            {
+              id = builtins.readFile config.sops.secrets.xray_x-uuid.path;
+              flow = "";
+              level = 0;
+              email = "552@552.com";
+            }
+          ];
+          decryption = "none";
+          fallbacks = [
+            {
+              dest = "cloudflare.com:443";
+            }
+            {
+              dest = "@xhttp";
+            }
+          ];
+        };
+        streamSettings = {
+          fingerprint = "chrome";
+          network = "raw";
+          security = "reality";
+          realitySettings = {
+            show = false;
+            dest = "cloudflare.com:443";
+            xver = 0;
+            serverNames = [
+              "cloudflare.com"
+            ];
+            privateKey = builtins.readFile config.sops.secrets.xray_x-private-key.path;
+            shortIds = [
+              "0a381e1fa219"
+              "be0ce04754dc"
+              "41beec74f4bc"
+            ];
+          };
+        };
+        sniffing = {
+          enabled = true;
+          routeOnly = true;
+          destOverride = [
+            "http"
+            "tls"
+            "quic"
+          ];
+        };
+      }
+      {
+        listen = "@xhttp";
+        protocol = "vless";
+        settings = {
+          clients = [
+            {
+              id = builtins.readFile config.sops.secrets.xray_x-uuid.path;
+              email = "552@552.com";
+            }
+          ];
+        };
+        streamSettings = {
+          network = "xhttp";
+          xhttpSettings.path = "/";
+        };
+        sniffing = {
+          enabled = true;
+          routeOnly = true;
+          destOverride = [
+            "http"
+            "tls"
+            "quic"
+          ];
+        };
+      }
     ];
     outbounds = [
       {
