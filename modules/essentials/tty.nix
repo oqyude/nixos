@@ -19,11 +19,14 @@
       theme = "robbyrussell";
     };
     shellInit = ''
-      beetn() {
+      beet-n() {
         echo "$*" | aichat -cer beets
       }
-      beetp() {
+      beet-p() {
         beet mod path:. playlist="$*"
+      }
+      beet-ims() {
+        beet im ./ -S $*
       }
     '';
     shellAliases = {
@@ -35,6 +38,9 @@
       gp = "git pull";
       ns = "nh os switch";
       gp-ns = "gp && ns";
+
+      # beets
+      beet-ima = "beet im ./ -A";
 
       # ssh
       z-s = "ssh sapphira";
