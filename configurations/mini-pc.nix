@@ -139,7 +139,6 @@ let
         };
         thermald.enable = true;
         earlyoom.enable = true;
-        preload.enable = true;
       };
       nixpkgs.config.pulseaudio = true;
 

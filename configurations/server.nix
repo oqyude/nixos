@@ -86,7 +86,6 @@ let
       services = {
         power-profiles-daemon.enable = lib.mkForce false;
         earlyoom.enable = true;
-        preload.enable = true;
         auto-cpufreq.enable = false;
         throttled.enable = true;
         journald = {

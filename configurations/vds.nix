@@ -41,7 +41,6 @@ let
 
       services = {
         earlyoom.enable = true;
-        preload.enable = true;
         journald = {
           extraConfig = ''
             SystemMaxUse=512M
