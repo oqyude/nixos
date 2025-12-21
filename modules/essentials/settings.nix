@@ -13,9 +13,10 @@
     settings = {
       require-sigs = false;
       substituters = [
-        "https://nixos-cache-proxy-direct.elxreno.com"
+        # "https://nixos-cache-proxy-direct.elxreno.com"
         "https://nixos-cache-proxy.cofob.dev" # https://gist.github.com/cofob/9b1fd205e6d961a45c225ae9f0af1394
-        "https://nix-community.cachix.org"
+        "https://nixos-cache-proxy.elxreno.com"
+        "https://nix-community.cachix.org"  
         # "https://cache.nixos.org"
         # "https://nixos-cache-proxy.sweetdogs.ru"
         #"https://nixos.snix.store" # https://nixos.snix.store/
