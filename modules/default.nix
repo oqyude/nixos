@@ -22,7 +22,6 @@ let
         self.homeConfigurations.default.nixosModule # default homeConfigurations
         disko.nixosModules.disko # disko module
       ];
-
       _module.args = {
         inputs = inputs;
         xlib = config.xlib;

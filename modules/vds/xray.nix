@@ -11,8 +11,14 @@
   };
 
   networking.firewall = {
-    allowedTCPPorts = [ 8443 9443 ];
-    allowedUDPPorts = [ 8443 9443 ];
+    allowedTCPPorts = [
+      8443
+      9443
+    ];
+    allowedUDPPorts = [
+      8443
+      9443
+    ];
   };
 
   environment.systemPackages = [ pkgs.xray ];
