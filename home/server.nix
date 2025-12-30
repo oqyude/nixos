@@ -11,22 +11,6 @@ let
     "${xlib.dirs.storage}/ssh" = ".ssh/config";
     "${xlib.dirs.storage}/ssh" = ".ssh/known_hosts";
     "${xlib.dirs.storage}/beets" = ".config/beets";
-
-    # "hypr" = ".config/hypr";
-    # "waybar" = ".config/waybar";
-    # "rofi" = ".config/rofi";
-    # "yazi" = ".config/yazi";
-
-    # "alacritty" = ".config/alacritty";
-    # "zellij" = ".config/zellij";
-
-    # "zed" = ".config/zed";
-
-    # "lazygit" = ".config/lazygit";
-
-    # "fish/config.fish" = ".config/fish/config.fish";
-    # "git/.gitconfig" = ".gitconfig";
-    # "npm/.npmrc" = ".npmrc";
   };
 
   mkLinks = lib.mapAttrs' (sourcePath: targetPath: {
@@ -40,9 +24,10 @@ let
   musicPath = "${config.home.homeDirectory}/External/Music";
 in
 {
-  # imports = [
-  #   ./minimal.nix
-  # ];
+  imports = [
+    ./minimal.nix
+  ];
+  home.file = mkLinks;
   xdg = {
     # configFile = {
     #   "beets" = {
@@ -65,7 +50,6 @@ in
       videos = null;
     };
   };
-  home.file = mkLinks;
   # home = {
   #   file = {
   #     "ssh-config" = {
