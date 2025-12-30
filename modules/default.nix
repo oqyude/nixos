@@ -23,12 +23,6 @@ let
         disko.nixosModules.disko # disko module
       ];
 
-      home-manager = {
-        extraSpecialArgs = {
-          xlib = config.xlib;
-        };
-      };
-
       _module.args = {
         inputs = inputs;
         xlib = config.xlib;

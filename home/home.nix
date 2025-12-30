@@ -50,7 +50,10 @@ let
         sharedModules = [
           inputs.plasma-manager.homeModules.plasma-manager
         ];
-        extraSpecialArgs = { inherit inputs; };
+        extraSpecialArgs = { 
+          inherit inputs;
+          xlib = xlib;
+        };
       };
     };
 in
