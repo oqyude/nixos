@@ -25,12 +25,6 @@ in
   xdg = {
     enable = true;
     autostart.enable = true;
-    # configFile = {
-    #   "beets" = {
-    #     source = config.lib.file.mkOutOfStoreSymlink beetsPath;
-    #     target = "beets";
-    #   };
-    # };
     userDirs = {
       enable = true;
       createDirectories = false;
