@@ -8,20 +8,14 @@
 let
   symlinksPaths = {
     "${config.home.homeDirectory}/External/Music" = "Music";
+    "${xlib.dirs.storage}/beets" = ".config/beets";
     "${xlib.dirs.storage}/ssh" = ".ssh/config";
     "${xlib.dirs.storage}/ssh" = ".ssh/known_hosts";
-    "${xlib.dirs.storage}/beets" = ".config/beets";
   };
-
   mkLinks = lib.mapAttrs' (sourcePath: targetPath: {
     name = targetPath;
     value.source = config.lib.file.mkOutOfStoreSymlink "${sourcePath}";
   }) symlinksPaths;
-
-  # Paths
-  beetsPath = "${xlib.dirs.storage}/beets";
-  sshPath = "${xlib.dirs.storage}/ssh";
-  musicPath = "${config.home.homeDirectory}/External/Music";
 in
 {
   imports = [
@@ -29,12 +23,6 @@ in
   ];
   home.file = mkLinks;
   xdg = {
-    # configFile = {
-    #   "beets" = {
-    #     source = config.lib.file.mkOutOfStoreSymlink beetsPath;
-    #     target = "beets";
-    #   };
-    # };
     enable = true;
     autostart.enable = true;
     userDirs = {
@@ -50,20 +38,4 @@ in
       videos = null;
     };
   };
-  # home = {
-  #   file = {
-  #     "ssh-config" = {
-  #       source = config.lib.file.mkOutOfStoreSymlink "${sshPath}/config";
-  #       target = ".ssh/config";
-  #     };
-  #     "ssh-known" = {
-  #       source = config.lib.file.mkOutOfStoreSymlink "${sshPath}/known_hosts";
-  #       target = ".ssh/known_hosts";
-  #     };
-  #     "Music" = {
-  #       source = config.lib.file.mkOutOfStoreSymlink musicPath;
-  #       target = "${config.home.homeDirectory}/Music";
-  #     };
-  #   };
-  # };
 }
