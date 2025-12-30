@@ -9,8 +9,8 @@ let
   symlinksPaths = {
     "${config.home.homeDirectory}/External/Music" = "Music";
     "${xlib.dirs.storage}/beets" = ".config/beets";
-    "${xlib.dirs.storage}/ssh" = ".ssh/config";
-    "${xlib.dirs.storage}/ssh" = ".ssh/known_hosts";
+    "${xlib.dirs.storage}/ssh/config" = ".ssh/config";
+    "${xlib.dirs.storage}/ssh/known_hosts" = ".ssh/known_hosts";
   };
   mkLinks = lib.mapAttrs' (sourcePath: targetPath: {
     name = targetPath;
