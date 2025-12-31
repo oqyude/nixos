@@ -5,6 +5,25 @@
   xlib,
   ...
 }:
+let
+  symlinksPaths = {
+    # cfg
+    "${xlib.dirs.user-storage}/beets" = ".config/beets";
+    "${xlib.dirs.user-storage}/ludusavi" = ".config/ludusavi";
+    "${xlib.dirs.user-storage}/solaar" = ".config/solaar";
+    "${xlib.dirs.user-storage}/easyeffects" = ".config/easyeffects";
+    "${xlib.dirs.user-storage}/KeePassXC" = ".config/keepassxc";
+    "${xlib.dirs.user-storage}/v2rayN" = ".local/share/v2rayN";
+
+    # smthng
+    # "${xlib.dirs.soptur-drive}/AI/LM Studio" = ".lmstudio";
+    "${xlib.dirs.therima-drive}" = "External";
+  };
+  mkLinks = lib.mapAttrs' (sourcePath: targetPath: {
+    name = targetPath;
+    value.source = config.lib.file.mkOutOfStoreSymlink "${sourcePath}";
+  }) symlinksPaths;
+in
 {
   imports = [
     ./minimal.nix
@@ -16,34 +35,6 @@
   xdg = {
     enable = true;
     autostart.enable = true;
-    configFile = {
-      "beets" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.user-storage}/beets";
-        target = "beets";
-      };
-      "ludusavi" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.user-storage}/ludusavi";
-        target = "ludusavi";
-      };
-      "solaar" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.user-storage}/solaar";
-        target = "solaar";
-      };
-      "easyeffects" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.user-storage}/easyeffects";
-        target = "easyeffects";
-      };
-      "keepassxc" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.user-storage}/KeePassXC";
-        target = "keepassxc";
-      };
-    };
-    dataFile = {
-      "v2rayN" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.user-storage}/v2rayN";
-        target = "v2rayN";
-      };
-    };
     userDirs = {
       enable = true;
       createDirectories = true;
@@ -57,18 +48,8 @@
       videos = "${config.home.homeDirectory}/Pictures/Videos";
     };
   };
-
   home = {
-    file = {
-      "External" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.therima-drive}";
-        target = "External";
-      };
-      "LM Studio" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${xlib.dirs.soptur-drive}/AI/LM Studio";
-        target = ".lmstudio";
-      };
-    };
+    file = mkLinks;
     pointerCursor = {
       enable = true;
       x11.enable = true;
