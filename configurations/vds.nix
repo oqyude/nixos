@@ -146,7 +146,7 @@ let
           # ];
           ipv6.addresses = [
             {
-              address = "2a13:7c00:6:15:f816:3eff:fe4f:d35a";
+              address = "2a13:7c00:6:102:f816:3eff:fe91:6b9e";
               prefixLength = 64;
             }
           ];
@@ -156,7 +156,7 @@ let
         #   interface = "ens3";
         # };
         defaultGateway6 = {
-          address = "2a13:7c00:6:15::1";
+          address = "2a13:7c00:6:102::1";
           interface = "ens3";
         };
       };
