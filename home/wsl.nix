@@ -10,6 +10,8 @@ let
     "${config.home.homeDirectory}/External/Music" = "Music";
     "${xlib.dirs.wsl-home}" = "External";
     "${xlib.dirs.wsl-storage}/beets" = ".config/beets";
+    "${xlib.dirs.wsl-storage}/ssh/config" = ".ssh/config";
+    "${xlib.dirs.wsl-storage}/ssh/known_hosts" = ".ssh/known_hosts";
   };
   mkLinks = lib.mapAttrs' (sourcePath: targetPath: {
     name = targetPath;
