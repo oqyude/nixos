@@ -7,7 +7,6 @@
 }:
 let
   grampsPath = "${xlib.dirs.wsl-storage}/gramps";
-  # last-stable = import inputs.nixpkgs-last-unstable { system = "x86_64-linux"; };
 in
 {
   xdg = {

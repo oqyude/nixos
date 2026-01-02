@@ -5,17 +5,10 @@
   pkgs,
   ...
 }:
-# let
-#   fix = import inputs.nixpkgs-last-unstable {
-#     system = "x86_64-linux";
-#     config.allowUnfree = true;
-#   }; # temp
-# in
 {
   services = {
     open-webui = {
       enable = false;
-      #package = fix.open-webui;
       host = "0.0.0.0";
       port = 11112;
       openFirewall = true;

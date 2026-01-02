@@ -7,7 +7,6 @@
 }:
 let
   v2raynPath = "${xlib.dirs.wsl-storage}/v2rayN";
-  # last-stable = import inputs.nixpkgs-last-unstable { system = "x86_64-linux"; };
 in
 {
   xdg = {
