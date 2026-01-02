@@ -50,10 +50,6 @@ let
         "${xlib.dirs.server-home}" = {
           device = "/dev/disk/by-uuid/37e53ebc-5343-a94d-9fe2-0ca39e13a8de";
           fsType = "ext4";
-          #           options = [
-          #             #"nofail"
-          #             #"x-systemd.device-timeout=0"
-          #           ];
         };
         # Archive drive
         "/mnt/archive" = {
@@ -61,7 +57,16 @@ let
           fsType = "exfat";
           options = [
             "nofail"
-            #"x-systemd.device-timeout=0"
+            "uid=1000"
+            "gid=1000"
+          ];
+        };
+        # Mobile SD-Card
+        "/mnt/mobile-sd" = {
+          device = "/dev/disk/by-uuid/7EB1-DC99";
+          fsType = "exfat";
+          options = [
+            "nofail"
             "uid=1000"
             "gid=1000"
           ];
