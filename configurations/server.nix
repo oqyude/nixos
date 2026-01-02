@@ -62,7 +62,7 @@ let
           ];
         };
         # Mobile SD-Card
-        "/mnt/mobile-sd" = {
+        "/mnt/mobile" = {
           device = "/dev/disk/by-uuid/7EB1-DC99";
           fsType = "exfat";
           options = [
