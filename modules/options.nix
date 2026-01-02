@@ -46,6 +46,11 @@
           default = "/mnt/archive";
           description = "Archive drive mount point.";
         };
+        mobile-drive = lib.mkOption {
+          type = lib.types.str;
+          default = "/mnt/mobile";
+          description = "Mobile drive mount point.";
+        };
         therima-drive = lib.mkOption {
           type = lib.types.str;
           default = "/mnt/therima";

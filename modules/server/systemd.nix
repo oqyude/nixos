@@ -7,30 +7,57 @@
 }:
 {
   systemd = {
-    services.rsync-archive = {
-      # Archivesta
-      # Make copy of files
-      description = "Backup data using rsync";
-      #after = [ ];
-      requisite = [ "mnt-archive.mount" ]; # hard-code
-      script = ''
-        ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.services-folder}/ ${xlib.dirs.archive-drive}/Services/
-      '';
-      serviceConfig = {
-        Type = "oneshot";
-        User = "root";
-        Group = "root";
-        Nice = 19;
-        IOSchedulingClass = "idle";
+    services = {
+      rsync-archivesta = {
+        # Archivesta
+        description = "Backup data using rsync";
+        requisite = [ "mnt-archive.mount" ]; # hard-code
+        script = ''
+          ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.services-folder}/ ${xlib.dirs.archive-drive}/Services/
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+          User = "root";
+          Group = "root";
+          Nice = 19;
+          IOSchedulingClass = "idle";
+        };
+      };
+      rsync-archivesta-lite = {
+        # Archivesta Lite
+        description = "Backup data using rsync";
+        requisite = [ "mnt-mobile.mount" ]; # hard-code
+        script = ''
+          ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.services-folder}/ ${xlib.dirs.mobile-drive}/
+          ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.services-folder}/ ${xlib.dirs.mobile-drive}/
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+          User = "root";
+          Group = "root";
+          Nice = 19;
+          IOSchedulingClass = "idle";
+        };
       };
     };
-    timers.rsync-archive = {
-      description = "Run rsync backup weekly";
-      wantedBy = [ "timers.target" ];
-      timerConfig = {
-        OnCalendar = "daily";
-        Persistent = true;
-        Unit = "rsync-archive.service";
+    timers = {
+      rsync-archivesta = {
+        description = "Run rsync backup daily";
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "daily";
+          Persistent = true;
+          Unit = "rsync-archive.service";
+        };
+      };
+      rsync-archivesta-lite = {
+        description = "Run rsync backup weekly";
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "weekly";
+          Persistent = true;
+          Unit = "rsync-archive.service";
+        };
       };
     };
   };
