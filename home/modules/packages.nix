@@ -48,7 +48,7 @@
       amdgpu_top
       vscodium
       ayugram-desktop
-      vesktop
+      # vesktop
       discord
       gramps
       kdePackages.filelight
