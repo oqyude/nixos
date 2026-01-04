@@ -16,6 +16,16 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
+        "sub.zeroq.ru" = {
+          enableACME = true;
+          forceSSL = true;
+          root = "/var/www/sub";
+          locations."/" = {
+            extraConfig = ''
+              autoindex off;           # не показываем каталог
+            '';
+          };
+        };
         "kuma.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
