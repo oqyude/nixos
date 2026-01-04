@@ -7,10 +7,7 @@ let
   server = "100.64.0.0";
 in
 {
-  environment.etc."nginx/.htpasswd".text = ''
-    test:$apr1$3m7iYgVv$31i.S8LP3i8dKuOIBhoeE1
-    oqyude:$apr1$SOZTZPw9$33dfsailwRjmgbpeohYtQ.
-  '';
+  environment.etc."nginx/pubray".text = inputs.zeroq-credentials.services.xray.auth;
   users.users.nginx.extraGroups = [ "acme" ];
   services = {
     nginx = {
@@ -23,11 +20,11 @@ in
         "sub.zeroq.ru" = {
           enableACME = true;
           forceSSL = true;
-          root = "/var/www/sub";
+          root = "${inputs.zeroq-credentials.services.xray.subs}";
           locations."/" = {
             extraConfig = ''
               auth_basic "Restricted";
-              auth_basic_user_file /etc/nginx/.htpasswd;
+              auth_basic_user_file /etc/nginx/pubray;
 
               autoindex off;
               satisfy all;
