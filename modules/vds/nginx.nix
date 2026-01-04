@@ -9,6 +9,7 @@ in
 {
   environment.etc."nginx/.htpasswd".text = ''
     test:$apr1$3m7iYgVv$31i.S8LP3i8dKuOIBhoeE1
+    oqyude:$apr1$SOZTZPw9$33dfsailwRjmgbpeohYtQ.
   '';
   users.users.nginx.extraGroups = [ "acme" ];
   services = {
@@ -27,7 +28,18 @@ in
             extraConfig = ''
               auth_basic "Restricted";
               auth_basic_user_file /etc/nginx/.htpasswd;
+
               autoindex off;
+
+              # выдаём файл в зависимости от пользователя
+              satisfy all;
+
+              if ($remote_user = "test") {
+                rewrite ^/empty.txt$ /test.txt break;
+              }
+              if ($remote_user = "oqyude") {
+                rewrite ^/empty.txt$ /my.txt break;
+              }
             '';
           };
         };
