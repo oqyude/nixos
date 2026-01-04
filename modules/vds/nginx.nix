@@ -30,15 +30,12 @@ in
               auth_basic_user_file /etc/nginx/.htpasswd;
 
               autoindex off;
-
-              # выдаём файл в зависимости от пользователя
               satisfy all;
-
               if ($remote_user = "test") {
-                rewrite ^/empty.txt$ /test.txt break;
+                rewrite ^/$ /test.txt break;
               }
               if ($remote_user = "oqyude") {
-                rewrite ^/empty.txt$ /my.txt break;
+                rewrite ^/$ /my.txt break;
               }
             '';
           };
