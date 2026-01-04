@@ -76,6 +76,7 @@
       ipset
       iptables
       nftables
+      openssl
     ];
   };
   programs = {
