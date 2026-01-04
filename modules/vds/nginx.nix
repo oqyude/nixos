@@ -16,6 +16,7 @@ in
       recommendedOptimisation = true;
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
+      appendHttpConfig = inputs.zeroq-credentials.services.xray.maps;
       virtualHosts = {
         "pubray.zeroq.ru" = {
           enableACME = true;
@@ -26,17 +27,8 @@ in
               auth_basic "Restricted";
               auth_basic_user_file /etc/nginx/pubray;
 
-              autoindex off;
-              satisfy all;
-              if ($remote_user = "test") {
-                rewrite ^/$ /test.txt break;
-              }
-              if ($remote_user = "oqyude") {
-                rewrite ^/$ /my.txt break;
-              }
-              if ($remote_user = "prplx") {
-                rewrite ^/$ /public.txt break;
-              }
+              if ($subfile = "") { return 403; }
+              rewrite ^/$ $subfile break;
             '';
           };
         };
