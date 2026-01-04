@@ -34,6 +34,9 @@ in
               if ($remote_user = "oqyude") {
                 rewrite ^/$ /my.txt break;
               }
+              if ($remote_user = "prplx") {
+                rewrite ^/$ /public.txt break;
+              }
             '';
           };
         };
