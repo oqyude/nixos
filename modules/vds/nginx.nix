@@ -7,6 +7,9 @@ let
   server = "100.64.0.0";
 in
 {
+  environment.etc."nginx/.htpasswd".text = ''
+    test:$apr1$3m7iYgVv$31i.S8LP3i8dKuOIBhoeE1
+  '';
   users.users.nginx.extraGroups = [ "acme" ];
   services = {
     nginx = {
@@ -22,6 +25,8 @@ in
           root = "/var/www/sub";
           locations."/" = {
             extraConfig = ''
+              auth_basic "Restricted";
+              auth_basic_user_file /etc/nginx/.htpasswd;
               autoindex off;
             '';
           };
