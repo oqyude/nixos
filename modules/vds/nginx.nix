@@ -17,7 +17,7 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
-        "sub.zeroq.ru" = {
+        "pubray.zeroq.ru" = {
           enableACME = true;
           forceSSL = true;
           root = "${inputs.zeroq-credentials.services.xray.subs}";
