@@ -22,7 +22,7 @@ in
           root = "/var/www/sub";
           locations."/" = {
             extraConfig = ''
-              autoindex off;           # не показываем каталог
+              autoindex off;
             '';
           };
         };
