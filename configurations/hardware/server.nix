@@ -40,7 +40,6 @@
       device = "/dev/disk/by-partlabel/disk-main-ESP";
       fsType = "vfat";
       options = [
-        # maybe 700?
         "fmask=0022"
         "dmask=0022"
       ];

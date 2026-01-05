@@ -35,7 +35,6 @@ in
         "kuma.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
-          # kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:4001";
             proxyWebsockets = true;
@@ -56,21 +55,19 @@ in
         #     client_max_body_size 5G;
         #   '';
         # };
-        "zeroq.ru" = {
-          forceSSL = true;
-          enableACME = true;
-          # kTLS = true;
-          locations."/.well-known/discord" = {
-            extraConfig = ''
-              default_type text/plain;
-              return 200 "dh=c2d103553a4cfdaa1b7952a87a7d8120a1e167cc";
-            '';
-          };
-        };
+        # "zeroq.ru" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   locations."/.well-known/discord" = {
+        #     extraConfig = ''
+        #       default_type text/plain;
+        #       return 200 "dh=c2d103553a4cfdaa1b7952a87a7d8120a1e167cc";
+        #     '';
+        #   };
+        # };
         "flux.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
-          # kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:6061";
             proxyWebsockets = true;
@@ -82,7 +79,6 @@ in
         "office.zeroq.ru" = {
           enableACME = true;
           forceSSL = true;
-          # kTLS = true;
           locations = {
             "/" = {
               proxyPass = "http://${server}:9980"; # API и coauthoring
@@ -99,7 +95,6 @@ in
         "immich.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
-          # kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:2283";
             proxyWebsockets = true;
@@ -111,7 +106,6 @@ in
         "nextcloud.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
-          # kTLS = true;
           locations = {
             "/" = {
               proxyPass = "http://${server}:10000";
@@ -121,10 +115,6 @@ in
               proxyPass = "http://${server}:3002";
               proxyWebsockets = true;
             };
-            # "/onlyoffice" = {
-            #   proxyPass = "http://${server}:8000";
-            #   proxyWebsockets = true;
-            # };
           };
           extraConfig = ''
             client_max_body_size 5G;
@@ -133,7 +123,6 @@ in
         "calibre.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
-          # kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:8083";
             proxyWebsockets = true;
@@ -145,7 +134,6 @@ in
         "pdf.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
-          # kTLS = true;
           locations."/" = {
             proxyPass = "http://${server}:6060";
             proxyWebsockets = true;
