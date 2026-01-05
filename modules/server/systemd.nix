@@ -47,7 +47,7 @@
         timerConfig = {
           OnCalendar = "daily";
           Persistent = true;
-          Unit = "rsync-archive.service";
+          Unit = "rsync-archivesta.service";
         };
       };
       rsync-archivesta-lite = {
@@ -56,7 +56,7 @@
         timerConfig = {
           OnCalendar = "weekly";
           Persistent = true;
-          Unit = "rsync-archive.service";
+          Unit = "rsync-archivesta-lite.service";
         };
       };
     };
