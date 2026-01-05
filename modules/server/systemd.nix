@@ -29,7 +29,7 @@
         requisite = [ "mnt-mobile.mount" ]; # hard-code
         script = ''
           ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.server-home}/Music/ ${xlib.dirs.mobile-drive}/Music/
-          ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.server-home}/Hosts/epral/Neo Backup/ ${xlib.dirs.mobile-drive}/Neo Backup/
+          ${pkgs.rsync}/bin/rsync -rtv --delete "${xlib.dirs.server-home}/Hosts/epral/Neo Backup/" "${xlib.dirs.mobile-drive}/Neo Backup/"
         '';
         serviceConfig = {
           Type = "oneshot";
