@@ -12,8 +12,6 @@
       bottom
       fastfetchMinimal
 
-      # yazi
-
       # Encrypt
       age
       sops
@@ -87,7 +85,6 @@
           git
           sudo
           ouch
-          nord
           rsync
           diff
           mount
@@ -100,6 +97,9 @@
           full-border
           recycle-bin
         ;
+      };
+      flavors = {
+        inherit (pkgs.yaziPlugins) nord;
       };
     };
     git = {
