@@ -77,31 +77,31 @@
     ];
   };
   programs = {
-    yazi = {
-      enable = true;
-      plugins = {
-        inherit (pkgs.yaziPlugins)
-          gitui
-          git
-          sudo
-          ouch
-          rsync
-          diff
-          mount
-          chmod
-          dupes
-          lazygit
-          toggle-pane
-          rich-preview
-          smart-filter
-          full-border
-          recycle-bin
-          ;
-      };
-      flavors = {
-        inherit (pkgs.yaziPlugins) nord;
-      };
-    };
+    # yazi = {
+    #   enable = true;
+    #   plugins = {
+    #     inherit (pkgs.yaziPlugins)
+    #       gitui
+    #       git
+    #       sudo
+    #       ouch
+    #       rsync
+    #       diff
+    #       mount
+    #       chmod
+    #       dupes
+    #       lazygit
+    #       toggle-pane
+    #       rich-preview
+    #       smart-filter
+    #       full-border
+    #       recycle-bin
+    #       ;
+    #   };
+    #   flavors = {
+    #     inherit (pkgs.yaziPlugins) nord;
+    #   };
+    # };
     git = {
       enable = true;
       config = {
