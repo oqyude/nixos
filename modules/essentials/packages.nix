@@ -96,7 +96,7 @@
           smart-filter
           full-border
           recycle-bin
-        ;
+          ;
       };
       flavors = {
         inherit (pkgs.yaziPlugins) nord;
