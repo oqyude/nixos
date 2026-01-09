@@ -13,22 +13,6 @@
       fastfetchMinimal
 
       # yazi
-      yaziPlugins.gitui
-      yaziPlugins.git
-      yaziPlugins.sudo
-      yaziPlugins.ouch
-      yaziPlugins.nord
-      yaziPlugins.rsync
-      yaziPlugins.diff
-      yaziPlugins.mount
-      yaziPlugins.chmod
-      yaziPlugins.dupes
-      yaziPlugins.lazygit
-      yaziPlugins.toggle-pane
-      yaziPlugins.rich-preview
-      yaziPlugins.smart-filter
-      yaziPlugins.full-border
-      yaziPlugins.recycle-bin
 
       # Encrypt
       age
@@ -95,6 +79,29 @@
     ];
   };
   programs = {
+    yazi = {
+      enable = true;
+      plugins = {
+        inherit (pkgs.yaziPlugins)
+          gitui
+          git
+          sudo
+          ouch
+          nord
+          rsync
+          diff
+          mount
+          chmod
+          dupes
+          lazygit
+          toggle-pane
+          rich-preview
+          smart-filter
+          full-border
+          recycle-bin
+        ;
+      };
+    };
     git = {
       enable = true;
       config = {
@@ -105,9 +112,6 @@
       };
     };
     lazygit.enable = true;
-    yazi = {
-      enable = true;
-    };
     bat.enable = true;
     # command-not-found.enable = false;
     # nix-index.enable = true;
