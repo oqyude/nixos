@@ -78,6 +78,15 @@
     ];
   };
   programs = {
+    nano = {
+      enable = true;
+      nanorc = ''
+        set nowrap
+        set tabstospaces
+        set tabsize 2      
+      '';
+      syntaxHighlight = true;
+    };
     yazi = {
       enable = true;
       plugins = {
@@ -99,7 +108,17 @@
           recycle-bin
           ;
       };
+      flavors = {
+        nord = pkgs.yaziPlugins.nord;
+      };
       settings = {
+        yazi = {
+          ratio = [
+            1
+            1
+            4
+          ];
+        };
         keymap = {
           mgr.prepend_keymap = [
             {
@@ -126,9 +145,6 @@
             dark = "nord";
           };
         };
-      };
-      flavors = {
-        nord = pkgs.yaziPlugins.nord;
       };
     };
     git = {
