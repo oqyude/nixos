@@ -14,6 +14,21 @@
 
       # yazi
       yaziPlugins.gitui
+      yaziPlugins.git
+      yaziPlugins.sudo
+      yaziPlugins.ouch
+      yaziPlugins.nord
+      yaziPlugins.rsync
+      yaziPlugins.diff
+      yaziPlugins.mount
+      yaziPlugins.chmod
+      yaziPlugins.dupes
+      yaziPlugins.lazygit
+      yaziPlugins.toggle-pane
+      yaziPlugins.rich-preview
+      yaziPlugins.smart-filter
+      yaziPlugins.full-border
+      yaziPlugins.recycle-bin
 
       # Encrypt
       age
