@@ -46,7 +46,7 @@
         flavor = {
           light = "nord";
           dark = "nord";
-        }; 
+        };
       };
       flavors = {
         inherit (pkgs.yaziPlugins) nord;
@@ -63,7 +63,10 @@
           }
           {
             run = "plugin ouch --args=zip";
-            on = [ "g" "C" ];
+            on = [
+              "g"
+              "C"
+            ];
             desc = "Compress with ouch";
           }
         ];
