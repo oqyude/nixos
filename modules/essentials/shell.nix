@@ -38,6 +38,7 @@
       gp = "git pull";
       ns = "nh os switch";
       gp-ns = "gp && ns";
+      y = "yazi";
 
       # beets
       beet-ima = "beet im ./ -A";

@@ -8,6 +8,6 @@
     ./services.nix
     ./settings.nix
     # ./systemd-routine.nix
-    ./tty.nix
+    ./shell.nix
   ];
 }
