@@ -39,6 +39,7 @@
       ns = "nh os switch";
       gp-ns = "gp && ns";
       y = "yazi";
+      nix-shellp = "nix-shell --run $SHELL -p";
 
       # beets
       beet-ima = "beet im ./ -A";

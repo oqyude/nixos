@@ -21,6 +21,7 @@ let
         sops-nix.nixosModules.sops # sops module
         self.homeConfigurations.default.nixosModule # default homeConfigurations
         disko.nixosModules.disko # disko module
+        nixvim.nixosModules.nixvim # nixvim module
       ];
       _module.args = {
         inputs = inputs;

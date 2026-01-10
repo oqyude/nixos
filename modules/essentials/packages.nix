@@ -47,8 +47,10 @@
       rsync
       wget
       tree
-      ncdu
+      #ncdu
       dust
+      flow-control
+      csv-tui
 
       # Net Diagnostic
       mtr
@@ -78,6 +80,10 @@
     ];
   };
   programs = {
+    nixvim = {
+      enable = false;
+      colorschemes.github-theme.enable = true;
+    };
     nano = {
       enable = true;
       nanorc = ''
