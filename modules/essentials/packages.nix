@@ -4,6 +4,11 @@
   inputs,
   ...
 }:
+let
+  master = import inputs.nixpkgs-master {
+    system = "x86_64-linux";
+  };
+in
 {
   environment = {
     systemPackages = with pkgs; [
@@ -48,7 +53,7 @@
       wget
       tree
       dust
-      flow-control
+      master.flow-control
 
       # Net Diagnostic
       mtr
@@ -77,6 +82,7 @@
       openssl
     ];
   };
+  environment.variables.EDITOR = "flow";
   programs = {
     nixvim = {
       enable = false;
@@ -117,11 +123,17 @@
       };
       settings = {
         yazi = {
-          ratio = [
+          mgr.ratio = [
             1
             1
             4
           ];
+          # opener.edit = [
+          #   {
+          #     run = "flow %s";
+          #     block = true;
+          #   }
+          # ];
         };
         keymap = {
           mgr.prepend_keymap = [
