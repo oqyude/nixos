@@ -47,10 +47,8 @@
       rsync
       wget
       tree
-      #ncdu
       dust
       flow-control
-      csv-tui
 
       # Net Diagnostic
       mtr
