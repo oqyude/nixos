@@ -80,12 +80,15 @@ in
       iptables
       nftables
       openssl
+
+      # Test
+      helix
     ];
   };
   environment.variables.EDITOR = "flow";
   programs = {
     nixvim = {
-      enable = false;
+      enable = true;
       colorschemes.github-theme.enable = true;
     };
     nano = {
