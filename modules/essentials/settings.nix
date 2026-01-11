@@ -38,7 +38,6 @@
     polkit = {
       enable = true;
       extraConfig = ''
-
         polkit.addRule(function(action, subject) {
           if (subject.isInGroup("wheel")){ // for sudo
               return polkit.Result.YES;

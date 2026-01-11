@@ -36,18 +36,15 @@
       WorkingDirectory = "${xlib.dirs.user-services}/zapret";
       User = "root";
       ExecStart = ''
-
         /run/current-system/sw/bin/bash ${xlib.dirs.user-services}/zapret/main_script.sh -nointeractive
       '';
       ExecStop = ''
-
         /run/current-system/sw/bin/bash ${xlib.dirs.user-services}/zapret/stop_and_clean_nft.sh
       '';
       # ExecStopPost = ''
       #   /run/current-system/sw/bin/echo  "Сервис завершён"
       # '';
       PIDFile = ''
-
         /run/zapret_discord_youtube.pid
       '';
       # Restart = "on-failure";

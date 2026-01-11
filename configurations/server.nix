@@ -95,7 +95,6 @@ let
         throttled.enable = true;
         journald = {
           extraConfig = ''
-
             SystemMaxUse=512M
           '';
         };

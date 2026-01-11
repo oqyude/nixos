@@ -19,7 +19,6 @@
       theme = "robbyrussell";
     };
     shellInit = ''
-
       beet-n() {
         echo "$*" | aichat -cer beets
       }

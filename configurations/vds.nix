@@ -43,7 +43,6 @@ let
         earlyoom.enable = true;
         journald = {
           extraConfig = ''
-
             SystemMaxUse=512M
           '';
         };
