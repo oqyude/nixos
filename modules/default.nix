@@ -23,6 +23,9 @@ let
         disko.nixosModules.disko # disko module
         nixvim.nixosModules.nixvim # nixvim module
       ];
+      nixpkgs.overlays = [
+        inputs.self.nixosOverlays.default
+      ];
       _module.args = {
         inputs = inputs;
         xlib = config.xlib;

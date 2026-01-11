@@ -17,11 +17,12 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-868FK3wr/fjXzrQJ4YVDBvzNuX818lufEx/K0fvJdWo=";
   };
   postPatch = ''
-    ln -s ${
-      callPackage ./build.zig.zon.nix {
-        zig = zig_0_15;
-      }
-    } $ZIG_GLOBAL_CACHE_DIR/p
+    
+        ln -s ${
+          callPackage ./build.zig.zon.nix {
+            zig = zig_0_15;
+          }
+        } $ZIG_GLOBAL_CACHE_DIR/p
   '';
 
   nativeBuildInputs = [ zig_0_15 ];

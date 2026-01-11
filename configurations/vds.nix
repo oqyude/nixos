@@ -43,7 +43,8 @@ let
         earlyoom.enable = true;
         journald = {
           extraConfig = ''
-            SystemMaxUse=512M
+            
+                        SystemMaxUse=512M
           '';
         };
         samba = {

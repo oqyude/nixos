@@ -117,5 +117,6 @@
     // (import ./deploy flakeContext)
     // (import ./home flakeContext)
     // (import ./modules flakeContext)
+    // (import ./overlays flakeContext)
     // (import ./pkgs flakeContext);
 }
