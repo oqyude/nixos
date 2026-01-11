@@ -40,6 +40,7 @@
       gp-ns = "gp && ns";
       y = "yazi";
       nix-shellp = "nix-shell --run $SHELL -p";
+      z-proxy = "export ALL_PROXY=socks5://localhost:10808";
 
       # beets
       beet-ima = "beet im ./ -A";
@@ -50,6 +51,7 @@
       z-o = "ssh otreca";
       z-ot = "ssh otreca-tailscale";
       z-p-1 = "ssh pubray-1";
+      z-map-local-proxy = "ssh -R 10808:localhost:10808"
       # z-p-2 = "ssh pubray-2";
 
       # Somethings
