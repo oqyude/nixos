@@ -59,4 +59,9 @@ in
       package = pkgs.qogir-icon-theme;
     };
   };
+  home.activation = {
+    yaziSync = ''
+      ${pkgs.rsync}/bin/rsync -Lrv "${config.home.homeDirectory}/.config/yazi/" "${xlib.dirs.user-storage}/yazi/"
+    '';
+  };
 }

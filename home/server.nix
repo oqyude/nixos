@@ -38,4 +38,9 @@ in
       videos = null;
     };
   };
+  home.activation = {
+    yaziSync = ''
+      ${pkgs.rsync}/bin/rsync -Lrv "${config.home.homeDirectory}/.config/yazi/" "${xlib.dirs.storage}/yazi/"
+    '';
+  };
 }
