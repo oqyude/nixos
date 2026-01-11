@@ -60,6 +60,9 @@ in
       dnsutils
       inetutils
 
+      # Android tools
+      android-tools
+
       # Monitoring
       smartmontools
 

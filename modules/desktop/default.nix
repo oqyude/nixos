@@ -47,7 +47,6 @@
 
   hardware.graphics.enable = true;
   programs = {
-    adb.enable = true;
     dconf.enable = true;
     gamemode.enable = true;
     steam.enable = true;
