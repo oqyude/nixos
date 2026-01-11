@@ -104,7 +104,7 @@ in
       syntaxHighlight = true;
     };
     yazi = {
-      enable = true;
+      enable = false;
       plugins = {
         inherit (pkgs.yaziPlugins)
           gitui
@@ -134,12 +134,6 @@ in
             1
             4
           ];
-          # opener.edit = [
-          #   {
-          #     run = "flow %s";
-          #     block = true;
-          #   }
-          # ];
         };
         keymap = {
           mgr.prepend_keymap = [
