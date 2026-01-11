@@ -51,8 +51,7 @@
       z-o = "ssh otreca";
       z-ot = "ssh otreca-tailscale";
       z-p-1 = "ssh pubray-1";
-      z-map-local-proxy = "ssh -R 10808:localhost:10808"
-      # z-p-2 = "ssh pubray-2";
+      z-map-local-proxy = "ssh -R 10808:localhost:10808";
 
       # Somethings
       reboot-bios = "sudo systemctl reboot --firmware-setup";
