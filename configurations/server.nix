@@ -28,8 +28,6 @@ let
         };
       };
 
-      services.udisks2.enable = true;
-
       hardware = {
         bluetooth.enable = true;
         graphics = {
