@@ -43,6 +43,13 @@
         mgr.prepend_keymap = [
           {
             on = [
+              "M"
+            ];
+            run = "plugin mount";
+            desc = "Mount manager";
+          }
+          {
+            on = [
               "g"
               "i"
             ];
