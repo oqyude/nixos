@@ -45,7 +45,7 @@
 
       # Workflow
       #cloudflared
-      amdgpu_top
+      # amdgpu_top
       vscodium
       ayugram-desktop
       # vesktop
