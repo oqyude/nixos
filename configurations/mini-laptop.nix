@@ -31,8 +31,8 @@ let
         };
       };
 
-      fileSystems."${xlib.dirs.vetymae-drive}" = {
-        device = "/dev/disk/by-uuid/6408433908430A0E";
+      fileSystems."${xlib.dirs.lamet-drive}" = {
+        device = "/dev/disk/by-uuid/DC76BD3576BD116E";
         fsType = "ntfs3";
         options = [
           "defaults"
