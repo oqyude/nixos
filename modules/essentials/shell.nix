@@ -19,15 +19,15 @@
       theme = "robbyrussell";
     };
     shellInit = ''
-            beet-n() {
-              echo "$*" | aichat -cer beets
-            }
-            beet-p() {
-              beet mod path:. playlist="$*"
-            }
-            beet-ims() {
-              beet im ./ -S $*
-            }
+      beet-n() {
+        echo "$*" | aichat -cer beets
+      }
+      beet-p() {
+        beet mod path:. playlist="$*"
+      }
+      beet-ims() {
+        beet im ./ -S $*
+      }
     '';
     shellAliases = {
       # shell

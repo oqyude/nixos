@@ -24,11 +24,11 @@ in
           root = "${inputs.zeroq-credentials.services.xray.subs}";
           locations."/" = {
             extraConfig = ''
-                            auth_basic "Restricted";
-                            auth_basic_user_file /etc/nginx/pubray;
-              
-                            if ($subfile = "") { return 403; }
-                            rewrite ^/$ $subfile break;
+              auth_basic "Restricted";
+              auth_basic_user_file /etc/nginx/pubray;
+
+              if ($subfile = "") { return 403; }
+              rewrite ^/$ $subfile break;
             '';
           };
         };
@@ -40,7 +40,7 @@ in
             proxyWebsockets = true;
           };
           extraConfig = ''
-                        client_max_body_size 5G;
+            client_max_body_size 5G;
           '';
         };
         # "node-red.zeroq.ru" = {
@@ -73,7 +73,7 @@ in
             proxyWebsockets = true;
           };
           extraConfig = ''
-                        client_max_body_size 5G;
+            client_max_body_size 5G;
           '';
         };
         "office.zeroq.ru" = {
@@ -86,10 +86,10 @@ in
             };
           };
           extraConfig = ''
-                        client_max_body_size 5G;
-                        proxy_set_header X-Forwarded-Proto $scheme;
-                        proxy_set_header X-Real-IP $remote_addr;
-                        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            client_max_body_size 5G;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           ''; # absolute_redirect off;
         };
         "immich.zeroq.ru" = {
@@ -100,7 +100,7 @@ in
             proxyWebsockets = true;
           };
           extraConfig = ''
-                        client_max_body_size 5G;
+            client_max_body_size 5G;
           '';
         };
         "nextcloud.zeroq.ru" = {
@@ -117,7 +117,7 @@ in
             };
           };
           extraConfig = ''
-                        client_max_body_size 5G;
+            client_max_body_size 5G;
           '';
         };
         "calibre.zeroq.ru" = {
@@ -128,7 +128,7 @@ in
             proxyWebsockets = true;
           };
           extraConfig = ''
-                        client_max_body_size 5G;
+            client_max_body_size 5G;
           '';
         };
         "pdf.zeroq.ru" = {
@@ -139,7 +139,7 @@ in
             proxyWebsockets = true;
           };
           extraConfig = ''
-                        client_max_body_size 5G;
+            client_max_body_size 5G;
           '';
         };
         "ai.zeroq.ru" = {
@@ -150,7 +150,7 @@ in
             proxyWebsockets = true;
           };
           extraConfig = ''
-                        client_max_body_size 5G;
+            client_max_body_size 5G;
           '';
         };
       };

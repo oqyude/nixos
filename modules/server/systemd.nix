@@ -13,7 +13,7 @@
         description = "Backup data using rsync";
         requisite = [ "mnt-archive.mount" ]; # hard-code
         script = ''
-                    ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.services-folder}/ ${xlib.dirs.archive-drive}/Services/
+          ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.services-folder}/ ${xlib.dirs.archive-drive}/Services/
         '';
         serviceConfig = {
           Type = "oneshot";
@@ -28,8 +28,8 @@
         description = "Backup data using rsync";
         requisite = [ "mnt-mobile.mount" ]; # hard-code
         script = ''
-                    ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.server-home}/Music/ ${xlib.dirs.mobile-drive}/Music/
-                    ${pkgs.rsync}/bin/rsync -rtv --delete "${xlib.dirs.server-home}/Hosts/epral/Neo Backup/" "${xlib.dirs.mobile-drive}/Neo Backup/"
+          ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.server-home}/Music/ ${xlib.dirs.mobile-drive}/Music/
+          ${pkgs.rsync}/bin/rsync -rtv --delete "${xlib.dirs.server-home}/Hosts/epral/Neo Backup/" "${xlib.dirs.mobile-drive}/Neo Backup/"
         '';
         serviceConfig = {
           Type = "oneshot";
