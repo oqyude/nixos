@@ -90,10 +90,6 @@ in
   };
   environment.variables.EDITOR = "flow";
   programs = {
-    # nixvim = {
-    #   enable = false;
-    #   colorschemes.github-theme.enable = true;
-    # };
     nano = {
       enable = true;
       nanorc = ''

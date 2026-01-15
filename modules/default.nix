@@ -21,7 +21,6 @@ let
         sops-nix.nixosModules.sops # sops module
         self.homeConfigurations.default.nixosModule # default homeConfigurations
         disko.nixosModules.disko # disko module
-        nixvim.nixosModules.nixvim # nixvim module
       ];
       nixpkgs.overlays = [
         inputs.self.nixosOverlays.default
