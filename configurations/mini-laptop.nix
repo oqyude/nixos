@@ -13,8 +13,8 @@ let
     }:
     {
       xlib.device = {
-        type = lib.mkDefault "primary";
-        hostname = lib.mkDefault "lamet";
+        type = "primary";
+        hostname = "lamet";
       };
 
       imports = with inputs; [
