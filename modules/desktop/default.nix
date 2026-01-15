@@ -35,6 +35,7 @@
         efiSupport = true;
         useOSProber = true;
         copyKernels = false;
+        generationsDir.copyKernels = false;
       };
       grub2-theme = {
         enable = true;
