@@ -7,6 +7,7 @@
         username = "oqyude";
         server.hostname = "sapphira";
         vds.hostname = "otreca";
+        mini-laptop.hostname = "lamet";
       };
     };
 }

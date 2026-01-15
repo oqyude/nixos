@@ -9,6 +9,7 @@ let
   user = "${inputs.zeroq-deploy.devices.username}";
   server = "${inputs.zeroq-deploy.devices.server.hostname}";
   vds = "${inputs.zeroq-deploy.devices.vds.hostname}";
+  mini-laptop = "${inputs.zeroq-deploy.devices.mini-laptop.hostname}"
 in
 {
   deploy = {
@@ -17,6 +18,7 @@ in
     nodes = {
       "${server}" = mkDeploy "${server}";
       "${vds}" = mkDeploy "${vds}";
+      "${mini-laptop}" = mkDeploy "${mini-laptop}";
     };
   };
   # This is highly advised, and will prevent many possible mistakes
