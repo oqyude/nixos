@@ -24,7 +24,6 @@ in
           root = "${inputs.zeroq-credentials.services.xray.subs}";
           locations."/" = {
             extraConfig = ''
-              
                             auth_basic "Restricted";
                             auth_basic_user_file /etc/nginx/pubray;
               
@@ -41,7 +40,6 @@ in
             proxyWebsockets = true;
           };
           extraConfig = ''
-            
                         client_max_body_size 5G;
           '';
         };
@@ -75,7 +73,6 @@ in
             proxyWebsockets = true;
           };
           extraConfig = ''
-            
                         client_max_body_size 5G;
           '';
         };
@@ -89,7 +86,6 @@ in
             };
           };
           extraConfig = ''
-            
                         client_max_body_size 5G;
                         proxy_set_header X-Forwarded-Proto $scheme;
                         proxy_set_header X-Real-IP $remote_addr;
@@ -104,7 +100,6 @@ in
             proxyWebsockets = true;
           };
           extraConfig = ''
-            
                         client_max_body_size 5G;
           '';
         };
@@ -122,7 +117,6 @@ in
             };
           };
           extraConfig = ''
-            
                         client_max_body_size 5G;
           '';
         };
@@ -134,7 +128,6 @@ in
             proxyWebsockets = true;
           };
           extraConfig = ''
-            
                         client_max_body_size 5G;
           '';
         };
@@ -146,7 +139,6 @@ in
             proxyWebsockets = true;
           };
           extraConfig = ''
-            
                         client_max_body_size 5G;
           '';
         };
@@ -158,7 +150,6 @@ in
             proxyWebsockets = true;
           };
           extraConfig = ''
-            
                         client_max_body_size 5G;
           '';
         };

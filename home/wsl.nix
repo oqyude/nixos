@@ -43,8 +43,7 @@ in
   };
   home.activation = {
     yaziSync = ''
-      
-            ${pkgs.rsync}/bin/rsync -Lrv "${config.home.homeDirectory}/.config/yazi/" "${xlib.dirs.wsl-storage}/yazi/"
+      ${pkgs.rsync}/bin/rsync -Lrv "${config.home.homeDirectory}/.config/yazi/" "${xlib.dirs.wsl-storage}/yazi/"
     '';
   };
 }
