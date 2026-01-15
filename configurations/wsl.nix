@@ -24,7 +24,8 @@ let
       services = {
         journald = {
           extraConfig = ''
-            SystemMaxUse=512M
+            
+                        SystemMaxUse=512M
           '';
         };
         earlyoom.enable = true;

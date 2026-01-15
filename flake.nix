@@ -41,6 +41,10 @@
     #   url = "github:nix-community/NUR";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager"; # flake:home-manager
       inputs.nixpkgs.follows = "nixpkgs";

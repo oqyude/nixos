@@ -33,6 +33,7 @@ in
     ./modules/plasma-manager.nix
     # ./modules/external.nix
     ./modules/external-mini-laptop.nix
+    ./modules/noctalia.nix
   ];
   xdg = {
     enable = true;
@@ -63,7 +64,8 @@ in
   };
   home.activation = {
     yaziSync = ''
-      ${pkgs.rsync}/bin/rsync -Lrv "${config.home.homeDirectory}/.config/yazi/" "${xlib.dirs.user-storage}/yazi/"
+      
+            ${pkgs.rsync}/bin/rsync -Lrv "${config.home.homeDirectory}/.config/yazi/" "${xlib.dirs.user-storage}/yazi/"
     '';
   };
 }
