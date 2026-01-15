@@ -34,6 +34,7 @@
         efiInstallAsRemovable = true;
         efiSupport = true;
         useOSProber = true;
+        copyKernels = false;
       };
       grub2-theme = {
         enable = true;
