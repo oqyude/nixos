@@ -24,9 +24,6 @@
         color-scheme = "prefer-light";
         enable-hot-corners = false;
       };
-      "org/gnome/desktop/interface" = {
-        scaling-factor = 1.5;
-      };
     };
   };
   home = {
