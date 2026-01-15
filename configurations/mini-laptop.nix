@@ -69,11 +69,11 @@ let
       };
 
       services = {
-        xserver = {
-          videoDrivers = [
-            "nomodeset"
-          ];
-        };
+        # xserver = {
+        #   videoDrivers = [
+        #     "nomodeset"
+        #   ];
+        # };
         # syncthing = {
         #   enable = true;
         #   systemService = true;
@@ -107,6 +107,21 @@ let
         # };
         thermald.enable = true;
         earlyoom.enable = true;
+        openssh = {
+          enable = true;
+          allowSFTP = true;
+          hostKeys = [
+            {
+              path = "/etc/ssh/id_ed25519";
+              type = "ed25519";
+            }
+          ];
+          settings = {
+            PasswordAuthentication = false;
+            PermitRootLogin = "yes";
+            UsePAM = true;
+          };
+        };
       };
       # security = {
       #   rtkit.enable = true;
