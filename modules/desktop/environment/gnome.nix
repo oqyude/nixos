@@ -24,20 +24,22 @@
     ];
     systemPackages = with pkgs; [
       gnomeExtensions.appindicator
-      gnomeExtensions.dash-to-panel
-      gnomeExtensions.arcmenu
-      gnomeExtensions.vitals
+      # gnomeExtensions.dash-to-panel
+      # gnomeExtensions.arcmenu
+      # gnomeExtensions.vitals
       gnomeExtensions.user-themes
       gnome-tweaks
-      dconf-editor
-      dconf2nix
+      # dconf-editor
+      # dconf2nix
 
       gnome-color-manager
     ];
   };
   services = {
     gnome.gnome-keyring.enable = lib.mkForce false;
-    udev.packages = with pkgs; [ gnome-settings-daemon ];
+    udev.packages = with pkgs; [
+      gnome-settings-daemon
+    ];
     displayManager.gdm = {
       enable = true;
       wayland = true;
