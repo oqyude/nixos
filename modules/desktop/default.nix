@@ -49,7 +49,7 @@
   programs = {
     dconf.enable = true;
     gamemode.enable = true;
-    steam.enable = true;
+    # steam.enable = true;
     xwayland.enable = true;
   };
   services = {
