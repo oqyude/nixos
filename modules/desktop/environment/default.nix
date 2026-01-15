@@ -3,8 +3,8 @@
 }:
 {
   imports = [
-    ./kde.nix
-    #./gnome.nix
+    # ./kde.nix
+    ./gnome.nix
     #./xfce.nix
     #./deepin.nix
   ];
