@@ -14,6 +14,7 @@ let
     "${xlib.dirs.user-storage}/easyeffects" = ".config/easyeffects";
     "${xlib.dirs.user-storage}/KeePassXC" = ".config/keepassxc";
     "${xlib.dirs.user-storage}/v2rayN" = ".local/share/v2rayN";
+    "/etc/nixos" = "Configuration";
 
     # smthng
     # "${xlib.dirs.soptur-drive}/AI/LM Studio" = ".lmstudio";
