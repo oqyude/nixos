@@ -30,7 +30,8 @@ in
     ./modules/dconf.nix
     ./modules/packages.nix
     ./modules/plasma-manager.nix
-    ./modules/external.nix
+    # ./modules/external.nix
+    ./modules/external-mini-laptop.nix
   ];
   xdg = {
     enable = true;
