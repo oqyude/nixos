@@ -18,6 +18,7 @@ let
 
       imports = [
         inputs.nixos-hardware.nixosModules.chuwi-minibook-x
+        ./hardware/mini-laptop.nix
       ];
 
       hardware.intel-gpu-tools.enable = true;
