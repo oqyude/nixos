@@ -16,13 +16,16 @@
     hypridle.enable = true;
   };
   programs = {
-    uwsm.enable = true;
-    hyprland = {
+    niri = {
       enable = true;
-      xwayland.enable = true;
-      withUWSM = true;
     };
-    iio-hyprland.enable = true;
-    hyprlock.enable = true;
+    # uwsm.enable = true;
+    # hyprland = {
+    #   enable = true;
+    #   xwayland.enable = true;
+    #   withUWSM = true;
+    # };
+    # iio-hyprland.enable = true;
+    # hyprlock.enable = true;
   };
 }
