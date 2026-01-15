@@ -14,7 +14,6 @@
             "server"
             "vds"
             "wsl"
-            "pub-vds"
           ];
           default = "minimal";
           description = "Type of device for this host.";
@@ -45,6 +44,11 @@
           type = lib.types.str;
           default = "/mnt/archive";
           description = "Archive drive mount point.";
+        };
+        lamet-drive = lib.mkOption {
+          type = lib.types.str;
+          default = "/mnt/lamet";
+          description = "Lamet drive mount point.";
         };
         mobile-drive = lib.mkOption {
           type = lib.types.str;

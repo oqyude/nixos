@@ -31,6 +31,19 @@ let
         };
       };
 
+      fileSystems."${xlib.dirs.vetymae-drive}" = {
+        device = "/dev/disk/by-uuid/6408433908430A0E";
+        fsType = "ntfs3";
+        options = [
+          "defaults"
+          "uid=1000"
+          "gid=1000"
+          "fmask=0007"
+          "dmask=0007"
+          "nofail"
+        ];
+      };
+
       hardware = {
         bluetooth.enable = true;
       };
