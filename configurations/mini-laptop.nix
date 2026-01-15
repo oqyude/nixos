@@ -100,12 +100,13 @@ let
       # };
 
       hardware.intel-gpu-tools.enable = true;
+
+      system.stateVersion = "26.05";
     };
 in
 inputs.nixpkgs.lib.nixosSystem {
   modules = with inputs; [
     nixosModule
-    self.nixosModules.default
   ];
   system = "x86_64-linux";
   specialArgs = {
