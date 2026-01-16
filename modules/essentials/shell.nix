@@ -34,6 +34,7 @@
       ff = "clear && fastfetch";
       l = "ls -l";
       lg = "lazygit";
+      lc = "lazycli";
       st = "systemctl-tui";
       gp = "git pull";
       ns = "nh os switch";
