@@ -53,15 +53,15 @@
     xwayland.enable = true;
   };
   services = {
-    # xserver = {
-    #   enable = true;
-    #   xkb = {
-    #     layout = "us,ru";
-    #     variant = "";
-    #     options = "grp:alt_shift_toggle";
-    #   };
-    # };
-    # libinput.enable = true;
+    xserver = {
+      enable = true;
+      xkb = {
+        layout = "us,ru";
+        variant = "";
+        options = "grp:alt_shift_toggle";
+      };
+    };
+    libinput.enable = true;
     colord.enable = true;
     printing = {
       enable = true;
