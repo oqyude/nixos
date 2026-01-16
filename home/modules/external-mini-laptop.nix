@@ -8,7 +8,7 @@
 }:
 let
   symlinksPaths = {
-    # "${xlib.dirs.lamet-drive}/Games/PrismLauncher" = ".local/share/PrismLauncher";
+    "${xlib.dirs.lamet-drive}/Games/PrismLauncher" = ".local/share/PrismLauncher";
     "${xlib.dirs.lamet-drive}/Users/oqyude/Storage" = "Storage";
     "${xlib.dirs.lamet-drive}/Users/oqyude/Music" = "Music";
     "${xlib.dirs.lamet-drive}/Users/oqyude/Misc" = "Misc";
