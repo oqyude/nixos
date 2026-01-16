@@ -11,7 +11,7 @@
   # ];
   services = {
     noctalia-shell = {
-      enable = true;
+      enable = false;
     };
     # hypridle.enable = true;
   };
