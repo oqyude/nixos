@@ -10,7 +10,7 @@
   ];
 
   programs.noctalia-shell = {
-    enable = true;
+    enable = false;
     settings = {
       settingsVersion = 0;
       bar = {

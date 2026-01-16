@@ -5,7 +5,7 @@
   imports = [
     ./kde.nix
     # ./gnome.nix
-    ./noctalia.nix
+    # ./noctalia.nix
     # ./xfce.nix
   ];
 }
