@@ -123,9 +123,9 @@ let
           };
         };
       };
-      # security = {
-      #   rtkit.enable = true;
-      # };
+      security = {
+        rtkit.enable = true;
+      };
 
       hardware.intel-gpu-tools.enable = true;
 

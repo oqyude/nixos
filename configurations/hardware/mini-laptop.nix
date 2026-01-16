@@ -29,13 +29,13 @@
 
   fileSystems = {
     "/" = {
-      # device = "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-root";
-      device = "/dev/disk/by-uuid/fe5364dc-a79c-458d-a0d0-b7ea32a56266";
+      device = "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-root";
+      # device = "/dev/disk/by-uuid/fe5364dc-a79c-458d-a0d0-b7ea32a56266";
       fsType = "ext4";
     };
     "/boot" = {
-      device = "/dev/disk/by-uuid/7ECA-F1EC";
-      # device = "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-ESP";
+      # device = "/dev/disk/by-uuid/7ECA-F1EC";
+      device = "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-ESP";
       fsType = "vfat";
       options = [
         "fmask=0077"
