@@ -69,11 +69,11 @@ let
       };
 
       services = {
-        # xserver = {
-        #   videoDrivers = [
-        #     "nomodeset"
-        #   ];
-        # };
+        xserver = {
+          videoDrivers = [
+            "nomodeset"
+          ];
+        };
         # syncthing = {
         #   enable = true;
         #   systemService = true;
