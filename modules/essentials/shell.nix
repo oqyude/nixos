@@ -50,6 +50,8 @@
       z-st = "ssh sapphira-tailscale";
       z-o = "ssh otreca";
       z-ot = "ssh otreca-tailscale";
+      z-l = "ssh lamet";
+      z-lt = "ssh lamet-tailscale";
       z-p-1 = "ssh pubray-1";
       z-map-local-proxy = "ssh -R 10808:localhost:10808";
 
