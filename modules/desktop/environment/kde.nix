@@ -17,9 +17,6 @@
     kdePackages.kwallet
     kdePackages.kwallet-pam
     kdePackages.kwalletmanager
-    # libsForQt5.kwallet
-    # libsForQt5.kwallet-pam # error
-    # libsForQt5.kwalletmanager
   ];
   services = {
     displayManager = {

@@ -3,7 +3,7 @@
 }:
 {
   imports = [
-    # ./kde.nix
+    ./kde.nix
     # ./gnome.nix
     ./noctalia.nix
     #./xfce.nix

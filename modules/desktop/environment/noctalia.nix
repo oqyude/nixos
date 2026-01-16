@@ -13,7 +13,7 @@
     noctalia-shell = {
       enable = true;
     };
-    hypridle.enable = true;
+    # hypridle.enable = true;
   };
   programs = {
     niri = {
