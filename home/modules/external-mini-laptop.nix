@@ -13,6 +13,7 @@ let
     "${xlib.dirs.lamet-drive}/Users/oqyude/Music" = "Music";
     "${xlib.dirs.lamet-drive}/Users/oqyude/Misc" = "Misc";
     "${xlib.dirs.lamet-drive}/Users/oqyude/Vaults" = "Vaults";
+    "${xlib.dirs.lamet-drive}/Users/oqyude/Credentials" = "Credentials";
   };
   mkLinks = lib.mapAttrs' (sourcePath: targetPath: {
     name = targetPath;
