@@ -11,6 +11,7 @@
           type = lib.types.enum [
             "minimal"
             "primary"
+            "secondary"
             "server"
             "vds"
             "wsl"
