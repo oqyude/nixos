@@ -13,8 +13,8 @@ let
     }:
     {
       xlib.device = {
-        type = "primary";
-        hostname = "lamet";
+        type = "secondary";
+        hostname = "rydiwo";
       };
 
       imports = with inputs; [
@@ -74,14 +74,14 @@ let
             "nomodeset"
           ];
         };
-        # syncthing = {
-        #   enable = true;
-        #   systemService = true;
-        #   configDir = "${xlib.dirs.user-storage}/Syncthing/${config.system.name}";
-        #   dataDir = "${xlib.dirs.user-home}";
-        #   group = "users";
-        #   user = "${xlib.device.username}";
-        # };
+        syncthing = {
+          enable = true;
+          systemService = true;
+          configDir = "${xlib.dirs.user-storage}/Syncthing/${config.system.name}";
+          dataDir = "${xlib.dirs.user-home}";
+          group = "users";
+          user = "${xlib.device.username}";
+        };
         # pipewire = {
         #   enable = lib.mkDefault true;
         #   systemWide = true;
@@ -138,6 +138,6 @@ inputs.nixpkgs.lib.nixosSystem {
   ];
   system = "x86_64-linux";
   specialArgs = {
-    deviceType = "primary";
+    deviceType = "secondary";
   };
 }
