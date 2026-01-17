@@ -16,9 +16,12 @@ let
     "${xlib.dirs.user-storage}/v2rayN" = ".local/share/v2rayN";
     "/etc/nixos" = "Configuration";
 
-    # smthng
-    # "${xlib.dirs.soptur-drive}/AI/LM Studio" = ".lmstudio";
-    "${xlib.dirs.therima-drive}" = "External";
+    "${xlib.dirs.lamet-drive}/Games/PrismLauncher" = ".local/share/PrismLauncher";
+    "${xlib.dirs.lamet-drive}/Users/oqyude/Storage" = "Storage";
+    "${xlib.dirs.lamet-drive}/Users/oqyude/Music" = "Music";
+    "${xlib.dirs.lamet-drive}/Users/oqyude/Misc" = "Misc";
+    "${xlib.dirs.lamet-drive}/Users/oqyude/Vaults" = "Vaults";
+    "${xlib.dirs.lamet-drive}/Users/oqyude/Credentials" = "Credentials";
   };
   mkLinks = lib.mapAttrs' (sourcePath: targetPath: {
     name = targetPath;
@@ -31,8 +34,6 @@ in
     ./modules/dconf.nix
     ./modules/packages.nix
     ./modules/plasma-manager.nix
-    # ./modules/external.nix
-    ./modules/external-mini-laptop.nix
     ./modules/noctalia.nix
   ];
   xdg = {

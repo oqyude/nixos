@@ -16,6 +16,12 @@ let
     "${xlib.dirs.user-storage}/v2rayN" = ".local/share/v2rayN";
     "/etc/nixos" = "Configuration";
 
+    "${xlib.dirs.soptur-drive}/Games/PrismLauncher" = ".local/share/PrismLauncher";
+    "${xlib.dirs.vetymae-drive}/Users/oqyude/Storage" = "Storage";
+    "${xlib.dirs.vetymae-drive}/Users/oqyude/Music" = "Music";
+    "${xlib.dirs.vetymae-drive}/Users/oqyude/Misc" = "Misc";
+    "${xlib.dirs.vetymae-drive}/Users/oqyude/Vaults" = "Vaults";
+
     # smthng
     # "${xlib.dirs.soptur-drive}/AI/LM Studio" = ".lmstudio";
     "${xlib.dirs.therima-drive}" = "External";
@@ -31,8 +37,6 @@ in
     ./modules/dconf.nix
     ./modules/packages.nix
     ./modules/plasma-manager.nix
-    # ./modules/external.nix
-    ./modules/external-mini-laptop.nix
     ./modules/noctalia.nix
   ];
   xdg = {
