@@ -5,7 +5,11 @@
   ...
 }:
 {
-  xlib.device.username = "oqyude";
+  imports = [
+    ./others
+  ];
+
+  xlib.device.username = lib.mkDefault "oqyude";
 
   users = {
     users = {
@@ -29,25 +33,6 @@
         ];
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKduJia+unaQQdN6X5syaHvnpIutO+yZwvfiCP4qKQ/P"
-        ];
-      };
-      "${xlib.users.new}" = {
-        name = "${xlib.users.new}";
-        isNormalUser = true;
-        group = "users";
-        description = "Snity";
-        hashedPassword = "$y$j9T$851xwObfIp7SYzIyFtH.k1$mNofT2sxEAV50Kxgmwvqc6Kj/3B/fJoPP8qgn./siEB";
-        homeMode = "750";
-        home = "/home/${xlib.users.new}";
-        extraGroups = [
-          "audio"
-          "disk"
-          "gamemode"
-          "networkmanager"
-          "pipewire"
-          "wheel"
-          "libvirtd"
-          "qemu-libvirtd"
         ];
       };
     };
