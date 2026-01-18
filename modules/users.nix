@@ -33,7 +33,7 @@
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKduJia+unaQQdN6X5syaHvnpIutO+yZwvfiCP4qKQ/P"
         ];
       };
-      "2" = {
+      "${xlib.users.new}" = {
         name = "${xlib.users.new}";
         isNormalUser = true;
         group = "users";
