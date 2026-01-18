@@ -12,8 +12,8 @@
     server = {
       enable = true;
       exports = ''
-        /export 192.168.1.20(rw,fsid=0,no_subtree_check,no_root_squash)
-        /export/root  192.168.1.20(rw,nohide,insecure,no_subtree_check,no_root_squash)
+        /export         192.168.1.20(rw,fsid=0,no_subtree_check) 192.168.1.102(rw,fsid=0,no_subtree_check)
+        /export/root  192.168.1.20(rw,nohide,insecure,no_subtree_check) 192.168.1.102(rw,nohide,insecure,no_subtree_check)
       '';
     };
   };
