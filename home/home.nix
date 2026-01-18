@@ -26,8 +26,9 @@ let
         useGlobalPkgs = true;
         useUserPackages = true;
         users = {
-          "${xlib.device.username}" = mkHomeModule xlib.device.username;
           root = mkHomeModule "root";
+          "${xlib.device.username}" = mkHomeModule xlib.device.username;
+          "${xlib.users.new}" = mkHomeModule xlib.users.new;
         };
         sharedModules = [
           inputs.plasma-manager.homeModules.plasma-manager

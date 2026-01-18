@@ -30,6 +30,11 @@
           description = "Hostname...";
         };
       };
+      users.new =  lib.mkOption {
+        type = lib.types.str;
+        default = "snity";
+        description = "Username for guest.";
+      };
       dirs = {
         user-home = lib.mkOption {
           type = lib.types.str;
