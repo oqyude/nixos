@@ -14,12 +14,10 @@
         isNormalUser = true;
         group = "users";
         description = "Jor Oqyude";
-        # initialPassword = "1234";
         hashedPasswordFile = config.sops.secrets.hashed_password.path; # hashed_password
         homeMode = "700";
         home = "/home/${xlib.device.username}";
         extraGroups = [
-          "beets"
           "audio"
           "disk"
           "gamemode"
@@ -37,13 +35,11 @@
         name = "${xlib.users.new}";
         isNormalUser = true;
         group = "users";
-        description = "Snity - guest";
-        initialPassword = "1234";
-        hashedPasswordFile = config.sops.secrets.hashed_password.path; # hashed_password
-        homeMode = "700";
+        description = "Snity";
+        hashedPassword = "$y$j9T$851xwObfIp7SYzIyFtH.k1$mNofT2sxEAV50Kxgmwvqc6Kj/3B/fJoPP8qgn./siEB";
+        homeMode = "750";
         home = "/home/${xlib.users.new}";
         extraGroups = [
-          "beets"
           "audio"
           "disk"
           "gamemode"
