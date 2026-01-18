@@ -38,8 +38,8 @@ let
           "defaults"
           "uid=1000"
           "gid=1000"
-          "fmask=0007"
-          "dmask=0007"
+          "fmask=0000"
+          "dmask=0000"
           "nofail"
         ];
       };
