@@ -11,6 +11,11 @@
   ];
   boot = {
     initrd = {
+      supportedFilesystems = [
+         "nfs" 
+      "nfsv4" 
+      "overlay"
+       ];
       availableKernelModules = [
         "ahci"
         "xhci_pci"

@@ -13,7 +13,13 @@
   ];
 
   boot = {
-    initrd.availableKernelModules = [
+    initrd = {
+      supportedFilesystems = [
+         "nfs" 
+      "nfsv4" 
+      "overlay"
+       ];
+      availableKernelModules = [
       "nvme"
       "xhci_pci"
       "thunderbolt"
@@ -22,6 +28,7 @@
       "usbhid"
       "sd_mod"
     ];
+    };
     # kernelModules = [
     # ];
     extraModulePackages = [ ];
