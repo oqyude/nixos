@@ -32,6 +32,26 @@
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKduJia+unaQQdN6X5syaHvnpIutO+yZwvfiCP4qKQ/P"
         ];
       };
+      "2" = {
+        name = "${xlib.users.new}";
+        isNormalUser = true;
+        description = "Snity - guest";
+        initialPassword = "1234";
+        hashedPasswordFile = config.sops.secrets.hashed_password.path; # hashed_password
+        homeMode = "700";
+        home = "/home/${xlib.users.new}";
+        extraGroups = [
+          "beets"
+          "audio"
+          "disk"
+          "gamemode"
+          "networkmanager"
+          "pipewire"
+          "wheel"
+          "libvirtd"
+          "qemu-libvirtd"
+        ];
+      };
     };
   };
 
