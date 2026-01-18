@@ -47,7 +47,7 @@ in
       download = "${config.home.homeDirectory}/Downloads";
       music = "${config.home.homeDirectory}/Music";
       pictures = "${config.home.homeDirectory}/Pictures";
-      # publicShare = "${config.home.homeDirectory}/Misc/Public";
+      publicShare = "${config.home.homeDirectory}/Misc/Public";
       templates = null;
       videos = "${config.home.homeDirectory}/Pictures/Videos";
     };

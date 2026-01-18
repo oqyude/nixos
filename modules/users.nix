@@ -6,11 +6,11 @@
   ...
 }:
 {
-  imports = [
-    ./others
-  ];
+  # imports = [
+  #   ./others
+  # ];
 
-  xlib.device.username = lib.mkDefault "oqyude";
+  xlib.device.username = "oqyude";
 
   users = {
     users = {
