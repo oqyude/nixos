@@ -20,15 +20,34 @@ let
           enableNixpkgsReleaseCheck = false;
         };
       };
+      mkRootModule = username: {
+        home = {
+          username = username;
+          stateVersion = lib.mkDefault "25.05";
+          homeDirectory = if username == "root" then lib.mkDefault "/${username}" else lib.mkDefault "/home/${username}";
+          enableNixpkgsReleaseCheck = false;
+        };
+      };
+      mkOthersModule = username: {
+        imports = [
+          (./. + "/others/${xlib.device.type}.nix")
+        ];
+        home = {
+          username = username;
+          stateVersion = lib.mkDefault "25.05";
+          homeDirectory = if username == "root" then lib.mkDefault "/${username}" else lib.mkDefault "/home/${username}";
+          enableNixpkgsReleaseCheck = false;
+        };
+      };
     in
     {
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
         users = {
-          root = mkHomeModule "root";
+          root = mkRootModule "root";
           "${xlib.device.username}" = mkHomeModule xlib.device.username;
-          # "${xlib.users.new}" = mkHomeModule xlib.users.new;
+          "snity" = mkOthersModule "snity";
         };
         sharedModules = [
           inputs.plasma-manager.homeModules.plasma-manager

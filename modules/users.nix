@@ -6,9 +6,9 @@
   ...
 }:
 {
-  # imports = [
-  #   ./others
-  # ];
+  imports = [
+    ./others
+  ];
 
   xlib.device.username = "oqyude";
 
