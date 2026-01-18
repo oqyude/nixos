@@ -17,8 +17,8 @@
       '';
     };
   };
-  fileSystems."/export/root" = {
-    device = "/";
-    options = [ "bind" ];
-  };
+  # fileSystems."/export/root" = {
+  #   device = "/";
+  #   options = [ "bind" ];
+  # };
 }
