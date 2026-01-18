@@ -15,19 +15,19 @@
   boot = {
     initrd = {
       supportedFilesystems = [
-         "nfs" 
-      "nfsv4" 
-      "overlay"
-       ];
+        "nfs"
+        "nfsv4"
+        "overlay"
+      ];
       availableKernelModules = [
-      "nvme"
-      "xhci_pci"
-      "thunderbolt"
-      "usb_storage"
-      "uas"
-      "usbhid"
-      "sd_mod"
-    ];
+        "nvme"
+        "xhci_pci"
+        "thunderbolt"
+        "usb_storage"
+        "uas"
+        "usbhid"
+        "sd_mod"
+      ];
     };
     # kernelModules = [
     # ];
