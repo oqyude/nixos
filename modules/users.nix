@@ -12,6 +12,7 @@
       "${xlib.device.username}" = {
         name = "${xlib.device.username}";
         isNormalUser = true;
+        group = "users";
         description = "Jor Oqyude";
         # initialPassword = "1234";
         hashedPasswordFile = config.sops.secrets.hashed_password.path; # hashed_password
@@ -35,6 +36,7 @@
       "2" = {
         name = "${xlib.users.new}";
         isNormalUser = true;
+        group = "users";
         description = "Snity - guest";
         initialPassword = "1234";
         hashedPasswordFile = config.sops.secrets.hashed_password.path; # hashed_password
