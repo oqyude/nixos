@@ -18,7 +18,7 @@
     ./systemd.nix
     ./transmission.nix
     ./uptime-kuma.nix
-    ./nfs.nix
+    # ./nfs.nix
     # ./mealie.nix
     # ./memos.nix
     # ./node-red.nix
