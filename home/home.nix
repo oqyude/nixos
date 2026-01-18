@@ -16,7 +16,7 @@ let
         home = {
           username = username;
           stateVersion = lib.mkDefault "25.05";
-          homeDirectory = if username == "root" then "/${username}" else "/home/${username}";
+          homeDirectory = if username == "root" then lib.mkDefault "/${username}" else lib.mkDefault "/home/${username}";
           enableNixpkgsReleaseCheck = false;
         };
       };
