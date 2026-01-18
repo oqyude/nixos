@@ -5,7 +5,7 @@
   ...
 }:
 let
-  ${user} = "snity"
+  ${user} = "snity";
 in
 {
   users = {
