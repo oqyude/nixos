@@ -28,7 +28,7 @@ let
         users = {
           root = mkHomeModule "root";
           "${xlib.device.username}" = mkHomeModule xlib.device.username;
-          "${xlib.users.new}" = mkHomeModule xlib.users.new;
+          # "${xlib.users.new}" = mkHomeModule xlib.users.new;
         };
         sharedModules = [
           inputs.plasma-manager.homeModules.plasma-manager
