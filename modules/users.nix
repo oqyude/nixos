@@ -1,6 +1,7 @@
 {
   config,
   xlib,
+  lib,
   pkgs,
   ...
 }:
