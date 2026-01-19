@@ -26,6 +26,7 @@ let
 
       fileSystems = {
         "${xlib.dirs.therima-drive}" = {
+          enable = false;
           device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
           fsType = "ntfs3";
           options = [
@@ -38,6 +39,7 @@ let
           ];
         };
         "${xlib.dirs.vetymae-drive}" = {
+          enable = false;
           device = "/dev/disk/by-uuid/6408433908430A0E";
           fsType = "ntfs3";
           options = [
@@ -50,6 +52,7 @@ let
           ];
         };
         "${xlib.dirs.soptur-drive}" = {
+          enable = false;
           device = "/dev/disk/by-uuid/C00C56E40C56D54E";
           fsType = "ntfs3";
           options = [

@@ -8,6 +8,7 @@
 let
   symlinksPaths = {
     # cfg
+    "${xlib.dirs.user-storage}/ssh/config" = ".ssh/config";
     "${xlib.dirs.user-storage}/beets" = ".config/beets";
     "${xlib.dirs.user-storage}/ludusavi" = ".config/ludusavi";
     "${xlib.dirs.user-storage}/solaar" = ".config/solaar";
@@ -16,11 +17,9 @@ let
     "${xlib.dirs.user-storage}/v2rayN" = ".local/share/v2rayN";
     "/etc/nixos" = "Configuration";
 
-    "${config.home.homeDirectory}/Games/PrismLauncher" = ".local/share/PrismLauncher";
-    "${xlib.dirs.vetymae-drive}/Users/oqyude/Storage" = "Storage";
+    "${config.home.homeDirectory}/Games/PrismLaunchers/${config.home.username}" =
+      ".local/share/PrismLauncher";
     "${xlib.dirs.vetymae-drive}/Users/oqyude/Music" = "Music";
-    "${xlib.dirs.vetymae-drive}/Users/oqyude/Misc" = "Misc";
-    "${xlib.dirs.vetymae-drive}/Users/oqyude/Vaults" = "Vaults";
 
     # smthng
     # "${xlib.dirs.soptur-drive}/AI/LM Studio" = ".lmstudio";

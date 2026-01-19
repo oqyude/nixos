@@ -8,6 +8,7 @@
 let
   symlinksPaths = {
     # cfg
+    "${xlib.dirs.user-storage}/ssh/config" = ".ssh/config";
     "${xlib.dirs.user-storage}/beets" = ".config/beets";
     "${xlib.dirs.user-storage}/ludusavi" = ".config/ludusavi";
     "${xlib.dirs.user-storage}/solaar" = ".config/solaar";
@@ -16,12 +17,13 @@ let
     "${xlib.dirs.user-storage}/v2rayN" = ".local/share/v2rayN";
     "/etc/nixos" = "Configuration";
 
-    "${xlib.dirs.lamet-drive}/Games/PrismLauncher" = ".local/share/PrismLauncher";
-    "${xlib.dirs.lamet-drive}/Users/oqyude/Storage" = "Storage";
+    "${config.home.homeDirectory}/Games/PrismLaunchers/${config.home.username}" =
+      ".local/share/PrismLauncher";
+    #     "${xlib.dirs.lamet-drive}/Users/oqyude/Storage" = "Storage";
     "${xlib.dirs.lamet-drive}/Users/oqyude/Music" = "Music";
-    "${xlib.dirs.lamet-drive}/Users/oqyude/Misc" = "Misc";
-    "${xlib.dirs.lamet-drive}/Users/oqyude/Vaults" = "Vaults";
-    "${xlib.dirs.lamet-drive}/Users/oqyude/Credentials" = "Credentials";
+    #     "${xlib.dirs.lamet-drive}/Users/oqyude/Misc" = "Misc";
+    #     "${xlib.dirs.lamet-drive}/Users/oqyude/Vaults" = "Vaults";
+    #     "${xlib.dirs.lamet-drive}/Users/oqyude/Credentials" = "Credentials";
   };
   mkLinks = lib.mapAttrs' (sourcePath: targetPath: {
     name = targetPath;

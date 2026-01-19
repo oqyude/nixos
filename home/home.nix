@@ -51,9 +51,15 @@ let
           root = mkRootModule "root";
           "${xlib.device.username}" = mkHomeModule xlib.device.username;
         }
-        // lib.optionalAttrs (xlib.device.type == "secondary") {
-          snity = mkOthersModule "snity";
-        };
+        //
+          lib.optionalAttrs
+            (builtins.elem xlib.device.type [
+              "secondary"
+              "primary"
+            ])
+            {
+              snity = mkOthersModule "snity";
+            };
         sharedModules = [
           inputs.plasma-manager.homeModules.plasma-manager
         ];

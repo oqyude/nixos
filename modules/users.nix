@@ -39,6 +39,10 @@
     };
   };
 
+  systemd.tmpfiles.rules = [
+    "z /mnt/shared 2775 root users -"
+  ];
+
   sops = {
     age = {
       sshKeyPaths = [
