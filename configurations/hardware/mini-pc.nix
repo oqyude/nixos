@@ -44,11 +44,13 @@
 
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-root";
+      #device = "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-root";
+      device = "/dev/disk/by-partuuid/50213d1b-ec8c-4d8d-a4e5-1fd0ee204687";
       fsType = "ext4";
     };
     "/boot" = {
-      device = "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-ESP";
+      #device = "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-ESP";
+      device = "/dev/disk/by-partuuid/b3aeb2c4-ace5-4764-8479-12b223c701ba";
       fsType = "vfat";
       options = [
         "fmask=0077"
