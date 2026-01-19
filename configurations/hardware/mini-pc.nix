@@ -44,13 +44,13 @@
 
   fileSystems = {
     "/" = {
-      device = lib.mkForce "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-root";
-      #device = lib.mkForce "/dev/disk/by-partuuid/50213d1b-ec8c-4d8d-a4e5-1fd0ee204687";
+      device = "/dev/disk/by-uuid/5d20c3e3-bd18-4c28-9b35-903eb8ae9881";
+      #device = lib.mkForce "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-root";
       fsType = "ext4";
     };
     "/boot" = {
-      device = lib.mkForce "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-ESP";
-      #device = lib.mkForce "/dev/disk/by-partuuid/b3aeb2c4-ace5-4764-8479-12b223c701ba";
+      device = "/dev/disk/by-uuid/A431-B16A";
+      #device = lib.mkForce "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-ESP";
       fsType = "vfat";
       options = [
         "fmask=0077"
