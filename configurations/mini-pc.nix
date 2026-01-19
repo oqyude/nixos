@@ -67,7 +67,7 @@ let
       };
 
       boot = {
-        kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_latest;
+        kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
         #kernelParams = [ "usbcore.autosuspend=-1" ];
         loader = {
           systemd-boot.enable = lib.mkDefault true;
@@ -110,7 +110,7 @@ let
           ];
         };
         syncthing = {
-          enable = true;
+          enable = false;
           systemService = true;
           configDir = "${xlib.dirs.user-storage}/Syncthing/${config.system.name}";
           dataDir = "${xlib.dirs.user-home}";
@@ -149,7 +149,7 @@ let
         rtkit.enable = true;
       };
 
-      system.stateVersion = "25.11";
+      system.stateVersion = "26.05";
     };
 in
 inputs.nixpkgs.lib.nixosSystem {
