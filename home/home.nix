@@ -54,8 +54,9 @@ let
         //
           lib.optionalAttrs
             (builtins.elem xlib.device.type [
-              "secondary"
-              "primary"
+              "test"
+              #"secondary"
+              #"primary"
             ])
             {
               snity = mkOthersModule "snity";

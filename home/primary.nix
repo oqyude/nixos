@@ -19,11 +19,11 @@ let
 
     "${config.home.homeDirectory}/Games/PrismLaunchers/${config.home.username}" =
       ".local/share/PrismLauncher";
-    "${xlib.dirs.vetymae-drive}/Users/oqyude/Music" = "Music";
+    #"${xlib.dirs.vetymae-drive}/Users/oqyude/Music" = "Music";
 
     # smthng
     # "${xlib.dirs.soptur-drive}/AI/LM Studio" = ".lmstudio";
-    "${xlib.dirs.therima-drive}" = "External";
+    #"${xlib.dirs.therima-drive}" = "External";
   };
   mkLinks = lib.mapAttrs' (sourcePath: targetPath: {
     name = targetPath;
