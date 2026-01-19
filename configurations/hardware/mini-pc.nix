@@ -44,12 +44,12 @@
 
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-uuid/5d20c3e3-bd18-4c28-9b35-903eb8ae9881";
+      device = lib.mkForce "/dev/disk/by-uuid/5d20c3e3-bd18-4c28-9b35-903eb8ae9881";
       #device = lib.mkForce "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-root";
       fsType = "ext4";
     };
     "/boot" = {
-      device = "/dev/disk/by-uuid/A431-B16A";
+      device = lib.mkForce "/dev/disk/by-uuid/A431-B16A";
       #device = lib.mkForce "/dev/disk/by-partlabel/disk-${xlib.device.hostname}-ESP";
       fsType = "vfat";
       options = [
