@@ -16,7 +16,7 @@ let
     "${xlib.dirs.user-storage}/v2rayN" = ".local/share/v2rayN";
     "/etc/nixos" = "Configuration";
 
-    "${xlib.dirs.soptur-drive}/Games/PrismLauncher" = ".local/share/PrismLauncher";
+    "${config.home.homeDirectory}/Games/PrismLauncher" = ".local/share/PrismLauncher";
     "${xlib.dirs.vetymae-drive}/Users/oqyude/Storage" = "Storage";
     "${xlib.dirs.vetymae-drive}/Users/oqyude/Music" = "Music";
     "${xlib.dirs.vetymae-drive}/Users/oqyude/Misc" = "Misc";
