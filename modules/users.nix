@@ -40,7 +40,7 @@
   };
 
   systemd.tmpfiles.rules = [
-    "z /mnt/shared 2775 root users -"
+    "z /home/shared 2775 root users -"
   ];
 
   sops = {

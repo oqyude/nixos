@@ -110,7 +110,7 @@ let
           ];
         };
         syncthing = {
-          enable = false;
+          enable = true;
           systemService = true;
           configDir = "${xlib.dirs.user-storage}/Syncthing/${config.system.name}";
           dataDir = "${xlib.dirs.user-home}";
