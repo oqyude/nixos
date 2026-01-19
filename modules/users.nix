@@ -6,9 +6,9 @@
   ...
 }:
 {
-  imports = [
-    ./others
-  ];
+  #imports = [
+  #  ./others
+  #];
 
   xlib.device.username = "oqyude";
 
@@ -39,9 +39,9 @@
     };
   };
 
-  systemd.tmpfiles.rules = [
-    "z /home/shared 2775 root users -"
-  ];
+  #systemd.tmpfiles.rules = [
+  #  "z /home/shared 2775 root users -"
+  #];
 
   sops = {
     age = {
