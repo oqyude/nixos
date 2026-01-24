@@ -17,12 +17,11 @@
             OnCalendar = "daily";
             Persistent = true;
           };
-          sources = [ 
+          sources = [
             "${xlib.dirs.server-home}/Music/"
           ];
           destination = "${xlib.dirs.mobile-drive}/Music/";
-          settings = 
-          {
+          settings = {
             archive = true;
             delete = true;
             mkpath = true;
@@ -36,12 +35,11 @@
             OnCalendar = "daily";
             Persistent = true;
           };
-          sources = [ 
-            "${xlib.dirs.server-home}/Hosts/epral/Neo Backup/" 
+          sources = [
+            "${xlib.dirs.server-home}/Hosts/epral/Neo Backup/"
           ];
           destination = "${xlib.dirs.mobile-drive}/Neo Backup/";
-          settings = 
-          {
+          settings = {
             archive = true;
             delete = true;
             mkpath = true;
