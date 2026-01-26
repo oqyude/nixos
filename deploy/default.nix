@@ -8,7 +8,7 @@ let
   };
   user = "${inputs.self.nixosConfigurations.default.config.xlib.device.username}";
   # user = "${inputs.zeroq-deploy.devices.username}";
-  server = "${inputs.zeroq-deploy.devices.server.hostname}";
+  server = "${inputs.self.nixosConfigurations.server.config.xlib.device.hostname}";
   vds = "${inputs.zeroq-deploy.devices.vds.hostname}";
   mini-laptop = "${inputs.zeroq-deploy.devices.mini-laptop.hostname}";
 in
