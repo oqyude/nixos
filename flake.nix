@@ -3,7 +3,7 @@
   inputs = {
     # My
     zeroq-credentials.url = "git+ssh://git@github.com/oqyude/zeroq-credentials.git"; # flake of creds
-    zeroq-deploy.url = "path:./deploy";
+    # zeroq-deploy.url = "path:./deploy";
     zapret.url = "github:oqyude/zapret-easyflake"; # stupid flake of zapret
 
     # nixpkgs
