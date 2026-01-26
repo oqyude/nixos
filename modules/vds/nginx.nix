@@ -68,9 +68,10 @@ in
             </html>
           '';
           locations = {
-            "/".tryFiles = "$uri =404";
+            # "/".tryFiles = "$uri =404";
             "/guest/" = {
               proxyPass = "http://${server}:80";
+              proxyWebsockets = true;
               extraConfig = ''
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
