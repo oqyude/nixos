@@ -1,6 +1,7 @@
 { inputs, ... }@flakeContext:
 {
   nixosConfigurations = {
+    default = import ./any.nix flakeContext; # default
     atoridu = import ./mini-pc.nix flakeContext; # atoridu
     rydiwo = import ./mini-laptop.nix flakeContext; # rydiwo
     otreca = import ./vds.nix flakeContext; # vds

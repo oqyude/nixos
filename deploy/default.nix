@@ -6,7 +6,8 @@ let
       path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.${hostname};
     };
   };
-  user = "${inputs.zeroq-deploy.devices.username}";
+  user = "${inputs.self.nixosConfigurations.default.config.xlib.devices.admin}";
+  # user = "${inputs.zeroq-deploy.devices.username}";
   server = "${inputs.zeroq-deploy.devices.server.hostname}";
   vds = "${inputs.zeroq-deploy.devices.vds.hostname}";
   mini-laptop = "${inputs.zeroq-deploy.devices.mini-laptop.hostname}";
