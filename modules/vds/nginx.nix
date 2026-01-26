@@ -63,12 +63,11 @@ in
             <!doctype html>
             <html>
             <body>
-              <pre>This server is running.</pre>
+              <pre>What are you doing here?</pre>
             </body>
             </html>
           '';
           locations = {
-            # "/".tryFiles = "$uri =404";
             "/guest/" = {
               proxyPass = "http://${server}:80";
               proxyWebsockets = true;
