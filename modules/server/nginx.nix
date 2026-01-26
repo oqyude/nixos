@@ -27,6 +27,28 @@
             }
           ];
         };
+        "zeroq.local" = {
+          forceSSL = false;
+          enableACME = false;
+          root = pkgs.writeTextDir "index.html" ''
+            <!doctype html>
+            <html>
+            <body>
+              <pre>This server is running in backend.</pre>
+            </body>
+            </html>
+          '';
+          listen = [
+            {
+              addr = "100.64.0.0";
+              port = 80;
+            }
+            {
+              addr = "192.168.1.20";
+              port = 80;
+            }
+          ];
+        };
         # "localhost:8000" = {
         #   forceSSL = false;
         #   enableACME = false;

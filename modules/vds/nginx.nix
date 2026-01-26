@@ -55,16 +55,36 @@ in
         #     client_max_body_size 5G;
         #   '';
         # };
-        # "zeroq.ru" = {
-        #   forceSSL = true;
-        #   enableACME = true;
-        #   locations."/.well-known/discord" = {
-        #     extraConfig = ''
-        #       default_type text/plain;
-        #       return 200 "dh=c2d103553a4cfdaa1b7952a87a7d8120a1e167cc";
-        #     '';
-        #   };
-        # };
+        "zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          root = pkgs.writeTextDir "index.html" ''
+            <!doctype html>
+            <html>
+            <body>
+              <pre>This server is running.</pre>
+            </body>
+            </html>
+          '';
+          locations = {
+            "/".tryFiles = "$uri =404";
+            "/guest/" = {
+              proxyPass = "http://${server}:80";
+              extraConfig = ''
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+              '';
+            };
+            # "/.well-known/discord" = {
+            #   extraConfig = ''
+            #     default_type text/plain;
+            #     return 200 "dh=c2d103553a4cfdaa1b7952a87a7d8120a1e167cc";
+            #   '';
+            # };
+          };
+        };
         "flux.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
