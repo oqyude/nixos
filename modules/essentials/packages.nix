@@ -85,7 +85,7 @@ in
       openssl
 
       # Test
-      helix
+      jocalsend
     ];
   };
   environment.variables.EDITOR = "flow";
