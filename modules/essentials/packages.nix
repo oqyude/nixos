@@ -86,10 +86,12 @@ in
 
       # Test
       jocalsend
+      lazydocker
     ];
   };
   environment.variables.EDITOR = "flow";
   programs = {
+    nix-ld.enable = true;
     nano = {
       enable = true;
       nanorc = ''
