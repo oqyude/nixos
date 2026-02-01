@@ -87,6 +87,9 @@ in
       # Test
       jocalsend
       lazydocker
+      dtop
+      tlrc
+      lazyssh
     ];
   };
   environment.variables.EDITOR = "flow";
