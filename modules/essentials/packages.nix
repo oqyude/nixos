@@ -86,8 +86,7 @@ in
 
       # To save
       tuios
-      inputs.fresh-editor.packages.x86_64-linux.default
-      # fresh-editor
+      fresh-editor
 
       # Test
       jocalsend
