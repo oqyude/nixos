@@ -95,6 +95,8 @@ in
       framework-tool-tui
       fresh-editor
       bluetui
+      snitch
+      devenv
     ];
   };
   environment.variables.EDITOR = "flow";
