@@ -53,7 +53,7 @@ in
       wget
       tree
       dust
-      master.flow-control
+      flow-control
 
       # Net Diagnostic
       mtr
