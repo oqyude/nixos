@@ -84,13 +84,15 @@ in
       nftables
       openssl
 
+      # To save
+      tuios
+
       # Test
       jocalsend
       lazydocker
       dtop
       tlrc
       lazyssh
-      tuios
       mcat
       framework-tool-tui
       fresh-editor
