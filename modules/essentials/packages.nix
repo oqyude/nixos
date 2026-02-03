@@ -86,6 +86,8 @@ in
 
       # To save
       tuios
+      inputs.fresh-editor.packages.default
+      # fresh-editor
 
       # Test
       jocalsend
@@ -95,7 +97,6 @@ in
       lazyssh
       mcat
       framework-tool-tui
-      fresh-editor
       bluetui
       snitch
       devenv

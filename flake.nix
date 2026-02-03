@@ -30,6 +30,12 @@
       };
     };
 
+    fresh-editor = {
+      url = "github:Nsoro-Allan/fresh-editor";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
     utils.url = "github:numtide/flake-utils";
     flake-compat.url = "github:edolstra/flake-compat";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
