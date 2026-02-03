@@ -90,11 +90,16 @@ in
       dtop
       tlrc
       lazyssh
+      tuios
+      mcat
+      framework-tool-tui
+      fresh-editor
+      bluetui
     ];
   };
   environment.variables.EDITOR = "flow";
   programs = {
-    nix-ld.enable = true;
+    # nix-ld.enable = true;
     nano = {
       enable = true;
       nanorc = ''
