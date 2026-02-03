@@ -86,7 +86,7 @@ in
 
       # To save
       tuios
-      inputs.fresh-editor.packages.default
+      inputs.fresh-editor.packages.fresh
       # fresh-editor
 
       # Test
