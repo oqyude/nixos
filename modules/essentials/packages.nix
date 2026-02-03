@@ -86,7 +86,7 @@ in
 
       # To save
       tuios
-      inputs.fresh-editor.packages.fresh
+      inputs.fresh-editor.packages.x86_64-linux.default
       # fresh-editor
 
       # Test
