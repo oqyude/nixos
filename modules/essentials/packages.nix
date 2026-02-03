@@ -101,7 +101,7 @@ in
       devenv
     ];
   };
-  environment.variables.EDITOR = "flow";
+  environment.variables.EDITOR = "fresh";
   programs = {
     # nix-ld.enable = true;
     nano = {
