@@ -29,7 +29,7 @@
         utils.follows = "utils";
       };
     };
-    
+
     utils.url = "github:numtide/flake-utils";
     flake-compat.url = "github:edolstra/flake-compat";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
