@@ -99,6 +99,7 @@ in
       bluetui
       snitch
       devenv
+      whosthere
     ];
   };
   environment.variables.EDITOR = "fresh";
