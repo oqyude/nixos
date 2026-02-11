@@ -3,7 +3,7 @@
   lib,
   ...
 }:
-{
+{ # new things https://git.voronind.com/voronind/nix/src/commit/c4a70068a474e9f30b8e367b69520c563e02fbd9/system/nix.nix
   system.nixos.label = "default";
 
   nix = {
