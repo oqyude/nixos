@@ -10,16 +10,19 @@
     channel = {
       enable = true;
     };
+    # nixPath = [ "nixpkgs=flake:nixpkgs" ];
     settings = {
       require-sigs = false;
       substituters = [
         "https://cache.nixos.org"
         "https://nix-community.cachix.org"
         "https://mirror.yandex.ru/nixos"
+        "https://cache.nixos.kz"
+        "https://cache.xd0.zip"
+        "https://nixos-cache-proxy.cofob.dev"
         # "https://nixos-cache-proxy.sweetdogs.ru"
-        # "https://nixos-cache-proxy.cofob.dev" # https://gist.github.com/cofob/9b1fd205e6d961a45c225ae9f0af1394
         # "https://nixos-cache-proxy.elxreno.com"
-        #"https://nixos.snix.store" # https://nixos.snix.store/
+        # "https://nixos.snix.store" # https://nixos.snix.store/
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
@@ -27,6 +30,10 @@
       stalled-download-timeout = 4;
       connect-timeout = 4;
       auto-optimise-store = true;
+      # fallback = true;
+      # allow-import-from-derivation = false;
+      # keep-derivations = true;
+      # keep-outputs = true;
       experimental-features = [
         "flakes"
         "nix-command"
@@ -34,7 +41,13 @@
     };
   };
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs = {
+    # flake = {
+    #   setFlakeRegistry = false;
+    #   setNixPath = false;
+    # };
+    config.allowUnfree = true;
+  };
 
   security = {
     sudo.wheelNeedsPassword = false;
@@ -55,7 +68,6 @@
   i18n = {
     defaultLocale = "en_US.UTF-8";
     supportedLocales = [
-      #"C.UTF-8/UTF-8"
       "en_US.UTF-8/UTF-8"
       "ru_RU.UTF-8/UTF-8"
     ];
