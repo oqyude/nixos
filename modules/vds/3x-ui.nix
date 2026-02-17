@@ -35,7 +35,7 @@
 
   # Containers
   virtualisation.oci-containers.containers."3xui_app" = {
-    image = "localhost/compose2nix/3xui_app:latest";
+    image = "http://localhost:7443/compose2nix/3xui_app:latest";
     # image = "docker.io/metaligh/3x-ui:latest";
     # image = "localhost:7443/compose2nix/3xui_app";
     environment = {
