@@ -35,7 +35,16 @@
 
   # Containers
   virtualisation.oci-containers.containers."3xui_app" = {
-    image = "localhost:7443/compose2nix/3xui_app:latest";
+    image = "3xui_app:latest";
+    imageFile = pkgs.dockerTools.buildImage {
+      name = "3xui_app";
+      fromImage = /mnt/containers/3x-ui/3x-ui.tar.gz;
+      config = {
+        Cmd = [ "/3xui_app/serve" ];
+        WorkingDir = "/3xui_app";
+      };
+    };
+
     # image = "docker.io/metaligh/3x-ui:latest";
     # image = "localhost:7443/compose2nix/3xui_app";
     environment = {
