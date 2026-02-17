@@ -30,7 +30,7 @@
       stalled-download-timeout = 4;
       connect-timeout = 4;
       auto-optimise-store = true;
-      # fallback = true;
+      fallback = true;
       # allow-import-from-derivation = false;
       # keep-derivations = true;
       # keep-outputs = true;
