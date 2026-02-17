@@ -33,6 +33,14 @@ in
             '';
           };
         };
+        "x.zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://${server}:2053";
+            proxyWebsockets = true;
+          };
+        };
         "kuma.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
