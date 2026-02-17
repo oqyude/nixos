@@ -23,6 +23,14 @@
       "${matchAll}".allowedUDPPorts = [ 53 ];
     };
 
+  networking.firewall = {
+    allowedTCPPorts = [
+      14380
+    ];
+    allowedUDPPorts = [
+      14380
+    ];
+  };
   virtualisation.oci-containers.backend = "podman";
 
   # Containers
