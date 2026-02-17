@@ -35,17 +35,8 @@
 
   # Containers
   virtualisation.oci-containers.containers."3xui_app" = {
-    image = "3xui_app:latest";
-    imageFile = pkgs.dockerTools.buildImage {
-      name = "3xui_app";
-      fromImage = /etc/containers/3x-ui.tar.gz;
-      config = {
-        Cmd = [ "/3xui_app/serve" ];
-        WorkingDir = "/3xui_app";
-      };
-    };
-
     # image = "docker.io/metaligh/3x-ui:latest";
+    image = "compose2nix/3xui_app:latest";
     # image = "localhost:7443/compose2nix/3xui_app";
     environment = {
       "XRAY_VMESS_AEAD_FORCED" = "false";
@@ -83,7 +74,7 @@
       TimeoutSec = 300;
     };
     script = ''
-      cd /mnt/containers/3x-ui
+      cd /mnt/containers/3x-ui/image
       podman build -t compose2nix/3xui_app -f ./Dockerfile .
     '';
   };
