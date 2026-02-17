@@ -36,9 +36,15 @@ in
         "x.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
-          locations."/" = {
-            proxyPass = "http://localhost:2053";
-            proxyWebsockets = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://localhost:2053";
+              proxyWebsockets = true;
+            };
+            "/subs/" = {
+              proxyPass = "http://localhost:2096";
+              proxyWebsockets = true;
+            };
           };
         };
         "kuma.zeroq.ru" = {
