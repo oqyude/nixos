@@ -6,7 +6,7 @@
 }:
 {
   imports = [
-    # ./3x-ui.nix
+    ./3x-ui.nix
   ];
 
   # virtualisation = {
@@ -14,6 +14,6 @@
   # };
 
   environment.systemPackages = [
-    # inputs.compose2nix.packages.x86_64-linux.default
+    inputs.compose2nix.packages.x86_64-linux.default
   ];
 }
