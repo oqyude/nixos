@@ -37,7 +37,7 @@ in
           forceSSL = true;
           enableACME = true;
           locations."/" = {
-            proxyPass = "http://${server}:2053";
+            proxyPass = "http://localhost:2053";
             proxyWebsockets = true;
           };
         };
