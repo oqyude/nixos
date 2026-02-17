@@ -38,7 +38,7 @@
     image = "3xui_app:latest";
     imageFile = pkgs.dockerTools.buildImage {
       name = "3xui_app";
-      fromImage = /mnt/containers/3x-ui/3x-ui.tar.gz;
+      fromImage = /etc/containers/3x-ui.tar.gz;
       config = {
         Cmd = [ "/3xui_app/serve" ];
         WorkingDir = "/3xui_app";
