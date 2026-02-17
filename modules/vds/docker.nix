@@ -14,6 +14,6 @@
   # };
 
   environment.systemPackages = [
-    inputs.compose2nix.packages.x86_64-linux.default
+    pkgs.compose2nix
   ];
 }
