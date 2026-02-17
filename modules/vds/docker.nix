@@ -9,7 +9,8 @@
     ./3x-ui.nix
   ];
 
-  environment.systemPackages = [
-    pkgs.compose2nix
+  environment.systemPackages = with pkgs; [
+    compose2nix
+    podman-tui
   ];
 }
