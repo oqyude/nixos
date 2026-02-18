@@ -4,7 +4,7 @@
 }:
 {
   imports = [
-    ./docker.nix
+    ./containers.nix
     # ../services/uptime-kuma.nix
     # ./netbird.nix
     ./nginx.nix

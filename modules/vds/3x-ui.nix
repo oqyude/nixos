@@ -10,7 +10,10 @@
   # Runtime
   virtualisation.podman = {
     enable = true;
-    autoPrune.enable = true;
+    autoPrune = {
+      enable = true;
+      flags = [ "--all" ];
+    };
     dockerCompat = true;
   };
 
@@ -23,11 +26,19 @@
       "${matchAll}".allowedUDPPorts = [ 53 ];
     };
 
+  networking.firewall = {
+    allowedTCPPorts = [
+      14380
+    ];
+    allowedUDPPorts = [
+      14380
+    ];
+  };
   virtualisation.oci-containers.backend = "podman";
 
   # Containers
   virtualisation.oci-containers.containers."3xui_app" = {
-    image = "localhost:7443/compose2nix/3xui_app";
+    image = "ghcr.io/mhsanaei/3x-ui:latest";
     environment = {
       "XRAY_VMESS_AEAD_FORCED" = "false";
       "XUI_ENABLE_FAIL2BAN" = "true";
