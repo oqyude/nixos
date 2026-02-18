@@ -39,8 +39,6 @@
   # Containers
   virtualisation.oci-containers.containers."3xui_app" = {
     image = "ghcr.io/mhsanaei/3x-ui:latest";
-    # image = "compose2nix/3xui_app:latest";
-    # image = "localhost:7443/compose2nix/3xui_app";
     environment = {
       "XRAY_VMESS_AEAD_FORCED" = "false";
       "XUI_ENABLE_FAIL2BAN" = "true";
