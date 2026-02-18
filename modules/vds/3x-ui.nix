@@ -27,11 +27,11 @@
     };
 
   networking.firewall = {
-    allowedTCPPorts = [
-      14380
+    allowedUDPPortRanges = [
+      { from = 14380; to = 15380; }
     ];
-    allowedUDPPorts = [
-      14380
+    allowedTCPPortRanges = [
+      { from = 14380; to = 15380; }
     ];
   };
   virtualisation.oci-containers.backend = "podman";
