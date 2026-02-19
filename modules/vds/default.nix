@@ -4,10 +4,10 @@
 }:
 {
   imports = [
-    ./containers.nix
-    # ../services/uptime-kuma.nix
-    # ./netbird.nix
+    ./containers
     ./nginx.nix
     ./xray.nix
+    # ../services/uptime-kuma.nix
+    # ./netbird.nix
   ];
 }
