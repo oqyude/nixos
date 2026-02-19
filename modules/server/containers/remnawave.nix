@@ -8,7 +8,6 @@
 }:
 {
 
-
   # fileSystems."${config.services.immich.mediaLocation}" = {
   #   device = "${xlib.dirs.services-folder}/immich";
   #   options = [
