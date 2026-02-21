@@ -49,7 +49,7 @@
       vscodium
       ayugram-desktop
       # vesktop
-      discord
+      # discord
       gramps
       kdePackages.filelight
       localsend
@@ -58,7 +58,7 @@
       pdfarranger
       stretchly
       transmission_4-gtk
-      vlc
+      #vlc
       #libreoffice-qt6
       #normcap
       #zerotierone
@@ -74,7 +74,8 @@
 
       # Games
       #ludusavi
-      prismlauncher
+      #prismlauncher
+      steam
       #lutris
 
       # AI
