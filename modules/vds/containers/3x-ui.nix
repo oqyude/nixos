@@ -39,6 +39,16 @@
         to = 15380;
       }
     ];
+    allowedTCPPorts = [
+      8443
+      9443
+      13380
+    ];
+    allowedUDPPorts = [
+      8443
+      9443
+      13380
+    ];
   };
   virtualisation.oci-containers.backend = "podman";
 
