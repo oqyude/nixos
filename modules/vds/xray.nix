@@ -10,18 +10,18 @@
     settings = inputs.zeroq-credentials.services.xray.config;
   };
 
-  networking.firewall = {
-    allowedTCPPorts = [
-      8443
-      9443
-      13380
-    ];
-    allowedUDPPorts = [
-      8443
-      9443
-      13380
-    ];
-  };
+  # networking.firewall = {
+  #   allowedTCPPorts = [
+  #     8443
+  #     9443
+  #     13380
+  #   ];
+  #   allowedUDPPorts = [
+  #     8443
+  #     9443
+  #     13380
+  #   ];
+  # };
 
   environment.systemPackages = [ pkgs.xray ];
 
