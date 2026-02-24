@@ -85,7 +85,7 @@ let
       wsl = {
         enable = true;
         startMenuLaunchers = true;
-        #useWindowsDriver = true;
+        useWindowsDriver = true;
         defaultUser = config.xlib.device.username;
       };
 
