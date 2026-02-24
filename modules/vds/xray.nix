@@ -6,7 +6,7 @@
 }:
 {
   services.xray = {
-    enable = false;
+    enable = true;
     settings = inputs.zeroq-credentials.services.xray.config;
   };
 
