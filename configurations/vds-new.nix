@@ -12,7 +12,7 @@ let
     {
       xlib.device = {
         type = "vds-new";
-        hostname = "otreca";
+        hostname = "otreca-new";
       };
 
       imports = [
