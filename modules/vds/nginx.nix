@@ -19,20 +19,20 @@ in
       recommendedTlsSettings = true;
       appendHttpConfig = inputs.zeroq-credentials.services.xray.maps;
       virtualHosts = {
-        "pubray.zeroq.ru" = {
-          enableACME = true;
-          forceSSL = true;
-          root = "${inputs.zeroq-credentials.services.xray.subs}";
-          locations."/" = {
-            extraConfig = ''
-              auth_basic "Restricted";
-              auth_basic_user_file /etc/nginx/pubray;
+        # "pubray.zeroq.ru" = {
+        #   enableACME = true;
+        #   forceSSL = true;
+        #   root = "${inputs.zeroq-credentials.services.xray.subs}";
+        #   locations."/" = {
+        #     extraConfig = ''
+        #       auth_basic "Restricted";
+        #       auth_basic_user_file /etc/nginx/pubray;
 
-              if ($subfile = "") { return 403; }
-              rewrite ^/$ $subfile break;
-            '';
-          };
-        };
+        #       if ($subfile = "") { return 403; }
+        #       rewrite ^/$ $subfile break;
+        #     '';
+        #   };
+        # };
         "x.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
@@ -160,28 +160,28 @@ in
             client_max_body_size 5G;
           '';
         };
-        "pdf.zeroq.ru" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:6060";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
-        "ai.zeroq.ru" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:11112";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
+        # "pdf.zeroq.ru" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   locations."/" = {
+        #     proxyPass = "http://${server}:6060";
+        #     proxyWebsockets = true;
+        #   };
+        #   extraConfig = ''
+        #     client_max_body_size 5G;
+        #   '';
+        # };
+        # "ai.zeroq.ru" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   locations."/" = {
+        #     proxyPass = "http://${server}:11112";
+        #     proxyWebsockets = true;
+        #   };
+        #   extraConfig = ''
+        #     client_max_body_size 5G;
+        #   '';
+        # };
       };
     };
   };
