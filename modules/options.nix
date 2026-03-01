@@ -14,6 +14,7 @@
             "secondary"
             "server"
             "vds"
+            "vds-new"
             "wsl"
           ];
           default = "minimal";
