@@ -108,6 +108,7 @@
 
   # Folders
   systemd.tmpfiles.rules = [
+    "z /mnt 0755 root root -"
     "z /mnt/containers 0755 root root -"
     "z /mnt/containers/3x-ui 0755 root root -"
     "z /mnt/containers/3x-ui/cert 0755 root root -"
