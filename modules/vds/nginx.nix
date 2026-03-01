@@ -38,7 +38,7 @@ in
           enableACME = true;
           locations = {
             "/" = {
-              proxyPass = "http://localhost:2053";
+              proxyPass = "http://localhost:2049";
               proxyWebsockets = true;
             };
             "/subs/" = {
