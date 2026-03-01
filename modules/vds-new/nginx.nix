@@ -19,20 +19,20 @@ in
       recommendedTlsSettings = true;
       appendHttpConfig = inputs.zeroq-credentials.services.xray.maps;
       virtualHosts = {
-        "pubray.zeroq.ru" = {
-          enableACME = true;
-          forceSSL = true;
-          root = "${inputs.zeroq-credentials.services.xray.subs}";
-          locations."/" = {
-            extraConfig = ''
-              auth_basic "Restricted";
-              auth_basic_user_file /etc/nginx/pubray;
+        # "pubray.zeroq.ru" = {
+        #   enableACME = true;
+        #   forceSSL = true;
+        #   root = "${inputs.zeroq-credentials.services.xray.subs}";
+        #   locations."/" = {
+        #     extraConfig = ''
+        #       auth_basic "Restricted";
+        #       auth_basic_user_file /etc/nginx/pubray;
 
-              if ($subfile = "") { return 403; }
-              rewrite ^/$ $subfile break;
-            '';
-          };
-        };
+        #       if ($subfile = "") { return 403; }
+        #       rewrite ^/$ $subfile break;
+        #     '';
+        #   };
+        # };
         "x.new.zeroq.ru" = {
           forceSSL = true;
           enableACME = true;
@@ -47,17 +47,17 @@ in
             };
           };
         };
-        "kuma.new.zeroq.ru" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:4001";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
+        # "kuma.new.zeroq.ru" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   locations."/" = {
+        #     proxyPass = "http://${server}:4001";
+        #     proxyWebsockets = true;
+        #   };
+        #   extraConfig = ''
+        #     client_max_body_size 5G;
+        #   '';
+        # };
         # "node-red.zeroq.ru" = {
         #   forceSSL = true;
         #   enableACME = true;
@@ -94,72 +94,72 @@ in
         #     # };
         #   };
         # };
-        "flux.new.zeroq.ru" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:6061";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
-        "office.new.zeroq.ru" = {
-          enableACME = true;
-          forceSSL = true;
-          locations = {
-            "/" = {
-              proxyPass = "http://${server}:9980"; # API и coauthoring
-              proxyWebsockets = true;
-            };
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-            proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          ''; # absolute_redirect off;
-        };
-        "immich.new.zeroq.ru" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:2283";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
-        "nextcloud.new.zeroq.ru" = {
-          forceSSL = true;
-          enableACME = true;
-          locations = {
-            "/" = {
-              proxyPass = "http://${server}:10000";
-              proxyWebsockets = true;
-            };
-            "/whiteboard" = {
-              proxyPass = "http://${server}:3002";
-              proxyWebsockets = true;
-            };
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
-        "calibre.new.zeroq.ru" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:8083";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
+        # "flux.new.zeroq.ru" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   locations."/" = {
+        #     proxyPass = "http://${server}:6061";
+        #     proxyWebsockets = true;
+        #   };
+        #   extraConfig = ''
+        #     client_max_body_size 5G;
+        #   '';
+        # };
+        # "office.new.zeroq.ru" = {
+        #   enableACME = true;
+        #   forceSSL = true;
+        #   locations = {
+        #     "/" = {
+        #       proxyPass = "http://${server}:9980"; # API и coauthoring
+        #       proxyWebsockets = true;
+        #     };
+        #   };
+        #   extraConfig = ''
+        #     client_max_body_size 5G;
+        #     proxy_set_header X-Forwarded-Proto $scheme;
+        #     proxy_set_header X-Real-IP $remote_addr;
+        #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        #   ''; # absolute_redirect off;
+        # };
+        # "immich.new.zeroq.ru" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   locations."/" = {
+        #     proxyPass = "http://${server}:2283";
+        #     proxyWebsockets = true;
+        #   };
+        #   extraConfig = ''
+        #     client_max_body_size 5G;
+        #   '';
+        # };
+        # "nextcloud.new.zeroq.ru" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   locations = {
+        #     "/" = {
+        #       proxyPass = "http://${server}:10000";
+        #       proxyWebsockets = true;
+        #     };
+        #     "/whiteboard" = {
+        #       proxyPass = "http://${server}:3002";
+        #       proxyWebsockets = true;
+        #     };
+        #   };
+        #   extraConfig = ''
+        #     client_max_body_size 5G;
+        #   '';
+        # };
+        # "calibre.new.zeroq.ru" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   locations."/" = {
+        #     proxyPass = "http://${server}:8083";
+        #     proxyWebsockets = true;
+        #   };
+        #   extraConfig = ''
+        #     client_max_body_size 5G;
+        #   '';
+        # };
         # "pdf.new.zeroq.ru" = {
         #   forceSSL = true;
         #   enableACME = true;
