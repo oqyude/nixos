@@ -41,10 +41,10 @@ in
               proxyPass = "http://localhost:2049";
               proxyWebsockets = true;
             };
-            # "/default" = {
-            #   proxyPass = "http://localhost:2053";
-            #   proxyWebsockets = true;
-            # };
+            "/default" = {
+              proxyPass = "http://localhost:2053";
+              proxyWebsockets = true;
+            };
             "/subs/" = {
               proxyPass = "http://localhost:2096";
               proxyWebsockets = true;
