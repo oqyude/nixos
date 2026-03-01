@@ -75,7 +75,6 @@
       ssh_key_public = {
         format = "yaml";
         key = "ssh_key_public";
-
         path = "/home/${xlib.device.username}/.ssh/id_ed25519.pub";
         owner = config.users.users."${xlib.device.username}".name;
         group = config.users.users."${xlib.device.username}".group;
