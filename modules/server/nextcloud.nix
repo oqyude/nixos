@@ -24,7 +24,7 @@ in
     };
     nextcloud = {
       enable = true;
-      package = pkgs.nextcloud32;
+      package = pkgs.nextcloud33;
       hostName = "nextcloud.local";
       database.createLocally = true;
       home = "${xlib.dirs.services-mnt-folder}/nextcloud";
@@ -80,6 +80,8 @@ in
           impersonate
           mail
           music
+          #tasks?
+          tasks
           # news
           notes
           notify_push
@@ -92,11 +94,11 @@ in
           user_saml
           whiteboard
           ;
-        inherit (pkgs.nextcloud31Packages.apps)
-          # end_to_end_encryption
-          # maps
-          tasks
-          ;
+        # inherit (pkgs.nextcloud31Packages.apps)
+        #   # end_to_end_encryption
+        #   # maps
+        #   tasks
+        #   ;
       };
     };
     collabora-online = {
