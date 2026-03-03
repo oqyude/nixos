@@ -59,12 +59,13 @@ let
       typing-extensions
       unidecode
       urllib3
+      stable.requests-ratelimiter
     ]
   );
 in
 {
-  nixpkgs.config.allowBroken = true;
-  
+  # nixpkgs.config.allowBroken = true;
+
   users = {
     users = {
       "${xlib.device.username}" = {
