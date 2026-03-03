@@ -16,7 +16,7 @@ in
     # group = "users";
     # user = "${xlib.device.username}";
     options = {
-      # calibreLibrary = "${xlib.dirs.calibre-library}";
+      calibreLibrary = "${xlib.dirs.services-mnt-folder}/calibre-web";
       enableBookUploading = true;
       enableKepubify = true;
       enableBookConversion = false;
