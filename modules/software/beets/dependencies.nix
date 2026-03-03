@@ -72,25 +72,25 @@ self: super: {
       self."soupsieve"
     ];
   };
-  # "beetcamp" = super.buildPythonPackage rec {
-  #   pname = "beetcamp";
-  #   version = "0.21.0";
-  #   src = fetchurl {
-  #     url = "https://files.pythonhosted.org/packages/6c/d3/94cad1ba1e65a9445655968a6dcdd528cb1352e2389f0921a9f8c0ccd4a0/beetcamp-0.21.0-py3-none-any.whl";
-  #     sha256 = "08mxqmckg2fx9rkm5a1n9zs2sjccjj75vgxac22xjyi3fw1k0wz2";
-  #   };
-  #   format = "wheel";
-  #   doCheck = false;
-  #   buildInputs = [ ];
-  #   checkInputs = [ ];
-  #   nativeBuildInputs = [ ];
-  #   propagatedBuildInputs = [
-  #     #self."beets" # its doesnt matter?
-  #     self."httpx"
-  #     self."packaging"
-  #     self."pycountry"
-  #   ];
-  # };
+  "beetcamp" = super.buildPythonPackage rec {
+    pname = "beetcamp";
+    version = "0.21.0";
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/6c/d3/94cad1ba1e65a9445655968a6dcdd528cb1352e2389f0921a9f8c0ccd4a0/beetcamp-0.21.0-py3-none-any.whl";
+      sha256 = "08mxqmckg2fx9rkm5a1n9zs2sjccjj75vgxac22xjyi3fw1k0wz2";
+    };
+    format = "wheel";
+    doCheck = false;
+    buildInputs = [ ];
+    checkInputs = [ ];
+    nativeBuildInputs = [ ];
+    propagatedBuildInputs = [
+      #self."beets" # its doesnt matter?
+      self."httpx"
+      self."packaging"
+      self."pycountry"
+    ];
+  };
   "beets" = super.buildPythonPackage rec {
     pname = "beets";
     version = "2.2.0";
