@@ -49,7 +49,7 @@ let
     ps.pylast
     ps.python-dateutil
     ps.pyyaml
-    # ps.requests
+    ps.requests
     ps.six
     ps.sniffio
     ps.soupsieve
