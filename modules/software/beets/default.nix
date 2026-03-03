@@ -20,43 +20,45 @@ let
   # python3 = pkgs.python3.override {
   #   packageOverrides = depsOverlay;
   # };
-  beetsEnv = stable.python313.withPackages (ps: with ps; [
-    beautifulsoup4
-    beetcamp
-    beets
-    certifi
-    charset-normalizer
-    colorama
-    confuse
-    discogs-client
-    exceptiongroup
-    filetype
-    h11
-    httpcore
-    httpx
-    idna
-    jellyfish
-    langdetect
-    mediafile
-    munkres
-    musicbrainzngs
-    mutagen
-    oauthlib
-    packaging
-    pillow
-    platformdirs
-    pycountry
-    pylast
-    python-dateutil
-    pyyaml
-    requests
-    six
-    sniffio
-    soupsieve
-    typing-extensions
-    unidecode
-    urllib3
-  ]);
+  beetsEnv = stable.python313.withPackages (
+    ps: with ps; [
+      beautifulsoup4
+      beetcamp
+      beets
+      certifi
+      charset-normalizer
+      colorama
+      confuse
+      discogs-client
+      exceptiongroup
+      filetype
+      h11
+      httpcore
+      httpx
+      idna
+      jellyfish
+      langdetect
+      mediafile
+      munkres
+      musicbrainzngs
+      mutagen
+      oauthlib
+      packaging
+      pillow
+      platformdirs
+      pycountry
+      pylast
+      python-dateutil
+      pyyaml
+      requests
+      six
+      sniffio
+      soupsieve
+      typing-extensions
+      unidecode
+      urllib3
+    ]
+  );
 in
 {
   users = {
