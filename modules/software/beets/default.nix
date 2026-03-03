@@ -25,6 +25,48 @@ in
 #   ]);
 # in
 {
+  nixpkgs.overlays = [ 
+    (self: super: {
+      myBeets = super.python313.withPackages (ps: with ps; [          
+        ps.beautifulsoup4
+        ps.beetcamp
+        ps.beets
+        ps.certifi
+        ps.charset-normalizer
+        ps.colorama
+        ps.confuse
+        ps.discogs-client
+        ps.exceptiongroup
+        ps.filetype
+        ps.h11
+        ps.httpcore
+        ps.httpx
+        ps.idna
+        ps.jellyfish
+        ps.langdetect
+        ps.mediafile
+        ps.munkres
+        ps.musicbrainzngs
+        ps.mutagen
+        ps.oauthlib
+        ps.packaging
+        ps.pillow
+        ps.platformdirs
+        ps.pycountry
+        ps.pylast
+        ps.python-dateutil
+        ps.pyyaml
+        # ps.requests
+        ps.six
+        ps.sniffio
+        ps.soupsieve
+        ps.typing-extensions
+        ps.unidecode
+        ps.urllib3
+      ]);
+    })
+  ];
+
   systemd.tmpfiles.rules = [
     "z /mnt/beets 0700 ${xlib.device.username} users -" # beets absolute paths
   ];
@@ -33,42 +75,6 @@ in
     users = {
       "${xlib.device.username}" = {
         packages = with stable; [
-          python313Packages.anyio
-          python313Packages.beautifulsoup4
-          python313Packages.beetcamp
-          python313Packages.beets
-          python313Packages.certifi
-          python313Packages.charset-normalizer
-          python313Packages.colorama
-          python313Packages.confuse
-          python313Packages.discogs-client
-          python313Packages.exceptiongroup
-          python313Packages.filetype
-          python313Packages.h11
-          python313Packages.httpcore
-          python313Packages.httpx
-          python313Packages.idna
-          python313Packages.jellyfish
-          python313Packages.langdetect
-          python313Packages.mediafile
-          python313Packages.munkres
-          python313Packages.musicbrainzngs
-          python313Packages.mutagen
-          python313Packages.oauthlib
-          python313Packages.packaging
-          python313Packages.pillow
-          python313Packages.platformdirs
-          python313Packages.pycountry
-          python313Packages.pylast
-          python313Packages.python-dateutil
-          python313Packages.pyyaml
-          python313Packages.requests
-          python313Packages.six
-          python313Packages.sniffio
-          python313Packages.soupsieve
-          python313Packages.typing-extensions
-          python313Packages.unidecode
-          python313Packages.urllib3
           # beetsEnv
           mp3gain
           imagemagick
