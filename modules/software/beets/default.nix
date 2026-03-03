@@ -16,6 +16,7 @@ let
   };
   beetsEnv = python3.withPackages (ps: [
     ps.beets
+    ps.beetcamp
   ]);
 in
 {
