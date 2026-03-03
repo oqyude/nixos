@@ -13,8 +13,7 @@ in
   services.calibre-web = {
     package = stable.calibre-web;
     enable = true;
-    # group = "users";
-    # user = "${xlib.device.username}";
+    dataDir = "${xlib.dirs.services-mnt-folder}/calibre-web";
     options = {
       calibreLibrary = "${xlib.dirs.services-mnt-folder}/calibre-web";
       enableBookUploading = true;
