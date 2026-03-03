@@ -59,7 +59,6 @@ let
       typing-extensions
       unidecode
       urllib3
-      stable.requests-ratelimiter
     ]
   );
 in
