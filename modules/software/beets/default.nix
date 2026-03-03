@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
   xlib,
@@ -37,12 +38,10 @@ in
           python313Packages.beetcamp
           python313Packages.beets
           python313Packages.certifi
-          python313Packages.discogs-client
-          python313Packages.pyyaml
-          python313Packages.unidecode
           python313Packages.charset-normalizer
           python313Packages.colorama
           python313Packages.confuse
+          python313Packages.discogs-client
           python313Packages.exceptiongroup
           python313Packages.filetype
           python313Packages.h11
@@ -62,11 +61,13 @@ in
           python313Packages.pycountry
           python313Packages.pylast
           python313Packages.python-dateutil
+          python313Packages.pyyaml
           python313Packages.requests
           python313Packages.six
           python313Packages.sniffio
           python313Packages.soupsieve
           python313Packages.typing-extensions
+          python313Packages.unidecode
           python313Packages.urllib3
           # beetsEnv
           mp3gain
