@@ -5,6 +5,11 @@
   xlib,
   ...
 }:
+let
+  stable = import inputs.nixpkgs-stable {
+    system = "x86_64-linux";
+  };
+in
 # let
 #   depsOverlay = import ./dependencies.nix {
 #     # ./dependencies-full.nix if broken
@@ -26,7 +31,7 @@
   users = {
     users = {
       "${xlib.device.username}" = {
-        packages = with pkgs; [
+        packages = with stable; [
           python313Packages.anyio
           python313Packages.beautifulsoup4
           python313Packages.beetcamp
