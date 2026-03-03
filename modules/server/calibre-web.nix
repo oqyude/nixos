@@ -13,10 +13,10 @@ in
   services.calibre-web = {
     package = stable.calibre-web;
     enable = true;
-    group = "users";
-    user = "${xlib.device.username}";
+    # group = "users";
+    # user = "${xlib.device.username}";
     options = {
-      calibreLibrary = "${xlib.dirs.calibre-library}";
+      # calibreLibrary = "${xlib.dirs.calibre-library}";
       enableBookUploading = true;
       enableKepubify = true;
       enableBookConversion = false;
