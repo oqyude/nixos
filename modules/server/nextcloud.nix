@@ -59,6 +59,7 @@ in
       notify_push = {
         enable = true;
       };
+      phpPackage = pkgs.php85;
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps) # (config.services.nextcloud.package.packages.apps)
           # gpoddersync
