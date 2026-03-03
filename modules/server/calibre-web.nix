@@ -11,7 +11,7 @@ let
 in
 {
   services.calibre-web = {
-    package = stable.calibre-web;
+    # package = stable.calibre-web;
     enable = true;
     group = "users";
     user = "${xlib.device.username}";
