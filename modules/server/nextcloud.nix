@@ -56,6 +56,9 @@ in
       };
       extraAppsEnable = true;
       appstoreEnable = false;
+      notify_push = {
+        enable = true;
+      };
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps) # (config.services.nextcloud.package.packages.apps)
           # gpoddersync
@@ -84,7 +87,7 @@ in
           tasks
           # news
           notes
-          notify_push
+          # notify_push
           polls
           previewgenerator
           richdocuments
