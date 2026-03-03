@@ -36,6 +36,7 @@ let
       httpcore
       httpx
       httpx-socks
+      socksio
       idna
       jellyfish
       langdetect
