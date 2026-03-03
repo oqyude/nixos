@@ -27,43 +27,87 @@ in
 {
   nixpkgs.overlays = [ 
     (self: super: {
-      myBeets = super.python313.withPackages (ps: with ps; [          
-        ps.beautifulsoup4
-        ps.beetcamp
-        ps.beets
-        ps.certifi
-        ps.charset-normalizer
-        ps.colorama
-        ps.confuse
-        ps.discogs-client
-        ps.exceptiongroup
-        ps.filetype
-        ps.h11
-        ps.httpcore
-        ps.httpx
-        ps.idna
-        ps.jellyfish
-        ps.langdetect
-        ps.mediafile
-        ps.munkres
-        ps.musicbrainzngs
-        ps.mutagen
-        ps.oauthlib
-        ps.packaging
-        ps.pillow
-        ps.platformdirs
-        ps.pycountry
-        ps.pylast
-        ps.python-dateutil
-        ps.pyyaml
-        # ps.requests
-        ps.six
-        ps.sniffio
-        ps.soupsieve
-        ps.typing-extensions
-        ps.unidecode
-        ps.urllib3
-      ]);
+      myBeets = super.buildEnv {
+        name = "myBeets";
+        paths = [
+          (super.python313.withPackages (ps: with ps; [    
+            ps.beautifulsoup4
+            ps.beetcamp
+            ps.beets
+            ps.certifi
+            ps.charset-normalizer
+            ps.colorama
+            ps.confuse
+            ps.discogs-client
+            ps.exceptiongroup
+            ps.filetype
+            ps.h11
+            ps.httpcore
+            ps.httpx
+            ps.idna
+            ps.jellyfish
+            ps.langdetect
+            ps.mediafile
+            ps.munkres
+            ps.musicbrainzngs
+            ps.mutagen
+            ps.oauthlib
+            ps.packaging
+            ps.pillow
+            ps.platformdirs
+            ps.pycountry
+            ps.pylast
+            ps.python-dateutil
+            ps.pyyaml
+            ps.requests
+            ps.six
+            ps.sniffio
+            ps.soupsieve
+            ps.typing-extensions
+            ps.unidecode
+            ps.urllib3
+          ]))
+        ];
+        pathsToLink = [ "bin" ];
+      };
+      
+      # myBeets = super.python313.withPackages (ps: with ps; [          
+      #   ps.beautifulsoup4
+      #   ps.beetcamp
+      #   ps.beets
+      #   ps.certifi
+      #   ps.charset-normalizer
+      #   ps.colorama
+      #   ps.confuse
+      #   ps.discogs-client
+      #   ps.exceptiongroup
+      #   ps.filetype
+      #   ps.h11
+      #   ps.httpcore
+      #   ps.httpx
+      #   ps.idna
+      #   ps.jellyfish
+      #   ps.langdetect
+      #   ps.mediafile
+      #   ps.munkres
+      #   ps.musicbrainzngs
+      #   ps.mutagen
+      #   ps.oauthlib
+      #   ps.packaging
+      #   ps.pillow
+      #   ps.platformdirs
+      #   ps.pycountry
+      #   ps.pylast
+      #   ps.python-dateutil
+      #   ps.pyyaml
+      #   ps.requests
+      #   ps.six
+      #   ps.sniffio
+      #   ps.soupsieve
+      #   ps.typing-extensions
+      #   ps.unidecode
+      #   ps.urllib3
+      # ]);
     })
   ];
 
