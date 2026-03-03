@@ -74,10 +74,11 @@ in
   users = {
     users = {
       "${xlib.device.username}" = {
-        packages = with stable; [
+        packages = [
           # beetsEnv
-          mp3gain
-          imagemagick
+          myBeets
+          pkgs.mp3gain
+          pkgs.imagemagick
           #ffmpeg
         ];
       };
