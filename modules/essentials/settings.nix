@@ -19,7 +19,7 @@
         "https://nix-community.cachix.org"
         "https://mirror.yandex.ru/nixos"
         "https://cache.nixos.kz"
-        "https://cache.xd0.zip"
+        # "https://cache.xd0.zip"
         "https://nixos-cache-proxy.cofob.dev"
         # "https://nixos-cache-proxy.sweetdogs.ru"
         # "https://nixos-cache-proxy.elxreno.com"
