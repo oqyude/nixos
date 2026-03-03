@@ -26,7 +26,7 @@
   users = {
     users = {
       "${xlib.device.username}" = {
-        packages = [
+        packages = with pkgs; [
           python313Packages.anyio
           python313Packages.beautifulsoup4
           python313Packages.beetcamp
@@ -64,9 +64,9 @@
           python313Packages.typing-extensions
           python313Packages.urllib3
           # beetsEnv
-          pkgs.mp3gain
-          pkgs.imagemagick
-          #pkgs.ffmpeg
+          mp3gain
+          imagemagick
+          #ffmpeg
         ];
       };
     };
