@@ -20,131 +20,45 @@ let
   # python3 = pkgs.python3.override {
   #   packageOverrides = depsOverlay;
   # };
-  beetsEnv = stable.python313.withPackages (ps: [
-    ps.beautifulsoup4
-    ps.beetcamp
-    ps.beets
-    ps.certifi
-    ps.charset-normalizer
-    ps.colorama
-    ps.confuse
-    ps.discogs-client
-    ps.exceptiongroup
-    ps.filetype
-    ps.h11
-    ps.httpcore
-    ps.httpx
-    ps.idna
-    ps.jellyfish
-    ps.langdetect
-    ps.mediafile
-    ps.munkres
-    ps.musicbrainzngs
-    ps.mutagen
-    ps.oauthlib
-    ps.packaging
-    ps.pillow
-    ps.platformdirs
-    ps.pycountry
-    ps.pylast
-    ps.python-dateutil
-    ps.pyyaml
-    ps.requests
-    ps.six
-    ps.sniffio
-    ps.soupsieve
-    ps.typing-extensions
-    ps.unidecode
-    ps.urllib3
+  beetsEnv = stable.python313.withPackages (ps: with ps; [
+    beautifulsoup4
+    beetcamp
+    beets
+    certifi
+    charset-normalizer
+    colorama
+    confuse
+    discogs-client
+    exceptiongroup
+    filetype
+    h11
+    httpcore
+    httpx
+    idna
+    jellyfish
+    langdetect
+    mediafile
+    munkres
+    musicbrainzngs
+    mutagen
+    oauthlib
+    packaging
+    pillow
+    platformdirs
+    pycountry
+    pylast
+    python-dateutil
+    pyyaml
+    requests
+    six
+    sniffio
+    soupsieve
+    typing-extensions
+    unidecode
+    urllib3
   ]);
 in
 {
-  # nixpkgs.overlays = [
-  #   (self: super: {
-  #     myBeets = super.buildEnv {
-  #       name = "myBeets";
-  #       paths = [
-  #         (super.python313.withPackages (ps: with ps; [
-  #           ps.beautifulsoup4
-  #           ps.beetcamp
-  #           ps.beets
-  #           ps.certifi
-  #           ps.charset-normalizer
-  #           ps.colorama
-  #           ps.confuse
-  #           ps.discogs-client
-  #           ps.exceptiongroup
-  #           ps.filetype
-  #           ps.h11
-  #           ps.httpcore
-  #           ps.httpx
-  #           ps.idna
-  #           ps.jellyfish
-  #           ps.langdetect
-  #           ps.mediafile
-  #           ps.munkres
-  #           ps.musicbrainzngs
-  #           ps.mutagen
-  #           ps.oauthlib
-  #           ps.packaging
-  #           ps.pillow
-  #           ps.platformdirs
-  #           ps.pycountry
-  #           ps.pylast
-  #           ps.python-dateutil
-  #           ps.pyyaml
-  #           ps.requests
-  #           ps.six
-  #           ps.sniffio
-  #           ps.soupsieve
-  #           ps.typing-extensions
-  #           ps.unidecode
-  #           ps.urllib3
-  #         ]))
-  #       ];
-  #       pathsToLink = [ "bin" ];
-  #     };
-
-  #     # myBeets = super.python313.withPackages (ps: with ps; [
-  #     #   ps.beautifulsoup4
-  #     #   ps.beetcamp
-  #     #   ps.beets
-  #     #   ps.certifi
-  #     #   ps.charset-normalizer
-  #     #   ps.colorama
-  #     #   ps.confuse
-  #     #   ps.discogs-client
-  #     #   ps.exceptiongroup
-  #     #   ps.filetype
-  #     #   ps.h11
-  #     #   ps.httpcore
-  #     #   ps.httpx
-  #     #   ps.idna
-  #     #   ps.jellyfish
-  #     #   ps.langdetect
-  #     #   ps.mediafile
-  #     #   ps.munkres
-  #     #   ps.musicbrainzngs
-  #     #   ps.mutagen
-  #     #   ps.oauthlib
-  #     #   ps.packaging
-  #     #   ps.pillow
-  #     #   ps.platformdirs
-  #     #   ps.pycountry
-  #     #   ps.pylast
-  #     #   ps.python-dateutil
-  #     #   ps.pyyaml
-  #     #   ps.requests
-  #     #   ps.six
-  #     #   ps.sniffio
-  #     #   ps.soupsieve
-  #     #   ps.typing-extensions
-  #     #   ps.unidecode
-  #     #   ps.urllib3
-  #     # ]);
-  #   })
-  # ];
-
   users = {
     users = {
       "${xlib.device.username}" = {
