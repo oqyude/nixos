@@ -5,13 +5,13 @@
   ...
 }:
 let
-  stable = import inputs.nixpkgs-stable {
+  stable = import inputs.nixpkgs-beets {
     system = "x86_64-linux";
   };
 in
 {
   services.calibre-web = {
-    # package = stable.calibre-web;
+    package = beets.calibre-web;
     enable = true;
     group = "users";
     user = "${xlib.device.username}";
