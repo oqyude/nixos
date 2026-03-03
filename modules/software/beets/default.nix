@@ -35,6 +35,7 @@ let
       h11
       httpcore
       httpx
+      httpx-socks
       idna
       jellyfish
       langdetect
