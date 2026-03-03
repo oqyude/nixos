@@ -63,6 +63,8 @@ let
   );
 in
 {
+  nixpkgs.config.allowBroken = true;
+  
   users = {
     users = {
       "${xlib.device.username}" = {
