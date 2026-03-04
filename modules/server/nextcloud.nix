@@ -48,6 +48,7 @@ in
           "100.64.0.0"
           "192.168.1.20"
           "localhost"
+          "nextcloud.local"
         ];
         trusted_proxies = [
           "100.64.1.0"
@@ -58,6 +59,7 @@ in
       appstoreEnable = false;
       notify_push = {
         enable = true;
+        bendDomainToLocalhost = true;
       };
       phpPackage = pkgs.php85;
       extraApps = {
