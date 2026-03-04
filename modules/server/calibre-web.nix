@@ -25,7 +25,7 @@ in
     openFirewall = true;
   };  
   
-  fileSystems."${config.services.calibre-web.dataDir}" = {
+  fileSystems."/var/lib/calibre-web" = {
     device = "${xlib.dirs.services-mnt-folder}/calibre-web";
     options = [
       "bind"
