@@ -58,7 +58,7 @@ in
       extraAppsEnable = true;
       appstoreEnable = false;
       notify_push = {
-        enable = true;
+        enable = false;
         bendDomainToLocalhost = true;
       };
       phpPackage = pkgs.php85;
