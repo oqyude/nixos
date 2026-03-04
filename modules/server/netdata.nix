@@ -10,7 +10,7 @@
     netdata = {
       enable = true;
       config = {
-        global = {
+        web = {
           "allow connections from" = "netdata.local";
           "default port" = "19999";
         };
