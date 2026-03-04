@@ -11,7 +11,8 @@
       enable = true;
       config = {
         global = {
-          "hostname" = "netdata.local";
+          "allow connections from" = "netdata.local";
+          "default port" = "19999";
         };
       };
     };
