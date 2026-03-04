@@ -11,7 +11,7 @@
       enable = true;
       config = {
         web = {
-          "allow connections from" = "netdata.local";
+          "allow connections from" = "localhost *";
           "default port" = "19999";
         };
       };
