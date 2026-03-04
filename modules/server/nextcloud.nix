@@ -141,8 +141,9 @@ in
 
   # fonts.packages = [ work.corefonts ];
 
-  # networking.hosts = {
-  # };
+  networking.hosts = {
+    "localhost" = [ "nextcloud.local" ];
+  };
 
   systemd.services.nextcloud-config-collabora =
     let
