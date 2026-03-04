@@ -63,7 +63,7 @@ in
       };
       phpPackage = pkgs.php85;
       extraApps = {
-        inherit (config.services.nextcloud.package.packages.apps) # (config.services.nextcloud.package.packages.apps)
+        inherit (config.services.nextcloud.package.packages.apps)
           # gpoddersync
           # integration_paperless
           # memories
