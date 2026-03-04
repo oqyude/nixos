@@ -58,6 +58,14 @@ in
             client_max_body_size 5G;
           '';
         };
+        "health.zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://${server}:19999";
+            proxyWebsockets = true;
+          };
+        };
         # "node-red.zeroq.ru" = {
         #   forceSSL = true;
         #   enableACME = true;
