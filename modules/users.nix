@@ -80,6 +80,22 @@
         group = config.users.users."${xlib.device.username}".group;
         mode = "0655";
       };
+      ssh_key_private_root = {
+        format = "yaml";
+        key = "ssh_key_private";
+        path = "/root/.ssh/id_ed25519";
+        owner = "root";
+        group = "root";
+        mode = "0600";
+      };
+      ssh_key_public_root = {
+        format = "yaml";
+        key = "ssh_key_public";
+        path = "/root/.ssh/id_ed25519";
+        owner = "root";
+        group = "root";
+        mode = "0655";
+      };
       ssh_key_public_host = {
         format = "yaml";
         key = "ssh_key_public";
