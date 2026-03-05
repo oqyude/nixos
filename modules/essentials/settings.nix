@@ -11,7 +11,7 @@
     channel = {
       enable = true;
     };
-    # nixPath = [ "nixpkgs=flake:nixpkgs" ];
+    nixPath = [ "nixpkgs=flake:nixpkgs" ];
     settings = {
       require-sigs = false;
       substituters = [
@@ -43,10 +43,10 @@
   };
 
   nixpkgs = {
-    # flake = {
-    #   setFlakeRegistry = false;
-    #   setNixPath = false;
-    # };
+    flake = {
+      setFlakeRegistry = false;
+      setNixPath = false;
+    };
     config.allowUnfree = true;
   };
 
