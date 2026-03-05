@@ -5,9 +5,10 @@
 }:
 {
   imports = [
+    ../software/aichat.nix
     ../software/beets
     ../software/whisper.nix
-    ../software/aichat.nix
+    ./containers
     #../vds/docker.nix
     #../services/tts.nix
     #../server/open-webui.nix
