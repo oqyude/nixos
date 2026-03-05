@@ -13,6 +13,7 @@
   xlib.device.username = "oqyude";
 
   users = {
+    mutableUsers = false;
     users = {
       "${xlib.device.username}" = {
         name = "${xlib.device.username}";
