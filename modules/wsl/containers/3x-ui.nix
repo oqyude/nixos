@@ -7,10 +7,6 @@
 }:
 
 {
-  imports = [
-    ./3x-ui.nix
-  ];
-
   # Runtime
   virtualisation.podman = {
     enable = true;
