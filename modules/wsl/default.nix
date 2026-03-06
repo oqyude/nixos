@@ -5,6 +5,7 @@
 }:
 {
   imports = [
+    ../software/ai-agent.nix
     ../software/aichat.nix
     ../software/beets
     ../software/whisper.nix
