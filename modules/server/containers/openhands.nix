@@ -12,6 +12,7 @@
     enable = true;
     autoPrune.enable = true;
     dockerCompat = true;
+    dockerSocket.enable = true;
   };
 
   # Enable container name DNS for all Podman networks.
@@ -36,7 +37,7 @@
     volumes = [
       "${xlib.dirs.services-mnt-folder}/containers/openhands/userspace:/.openhands:rw"
       "${xlib.dirs.services-mnt-folder}/containers/openhands/workspace:/opt/workspace_base:rw"
-      # "/var/run/docker.sock:/var/run/docker.sock:rw"
+      "/var/run/docker.sock:/var/run/docker.sock:rw"
     ];
     ports = [
       "3000:3000/tcp"
@@ -110,6 +111,7 @@
   };
 
   systemd.tmpfiles.rules = [
+    "f /var/run/docker.sock 0755 root root -"
     "d ${xlib.dirs.services-mnt-folder} 0755 root root -"
     "d ${xlib.dirs.services-mnt-folder}/containers 0755 root root -"
     "d ${xlib.dirs.services-mnt-folder}/containers/openhands 0755 root root -"
