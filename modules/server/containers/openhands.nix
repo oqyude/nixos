@@ -26,16 +26,16 @@
   virtualisation.oci-containers.backend = "podman";
 
   # Containers
-  virtualisation.oci-containers.containers."openhands-app-" = {
+  virtualisation.oci-containers.containers."openhands-app" = {
     image = "localhost/openhands:latest";
     environment = {
       "AGENT_SERVER_IMAGE_REPOSITORY" = "ghcr.io/openhands/agent-server";
       "AGENT_SERVER_IMAGE_TAG" = "31536c8-python";
-      "WORKSPACE_MOUNT_PATH" = "/mnt/c/Users/oqyude/Desktop/openhands/workspace";
+      "WORKSPACE_MOUNT_PATH" = "${xlib.dirs.services-mnt-folder}/containers/openhands/workspace";
     };
     volumes = [
-      "/home/oqyude/.openhands:/.openhands:rw"
-      "/mnt/c/Users/oqyude/Desktop/openhands/workspace:/opt/workspace_base:rw"
+      "${xlib.dirs.services-mnt-folder}/containers/openhands/userspace:/.openhands:rw"
+      "${xlib.dirs.services-mnt-folder}/containers/openhands/workspace:/opt/workspace_base:rw"
       "/var/run/docker.sock:/var/run/docker.sock:rw"
     ];
     ports = [
@@ -48,7 +48,7 @@
       "--network=openhands_default"
     ];
   };
-  systemd.services."podman-openhands-app-" = {
+  systemd.services."podman-openhands-app" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "no";
     };
@@ -82,7 +82,8 @@
   };
 
   # Builds
-  systemd.services."podman-build-openhands-app-" = {
+  systemd.services."podman-build-openhands-app" = {
+    enable = false;
     path = [
       pkgs.podman
       pkgs.git
@@ -92,7 +93,7 @@
       TimeoutSec = 300;
     };
     script = ''
-      cd /mnt/c/Users/oqyude/Desktop/openhands
+      cd ${xlib.dirs.services-mnt-folder}/containers/openhands/source
       podman build -t openhands:latest -f ./containers/app/Dockerfile .
     '';
   };
@@ -106,4 +107,12 @@
     };
     wantedBy = [ "multi-user.target" ];
   };
+
+  systemd.tmpfiles.rules = [
+    "d ${xlib.dirs.services-mnt-folder} 0755 root root -"
+    "d ${xlib.dirs.services-mnt-folder}/containers 0755 root root -"
+    "d ${xlib.dirs.services-mnt-folder}/containers/openhands 0755 root root -"
+    "d ${xlib.dirs.services-mnt-folder}/containers/openhands/userspace 0755 root root -"
+    "d ${xlib.dirs.services-mnt-folder}/containers/openhands/workspace 0755 root root -"
+  ];
 }
