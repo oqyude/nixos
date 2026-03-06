@@ -27,7 +27,7 @@
 
   # Containers
   virtualisation.oci-containers.containers."openhands-app" = {
-    image = "localhost/openhands:latest";
+    image = "ghcr.io/openhands/openhands:latest";
     environment = {
       "AGENT_SERVER_IMAGE_REPOSITORY" = "ghcr.io/openhands/agent-server";
       "AGENT_SERVER_IMAGE_TAG" = "31536c8-python";
