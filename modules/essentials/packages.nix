@@ -72,7 +72,7 @@ in
       exfatprogs # for gparted exfat support
 
       # Archivers
-      rar
+      # rar
       unzip
       zstd
       zip
