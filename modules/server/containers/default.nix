@@ -6,7 +6,7 @@
 }:
 {
   imports = [
-    ./openhands.nix
+    # ./openhands.nix
     ./remnawave.nix
   ];
 

@@ -8,7 +8,7 @@
 {
   services = {
     netdata = {
-      enable = true;
+      enable = false;
       config = {
         web = {
           "allow connections from" = "localhost netdata.local *";
