@@ -28,20 +28,20 @@
             }
           ];
         };
-        "localhost:19999" = {
-          forceSSL = false;
-          enableACME = false;
-          listen = [
-            {
-              addr = "100.64.0.0";
-              port = 19999;
-            }
-            {
-              addr = "192.168.1.20";
-              port = 19999;
-            }
-          ];
-        };
+        # "localhost:19999" = {
+        #   forceSSL = false;
+        #   enableACME = false;
+        #   listen = [
+        #     {
+        #       addr = "100.64.0.0";
+        #       port = 19999;
+        #     }
+        #     {
+        #       addr = "192.168.1.20";
+        #       port = 19999;
+        #     }
+        #   ];
+        # };
         "zeroq.local" = {
           forceSSL = false;
           enableACME = false;

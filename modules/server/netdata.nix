@@ -13,7 +13,7 @@
         web = {
           "allow connections from" = "localhost netdata.local *";
           "default port" = "19999";
-          "bind to" = "localhost";
+          "bind to" = "0.0.0.0";
         };
       };
     };
