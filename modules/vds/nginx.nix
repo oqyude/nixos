@@ -66,6 +66,14 @@ in
             proxyWebsockets = true;
           };
         };
+        "agent.zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://${server}:3000";
+            proxyWebsockets = true;
+          };
+        };
         # "node-red.zeroq.ru" = {
         #   forceSSL = true;
         #   enableACME = true;
