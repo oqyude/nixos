@@ -7,12 +7,12 @@
   ...
 }:
 let
-  master = import inputs.nixpkgs-master {
+  lol = import inputs.nixpkgs-beets {
     system = "x86_64-linux";
   };
 in
 {
   environment.systemPackages = [
-    master.open-interpreter
+    lol.open-interpreter
   ];
 }
