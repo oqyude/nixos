@@ -28,7 +28,7 @@
             }
           ];
         };
-        "netdata.local" = {
+        "localhost:19999" = {
           forceSSL = false;
           enableACME = false;
           listen = [
