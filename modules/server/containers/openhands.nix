@@ -36,16 +36,17 @@
     volumes = [
       "${xlib.dirs.services-mnt-folder}/containers/openhands/userspace:/.openhands:rw"
       "${xlib.dirs.services-mnt-folder}/containers/openhands/workspace:/opt/workspace_base:rw"
-      "/var/run/docker.sock:/var/run/docker.sock:rw"
+      # "/var/run/docker.sock:/var/run/docker.sock:rw"
     ];
     ports = [
       "3000:3000/tcp"
     ];
     log-driver = "journald";
     extraOptions = [
-      "--add-host=host.docker.internal:host-gateway"
-      "--network-alias=openhands"
-      "--network=openhands_default"
+      "--network=host"
+      # "--add-host=host.docker.internal:host-gateway"
+      # "--network-alias=openhands"
+      # "--network=openhands_default"
     ];
   };
   systemd.services."podman-openhands-app" = {
