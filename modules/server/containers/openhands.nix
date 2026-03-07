@@ -45,10 +45,10 @@
     ];
     log-driver = "journald";
     extraOptions = [
-      "--network=host"
-      # "--add-host=host.docker.internal:host-gateway"
-      # "--network-alias=openhands"
-      # "--network=openhands_default"
+      # "--network=host"
+      "--add-host=host.docker.internal:host-gateway"
+      "--network-alias=openhands"
+      "--network=openhands_default"
     ];
   };
   systemd.services."podman-openhands-app" = {
