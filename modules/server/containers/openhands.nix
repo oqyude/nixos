@@ -15,9 +15,6 @@
     dockerSocket.enable = true;
     defaultNetwork.settings.dns_enabled = true;
   };
-  
-  # Try to fix sockets
-  systemd.services.podman.socket.enable = true;
 
   # Enable container name DNS for all Podman networks.
   networking.firewall.interfaces =
