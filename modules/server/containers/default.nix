@@ -6,8 +6,8 @@
 }:
 {
   imports = [
-    ./openhands.nix
-    ./remnawave.nix
+    # ./openhands.nix
+    # ./remnawave.nix
   ];
 
   environment.systemPackages = with pkgs; [
