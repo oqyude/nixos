@@ -4,7 +4,6 @@
 }:
 {
   imports = [
-    ./containers
-    ./nginx.nix
+    ../vds
   ];
 }

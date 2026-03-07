@@ -6,7 +6,6 @@
   imports = [
     ../software/beets
     ./calibre-web.nix
-    ./containers
     ./immich.nix
     ./miniflux.nix
     ./nextcloud.nix

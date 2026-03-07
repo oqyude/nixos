@@ -4,10 +4,9 @@
 }:
 {
   imports = [
-    ./containers
+    ../containers/3x-ui.nix
     ./nginx.nix
     ./xray.nix
-    # ../services/uptime-kuma.nix
     # ./netbird.nix
   ];
 }

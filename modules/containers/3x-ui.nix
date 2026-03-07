@@ -82,20 +82,20 @@
   };
 
   # Builds
-  systemd.services."podman-build-3xui_app" = {
-    path = [
-      pkgs.podman
-      pkgs.git
-    ];
-    serviceConfig = {
-      Type = "oneshot";
-      TimeoutSec = 300;
-    };
-    script = ''
-      cd /mnt/containers/3x-ui
-      podman build -t compose2nix/3xui_app -f ./Dockerfile .
-    '';
-  };
+  # systemd.services."podman-build-3xui_app" = {
+  #   path = [
+  #     pkgs.podman
+  #     pkgs.git
+  #   ];
+  #   serviceConfig = {
+  #     Type = "oneshot";
+  #     TimeoutSec = 300;
+  #   };
+  #   script = ''
+  #     cd /mnt/containers/3x-ui
+  #     podman build -t compose2nix/3xui_app -f ./Dockerfile .
+  #   '';
+  # };
 
   # Root service
   # When started, this will automatically create all resources and start
