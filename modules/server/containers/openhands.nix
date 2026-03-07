@@ -115,7 +115,6 @@
   };
 
   systemd.tmpfiles.rules = [
-    "f /var/run/docker.sock 0755 root root -"
     "d ${xlib.dirs.services-mnt-folder} 0755 root root -"
     "d ${xlib.dirs.services-mnt-folder}/containers 0755 root root -"
     "d ${xlib.dirs.services-mnt-folder}/containers/openhands 0755 root root -"

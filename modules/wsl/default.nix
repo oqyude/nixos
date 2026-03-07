@@ -5,6 +5,7 @@
 }:
 {
   imports = [
+    ../server/containers/openhands.nix
     # ../software/ai-agent.nix
     ../software/aichat.nix
     ../software/beets
