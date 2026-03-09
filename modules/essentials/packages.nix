@@ -86,7 +86,6 @@ in
 
       # To save
       tuios
-      fresh-editor
 
       # Test
       jocalsend
@@ -100,6 +99,10 @@ in
       snitch
       devenv
       whosthere
+
+      # tree-sitter
+      tree-sitter-grammars.tree-sitter-nix
+      fresh-editor
     ];
   };
   environment.variables.EDITOR = "fresh";
@@ -118,7 +121,6 @@ in
       enable = false;
       plugins = {
         inherit (pkgs.yaziPlugins)
-          gitui
           git
           sudo
           ouch

@@ -39,6 +39,7 @@
       gp = "git pull";
       ns = "nh os switch";
       gp-ns = "gp && ns";
+      gc = "git add . && git commit -m 'dev: автокоммит $(date +'%Y-%m-%d %H:%M:%S')'";
       y = "yazi";
       nix-shellp = "nix-shell --run $SHELL -p";
       z-proxy = "export ALL_PROXY=socks5://localhost:10808";
