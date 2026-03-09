@@ -29,22 +29,18 @@
       efi.canTouchEfiVariables = lib.mkForce false;
       systemd-boot.enable = lib.mkForce false;
       grub = {
-        enable = lib.mkForce false;
+        enable = lib.mkForce true;
         device = "nodev";
         efiInstallAsRemovable = true;
         efiSupport = true;
         useOSProber = true;
       };
-      # grub2-theme = {
-      #   enable = true;
-      #   theme = "whitesur";
-      #   icon = "whitesur";
-      #   footer = true;
-      #   customResolution = "1920x1080"; # Optional: Set a custom resolution
-      # };
-      refind = {
-        enable = lib.mkForce true;
-        efiInstallAsRemovable = true;
+      grub2-theme = {
+        enable = true;
+        theme = "whitesur";
+        icon = "whitesur";
+        footer = true;
+        customResolution = "1920x1080"; # Optional: Set a custom resolution
       };
     };
   };
@@ -53,7 +49,7 @@
   programs = {
     dconf.enable = true;
     gamemode.enable = true;
-    # steam.enable = true;
+    steam.enable = true;
     xwayland.enable = true;
   };
   services = {

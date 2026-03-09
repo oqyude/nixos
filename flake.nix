@@ -61,6 +61,10 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    grub2-themes = {
+      url = "github:vinceliuice/grub2-themes";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # nix-index-database = {
     #   url = "github:nix-community/nix-index-database";
     #   inputs.nixpkgs.follows = "nixpkgs";
@@ -77,10 +81,6 @@
     # };
     # musnix = {
     #   url = "github:musnix/musnix";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-    # grub2-themes = {
-    #   url = "github:vinceliuice/grub2-themes";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
     # nypkgs = {

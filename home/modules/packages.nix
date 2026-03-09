@@ -75,7 +75,6 @@
       # Games
       #ludusavi
       #prismlauncher
-      steam
       #lutris
 
       # AI

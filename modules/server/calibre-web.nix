@@ -1,7 +1,8 @@
 {
   config,
-  xlib,
   inputs,
+  pkgs,
+  xlib,
   ...
 }:
 let
@@ -11,7 +12,7 @@ let
 in
 {
   services.calibre-web = {
-    package = stable.calibre-web;
+    # package = stable.calibre-web;
     enable = true;
     # dataDir = "${xlib.dirs.services-mnt-folder}/calibre-web";
     options = {

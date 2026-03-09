@@ -183,6 +183,9 @@ in
           name = "oqyude";
           email = "oqyude@gmail.com";
         };
+        pull = {
+          rebase = true;
+        };
       };
     };
     lazygit.enable = true;
