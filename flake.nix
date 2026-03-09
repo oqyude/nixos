@@ -37,10 +37,6 @@
     # nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     # flake-utils.url = "github:numtide/flake-utils";
     # flake-parts.url = "github:hercules-ci/flake-parts";
-    # nur = {
-    #   url = "github:nix-community/NUR";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -61,14 +57,14 @@
         home-manager.follows = "home-manager";
       };
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # nix-index-database = {
     #   url = "github:nix-community/nix-index-database";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
-    compose2nix = {
-      url = "github:aksiksi/compose2nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     # extras
     # nix-gaming.url = "github:fufexan/nix-gaming";
@@ -79,23 +75,19 @@
     #     flake-compat.follows = "flake-compat";
     #   };
     # };
-    musnix = {
-      url = "github:musnix/musnix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    grub2-themes = {
-      url = "github:vinceliuice/grub2-themes";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nypkgs = {
-      # https://github.com/yunfachi/nypkgs
-      url = "github:yunfachi/nypkgs";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # musnix = {
+    #   url = "github:musnix/musnix";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+    # grub2-themes = {
+    #   url = "github:vinceliuice/grub2-themes";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+    # nypkgs = {
+    #   # https://github.com/yunfachi/nypkgs
+    #   url = "github:yunfachi/nypkgs";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     # stylix = {
     #   url = "github:danth/stylix";
     #   inputs = {
