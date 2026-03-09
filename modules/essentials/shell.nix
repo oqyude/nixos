@@ -1,0 +1,69 @@
+{
+  config,
+  pkgs,
+  ...
+}:
+{
+  system.userActivationScripts.zshrc = "touch .zshrc";
+  users.defaultUserShell = pkgs.zsh;
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+    enableBashCompletion = true;
+    syntaxHighlighting.enable = true;
+    zsh-autoenv.enable = true;
+    histSize = 10000;
+    loginShellInit = "cd /etc/nixos && clear && fastfetch";
+    ohMyZsh = {
+      enable = true;
+      theme = "robbyrussell";
+    };
+    shellInit = ''
+      beet-n() {
+        echo "$*" | aichat -cer beets
+      }
+      beet-p() {
+        beet mod path:. playlist="$*"
+      }
+      beet-ims() {
+        beet im ./ -S $*
+      }
+    '';
+    shellAliases = {
+      # shell
+      ff = "clear && fastfetch";
+      l = "ls -l";
+      lg = "lazygit";
+      lc = "lazycli";
+      st = "systemctl-tui";
+      gp = "git pull";
+      ns = "nh os switch";
+      gp-ns = "gp && ns";
+      y = "yazi";
+      nix-shellp = "nix-shell --run $SHELL -p";
+      z-proxy = "export ALL_PROXY=socks5://localhost:10808";
+
+      # beets
+      beet-ima = "beet im ./ -A";
+
+      # ssh
+      z-s = "ssh sapphira";
+      z-st = "ssh sapphira-tailscale";
+      z-o = "ssh otreca";
+      z-ot = "ssh otreca-tailscale";
+      z-l = "ssh lamet";
+      z-lt = "ssh lamet-tailscale";
+      z-p-1 = "ssh pubray-1";
+      z-map-local-proxy = "ssh -R 10808:localhost:10808";
+
+      # Somethings
+      reboot-bios = "sudo systemctl reboot --firmware-setup";
+
+      # Extras
+      plasma-manager = "nix run github:nix-community/plasma-manager";
+      pip2nix = "nix run github:nix-community/pip2nix --"; # https://github.com/nix-community/pip2nix
+      pip2nix-g = "nix run github:nix-community/pip2nix -- generate -r";
+      json2nix = "nix run github:sempruijs/json2nix";
+    };
+  };
+}
