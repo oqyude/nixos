@@ -29,18 +29,22 @@
       efi.canTouchEfiVariables = lib.mkForce false;
       systemd-boot.enable = lib.mkForce false;
       grub = {
-        enable = lib.mkForce true;
+        enable = lib.mkForce false;
         device = "nodev";
         efiInstallAsRemovable = true;
         efiSupport = true;
         useOSProber = true;
       };
-      grub2-theme = {
-        enable = true;
-        theme = "whitesur";
-        icon = "whitesur";
-        footer = true;
-        customResolution = "1920x1080"; # Optional: Set a custom resolution
+      # grub2-theme = {
+      #   enable = true;
+      #   theme = "whitesur";
+      #   icon = "whitesur";
+      #   footer = true;
+      #   customResolution = "1920x1080"; # Optional: Set a custom resolution
+      # };
+      refind = {
+        enable = lib.mkForce true;
+        efiInstallAsRemovable = true;
       };
     };
   };
