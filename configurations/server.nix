@@ -41,10 +41,6 @@ let
         intel-gpu-tools.enable = true;
       };
 
-      # swapDevices = [
-      #   { device = "/dev/disk/by-partlabel/disk-main-swap"; }
-      # ];
-
       fileSystems = {
         # External drive
         "${xlib.dirs.server-home}" = {
