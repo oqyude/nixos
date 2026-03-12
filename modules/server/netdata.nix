@@ -8,13 +8,20 @@
 {
   services = {
     netdata = {
-      enable = false;
+      enable = true;
+      package = pkgs.netdata.override {
+        withCloudUi = true;
+      };
       config = {
         web = {
-          "allow connections from" = "localhost netdata.local *";
+          "allow connections from" = "localhost *";
           "default port" = "19999";
           "bind to" = "0.0.0.0";
         };
+      };
+      python = {
+        enable = true;
+        recommendedPythonPackages = true;
       };
     };
   };
