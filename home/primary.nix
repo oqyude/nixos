@@ -8,12 +8,8 @@
 let
   symlinksPaths = {
     # cfg
-    "${xlib.dirs.user-storage}/ssh/config" = ".ssh/config";
-    "${xlib.dirs.user-storage}/beets" = ".config/beets";
     "${xlib.dirs.user-storage}/ludusavi" = ".config/ludusavi";
-    "${xlib.dirs.user-storage}/solaar" = ".config/solaar";
     "${xlib.dirs.user-storage}/easyeffects" = ".config/easyeffects";
-    "${xlib.dirs.user-storage}/KeePassXC" = ".config/keepassxc";
     "${xlib.dirs.user-storage}/v2rayN" = ".local/share/v2rayN";
     "/etc/nixos" = "Configuration";
 

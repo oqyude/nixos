@@ -67,4 +67,7 @@
       json2nix = "nix run github:sempruijs/json2nix";
     };
   };
+  environment.sessionVariables = {
+    TUCKR_HOME = "$HOME/Storage/dotfiles";
+  };
 }

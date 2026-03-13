@@ -103,6 +103,7 @@ in
       # tree-sitter
       tree-sitter-grammars.tree-sitter-nix
       fresh-editor
+      tuckr
     ];
   };
   environment.variables.EDITOR = "fresh";
