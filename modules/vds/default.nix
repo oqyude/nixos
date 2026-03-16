@@ -6,7 +6,7 @@
   imports = [
     ../containers/3x-ui.nix
     ./nginx.nix
-    ./xray.nix
+    # ./xray.nix
     # ./netbird.nix
   ];
 }
