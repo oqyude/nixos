@@ -1,4 +1,5 @@
 {
+  inputs,
   lib,
   pkgs,
   ...
@@ -11,5 +12,8 @@
     ./containers
     #../server/open-webui.nix
     #../services/tts.nix
+  ];
+  environment.systemPackages = [ 
+    pkgs.rovr
   ];
 }
