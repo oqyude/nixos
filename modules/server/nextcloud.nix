@@ -18,14 +18,14 @@ in
     nextcloud-whiteboard-server = {
       enable = true;
       settings = {
-        NEXTCLOUD_URL = "http://nextcloud.local";
+        NEXTCLOUD_URL = "http://nextcloud-private.local";
       };
       secrets = [ "${inputs.zeroq-credentials}/services/nextcloud/jwt-secret.txt" ];
     };
     nextcloud = {
       enable = true;
       package = pkgs.nextcloud33;
-      hostName = "nextcloud.local";
+      hostName = "nextcloud-private.local";
       database.createLocally = true;
       home = "${xlib.dirs.services-mnt-folder}/nextcloud";
       configureRedis = true;
@@ -49,11 +49,12 @@ in
           "192.168.1.20"
           "localhost"
           "nextcloud.local"
+          "nextcloud-private.local"
         ];
         trusted_proxies = [
           "100.64.1.0"
         ];
-        overwriteprotocol = "https";
+        overwriteprotocol = "";
       };
       extraAppsEnable = true;
       appstoreEnable = false;
@@ -86,7 +87,6 @@ in
           impersonate
           mail
           music
-          #tasks?
           tasks
           # news
           notes
@@ -142,7 +142,7 @@ in
   # fonts.packages = [ work.corefonts ];
 
   networking.hosts = {
-    "localhost" = [ "nextcloud.local" ];
+    "localhost" = [ "nextcloud-private.local" ];
   };
 
   systemd.services.nextcloud-config-collabora =

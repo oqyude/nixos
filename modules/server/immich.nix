@@ -22,10 +22,6 @@ in
       accelerationDevices = null;
       machine-learning.enable = true;
       mediaLocation = "${xlib.dirs.services-mnt-folder}/immich";
-      database = {
-        enableVectors = false;
-        enableVectorChord = true;
-      };
     };
   };
 

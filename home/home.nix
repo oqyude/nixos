@@ -15,7 +15,7 @@ let
         ];
         home = {
           username = username;
-          stateVersion = lib.mkDefault "25.05";
+          stateVersion = lib.mkDefault "26.05";
           homeDirectory =
             if username == "root" then lib.mkDefault "/${username}" else lib.mkDefault "/home/${username}";
           enableNixpkgsReleaseCheck = false;
@@ -24,7 +24,7 @@ let
       mkRootModule = username: {
         home = {
           username = username;
-          stateVersion = lib.mkDefault "25.05";
+          stateVersion = lib.mkDefault "26.05";
           homeDirectory =
             if username == "root" then lib.mkDefault "/${username}" else lib.mkDefault "/home/${username}";
           enableNixpkgsReleaseCheck = false;
@@ -36,7 +36,7 @@ let
         ];
         home = {
           username = username;
-          stateVersion = lib.mkDefault "25.05";
+          stateVersion = lib.mkDefault "26.05";
           homeDirectory =
             if username == "root" then lib.mkDefault "/${username}" else lib.mkDefault "/home/${username}";
           enableNixpkgsReleaseCheck = false;

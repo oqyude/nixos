@@ -53,7 +53,9 @@ in
       wget
       tree
       dust
-      flow-control
+      tuckr
+      fresh-editor
+      #flow-control
 
       # Net Diagnostic
       mtr
@@ -86,24 +88,19 @@ in
 
       # To save
       tuios
-
-      # Test
+      bluetui
       jocalsend
-      lazydocker
-      dtop
       tlrc
       lazyssh
       mcat
-      framework-tool-tui
-      bluetui
       snitch
-      devenv
       whosthere
+      devenv
 
-      # tree-sitter
-      tree-sitter-grammars.tree-sitter-nix
-      fresh-editor
-      tuckr
+      # Test
+      # lazydocker
+      # dtop
+      # framework-tool-tui
     ];
   };
   environment.variables.EDITOR = "fresh";

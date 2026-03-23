@@ -32,7 +32,7 @@
       connect-timeout = 4;
       auto-optimise-store = true;
       fallback = true;
-      allow-import-from-derivation = false;
+      allow-import-from-derivation = true;
       keep-derivations = false;
       keep-outputs = false;
       experimental-features = [

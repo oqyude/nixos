@@ -45,6 +45,10 @@ in
               proxyPass = "http://localhost:2096";
               proxyWebsockets = true;
             };
+            "/subsjs/" = {
+              proxyPass = "http://localhost:2096";
+              proxyWebsockets = true;
+            };
           };
         };
         "kuma.zeroq.ru" = {
@@ -54,9 +58,6 @@ in
             proxyPass = "http://${server}:4001";
             proxyWebsockets = true;
           };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
         };
         "health.zeroq.ru" = {
           forceSSL = true;
@@ -117,16 +118,13 @@ in
             proxyPass = "http://${server}:6061";
             proxyWebsockets = true;
           };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
         };
         "office.zeroq.ru" = {
           enableACME = true;
           forceSSL = true;
           locations = {
             "/" = {
-              proxyPass = "http://${server}:9980"; # API и coauthoring
+              proxyPass = "http://${server}:9980";
               proxyWebsockets = true;
             };
           };

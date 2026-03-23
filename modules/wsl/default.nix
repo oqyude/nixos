@@ -13,7 +13,7 @@
     #../server/open-webui.nix
     #../services/tts.nix
   ];
-  environment.systemPackages = [ 
+  environment.systemPackages = [
     pkgs.rovr
   ];
 }

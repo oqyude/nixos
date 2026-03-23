@@ -46,53 +46,6 @@ let
             SystemMaxUse=512M
           '';
         };
-        samba = {
-          enable = true;
-          openFirewall = true;
-          settings = {
-            global = {
-              "invalid users" = [ ];
-              "passwd program" = "/run/wrappers/bin/passwd %u";
-              security = "user";
-            };
-            nixos = {
-              "path" = "/etc/nixos";
-              "browseable" = "yes";
-              "read only" = "no";
-              "valid users" = "${xlib.device.username}";
-              "guest ok" = "no";
-              "writable" = "yes";
-              "create mask" = 755;
-              "directory mask" = 755;
-              "force user" = "${xlib.device.username}";
-              "force group" = "users";
-            };
-            root = {
-              "path" = "/";
-              "browseable" = "yes";
-              "read only" = "no";
-              "valid users" = "${xlib.device.username}";
-              "guest ok" = "no";
-              "writable" = "yes";
-              #"create mask" = 0644;
-              #"directory mask" = 0644;
-              "force user" = "root";
-              "force group" = "root";
-            };
-            "${xlib.device.username}" = {
-              "path" = "/home/${xlib.device.username}";
-              "browseable" = "yes";
-              "read only" = "no";
-              "valid users" = "${xlib.device.username}";
-              "guest ok" = "no";
-              "writable" = "yes";
-              "create mask" = 700;
-              "directory mask" = 700;
-              "force user" = "${xlib.device.username}";
-              "force group" = "users";
-            };
-          };
-        };
         openssh = {
           enable = true;
           allowSFTP = true;
