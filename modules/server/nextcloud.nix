@@ -89,11 +89,11 @@ in
           music
           tasks
           # news
-          notes
+          #           notes
           # notify_push
           polls
           previewgenerator
-          richdocuments
+          #           richdocuments
           spreed
           tables
           user_oidc
@@ -108,7 +108,7 @@ in
       };
     };
     collabora-online = {
-      enable = true;
+      enable = false;
       port = 9980;
       # package = master.collabora-online;
       settings = {
@@ -141,36 +141,36 @@ in
 
   # fonts.packages = [ work.corefonts ];
 
-  networking.hosts = {
-    "localhost" = [ "nextcloud-private.local" ];
-  };
+  #   networking.hosts = {
+  #     "localhost" = [ "nextcloud-private.local" ];
+  #   };
 
-  systemd.services.nextcloud-config-collabora =
-    let
-      inherit (config.services.nextcloud) occ;
-      wopi_url = "http://localhost:${toString config.services.collabora-online.port}";
-      public_wopi_url = "https://office.zeroq.ru";
-      wopi_allowlist = lib.concatStringsSep "," [
-        "0.0.0.0/0"
-      ];
-    in
-    {
-      wantedBy = [ "multi-user.target" ];
-      after = [
-        "nextcloud-setup.service"
-        "coolwsd.service"
-      ];
-      requires = [ "coolwsd.service" ];
-      script = ''
-        ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_url --value ${lib.escapeShellArg wopi_url}
-        ${occ}/bin/nextcloud-occ config:app:set richdocuments public_wopi_url --value ${lib.escapeShellArg public_wopi_url}
-        ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_allowlist --value ${lib.escapeShellArg wopi_allowlist}
-        ${occ}/bin/nextcloud-occ richdocuments:setup
-      '';
-      serviceConfig = {
-        Type = "oneshot";
-      };
-    };
+  #   systemd.services.nextcloud-config-collabora =
+  #     let
+  #       inherit (config.services.nextcloud) occ;
+  #       wopi_url = "http://localhost:${toString config.services.collabora-online.port}";
+  #       public_wopi_url = "https://office.zeroq.ru";
+  #       wopi_allowlist = lib.concatStringsSep "," [
+  #         "0.0.0.0/0"
+  #       ];
+  #     in
+  #     {
+  #       wantedBy = [ "multi-user.target" ];
+  #       after = [
+  #         "nextcloud-setup.service"
+  #         "coolwsd.service"
+  #       ];
+  #       requires = [ "coolwsd.service" ];
+  #       script = ''
+  #         ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_url --value ${lib.escapeShellArg wopi_url}
+  #         ${occ}/bin/nextcloud-occ config:app:set richdocuments public_wopi_url --value ${lib.escapeShellArg public_wopi_url}
+  #         ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_allowlist --value ${lib.escapeShellArg wopi_allowlist}
+  #         ${occ}/bin/nextcloud-occ richdocuments:setup
+  #       '';
+  #       serviceConfig = {
+  #         Type = "oneshot";
+  #       };
+  #     };
 
   # fileSystems."${config.services.nextcloud.home}" = {
   #   device = "${xlib.dirs.services-folder}/nextcloud";

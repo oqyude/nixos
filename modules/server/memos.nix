@@ -5,7 +5,7 @@
 }:
 {
   services.memos = {
-    enable = true;
+    enable = false;
     openFirewall = true;
     settings = {
       MEMOS_MODE = "prod";

@@ -61,8 +61,8 @@
       "TZ" = "Europe/Moscow";
     };
     volumes = [
-      "/mnt/containers/3x-ui/cert/:/root/cert:rw"
-      "/mnt/containers/3x-ui/db/:/etc/x-ui:rw"
+      "/mnt/services/containers/3x-ui/cert/:/root/cert:rw"
+      "/mnt/services/containers/3x-ui/db/:/etc/x-ui:rw"
     ];
     log-driver = "journald";
     extraOptions = [
@@ -111,8 +111,9 @@
   systemd.tmpfiles.rules = [
     "d /mnt 0755 root root -"
     "d /mnt/containers 0755 root root -"
-    "d /mnt/containers/3x-ui 0755 root root -"
-    "d /mnt/containers/3x-ui/cert 0755 root root -"
-    "d /mnt/containers/3x-ui/db 0755 root root -"
+    "d /mnt/services/containers 0755 root root -"
+    "d /mnt/services/containers/3x-ui 0755 root root -"
+    "d /mnt/services/containers/3x-ui/cert 0755 root root -"
+    "d /mnt/services/containers/3x-ui/db 0755 root root -"
   ];
 }
