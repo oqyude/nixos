@@ -45,6 +45,7 @@ in
         log_type = "file";
         trusted_domains = [
           "nextcloud.zeroq.ru"
+          "office.zeroq.ru"
           "100.64.0.0"
           "192.168.1.20"
           "localhost"
@@ -53,8 +54,9 @@ in
         ];
         trusted_proxies = [
           "100.64.1.0"
+          "109.248.161.5"
         ];
-        overwriteprotocol = "";
+        overwriteprotocol = "https"; # maybe no
       };
       extraAppsEnable = true;
       appstoreEnable = false;
@@ -62,14 +64,14 @@ in
         enable = false;
         bendDomainToLocalhost = true;
       };
-      phpPackage = pkgs.php85;
+      # phpPackage = pkgs.php85;
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps)
           # gpoddersync
           # integration_paperless
           # memories
           # nextpod
-          # onlyoffice
+          onlyoffice
           # phonetrack
           # repod
           # sociallogin
@@ -135,6 +137,7 @@ in
     onlyoffice = {
       enable = true;
       hostname = "0.0.0.0";
+      wopi = true;
       jwtSecretFile = config.sops.secrets.onlyoffice-jwt.path;
       securityNonceFile = config.sops.secrets.onlyoffice-nonce.path;
     };
