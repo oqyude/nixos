@@ -20,7 +20,7 @@ in
       settings = {
         NEXTCLOUD_URL = "http://nextcloud-private.local";
       };
-      secrets = [ "${inputs.zeroq-credentials}/services/nextcloud/jwt-secret.txt" ];
+      secrets = [ config.sops.secrets.nextcloud-whiteboard-jwt.path ];
     };
     nextcloud = {
       enable = true;
@@ -39,7 +39,7 @@ in
         dbuser = "nextcloud";
         dbname = "nextcloud";
         adminuser = "oqyude";
-        adminpassFile = "${inputs.zeroq-credentials}/services/nextcloud/admin-pass.txt";
+        adminpassFile = config.sops.secrets.nextcloud-adminpass.path;
       };
       settings = {
         log_type = "file";
@@ -89,7 +89,7 @@ in
           music
           tasks
           # news
-          #           notes
+          notes
           # notify_push
           polls
           previewgenerator
@@ -133,9 +133,10 @@ in
       };
     };
     onlyoffice = {
-      enable = false;
+      enable = true;
       hostname = "0.0.0.0";
-      jwtSecretFile = "${inputs.zeroq-credentials}/services/onlyoffice/jwt.txt";
+      jwtSecretFile = config.sops.secrets.onlyoffice-jwt.path;
+      securityNonceFile = config.sops.secrets.onlyoffice-nonce.path;
     };
   };
 
@@ -187,4 +188,39 @@ in
   environment.systemPackages = [
     pkgs.nc4nix # Packaging helper for Nextcloud apps
   ];
+
+  sops.secrets = {
+    nextcloud-adminpass = {
+      format = "yaml";
+      key = "adminpass";
+      sopsFile = ./secrets/nextcloud.yaml;
+      owner = "nextcloud";
+      group = "nextcloud";
+      mode = "0650";
+    };
+    nextcloud-whiteboard-jwt = {
+      format = "yaml";
+      key = "whiteboard-jwt";
+      sopsFile = ./secrets/nextcloud.yaml;
+      owner = "nextcloud";
+      group = "nextcloud";
+      mode = "0650";
+    };
+    onlyoffice-nonce = {
+      format = "yaml";
+      key = "nonce";
+      sopsFile = ./secrets/onlyoffice.yaml;
+      owner = "onlyoffice";
+      group = "onlyoffice";
+      mode = "0650";
+    };
+    onlyoffice-jwt = {
+      format = "yaml";
+      key = "jwt";
+      sopsFile = ./secrets/onlyoffice.yaml;
+      owner = "onlyoffice";
+      group = "onlyoffice";
+      mode = "0650";
+    };
+  };
 }
