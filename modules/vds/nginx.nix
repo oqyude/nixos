@@ -119,6 +119,14 @@ in
             proxyWebsockets = true;
           };
         };
+        "n8n.zeroq.ru" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://${server}:5678";
+            proxyWebsockets = true;
+          };
+        };
         "office.zeroq.ru" = {
           enableACME = true;
           forceSSL = true;

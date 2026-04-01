@@ -48,6 +48,14 @@ in
             client_max_body_size 5G;
           '';
         };
+        "n8n.local" = {
+          forceSSL = false;
+          enableACME = false;
+          locations."/" = {
+            proxyPass = "http://${server}:5678";
+            proxyWebsockets = true;
+          };
+        };
         "kuma.local" = {
           forceSSL = false;
           enableACME = false;

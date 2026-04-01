@@ -20,6 +20,7 @@
     ./transmission.nix
     ./uptime-kuma.nix
     ./netdata.nix
+    ./n8n.nix
     # ./mealie.nix
     # ./memos.nix
     # ./nfs.nix
