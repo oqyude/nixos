@@ -13,9 +13,13 @@
     };
   };
 
-  # swapDevices = [
-  #   { device = "/dev/disk/by-partlabel/disk-main-swap"; }
-  # ];
+  swapDevices = [
+    { device = "/dev/disk/by-partlabel/disk-main-swap"; }
+  ];
+
+  zramSwap = {
+    enable = true;
+  };
 
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
