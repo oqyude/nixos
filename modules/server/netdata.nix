@@ -8,7 +8,7 @@
 {
   services = {
     netdata = {
-      enable = true;
+      enable = false;
       package = pkgs.netdata.override {
         withCloudUi = true;
       };
@@ -19,10 +19,10 @@
           "bind to" = "0.0.0.0";
         };
       };
-      python = {
-        enable = true;
-        recommendedPythonPackages = true;
-      };
+      # python = {
+      #   enable = true;
+      #   recommendedPythonPackages = true;
+      # };
     };
   };
 

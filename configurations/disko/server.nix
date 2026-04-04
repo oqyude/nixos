@@ -18,7 +18,7 @@
               };
             };
             swap = {
-              size = "2G";
+              size = "6G";
               content = {
                 type = "swap";
               };
