@@ -9,6 +9,8 @@
     ./calibre-web.nix
     ./immich.nix
     ./miniflux.nix
+    ./n8n.nix
+    ./netdata.nix
     ./nextcloud.nix
     ./nginx.nix
     ./open-webui.nix
@@ -19,8 +21,6 @@
     ./systemd.nix
     ./transmission.nix
     ./uptime-kuma.nix
-    ./netdata.nix
-    ./n8n.nix
     # ./mealie.nix
     # ./memos.nix
     # ./nfs.nix

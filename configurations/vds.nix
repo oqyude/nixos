@@ -26,7 +26,7 @@ let
       ];
 
       boot = {
-        kernelPackages = pkgs.linuxPackages_xanmod_stable;
+        # kernelPackages = pkgs.linuxPackages_xanmod_stable;
         hardwareScan = true;
         loader = {
           grub = {
