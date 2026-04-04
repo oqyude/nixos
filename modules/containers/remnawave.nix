@@ -129,7 +129,6 @@
           DATABASE_PASSWORD=$(cat ${config.sops.secrets.DATABASE_PASSWORD.path})
           JWT_AUTH_SECRET=$(cat ${config.sops.secrets.JWT_AUTH_SECRET.path})
           JWT_API_TOKENS_SECRET=$(cat ${config.sops.secrets.JWT_API_TOKENS_SECRET.path})
-          CLOUDFLARE_TOKEN=$(cat ${config.sops.secrets.CLOUDFLARE_TOKEN.path})
           WEBHOOK_SECRET_HEADER=$(cat ${config.sops.secrets.WEBHOOK_SECRET_HEADER.path})
           EOF
         chmod 600 /run/secrets/remnawave-env
@@ -185,11 +184,6 @@
     };
     JWT_API_TOKENS_SECRET = {
       key = "JWT_API_TOKENS_SECRET";
-      sopsFile = ./secrets/remnawave.yaml;
-      mode = "0400";
-    };
-    CLOUDFLARE_TOKEN = {
-      key = "CLOUDFLARE_TOKEN";
       sopsFile = ./secrets/remnawave.yaml;
       mode = "0400";
     };
