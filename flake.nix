@@ -11,7 +11,7 @@
     nixpkgs-calibre.url = "github:NixOS/nixpkgs/608d0cadfed240589a7eea422407a547ad626a14";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
-    nixpkgs-beets.url = "github:NixOS/nixpkgs/2343bbb58f99267223bc2aac4fc9ea301a155a16";
+    nixpkgs-beets.url = "github:NixOS/nixpkgs/832efc09b4caf6b4569fbf9dc01bec3082a00611"; # 2343bbb58f99267223bc2aac4fc9ea301a155a16
     #nixpkgs-fingerprint.url = "github:NixOS/nixpkgs/nixos-24.11";
 
     # nix-community

@@ -20,7 +20,7 @@ let
   # python3 = pkgs.python3.override {
   #   packageOverrides = depsOverlay;
   # };
-  beetsEnv = pkgs.python313.withPackages (
+  beetsEnv = stable.python313.withPackages (
     ps: with ps; [
       beautifulsoup4
       beetcamp
