@@ -4,7 +4,7 @@
 }:
 {
   imports = [
-    ../containers/remnawave.nix
+    # ../containers/remnawave.nix
     ../software/beets
     ./calibre-web.nix
     ./immich.nix
