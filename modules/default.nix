@@ -3,9 +3,9 @@ let
   defaultModule =
     {
       config,
+      deviceType,
       lib,
       xlib,
-      deviceType,
       ...
     }:
     {
@@ -23,8 +23,8 @@ let
         disko.nixosModules.disko # disko module
         noctalia.nixosModules.default
       ];
-      nixpkgs.overlays = [
-        inputs.self.nixosOverlays.default
+      nixpkgs.overlays = with inputs; [
+        self.nixosOverlays.default
       ];
       _module.args = {
         inputs = inputs;
