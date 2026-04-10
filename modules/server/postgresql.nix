@@ -23,6 +23,7 @@ in
 
   fileSystems."/var/lib/postgresql" = {
     device = "${xlib.dirs.services-mnt-folder}/postgresql";
+    fsType = "none";
     options = [
       "bind"
       "nofail"

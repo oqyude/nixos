@@ -77,18 +77,30 @@ in
       };
     };
   };
-  fileSystems."/mnt/beets/music" = {
-    device = "/home/${xlib.device.username}/Music"; # "${xlib.dirs.vetymae-drive}/Users/User/Music"
-    options = [
-      "bind"
-      "uid=1000"
-      "gid=1000"
-      "fmask=0077"
-      "dmask=0077"
-      "nofail"
-      #"x-systemd.device-timeout=0"
-    ];
-  };
+  systemd.mounts = [
+    {
+      enable = true;
+      options = "bind,x-systemd.automount,nofail";
+      requires = [ "local-fs.target" ];
+      type = "none";
+      wantedBy = [ "multi-user.target" ];
+      what = "/home/${xlib.device.username}/Music";
+      where = "/mnt/beets/music";
+    }
+  ];
+  # fileSystems."/mnt/beets/music" = {
+  #   device = "/home/${xlib.device.username}/Music"; # "${xlib.dirs.vetymae-drive}/Users/User/Music"
+  #   fsType = "none";
+  #   options = [
+  #     # "bind"
+  #     "uid=1000"
+  #     "gid=1000"
+  #     "fmask=0077"
+  #     "dmask=0077"
+  #     "nofail"
+  #     #"x-systemd.device-timeout=0"
+  #   ];
+  # };
 
   systemd.tmpfiles.rules = [
     "z /mnt/beets 0700 ${xlib.device.username} users -" # beets absolute paths

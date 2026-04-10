@@ -28,6 +28,7 @@ in
 
   fileSystems."/var/lib/calibre-web" = {
     device = "${xlib.dirs.services-mnt-folder}/calibre-web";
+    fsType = "none";
     options = [
       "bind"
       "nofail"

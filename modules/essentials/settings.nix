@@ -9,7 +9,7 @@
   system.nixos.label = "default";
 
   nix = {
-    package = pkgs.lixPackageSets.stable.lix;
+    # package = pkgs.lixPackageSets.stable.lix; # maybe unstable
     channel.enable = false;
     nixPath = [ "nixpkgs=flake:nixpkgs" ];
     settings = {

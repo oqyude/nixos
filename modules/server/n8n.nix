@@ -24,6 +24,7 @@
 
   fileSystems."/var/lib/n8n" = {
     device = "${xlib.dirs.services-mnt-folder}/n8n";
+    fsType = "none";
     options = [
       "bind"
       "nofail"

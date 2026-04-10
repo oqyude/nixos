@@ -176,14 +176,6 @@ in
   #       };
   #     };
 
-  # fileSystems."${config.services.nextcloud.home}" = {
-  #   device = "${xlib.dirs.services-folder}/nextcloud";
-  #   options = [
-  #     "bind"
-  #     "nofail"
-  #   ];
-  # };
-
   systemd.tmpfiles.rules = [
     "z ${config.services.nextcloud.home} 0750 nextcloud nextcloud -"
   ];

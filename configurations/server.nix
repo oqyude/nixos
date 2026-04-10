@@ -69,13 +69,10 @@ let
         };
         "${xlib.dirs.services-mnt-folder}" = {
           device = "${xlib.dirs.services-folder}";
+          fsType = "none";
           options = [
             "bind"
             "nofail"
-            # "uid=1000"
-            # "gid=1000"
-            # "fmask=0000"
-            # "dmask=0000"
           ];
         };
       };

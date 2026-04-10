@@ -21,6 +21,7 @@
 
   fileSystems."/var/lib/private/uptime-kuma" = {
     device = "${xlib.dirs.services-mnt-folder}/uptime-kuma";
+    fsType = "none";
     options = [
       "bind"
       "nofail"
