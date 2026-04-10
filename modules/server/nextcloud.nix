@@ -44,8 +44,8 @@ in
       settings = {
         log_type = "file";
         trusted_domains = [
-          "nextcloud.zeroq.ru"
-          "office.zeroq.ru"
+          "nextcloud.zeroq.su"
+          "office.zeroq.su"
           "100.64.0.0"
           "192.168.1.20"
           "localhost"
@@ -114,7 +114,7 @@ in
       port = 9980;
       # package = master.collabora-online;
       settings = {
-        server_name = "office.zeroq.ru";
+        server_name = "office.zeroq.su";
         ssl = {
           enable = false;
           termination = true;
@@ -153,7 +153,7 @@ in
   #     let
   #       inherit (config.services.nextcloud) occ;
   #       wopi_url = "http://localhost:${toString config.services.collabora-online.port}";
-  #       public_wopi_url = "https://office.zeroq.ru";
+  #       public_wopi_url = "https://office.zeroq.su";
   #       wopi_allowlist = lib.concatStringsSep "," [
   #         "0.0.0.0/0"
   #       ];

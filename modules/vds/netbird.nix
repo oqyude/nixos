@@ -7,17 +7,17 @@
   services.netbird.server = {
     enable = false;
     enableNginx = true;
-    domain = "netbird.zeroq.ru";
+    domain = "netbird.zeroq.su";
     dashboard = {
       enable = false;
-      domain = "netbird.zeroq.ru";
+      domain = "netbird.zeroq.su";
       settings = {
         #AUTH_AUTHORITY = "nbp_ufe0v5mbb5H1lQWL8eJfuzJ5ItPmlM46Mik0";
       };
     };
     management = {
       enable = false;
-      domain = "netbird.zeroq.ru";
+      domain = "netbird.zeroq.su";
     };
   };
 

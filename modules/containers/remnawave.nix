@@ -41,12 +41,12 @@
       "METRICS_USER" = "admin";
       "NOT_CONNECTED_USERS_NOTIFICATIONS_AFTER_HOURS" = "[6, 24, 48]";
       "NOT_CONNECTED_USERS_NOTIFICATIONS_ENABLED" = "false";
-      "PANEL_DOMAIN" = "rw.zeroq.ru";
+      "PANEL_DOMAIN" = "rw.zeroq.su";
       "POSTGRES_DB" = "remnawave";
       "POSTGRES_USER" = "remnawave";
       "REDIS_SOCKET" = "/var/run/valkey/valkey.sock";
       "SCALAR_PATH" = "/scalar";
-      "SUB_PUBLIC_DOMAIN" = "rw.zeroq.ru/api/sub";
+      "SUB_PUBLIC_DOMAIN" = "rw.zeroq.su/api/sub";
       "SWAGGER_PATH" = "/docs";
       # "TELEGRAM_BOT_TOKEN" = "change_me";
       # "TELEGRAM_NOTIFY_CRM" = "change_me";
