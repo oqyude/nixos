@@ -4,9 +4,9 @@
 }:
 {
   imports = [
-    # ../containers/remnawave.nix
     ../software/beets
     ./calibre-web.nix
+    ./glances.nix
     ./immich.nix
     ./miniflux.nix
     ./n8n.nix
@@ -21,6 +21,7 @@
     ./systemd.nix
     ./transmission.nix
     ./uptime-kuma.nix
+    # ../containers/remnawave.nix
     # ./mealie.nix
     # ./memos.nix
     # ./nfs.nix

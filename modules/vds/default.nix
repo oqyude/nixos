@@ -7,7 +7,8 @@
     ../containers/3x-ui.nix
     ./nginx.nix
     ./samba.nix
-    # ./xray.nix
+    # ./glances.nix
     # ./netbird.nix
+    # ./xray.nix
   ];
 }
