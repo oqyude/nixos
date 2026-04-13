@@ -98,6 +98,8 @@ in
       devenv
 
       # Test
+      rgx
+      net-tools
       # lazydocker
       # dtop
       # framework-tool-tui

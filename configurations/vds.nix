@@ -37,6 +37,12 @@ let
           };
           systemd-boot.enable = lib.mkDefault false;
         };
+        kernel.sysctl = {
+          "net.ipv4.tcp_syncookies" = 1;
+          "net.ipv4.tcp_max_syn_backlog" = 4096;
+          "net.ipv4.tcp_synack_retries" = 3;
+          "net.ipv4.tcp_syn_retries" = 3;
+        };
       };
 
       services = {
@@ -67,7 +73,6 @@ let
           openFirewall = true;
         };
       };
-
       networking = {
         nameservers = [
           "1.1.1.1"
@@ -87,6 +92,28 @@ let
         firewall = {
           enable = true;
           allowPing = true;
+        };
+        nftables = {
+          enable = true;
+          ruleset = ''
+            table inet filter {
+              chain input {
+                type filter hook input priority 0;
+
+                # loopback
+                iif lo accept
+
+                # уже установленные
+                ct state established,related accept
+
+                # РЕЖЕМ SYN СРАЗУ
+                tcp flags syn tcp dport {80,443} limit rate 20/second burst 40 packets accept
+                tcp flags syn tcp dport {80,443} drop
+
+                # остальное по необходимости
+              }
+            }
+          '';
         };
         enableIPv6 = true;
         interfaces.ens3 = {
