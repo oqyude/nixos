@@ -8,7 +8,7 @@ let
   server = "100.64.0.0";
 in
 {
-  environment.etc."nginx/pubray".text = inputs.zeroq-credentials.services.xray.auth;
+  # environment.etc."nginx/pubray".text = inputs.zeroq-credentials.services.xray.auth;
   users.users.nginx.extraGroups = [ "acme" ];
   services = {
     nginx = {
@@ -17,7 +17,7 @@ in
       recommendedOptimisation = true;
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
-      appendHttpConfig = inputs.zeroq-credentials.services.xray.maps;
+      # appendHttpConfig = inputs.zeroq-credentials.services.xray.maps;
       virtualHosts = {
         # "pubray.zeroq.su" = {
         #   enableACME = true;
