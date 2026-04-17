@@ -8,7 +8,7 @@
 }:
 {
   services.n8n = {
-    enable = true;
+    enable = false;
     environment = {
       # N8N_USER_FOLDER = lib.mkForce "${xlib.dirs.services-mnt-folder}/n8n";
       N8N_SECURE_COOKIE = "false";

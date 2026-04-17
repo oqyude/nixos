@@ -20,8 +20,24 @@ let
   # python3 = pkgs.python3.override {
   #   packageOverrides = depsOverlay;
   # };
-  beetsEnv = stable.python313.withPackages (
+  beetsEnv = pkgs.python313.withPackages (
     ps: with ps; [
+      anyio #
+      lap #
+      llvmlite #
+      scipy #
+      requests-ratelimiter #
+      pyrate-limiter #
+      numpy #
+      numba #
+      et-xmlfile
+      markdown-it-py
+      mdurl
+      openpyxl
+      pygments
+      rich
+      setuptools #
+      pysocks #
       beautifulsoup4
       beetcamp
       beets
@@ -30,7 +46,7 @@ let
       colorama
       confuse
       discogs-client
-      exceptiongroup
+      # exceptiongroup
       filetype
       h11
       httpcore
@@ -41,20 +57,20 @@ let
       jellyfish
       langdetect
       mediafile
-      munkres
-      musicbrainzngs
+      # munkres
+      # musicbrainzngs
       mutagen
       oauthlib
       packaging
       pillow
       platformdirs
-      pycountry
+      # pycountry
       pylast
       python-dateutil
       pyyaml
       requests
       six
-      sniffio
+      # sniffio
       soupsieve
       typing-extensions
       unidecode
