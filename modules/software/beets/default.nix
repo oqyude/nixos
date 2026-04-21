@@ -20,24 +20,24 @@ let
   # python3 = pkgs.python3.override {
   #   packageOverrides = depsOverlay;
   # };
-  beetsEnv = pkgs.python313.withPackages (
+  beetsEnv = pkgs.python314.withPackages (
     ps: with ps; [
-      anyio #
-      lap #
-      llvmlite #
-      scipy #
-      requests-ratelimiter #
-      pyrate-limiter #
-      numpy #
-      numba #
+      anyio # N
+      lap # N
+      llvmlite # N
+      scipy # N
+      requests-ratelimiter # N
+      pyrate-limiter # N
+      numpy # N
+      numba # N
       et-xmlfile
       markdown-it-py
       mdurl
       openpyxl
       pygments
       rich
-      setuptools #
-      pysocks #
+      setuptools # N
+      pysocks # N
       beautifulsoup4
       beetcamp
       beets

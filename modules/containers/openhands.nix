@@ -85,21 +85,21 @@
   };
 
   # Builds
-  systemd.services."podman-build-openhands-app" = {
-    enable = false;
-    path = [
-      pkgs.podman
-      pkgs.git
-    ];
-    serviceConfig = {
-      Type = "oneshot";
-      TimeoutSec = 300;
-    };
-    script = ''
-      cd ${xlib.dirs.services-mnt-folder}/containers/openhands/source
-      podman build -t openhands:latest -f ./containers/app/Dockerfile .
-    '';
-  };
+  # systemd.services."podman-build-openhands-app" = {
+  #   enable = false;
+  #   path = [
+  #     pkgs.podman
+  #     pkgs.git
+  #   ];
+  #   serviceConfig = {
+  #     Type = "oneshot";
+  #     TimeoutSec = 300;
+  #   };
+  #   script = ''
+  #     cd ${xlib.dirs.services-mnt-folder}/containers/openhands/source
+  #     podman build -t openhands:latest -f ./containers/app/Dockerfile .
+  #   '';
+  # };
 
   # Root service
   # When started, this will automatically create all resources and start
