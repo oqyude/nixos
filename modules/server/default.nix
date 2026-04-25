@@ -10,6 +10,7 @@
     ./immich.nix
     ./miniflux.nix
     ./n8n.nix
+    ./navidrome.nix
     ./netdata.nix
     ./nextcloud.nix
     ./nginx.nix

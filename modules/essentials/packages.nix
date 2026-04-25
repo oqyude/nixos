@@ -89,7 +89,9 @@ in
       # To save
       tuios
       bluetui
-      jocalsend
+      nil
+      speedtest-cli
+      # jocalsend
       tlrc
       lazyssh
       mcat
