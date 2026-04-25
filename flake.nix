@@ -8,7 +8,7 @@
     # nixpkgs
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     # nixpkgs-last-unstable.url = "github:NixOS/nixpkgs/6b4955211758ba47fac850c040a27f23b9b4008f";
-    nixpkgs-calibre.url = "github:NixOS/nixpkgs/608d0cadfed240589a7eea422407a547ad626a14";
+    nixpkgs-calibre.url = "github:NixOS/nixpkgs/566acc07c54dc807f91625bb286cb9b321b5f42a";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-beets.url = "github:NixOS/nixpkgs/832efc09b4caf6b4569fbf9dc01bec3082a00611"; # 2343bbb58f99267223bc2aac4fc9ea301a155a16
