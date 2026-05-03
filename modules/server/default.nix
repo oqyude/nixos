@@ -14,6 +14,7 @@
     ./netdata.nix
     ./nextcloud.nix
     ./nginx.nix
+    ./nix-serve.nix
     ./open-webui.nix
     ./postgresql.nix
     ./samba.nix

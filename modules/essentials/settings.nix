@@ -15,6 +15,7 @@
     settings = {
       require-sigs = false;
       substituters = [
+        "http://100.64.0.0:5000"
         "https://cache.nixos.org"
         "https://nix-community.cachix.org"
         "https://mirror.yandex.ru/nixos"
@@ -26,10 +27,11 @@
         # "https://nixos.snix.store" # https://nixos.snix.store/
       ];
       trusted-public-keys = [
+        "cache.local:be5jFLkiwNyOep/McxSafB3jguBmztxx+oJ46ySyc/s="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
-      stalled-download-timeout = 4;
-      connect-timeout = 4;
+      stalled-download-timeout = 8;
+      connect-timeout = 8;
       auto-optimise-store = true;
       fallback = true;
       allow-import-from-derivation = true;
