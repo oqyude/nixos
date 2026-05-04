@@ -11,6 +11,7 @@ in
 {
   packages.${system} = {
     rovr = pkgs.callPackage ./rovr { };
+    pcbu-desktop = pkgs.callPackage ./pcbu-desktop { };
     # immich = pkgs.callPackage ./immich { };
   };
 }

@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
   ...
@@ -68,7 +69,12 @@
       cups-pdf.enable = true;
     };
   };
-  # environment.sessionVariables = {
-  #   NIXOS_OZONE_WL = "1";
+  # environment = {
+  #   systemPackages = [
+  #     pkgs.pcbu-desktop
+  #   ];
+  #   # sessionVariables = {
+  #   #   NIXOS_OZONE_WL = "1";
+  #   # };
   # };
 }
