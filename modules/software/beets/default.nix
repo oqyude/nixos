@@ -119,6 +119,7 @@ in
   # };
 
   systemd.tmpfiles.rules = [
-    "z /mnt/beets 0700 ${xlib.device.username} users -" # beets absolute paths
+    "d /mnt/beets 0700 ${xlib.device.username} users -"
+    "z /mnt/beets 0700 ${xlib.device.username} users -"
   ];
 }
