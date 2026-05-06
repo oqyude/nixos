@@ -38,6 +38,12 @@ in
       lazyjournal
       systemctl-tui
 
+      # IDE
+      yaml-language-server
+      nil
+      fresh-editor
+      #flow-control
+
       # Base
       curl
       # efibootmgr
@@ -54,8 +60,6 @@ in
       tree
       dust
       tuckr
-      fresh-editor
-      #flow-control
 
       # Net Diagnostic
       mtr
@@ -89,7 +93,6 @@ in
       # To save
       tuios
       bluetui
-      nil
       speedtest-cli
       # jocalsend
       tlrc

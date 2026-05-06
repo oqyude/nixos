@@ -22,22 +22,17 @@ let
   # };
   beetsEnv = pkgs.python314.withPackages (
     ps: with ps; [
-      anyio # N
-      lap # N
-      llvmlite # N
-      scipy # N
-      requests-ratelimiter # N
-      pyrate-limiter # N
-      numpy # N
-      numba # N
-      et-xmlfile
-      markdown-it-py
-      mdurl
-      openpyxl
-      pygments
-      rich
-      setuptools # N
-      pysocks # N
+      # et-xmlfile
+      # exceptiongroup
+      # markdown-it-py
+      # mdurl
+      # munkres
+      # musicbrainzngs
+      # openpyxl
+      # pygments
+      # rich
+      # sniffio
+      anyio
       beautifulsoup4
       beetcamp
       beets
@@ -46,31 +41,36 @@ let
       colorama
       confuse
       discogs-client
-      # exceptiongroup
       filetype
       h11
       httpcore
       httpx
       httpx-socks
-      socksio
       idna
       jellyfish
       langdetect
+      lap
+      llvmlite
       mediafile
-      # munkres
-      # musicbrainzngs
       mutagen
+      numba
+      numpy
       oauthlib
       packaging
       pillow
       platformdirs
-      # pycountry
+      pycountry
       pylast
+      pyrate-limiter
+      pysocks
       python-dateutil
       pyyaml
       requests
+      requests-ratelimiter
+      scipy
+      # setuptools
       six
-      # sniffio
+      socksio
       soupsieve
       typing-extensions
       unidecode
@@ -79,8 +79,6 @@ let
   );
 in
 {
-  # nixpkgs.config.allowBroken = true;
-
   users = {
     users = {
       "${xlib.device.username}" = {
@@ -101,25 +99,7 @@ in
       type = "none";
       wantedBy = [ "multi-user.target" ];
       what = "/home/${xlib.device.username}/Music";
-      where = "/mnt/beets/music";
+      where = "/home/${xlib.device.username}/.config/beets";
     }
-  ];
-  # fileSystems."/mnt/beets/music" = {
-  #   device = "/home/${xlib.device.username}/Music"; # "${xlib.dirs.vetymae-drive}/Users/User/Music"
-  #   fsType = "none";
-  #   options = [
-  #     # "bind"
-  #     "uid=1000"
-  #     "gid=1000"
-  #     "fmask=0077"
-  #     "dmask=0077"
-  #     "nofail"
-  #     #"x-systemd.device-timeout=0"
-  #   ];
-  # };
-
-  systemd.tmpfiles.rules = [
-    "d /mnt/beets 0700 ${xlib.device.username} users -"
-    "z /mnt/beets 0700 ${xlib.device.username} users -"
   ];
 }
