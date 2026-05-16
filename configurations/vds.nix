@@ -77,10 +77,10 @@ let
         nameservers = [
           "1.1.1.1"
           "8.8.8.8"
-          "2001:4860:4860::8844"
-          "2001:4860:4860::8888"
-          "2606:4700:4700::1111"
-          "2606:4700:4700::1001"
+          # "2001:4860:4860::8844"
+          # "2001:4860:4860::8888"
+          # "2606:4700:4700::1111"
+          # "2606:4700:4700::1001"
         ];
         hostName = "${xlib.device.hostname}";
         networkmanager.enable = true;
@@ -115,7 +115,7 @@ let
             }
           '';
         };
-        enableIPv6 = true;
+        enableIPv6 = false;
         interfaces.ens3 = {
           useDHCP = true;
           # ipv4.addresses = [

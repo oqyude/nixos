@@ -7,7 +7,7 @@
     ./packages.nix
     ./services.nix
     ./settings.nix
-    # ./systemd-routine.nix
+    ./systemd-routines.nix
     ./shell.nix
   ];
 }
