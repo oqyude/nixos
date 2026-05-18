@@ -48,7 +48,7 @@ let
           fsType = "ext4";
         };
         # Archive drive
-        "/mnt/archive" = {
+        "${xlib.dirs.archive-drive}" = {
           device = "/dev/disk/by-label/archive";
           fsType = "exfat";
           options = [
@@ -58,7 +58,7 @@ let
           ];
         };
         # Mobile SD-Card
-        "/mnt/mobile" = {
+        "${xlib.dirs.mobile-drive}" = {
           device = "/dev/disk/by-uuid/7EB1-DC99";
           fsType = "exfat";
           options = [
@@ -67,6 +67,7 @@ let
             "gid=1000"
           ];
         };
+        # Services in /mnt folder
         "${xlib.dirs.services-mnt-folder}" = {
           device = "${xlib.dirs.services-folder}";
           fsType = "none";

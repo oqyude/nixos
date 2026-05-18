@@ -11,31 +11,65 @@
       rsync-archivesta = {
         # Archivesta
         description = "Backup data using rsync";
-        requisite = [ "mnt-archive.mount" ]; # hard-code
+        # wants = [
+        #   "mnt-archive.mount"
+        # ];
+        # requires = [
+        #   "mnt-archive.mount"
+        # ];
+        # after = [
+        #   "mnt-archive.mount"
+        # ];
+        unitConfig.RequiresMountsFor = [
+          "${xlib.dirs.archive-drive}"
+          "${xlib.dirs.server-home}"
+          "${xlib.dirs.services-mnt-folder}"
+        ];
         script = ''
-          ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.services-folder}/ ${xlib.dirs.archive-drive}/Services/
+          ${pkgs.rsync}/bin/rsync -rtv --delete \
+            ${xlib.dirs.services-mnt-folder}/ \
+            ${xlib.dirs.archive-drive}/Services/
         '';
         serviceConfig = {
           Type = "oneshot";
           User = "root";
           Group = "root";
-          Nice = 19;
+          Nice = 10;
+          CPUQuota = "5%";
           IOSchedulingClass = "idle";
         };
       };
       rsync-archivesta-lite = {
         # Archivesta Lite
         description = "Backup data using rsync";
-        requisite = [ "mnt-mobile.mount" ]; # hard-code
+        # wants = [
+        #   "mnt-mobile.mount"
+        # ];
+        # after = [
+        #   "mnt-mobile.mount"
+        # ];
+        # requires = [
+        #   "mnt-mobile.mount"
+        # ];
+        unitConfig.RequiresMountsFor = [
+          "${xlib.dirs.server-home}"
+          "${xlib.dirs.mobile-drive}"
+        ];
         script = ''
-          ${pkgs.rsync}/bin/rsync -rtv --delete ${xlib.dirs.server-home}/Music/ ${xlib.dirs.mobile-drive}/Music/
-          ${pkgs.rsync}/bin/rsync -rtv --delete "${xlib.dirs.server-home}/Hosts/epral/Neo Backup/" "${xlib.dirs.mobile-drive}/Neo Backup/"
+          ${pkgs.rsync}/bin/rsync -rtv --delete \
+            ${xlib.dirs.server-home}/Music/ \
+            ${xlib.dirs.mobile-drive}/Music/
+
+          ${pkgs.rsync}/bin/rsync -rtv --delete \
+            "${xlib.dirs.server-home}/Hosts/epral/Neo Backup/" \
+            "${xlib.dirs.mobile-drive}/Neo Backup/"
         '';
         serviceConfig = {
           Type = "oneshot";
           User = "root";
           Group = "root";
-          Nice = 19;
+          Nice = 10;
+          CPUQuota = "5%";
           IOSchedulingClass = "idle";
         };
       };
