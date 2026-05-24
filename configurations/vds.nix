@@ -87,7 +87,7 @@ let
         tempAddresses = "disabled";
         dhcpcd = {
           enable = true;
-          IPv6rs = true;
+          IPv6rs = false;
         };
         firewall = {
           enable = true;

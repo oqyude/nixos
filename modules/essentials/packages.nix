@@ -16,7 +16,7 @@ in
       btop
       broot
       bottom
-      fastfetchMinimal
+      fastfetch
 
       # Encrypt
       age
