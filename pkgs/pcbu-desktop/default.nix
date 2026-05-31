@@ -9,35 +9,37 @@ let
     sha256 = "sha256-+NxAm6vhMH51z6BscuFvaMidHN/3tNBR1g+i0q9hjWE=";
   };
 
-in pkgs.appimageTools.wrapType2 {
+in
+pkgs.appimageTools.wrapType2 {
   inherit pname version src;
 
-  extraPkgs = pkgs: with pkgs; [
-    glib
-    nss
-    nspr
-    libdrm
-    libGL
-    libxkbcommon
-    libX11
-    libXcursor
-    libXrandr
-    libXi
-    libXext
-    libXfixes
-    libXrender
-    libXtst
-    libxcrypt-legacy
-    gtk3
-    alsa-lib
-    at-spi2-atk
-    at-spi2-core
-    cups
-    dbus
-    expat
-    pango
-    cairo
-  ];
+  extraPkgs =
+    pkgs: with pkgs; [
+      glib
+      nss
+      nspr
+      libdrm
+      libGL
+      libxkbcommon
+      libX11
+      libXcursor
+      libXrandr
+      libXi
+      libXext
+      libXfixes
+      libXrender
+      libXtst
+      libxcrypt-legacy
+      gtk3
+      alsa-lib
+      at-spi2-atk
+      at-spi2-core
+      cups
+      dbus
+      expat
+      pango
+      cairo
+    ];
 
   extraInstallCommands = ''
     mkdir -p $out/share/applications

@@ -193,17 +193,17 @@ in
             client_max_body_size 5G;
           '';
         };
-        # "pdf.zeroq.su" = {
-        #   forceSSL = true;
-        #   enableACME = true;
-        #   locations."/" = {
-        #     proxyPass = "http://${server}:6060";
-        #     proxyWebsockets = true;
-        #   };
-        #   extraConfig = ''
-        #     client_max_body_size 5G;
-        #   '';
-        # };
+        "pdf.zeroq.su" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://${server}:8446";
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
         # "ai.zeroq.su" = {
         #   forceSSL = true;
         #   enableACME = true;

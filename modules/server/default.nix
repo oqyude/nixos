@@ -5,6 +5,7 @@
 {
   imports = [
     ../software/beets
+    ./bentopdf.nix
     ./calibre-web.nix
     ./glances.nix
     ./immich.nix

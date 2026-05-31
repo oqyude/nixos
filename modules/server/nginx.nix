@@ -31,6 +31,27 @@ in
             }
           ];
         };
+        "bentopdf.local" = {
+          forceSSL = false;
+          enableACME = false;
+          listen = [
+            {
+              addr = "0.0.0.0";
+              port = 80;
+            }
+            {
+              addr = "100.64.0.0";
+              port = 8446;
+            }
+            {
+              addr = "192.168.1.20";
+              port = 8446;
+            }
+          ];
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
         "nextcloud.local" = {
           forceSSL = false;
           enableACME = false;
