@@ -56,7 +56,7 @@ in
           "100.64.1.0"
           "109.248.161.5"
         ];
-        overwriteprotocol = "https"; # maybe no
+        overwriteprotocol = ""; # maybe no
       };
       extraAppsEnable = true;
       appstoreEnable = false;
@@ -137,6 +137,7 @@ in
     onlyoffice = {
       enable = true;
       hostname = "0.0.0.0";
+      allowLocalConnections = true;
       wopi = true;
       jwtSecretFile = config.sops.secrets.onlyoffice-jwt.path;
       securityNonceFile = config.sops.secrets.onlyoffice-nonce.path;
