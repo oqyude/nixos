@@ -10,6 +10,7 @@
     ../software/beets
     ../software/whisper.nix
     ./containers
+    ./tools
     #../server/open-webui.nix
     #../services/tts.nix
   ];
