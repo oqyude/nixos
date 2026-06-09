@@ -132,7 +132,7 @@ in
           forceSSL = true;
           locations = {
             "/" = {
-              proxyPass = "http://${server}:8000"; # 9980
+              proxyPass = "http://${server}:8090";
               proxyWebsockets = true;
             };
           };

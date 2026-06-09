@@ -46,6 +46,7 @@ in
         trusted_domains = [
           "nextcloud.zeroq.su"
           "office.zeroq.su"
+          "office.local"
           "100.64.0.0"
           "192.168.1.20"
           "localhost"
@@ -136,7 +137,8 @@ in
     };
     onlyoffice = {
       enable = true;
-      hostname = "0.0.0.0";
+      hostname = "office.local";
+      port = 8090;
       allowLocalConnections = true;
       wopi = true;
       jwtSecretFile = config.sops.secrets.onlyoffice-jwt.path;
