@@ -18,14 +18,14 @@ in
     nextcloud-whiteboard-server = {
       enable = true;
       settings = {
-        NEXTCLOUD_URL = "http://nextcloud-private.local";
+        NEXTCLOUD_URL = "http://nextcloud.private";
       };
       secrets = [ config.sops.secrets.nextcloud-whiteboard-jwt.path ];
     };
     nextcloud = {
       enable = true;
       package = pkgs.nextcloud33;
-      hostName = "nextcloud-private.local";
+      hostName = "nextcloud.private";
       database.createLocally = true;
       home = "${xlib.dirs.services-mnt-folder}/nextcloud";
       configureRedis = true;
@@ -44,14 +44,14 @@ in
       settings = {
         log_type = "file";
         trusted_domains = [
-          "nextcloud.zeroq.su"
-          "office.zeroq.su"
-          "office.local"
           "100.64.0.0"
           "192.168.1.20"
           "localhost"
           "nextcloud.local"
-          "nextcloud-private.local"
+          "nextcloud.private"
+          "nextcloud.zeroq.su"
+          "office.local"
+          "office.zeroq.su"
         ];
         trusted_proxies = [
           "100.64.1.0"
@@ -68,11 +68,13 @@ in
       # phpPackage = pkgs.php85;
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps)
+          # richdocuments
           # gpoddersync
           # integration_paperless
           # memories
+          # news
           # nextpod
-          onlyoffice
+          # notify_push
           # phonetrack
           # repod
           # sociallogin
@@ -90,15 +92,13 @@ in
           impersonate
           mail
           music
-          tasks
-          # news
           notes
-          # notify_push
+          onlyoffice
           polls
           previewgenerator
-          #           richdocuments
           spreed
           tables
+          tasks
           user_oidc
           user_saml
           whiteboard
@@ -110,31 +110,31 @@ in
         #   ;
       };
     };
-    collabora-online = {
-      enable = false;
-      port = 9980;
-      # package = master.collabora-online;
-      settings = {
-        server_name = "office.zeroq.su";
-        ssl = {
-          enable = false;
-          termination = true;
-          ssl_verification = false;
-        };
-        net = {
-          listen = "0.0.0.0";
-          post_allow.host = [
-            "0.0.0.0"
-          ];
-        };
-        storage.wopi = {
-          "@allow" = true;
-          host = [
-            "0.0.0.0/0"
-          ];
-        };
-      };
-    };
+    # collabora-online = {
+    #   enable = false;
+    #   port = 9980;
+    #   # package = master.collabora-online;
+    #   settings = {
+    #     server_name = "office.zeroq.su";
+    #     ssl = {
+    #       enable = false;
+    #       termination = true;
+    #       ssl_verification = false;
+    #     };
+    #     net = {
+    #       listen = "0.0.0.0";
+    #       post_allow.host = [
+    #         "0.0.0.0"
+    #       ];
+    #     };
+    #     storage.wopi = {
+    #       "@allow" = true;
+    #       host = [
+    #         "0.0.0.0/0"
+    #       ];
+    #     };
+    #   };
+    # };
     onlyoffice = {
       enable = true;
       hostname = "office.local";

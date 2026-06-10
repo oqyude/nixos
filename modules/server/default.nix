@@ -7,6 +7,7 @@
     ../software/beets
     ./bentopdf.nix
     ./calibre-web.nix
+    ./gitea.nix
     ./glances.nix
     ./immich.nix
     ./miniflux.nix

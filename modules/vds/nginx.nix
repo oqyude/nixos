@@ -67,7 +67,7 @@ in
             proxyWebsockets = true;
           };
         };
-        "agent.zeroq.su" = {
+        "git.zeroq.su" = {
           forceSSL = true;
           enableACME = true;
           locations."/" = {
@@ -75,6 +75,14 @@ in
             proxyWebsockets = true;
           };
         };
+        # "agent.zeroq.su" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   locations."/" = {
+        #     proxyPass = "http://${server}:3000";
+        #     proxyWebsockets = true;
+        #   };
+        # };
         # "node-red.zeroq.su" = {
         #   forceSSL = true;
         #   enableACME = true;

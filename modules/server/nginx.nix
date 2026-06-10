@@ -17,7 +17,7 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
-        "nextcloud-private.local" = {
+        "nextcloud.private" = {
           forceSSL = false;
           enableACME = false;
           listen = [
@@ -89,6 +89,17 @@ in
             client_max_body_size 5G;
           '';
         };
+        "gitea.local" = {
+          forceSSL = false;
+          enableACME = false;
+          locations."/" = {
+            proxyPass = "http://${server}:3000";
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
         "n8n.local" = {
           forceSSL = false;
           enableACME = false;
@@ -96,6 +107,9 @@ in
             proxyPass = "http://${server}:5678";
             proxyWebsockets = true;
           };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
         };
         "kuma.local" = {
           forceSSL = false;
