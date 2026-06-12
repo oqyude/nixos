@@ -37,10 +37,10 @@
     # nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     # flake-utils.url = "github:numtide/flake-utils";
     # flake-parts.url = "github:hercules-ci/flake-parts";
-    noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # noctalia = {
+    #   url = "github:noctalia-dev/noctalia-shell";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     home-manager = {
       url = "github:nix-community/home-manager"; # flake:home-manager
       inputs.nixpkgs.follows = "nixpkgs";
