@@ -11,15 +11,6 @@
       rsync-archivesta = {
         # Archivesta
         description = "Backup data using rsync";
-        # wants = [
-        #   "mnt-archive.mount"
-        # ];
-        # requires = [
-        #   "mnt-archive.mount"
-        # ];
-        # after = [
-        #   "mnt-archive.mount"
-        # ];
         unitConfig.RequiresMountsFor = [
           "${xlib.dirs.archive-drive}"
           "${xlib.dirs.server-home}"
@@ -42,15 +33,6 @@
       rsync-archivesta-lite = {
         # Archivesta Lite
         description = "Backup data using rsync";
-        # wants = [
-        #   "mnt-mobile.mount"
-        # ];
-        # after = [
-        #   "mnt-mobile.mount"
-        # ];
-        # requires = [
-        #   "mnt-mobile.mount"
-        # ];
         unitConfig.RequiresMountsFor = [
           "${xlib.dirs.server-home}"
           "${xlib.dirs.mobile-drive}"

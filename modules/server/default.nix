@@ -20,6 +20,7 @@
     ./open-webui.nix
     ./postgresql.nix
     ./samba.nix
+    ./step-ca.nix
     ./stirling-pdf.nix
     ./syncthing.nix
     ./systemd.nix
