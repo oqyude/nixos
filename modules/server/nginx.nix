@@ -34,22 +34,6 @@ in
         "office.local" = {
           forceSSL = false;
           enableACME = false;
-          # locations = {
-          #   "/" = {
-          #     proxyPass = "http://localhost:8090";
-          #     proxyWebsockets = true;
-          #   };
-          # };
-          # extraConfig = ''
-          #   proxy_set_header Host $host;
-          #   proxy_set_header X-Forwarded-Proto $scheme;
-          #   proxy_set_header X-Forwarded-Host $host;
-          #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-
-          #   proxy_http_version 1.1;
-          #   proxy_set_header Upgrade $http_upgrade;
-          #   proxy_set_header Connection "upgrade";
-          # '';
         };
         "bentopdf.local" = {
           forceSSL = false;
@@ -154,22 +138,6 @@ in
             client_max_body_size 5G;
           '';
         };
-        #         "office.local" = {
-        #           enableACME = false;
-        #           forceSSL = false;
-        #           locations = {
-        #             "/" = {
-        #               proxyPass = "http://${server}:8000"; # 9980
-        #               proxyWebsockets = true;
-        #             };
-        #           };
-        #           extraConfig = ''
-        #             client_max_body_size 5G;
-        #             proxy_set_header X-Forwarded-Proto $scheme;
-        #             proxy_set_header X-Real-IP $remote_addr;
-        #             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        #           ''; # absolute_redirect off;
-        #         };
         "calibre.local" = {
           forceSSL = false;
           enableACME = false;
