@@ -9,14 +9,10 @@
 let
   configDir = "${xlib.dirs.services-mnt-folder}/n8n";
   varDir = "/var/lib/n8n";
-  master = import inputs.nixpkgs-beets {
-    system = "x86_64-linux";
-  };
 in
 {
   services.n8n = {
-    enable = true;
-    package = master.n8n;
+    enable = false;
     environment = {
       # N8N_USER_FOLDER = lib.mkForce "${configDir}";
       N8N_SECURE_COOKIE = "false";
