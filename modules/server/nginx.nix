@@ -84,6 +84,23 @@ in
             client_max_body_size 5G;
           '';
         };
+        "nextcloud.zeroq.su" = {
+          forceSSL = false;
+          enableACME = false;
+          locations = {
+            "/" = {
+              proxyPass = "http://${server}:10000";
+              proxyWebsockets = true;
+            };
+            "/whiteboard" = {
+              proxyPass = "http://${server}:3002";
+              proxyWebsockets = true;
+            };
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
         "n8n.local" = {
           forceSSL = false;
           enableACME = false;
