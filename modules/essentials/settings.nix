@@ -64,6 +64,21 @@
         });
       '';
     };
+    pki.certificates = [
+      ''
+        -----BEGIN CERTIFICATE-----
+        MIIBlDCCATmgAwIBAgIQUR+DM/LKIbokKxYPGZbCCjAKBggqhkjOPQQDAjAoMQ4w
+        DAYDVQQKEwVaZXJvUTEWMBQGA1UEAxMNWmVyb1EgUm9vdCBDQTAeFw0yNjA2MTMy
+        MjU2MDZaFw0zNjA2MTAyMjU2MDZaMCgxDjAMBgNVBAoTBVplcm9RMRYwFAYDVQQD
+        Ew1aZXJvUSBSb290IENBMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgbhGtnlm
+        qd2Uv1B1VBSeg6NlXFMj4BG/k5gVu9bVFBK4cw9HVx21aHw9HhFW94P2KaySR6bu
+        K8tLDtzvs0xkyqNFMEMwDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8C
+        AQEwHQYDVR0OBBYEFH07/1blaqp0MVuSZIUHS9W3SjIrMAoGCCqGSM49BAMCA0kA
+        MEYCIQD1coTa7hqU1PAdnamAIgq1ApadDWpWfNaXPGiLCrkxTwIhAJhj/YSzqTJR
+        HvurdJ9m2glxV3rQHIUiVqKbQRcibObd
+        -----END CERTIFICATE-----
+      ''
+    ];
   };
   systemd.network.wait-online.enable = false;
 
@@ -75,4 +90,23 @@
       "ru_RU.UTF-8/UTF-8"
     ];
   };
+
+  # sops.secrets = {
+  #   intermediate-ca = {
+  #     format = "yaml";
+  #     key = "intermediate-ca";
+  #     sopsFile = ./secrets/settings.yaml;
+  #     # owner = "nobody";
+  #     # group = "nogroup";
+  #     mode = "0700";
+  #   };
+  #   root-ca = {
+  #     format = "yaml";
+  #     key = "root-ca";
+  #     sopsFile = ./secrets/settings.yaml;
+  #     # owner = "nobody";
+  #     # group = "nogroup";
+  #     mode = "0700";
+  #   };
+  # };
 }

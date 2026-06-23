@@ -113,6 +113,9 @@ let
         hostName = "${xlib.device.hostname}";
         networkmanager.enable = true;
         firewall.enable = false;
+        nameservers = [
+          "127.0.0.1"
+        ];
       };
 
       system = {

@@ -22,7 +22,8 @@ in
       key = "${varDir}/secrets/intermediate_ca_key";
       # address = "0.0.0.0:9000";
       dnsNames = [
-        "ca.zeroq.su"
+        "*.zeroq.su"
+        "localhost"
       ];
       db = {
         type = "badgerv2";
@@ -30,6 +31,10 @@ in
       };
       authority = {
         provisioners = [
+          {
+            type = "ACME";
+            name = "acme";
+          }
           {
             type = "JWK";
             name = "oqyude@zeroq.su";

@@ -73,6 +73,28 @@ in
             client_max_body_size 5G;
           '';
         };
+        "gitea.zeroq.su" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://${server}:3000";
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
+        "ca.zeroq.su" = {
+          forceSSL = false;
+          enableACME = false;
+          locations."/" = {
+            proxyPass = "http://${server}:9000";
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
         "gitea.local" = {
           forceSSL = false;
           enableACME = false;
@@ -188,6 +210,16 @@ in
         #     }
         #   ];
         # };
+      };
+    };
+  };
+  security = {
+    acme = {
+      acceptTerms = true;
+      defaults = {
+        email = "oqyude@zeroq.su";
+        server = "https://localhost:9000/acme/acme/directory";
+        dnsProvider = null;
       };
     };
   };
