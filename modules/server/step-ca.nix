@@ -23,6 +23,7 @@ in
       # address = "0.0.0.0:9000";
       dnsNames = [
         "*.zeroq.su"
+        "*.home.arpa"
         "localhost"
       ];
       db = {

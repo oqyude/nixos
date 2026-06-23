@@ -31,11 +31,11 @@ in
             }
           ];
         };
-        "office.local" = {
-          forceSSL = false;
-          enableACME = false;
+        "office.home.arpa" = {
+          forceSSL = true;
+          enableACME = true;
         };
-        "bentopdf.local" = {
+        "pdf.home.arpa" = {
           forceSSL = false;
           enableACME = false;
           listen = [
@@ -56,9 +56,9 @@ in
             client_max_body_size 5G;
           '';
         };
-        "nextcloud.local" = {
-          forceSSL = false;
-          enableACME = false;
+        "nextcloud.home.arpa" = {
+          forceSSL = true;
+          enableACME = true;
           locations = {
             "/" = {
               proxyPass = "http://${server}:10000";
@@ -73,18 +73,7 @@ in
             client_max_body_size 5G;
           '';
         };
-        "gitea.zeroq.su" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:3000";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
-        "ca.zeroq.su" = {
+        "ca.home.arpa" = {
           forceSSL = false;
           enableACME = false;
           locations."/" = {
@@ -95,9 +84,9 @@ in
             client_max_body_size 5G;
           '';
         };
-        "gitea.local" = {
-          forceSSL = false;
-          enableACME = false;
+        "git.home.arpa" = {
+          forceSSL = true;
+          enableACME = true;
           locations."/" = {
             proxyPass = "http://${server}:3000";
             proxyWebsockets = true;
@@ -106,69 +95,36 @@ in
             client_max_body_size 5G;
           '';
         };
-        "nextcloud.zeroq.su" = {
-          forceSSL = false;
-          enableACME = false;
-          locations = {
-            "/" = {
-              proxyPass = "http://${server}:10000";
-              proxyWebsockets = true;
-            };
-            "/whiteboard" = {
-              proxyPass = "http://${server}:3002";
-              proxyWebsockets = true;
-            };
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
-        "n8n.local" = {
-          forceSSL = false;
-          enableACME = false;
-          locations."/" = {
-            proxyPass = "http://${server}:5678";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
-        "kuma.local" = {
-          forceSSL = false;
-          enableACME = false;
+        # "n8n.home.arpa" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   locations."/" = {
+        #     proxyPass = "http://${server}:5678";
+        #     proxyWebsockets = true;
+        #   };
+        #   extraConfig = ''
+        #     client_max_body_size 5G;
+        #   '';
+        # };
+        "kuma.home.arpa" = {
+          forceSSL = true;
+          enableACME = true;
           locations."/" = {
             proxyPass = "http://${server}:4001";
             proxyWebsockets = true;
           };
         };
-        "health.local" = {
-          forceSSL = false;
-          enableACME = false;
-          locations."/" = {
-            proxyPass = "http://${server}:19999";
-            proxyWebsockets = true;
-          };
-        };
-        "agent.local" = {
-          forceSSL = false;
-          enableACME = false;
-          locations."/" = {
-            proxyPass = "http://${server}:3000";
-            proxyWebsockets = true;
-          };
-        };
-        "flux.local" = {
-          forceSSL = false;
-          enableACME = false;
+        "flux.home.arpa" = {
+          addSSL = true;
+          enableACME = true;
           locations."/" = {
             proxyPass = "http://${server}:6061";
             proxyWebsockets = true;
           };
         };
-        "immich.local" = {
-          forceSSL = false;
-          enableACME = false;
+        "immich.home.arpa" = {
+          addSSL = true;
+          enableACME = true;
           locations."/" = {
             proxyPass = "http://${server}:2283";
             proxyWebsockets = true;
@@ -177,9 +133,9 @@ in
             client_max_body_size 5G;
           '';
         };
-        "calibre.local" = {
-          forceSSL = false;
-          enableACME = false;
+        "calibre.home.arpa" = {
+          forceSSL = true;
+          enableACME = true;
           locations."/" = {
             proxyPass = "http://${server}:8083";
             proxyWebsockets = true;
@@ -188,7 +144,7 @@ in
             client_max_body_size 5G;
           '';
         };
-        # "zeroq.local" = {
+        # "zeroq.home.arpa" = {
         #   forceSSL = false;
         #   enableACME = false;
         #   root = pkgs.writeTextDir "index.html" ''

@@ -18,7 +18,7 @@ in
     nextcloud-whiteboard-server = {
       enable = true;
       settings = {
-        NEXTCLOUD_URL = "http://nextcloud.private";
+        NEXTCLOUD_URL = "https://nextcloud.home.arpa";
       };
       secrets = [ config.sops.secrets.nextcloud-whiteboard-jwt.path ];
     };
@@ -47,22 +47,22 @@ in
           "100.64.0.0"
           "192.168.1.20"
           "localhost"
-          "nextcloud.local"
           "nextcloud.private"
           "nextcloud.zeroq.su"
-          "office.local"
           "office.zeroq.su"
+          "office.home.arpa"
+          "nextcloud.home.arpa"
         ];
         trusted_proxies = [
           "100.64.1.0"
           "109.248.161.5"
         ];
-        overwriteprotocol = ""; # maybe no
+        overwriteprotocol = "https"; # maybe no
       };
       extraAppsEnable = true;
       appstoreEnable = false;
       notify_push = {
-        enable = false;
+        enable = true;
         bendDomainToLocalhost = true;
       };
       # phpPackage = pkgs.php85;
@@ -137,7 +137,7 @@ in
     # };
     onlyoffice = {
       enable = true;
-      hostname = "office.local";
+      hostname = "office.home.arpa";
       port = 8090;
       allowLocalConnections = true;
       wopi = true;

@@ -9,8 +9,14 @@
 {
   services.bentopdf = {
     enable = true;
-    domain = "bentopdf.local";
-    nginx.enable = true;
+    domain = "pdf.home.arpa";
+    nginx = {
+      enable = true;
+      # virtualHost = {
+      #   forceSSL = true;
+      #   enableACME = true;
+      # };
+    };
     # package = pkgs-stable.bentopdf;
   };
 }
