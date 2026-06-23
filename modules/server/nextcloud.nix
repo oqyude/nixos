@@ -29,6 +29,7 @@ in
       database.createLocally = true;
       home = "${xlib.dirs.services-mnt-folder}/nextcloud";
       configureRedis = true;
+      https = true;
       caching = {
         redis = true;
         memcached = true;
@@ -55,6 +56,7 @@ in
         ];
         trusted_proxies = [
           "100.64.1.0"
+          "192.168.1.20"
           "109.248.161.5"
         ];
         overwriteprotocol = "https"; # maybe no
@@ -64,6 +66,7 @@ in
       notify_push = {
         enable = true;
         bendDomainToLocalhost = true;
+        nextcloudUrl = "https://nextcloud.home.arpa";
       };
       # phpPackage = pkgs.php85;
       extraApps = {
