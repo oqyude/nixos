@@ -14,7 +14,7 @@
       appName = "ZeroQ Gitea Service";
       settings = {
         server = {
-          DOMAIN = "gitea.local";
+          DOMAIN = "git.home.arpa";
           HTTP_PORT = 3000;
         };
         service.DISABLE_REGISTRATION = true;

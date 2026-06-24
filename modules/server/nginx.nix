@@ -29,6 +29,10 @@ in
               addr = "192.168.1.20";
               port = 10000;
             }
+            {
+              addr = "127.0.0.1";
+              port = 10000;
+            }
           ];
         };
         "office.home.arpa" = {
@@ -51,6 +55,10 @@ in
               addr = "192.168.1.20";
               port = 8446;
             }
+            {
+              addr = "127.0.0.1";
+              port = 10000;
+            }
           ];
           extraConfig = ''
             client_max_body_size 5G;
@@ -61,7 +69,7 @@ in
           enableACME = true;
           locations = {
             "/" = {
-              proxyPass = "http://${server}:8446";
+              proxyPass = "http://127.0.0.1:8446";
               proxyWebsockets = true;
             };
           };
@@ -74,11 +82,11 @@ in
           enableACME = true;
           locations = {
             "/" = {
-              proxyPass = "http://${server}:10000";
+              proxyPass = "http://127.0.0.1:10000";
               proxyWebsockets = true;
             };
             "/whiteboard" = {
-              proxyPass = "http://${server}:3002";
+              proxyPass = "http://127.0.0.1:3002";
               proxyWebsockets = true;
             };
           };
@@ -90,7 +98,7 @@ in
           forceSSL = true;
           enableACME = true;
           locations."/" = {
-            proxyPass = "http://${server}:9000";
+            proxyPass = "http://127.0.0.1:9000";
             proxyWebsockets = true;
           };
           extraConfig = ''
@@ -101,7 +109,18 @@ in
           forceSSL = true;
           enableACME = true;
           locations."/" = {
-            proxyPass = "http://${server}:3000";
+            proxyPass = "http://127.0.0.1:3000";
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
+        "git.zeroq.su" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:3000";
             proxyWebsockets = true;
           };
           extraConfig = ''
@@ -123,7 +142,7 @@ in
           forceSSL = true;
           enableACME = true;
           locations."/" = {
-            proxyPass = "http://${server}:4001";
+            proxyPass = "http://127.0.0.1:4001";
             proxyWebsockets = true;
           };
         };
@@ -131,7 +150,7 @@ in
           addSSL = true;
           enableACME = true;
           locations."/" = {
-            proxyPass = "http://${server}:6061";
+            proxyPass = "http://127.0.0.1:6061";
             proxyWebsockets = true;
           };
         };
@@ -139,7 +158,7 @@ in
           addSSL = true;
           enableACME = true;
           locations."/" = {
-            proxyPass = "http://${server}:2283";
+            proxyPass = "http://127.0.0.1:2283";
             proxyWebsockets = true;
           };
           extraConfig = ''
@@ -150,7 +169,7 @@ in
           forceSSL = true;
           enableACME = true;
           locations."/" = {
-            proxyPass = "http://${server}:8083";
+            proxyPass = "http://127.0.0.1:8083";
             proxyWebsockets = true;
           };
           extraConfig = ''
@@ -161,7 +180,7 @@ in
           forceSSL = true;
           enableACME = true;
           locations."/" = {
-            proxyPass = "http://${server}:53";
+            proxyPass = "http://127.0.0.1:53";
           };
           extraConfig = ''
             client_max_body_size 5G;
@@ -185,6 +204,10 @@ in
             }
             {
               addr = "192.168.1.20";
+              port = 80;
+            }
+            {
+              addr = "127.0.0.1";
               port = 80;
             }
           ];

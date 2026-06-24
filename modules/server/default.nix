@@ -7,6 +7,7 @@
     ../software/beets
     ./bentopdf.nix
     ./calibre-web.nix
+    ./chrony.nix
     ./coredns.nix
     ./gitea.nix
     ./glances.nix

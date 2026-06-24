@@ -31,6 +31,10 @@ in
         dataSource = "${varDir}/db";
       };
       authority = {
+        claims = {
+          defaultTLSCertDuration = "2160h";
+          maxTLSCertDuration = "2160h";
+        };
         provisioners = [
           {
             type = "ACME";
