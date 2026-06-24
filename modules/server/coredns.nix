@@ -10,10 +10,28 @@
       zeroq.su:53 {
           hosts {
               109.248.161.5 x.zeroq.su
+              192.168.1.20 calibre.zeroq.su
+              192.168.1.20 dns.zeroq.su
+              192.168.1.20 flux.zeroq.su
+              192.168.1.20 git.zeroq.su
+              192.168.1.20 immich.zeroq.su
+              192.168.1.20 kuma.zeroq.su
+              192.168.1.20 nextcloud.zeroq.su
+              192.168.1.20 office.zeroq.su
+              192.168.1.20 pdf.zeroq.su
+              fallthrough
+          }
+          cache 300
+          log
+      }
+      home.arpa:53 {
+          hosts {
+              192.168.1.20 ca.home.arpa
               192.168.1.20 calibre.home.arpa
               192.168.1.20 dns.home.arpa
               192.168.1.20 flux.home.arpa
               192.168.1.20 git.home.arpa
+              192.168.1.20 home.arpa
               192.168.1.20 immich.home.arpa
               192.168.1.20 kuma.home.arpa
               192.168.1.20 nextcloud.home.arpa

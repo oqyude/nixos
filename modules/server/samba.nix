@@ -7,7 +7,7 @@
   services.samba = {
     enable = true;
     nmbd = {
-      enable = false;
+      enable = true;
     };
     settings = {
       global = {

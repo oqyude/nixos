@@ -9,7 +9,7 @@
 {
   services.bentopdf = {
     enable = true;
-    domain = "pdf.home.arpa";
+    domain = "pdf.private";
     nginx = {
       enable = true;
       # virtualHost = {

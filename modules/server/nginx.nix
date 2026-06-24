@@ -35,7 +35,7 @@ in
           forceSSL = true;
           enableACME = true;
         };
-        "pdf.home.arpa" = {
+        "pdf.private" = {
           forceSSL = false;
           enableACME = false;
           listen = [
@@ -52,6 +52,19 @@ in
               port = 8446;
             }
           ];
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
+        "pdf.home.arpa" = {
+          forceSSL = true;
+          enableACME = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://${server}:8446";
+              proxyWebsockets = true;
+            };
+          };
           extraConfig = ''
             client_max_body_size 5G;
           '';
@@ -74,8 +87,8 @@ in
           '';
         };
         "ca.home.arpa" = {
-          forceSSL = false;
-          enableACME = false;
+          forceSSL = true;
+          enableACME = true;
           locations."/" = {
             proxyPass = "http://${server}:9000";
             proxyWebsockets = true;
@@ -144,28 +157,38 @@ in
             client_max_body_size 5G;
           '';
         };
-        # "zeroq.home.arpa" = {
-        #   forceSSL = false;
-        #   enableACME = false;
-        #   root = pkgs.writeTextDir "index.html" ''
-        #     <!doctype html>
-        #     <html>
-        #     <body>
-        #       <pre>This server is running in backend.</pre>
-        #     </body>
-        #     </html>
-        #   '';
-        #   listen = [
-        #     {
-        #       addr = "100.64.0.0";
-        #       port = 80;
-        #     }
-        #     {
-        #       addr = "192.168.1.20";
-        #       port = 80;
-        #     }
-        #   ];
-        # };
+        "dns.home.arpa" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://${server}:53";
+          };
+          extraConfig = ''
+            client_max_body_size 5G;
+          '';
+        };
+        "zeroq.home.arpa" = {
+          forceSSL = true;
+          enableACME = true;
+          root = pkgs.writeTextDir "index.html" ''
+            <!doctype html>
+            <html>
+            <body>
+              <pre>This server is running in backend.</pre>
+            </body>
+            </html>
+          '';
+          listen = [
+            {
+              addr = "100.64.0.0";
+              port = 80;
+            }
+            {
+              addr = "192.168.1.20";
+              port = 80;
+            }
+          ];
+        };
       };
     };
   };
