@@ -22,6 +22,38 @@ in
       };
       secrets = [ config.sops.secrets.nextcloud-whiteboard-jwt.path ];
     };
+    nextcloud-spreed-signaling = {
+      enable = false;
+      hostName = "talk.private";
+      backends.nextcloud = {
+        urls = [
+          "https://nextcloud.home.arpa"
+          "https://nextcloud.zeroq.su"
+        ];
+        secretFile = config.sops.secrets.nextcloud-talk-secret.path;
+      };
+      settings = {
+        http.listen = "127.0.0.1:8080";
+        clients.internalsecretFile = config.sops.secrets.internal-secret.path;
+        sessions = {
+          hashkeyFile = config.sops.secrets.hashkey.path;
+          blockkeyFile = config.sops.secrets.blockkey.path;
+        };
+        mcu = {
+          type = "janus";
+          url = "ws://127.0.0.1:8188";
+        };
+        turn = {
+          secretFile = config.sops.secrets.turn-secret.path;
+          apikeyFile = config.sops.secrets.turn-api-key.path;
+          servers = [
+            "turn:turn.home.arpa:3478?transport=udp"
+            "turn:turn.home.arpa:3478?transport=tcp"
+            # "turns:turn.home.arpa:5349?transport=tcp"
+          ];
+        };
+      };
+    };
     nextcloud = {
       enable = true;
       package = pkgs.nextcloud33;
@@ -222,6 +254,52 @@ in
       owner = "onlyoffice";
       group = "onlyoffice";
       mode = "0650";
+    };
+    nextcloud-talk-secret = {
+      format = "yaml";
+      key = "nextcloud-talk-secret";
+      sopsFile = ./secrets/nextcloud.yaml;
+      # owner = "nextcloud-spreed-signaling";
+      # group = "nextcloud-spreed-signaling";
+      mode = "0440";
+    };
+    internal-secret = {
+      format = "yaml";
+      key = "internal-secret";
+      sopsFile = ./secrets/nextcloud.yaml;
+      # owner = "nextcloud-spreed-signaling";
+      # group = "nextcloud-spreed-signaling";
+      mode = "0440";
+    };
+    hashkey = {
+      format = "yaml";
+      key = "hashkey";
+      sopsFile = ./secrets/nextcloud.yaml;
+      # owner = "nextcloud-spreed-signaling";
+      # group = "nextcloud-spreed-signaling";
+      mode = "0440";
+    };
+    blockkey = {
+      format = "yaml";
+      key = "blockkey";
+      sopsFile = ./secrets/nextcloud.yaml;
+      # owner = "nextcloud-spreed-signaling";
+      # group = "nextcloud-spreed-signaling";
+      mode = "0440";
+    };
+    turn-secret = {
+      format = "yaml";
+      key = "turn-secret";
+      sopsFile = ./secrets/coturn.yaml;
+      # group = "nextcloud-spreed-signaling";
+      mode = "0440";
+    };
+    turn-api-key = {
+      format = "yaml";
+      key = "turn-api-key";
+      sopsFile = ./secrets/coturn.yaml;
+      # group = "nextcloud-spreed-signaling";
+      mode = "0440";
     };
   };
 }

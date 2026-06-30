@@ -94,6 +94,32 @@ in
             client_max_body_size 5G;
           '';
         };
+        # "talk.home.arpa" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   # locations = {
+        #   #   "/" = {
+        #   #     proxyPass = "http://127.0.0.1:7880";
+        #   #     proxyWebsockets = true;
+        #   #   };
+        #   # };
+        #   extraConfig = ''
+        #     client_max_body_size 5G;
+        #   '';
+        # };
+        # "turn.home.arpa" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   locations = {
+        #     "/" = {
+        #       proxyPass = "http://127.0.0.1:5349";
+        #       proxyWebsockets = true;
+        #     };
+        #   };
+        #   extraConfig = ''
+        #     client_max_body_size 5G;
+        #   '';
+        # };
         "ca.home.arpa" = {
           forceSSL = true;
           enableACME = true;
@@ -186,42 +212,28 @@ in
             client_max_body_size 5G;
           '';
         };
-        "zeroq.home.arpa" = {
-          forceSSL = true;
-          enableACME = true;
-          root = pkgs.writeTextDir "index.html" ''
-            <!doctype html>
-            <html>
-            <body>
-              <pre>This server is running in backend.</pre>
-            </body>
-            </html>
-          '';
-          listen = [
-            {
-              addr = "100.64.0.0";
-              port = 80;
-            }
-            {
-              addr = "192.168.1.20";
-              port = 80;
-            }
-            {
-              addr = "127.0.0.1";
-              port = 80;
-            }
-          ];
-        };
-      };
-    };
-  };
-  security = {
-    acme = {
-      acceptTerms = true;
-      defaults = {
-        email = "oqyude@zeroq.su";
-        server = "https://localhost:9000/acme/acme/directory";
-        dnsProvider = null;
+        # "zeroq.home.arpa" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   root = pkgs.writeTextDir "index.html" ''
+        #     <!doctype html>
+        #     <html>
+        #     <body>
+        #       <pre>This server is running in backend.</pre>
+        #     </body>
+        #     </html>
+        #   '';
+        #   listen = [
+        #     {
+        #       addr = "100.64.0.0";
+        #       port = 80;
+        #     }
+        #     {
+        #       addr = "192.168.1.20";
+        #       port = 80;
+        #     }
+        #   ];
+        # };
       };
     };
   };

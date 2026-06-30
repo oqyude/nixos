@@ -19,6 +19,8 @@
               192.168.1.20 nextcloud.zeroq.su
               192.168.1.20 office.zeroq.su
               192.168.1.20 pdf.zeroq.su
+              192.168.1.20 talk.zeroq.su
+              192.168.1.20 turn.zeroq.su
               fallthrough
           }
           cache 300

@@ -39,6 +39,16 @@ in
           {
             type = "ACME";
             name = "acme";
+            claims = {
+              enableSSHCA = false;
+              allowSANs = [
+                "*.home.arpa"
+                "*.zeroq.su"
+                "home.arpa"
+                "localhost"
+              ];
+              maxTLSCertDuration = "2160h";
+            };
           }
           {
             type = "JWK";
