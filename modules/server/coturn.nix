@@ -45,8 +45,8 @@
       format = "yaml";
       key = "turn-secret";
       sopsFile = ./secrets/coturn.yaml;
-      # group = "nextcloud-spreed-signaling";
-      # owner = "turnserver";
+      group = "nextcloud-spreed-signaling";
+      owner = "turnserver";
       mode = "0440";
     };
   };

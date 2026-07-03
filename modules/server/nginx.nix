@@ -212,6 +212,20 @@ in
             client_max_body_size 5G;
           '';
         };
+        "glances.home.arpa" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:61208";
+          };
+        };
+        "syncthing.home.arpa" = {
+          addSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:8384";
+          };
+        };
         # "zeroq.home.arpa" = {
         #   forceSSL = true;
         #   enableACME = true;
