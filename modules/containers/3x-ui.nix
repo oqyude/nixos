@@ -98,11 +98,12 @@
     # Folders
     tmpfiles.rules = [
       "d /mnt 0755 root root -"
-      "d /mnt/containers 0755 root root -"
+      "d /mnt/services 0755 root root -"
       "d /mnt/services/containers 0755 root root -"
       "d /mnt/services/containers/3x-ui 0755 root root -"
       "d /mnt/services/containers/3x-ui/cert 0755 root root -"
       "d /mnt/services/containers/3x-ui/db 0755 root root -"
+      "Z /mnt/services/containers/3x-ui 0755 root root -"
     ];
   };
 

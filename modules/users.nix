@@ -92,7 +92,7 @@
       ssh_key_public_root = {
         format = "yaml";
         key = "ssh_key_public";
-        path = "/root/.ssh/id_ed25519";
+        path = "/root/.ssh/id_ed25519.pub";
         owner = "root";
         group = "root";
         mode = "0655";
