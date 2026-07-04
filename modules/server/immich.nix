@@ -7,7 +7,7 @@
   ...
 }:
 let
-  master = import inputs.nixpkgs-master {
+  new = import inputs.nixpkgs-unstable {
     system = "x86_64-linux";
   };
 in
@@ -15,7 +15,7 @@ in
   services = {
     immich = {
       enable = true;
-      # package = master.immich;
+      package = new.immich;
       port = 2283;
       host = "0.0.0.0";
       openFirewall = true;
