@@ -14,7 +14,6 @@
     ./glances.nix
     ./immich.nix
     ./miniflux.nix
-    ./netdata.nix
     ./nextcloud.nix
     ./nginx.nix
     ./nix-serve.nix
@@ -29,6 +28,7 @@
     # ./memos.nix
     # ./n8n.nix
     # ./navidrome.nix
+    # ./netdata.nix
     # ./nfs.nix
     # ./node-red.nix
     # ./open-webui.nix

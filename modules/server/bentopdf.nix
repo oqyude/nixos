@@ -3,9 +3,6 @@
   inputs,
   ...
 }:
-# let
-#   pkgs-stable = import inputs.nixpkgs-stable { system = "x86_64-linux"; };
-# in
 {
   services.bentopdf = {
     enable = true;

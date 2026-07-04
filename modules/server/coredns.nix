@@ -30,6 +30,7 @@
       }
       home.arpa:53 {
           hosts {
+              192.168.1.100 vetymae.home.arpa
               192.168.1.20 ca.home.arpa
               192.168.1.20 calibre.home.arpa
               192.168.1.20 dns.home.arpa
@@ -42,6 +43,7 @@
               192.168.1.20 nextcloud.home.arpa
               192.168.1.20 office.home.arpa
               192.168.1.20 pdf.home.arpa
+              192.168.1.20 sapphira.home.arpa
               192.168.1.20 syncthing.home.arpa
               fallthrough
           }

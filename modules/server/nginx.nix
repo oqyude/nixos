@@ -57,7 +57,7 @@ in
             }
             {
               addr = "127.0.0.1";
-              port = 10000;
+              port = 8446;
             }
           ];
           extraConfig = ''

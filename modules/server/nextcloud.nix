@@ -7,10 +7,10 @@
   ...
 }:
 let
-  master = import inputs.nixpkgs-master {
+  previous = import inputs.nixpkgs-master {
     system = "x86_64-linux";
-    # config.allowUnfree = true;
-    # config.allowUnfreePredicate = true;
+    config.allowUnfree = true;
+    config.allowUnfreePredicate = true;
   };
 in
 {
@@ -172,6 +172,7 @@ in
     # };
     onlyoffice = {
       enable = true;
+      package = previous.onlyoffice-documentserver;
       hostname = "office.home.arpa";
       port = 8090;
       allowLocalConnections = true;
