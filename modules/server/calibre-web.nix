@@ -39,6 +39,11 @@ in
     # };
   };
 
+  systemd.tmpfiles.rules = [
+    "d ${xlib.dirs.services-mnt-folder}/calibre-web 0755 calibre-web calibre-web -"
+    "d ${xlib.dirs.services-mnt-folder}/calibre-web-library 0755 calibre-web calibre-web -"
+  ];
+
   fileSystems = {
     "/var/lib/calibre-web" = {
       device = "${xlib.dirs.services-mnt-folder}/calibre-web";
@@ -48,13 +53,5 @@ in
         "nofail"
       ];
     };
-    # "/var/lib/calibre-server" = {
-    #   device = "${xlib.dirs.services-mnt-folder}/calibre-web-library";
-    #   fsType = "none";
-    #   options = [
-    #     "bind"
-    #     "nofail"
-    #   ];
-    # };
   };
 }

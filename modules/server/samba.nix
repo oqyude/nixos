@@ -63,4 +63,20 @@
       };
     };
   };
+
+  systemd.tmpfiles.rules = [
+    "d ${xlib.dirs.services-mnt-folder}/samba 0755 root root -"
+    "z ${xlib.dirs.services-mnt-folder}/samba 0755 root root -"
+  ];
+
+  fileSystems = {
+    "/var/lib/samba" = {
+      device = "${xlib.dirs.services-mnt-folder}/samba";
+      fsType = "none";
+      options = [
+        "bind"
+        "nofail"
+      ];
+    };
+  };
 }
