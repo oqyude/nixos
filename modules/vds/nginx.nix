@@ -123,7 +123,23 @@ in
           forceSSL = true;
           enableACME = true;
           locations."/" = {
-            proxyPass = "http://${server}:6061";
+            proxyPass = "http://${server}:4096";
+            proxyWebsockets = true;
+          };
+        };
+        "vetymae.opencodes.zeroq.su" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://100.86.62.4:4096";
+            proxyWebsockets = true;
+          };
+        };
+        "lamet.opencodes.zeroq.su" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://100.106.21.39:6061";
             proxyWebsockets = true;
           };
         };
