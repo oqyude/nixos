@@ -6,14 +6,14 @@
   ...
 }:
 let
-  stable = import inputs.nixpkgs-calibre {
+  stable = import inputs.nixpkgs-previous {
     system = "x86_64-linux";
   };
 in
 {
   services = {
     calibre-web = {
-      # package = stable.calibre-web;
+      package = stable.calibre-web;
       enable = true;
       # dataDir = "${xlib.dirs.services-mnt-folder}/calibre-web";
       options = {
