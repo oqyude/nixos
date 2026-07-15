@@ -1,8 +1,8 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
-  inputs,
   xlib,
   ...
 }:
@@ -170,16 +170,6 @@ in
     #     };
     #   };
     # };
-    onlyoffice = {
-      enable = false;
-      # package = previous.onlyoffice-documentserver;
-      hostname = "office.home.arpa";
-      port = 8090;
-      allowLocalConnections = true;
-      wopi = true;
-      jwtSecretFile = config.sops.secrets.onlyoffice-jwt.path;
-      securityNonceFile = config.sops.secrets.onlyoffice-nonce.path;
-    };
   };
 
   # fonts.packages = [ work.corefonts ];
@@ -238,22 +228,6 @@ in
       sopsFile = ./secrets/nextcloud.yaml;
       owner = "nextcloud";
       group = "nextcloud";
-      mode = "0650";
-    };
-    onlyoffice-nonce = {
-      format = "yaml";
-      key = "nonce";
-      sopsFile = ./secrets/onlyoffice.yaml;
-      owner = "onlyoffice";
-      group = "onlyoffice";
-      mode = "0650";
-    };
-    onlyoffice-jwt = {
-      format = "yaml";
-      key = "jwt";
-      sopsFile = ./secrets/onlyoffice.yaml;
-      owner = "onlyoffice";
-      group = "onlyoffice";
       mode = "0650";
     };
     nextcloud-talk-secret = {

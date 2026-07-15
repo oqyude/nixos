@@ -49,6 +49,10 @@ in
               proxyPass = "http://localhost:2096";
               proxyWebsockets = true;
             };
+            "/clash/" = {
+              proxyPass = "http://localhost:2096";
+              proxyWebsockets = true;
+            };
           };
         };
         "kuma.zeroq.su" = {
@@ -72,6 +76,14 @@ in
           enableACME = true;
           locations."/" = {
             proxyPass = "http://${server}:3000";
+            proxyWebsockets = true;
+          };
+        };
+        "homebox.zeroq.su" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://${server}:7745";
             proxyWebsockets = true;
           };
         };

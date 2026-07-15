@@ -1,9 +1,15 @@
 {
   config,
+  inputs,
   pkgs,
   xlib,
   ...
 }:
+let
+  stable = import inputs.nixpkgs-master {
+    system = "x86_64-linux";
+  };
+in
 {
   services = {
     samba-wsdd = {
@@ -14,7 +20,7 @@
     };
     samba = {
       enable = true;
-      package = pkgs.samba4Full;
+      # package = pkgs.samba4Full;
       nmbd = {
         enable = true;
       };
