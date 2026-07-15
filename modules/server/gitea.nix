@@ -23,6 +23,7 @@
   };
 
   systemd.tmpfiles.rules = [
+    "d ${config.services.gitea.stateDir} 0755 gitea gitea -"
     "z ${config.services.gitea.stateDir} 0755 gitea gitea -"
   ];
 }

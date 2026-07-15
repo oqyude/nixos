@@ -77,6 +77,16 @@ in
             client_max_body_size 5G;
           '';
         };
+        "homebox.home.arpa" = {
+          forceSSL = true;
+          enableACME = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://127.0.0.1:7745";
+              proxyWebsockets = true;
+            };
+          };
+        };
         "nextcloud.home.arpa" = {
           forceSSL = true;
           enableACME = true;

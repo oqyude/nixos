@@ -12,6 +12,7 @@
     ./coredns.nix
     ./gitea.nix
     ./glances.nix
+    ./homebox.nix
     ./immich.nix
     ./miniflux.nix
     ./nextcloud.nix
