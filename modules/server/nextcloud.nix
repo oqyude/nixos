@@ -171,8 +171,8 @@ in
     #   };
     # };
     onlyoffice = {
-      enable = true;
-      package = previous.onlyoffice-documentserver;
+      enable = false;
+      # package = previous.onlyoffice-documentserver;
       hostname = "office.home.arpa";
       port = 8090;
       allowLocalConnections = true;
