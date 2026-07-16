@@ -135,7 +135,7 @@ in
           forceSSL = true;
           enableACME = true;
           locations."/" = {
-            proxyPass = "http://${server}:4096";
+            proxyPass = "http://${server}:6061";
             proxyWebsockets = true;
           };
         };
