@@ -9,12 +9,12 @@
 {
   services = {
     navidrome = {
-      enable = false;
+      enable = true;
       openFirewall = true;
       # environmentFile = "";
       settings = {
         Address = "0.0.0.0";
-        Port = "4533";
+        Port = 4533;
         MusicFolder = "/mnt/beets/music";
       };
     };

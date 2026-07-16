@@ -15,6 +15,7 @@
     ./homebox.nix
     ./immich.nix
     ./miniflux.nix
+    ./navidrome.nix
     ./nextcloud.nix
     ./nginx.nix
     ./nix-serve.nix
@@ -29,7 +30,6 @@
     # ./mealie.nix
     # ./memos.nix
     # ./n8n.nix
-    # ./navidrome.nix
     # ./netdata.nix
     # ./nfs.nix
     # ./node-red.nix

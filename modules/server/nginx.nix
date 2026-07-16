@@ -190,6 +190,14 @@ in
             proxyWebsockets = true;
           };
         };
+        "navidrome.home.arpa" = {
+          addSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:4533";
+            proxyWebsockets = true;
+          };
+        };
         "immich.home.arpa" = {
           addSSL = true;
           enableACME = true;

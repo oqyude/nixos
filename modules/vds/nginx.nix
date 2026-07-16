@@ -139,6 +139,14 @@ in
             proxyWebsockets = true;
           };
         };
+        "navidrome.zeroq.su" = {
+          addSSL = true;
+          enableACME = true;
+          locations."/" = {
+            proxyPass = "http://${server}:4533";
+            proxyWebsockets = true;
+          };
+        };
         "vetymae.opencodes.zeroq.su" = {
           forceSSL = true;
           enableACME = true;
