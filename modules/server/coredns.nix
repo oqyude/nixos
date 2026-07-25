@@ -18,6 +18,7 @@
               192.168.1.20 homebox.home.arpa
               192.168.1.20 immich.zeroq.su
               192.168.1.20 kuma.zeroq.su
+              192.168.1.20 navidrome.zeroq.su
               192.168.1.20 nextcloud.zeroq.su
               192.168.1.20 office.zeroq.su
               192.168.1.20 pdf.zeroq.su
@@ -42,6 +43,7 @@
               192.168.1.20 homebox.home.arpa
               192.168.1.20 immich.home.arpa
               192.168.1.20 kuma.home.arpa
+              192.168.1.20 navidrome.home.arpa
               192.168.1.20 nextcloud.home.arpa
               192.168.1.20 office.home.arpa
               192.168.1.20 pdf.home.arpa

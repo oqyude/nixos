@@ -11,7 +11,7 @@
     ../software/whisper.nix
     ./containers
     ./nix-serve.nix
-    ./tools
+    # ./tools
     #../server/open-webui.nix
     #../services/tts.nix
   ];
