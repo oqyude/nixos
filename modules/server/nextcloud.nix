@@ -109,7 +109,7 @@ in
           # memories
           # news
           # nextpod
-          # notify_push
+          notify_push
           # phonetrack
           # repod
           # sociallogin
