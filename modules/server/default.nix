@@ -21,6 +21,7 @@
     ./nix-serve.nix
     ./onlyoffice.nix
     ./postgresql.nix
+    ./power.nix
     ./samba.nix
     ./step-ca.nix
     ./syncthing.nix

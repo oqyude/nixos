@@ -83,10 +83,7 @@ let
       ];
 
       services = {
-        power-profiles-daemon.enable = lib.mkForce false;
         earlyoom.enable = true;
-        auto-cpufreq.enable = true;
-        throttled.enable = false;
         journald = {
           extraConfig = ''
             SystemMaxUse=512M
