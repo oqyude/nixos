@@ -24,6 +24,10 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+    nix-on-droid = {
+      url = "github:nix-community/nix-on-droid/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs = {
@@ -113,6 +117,7 @@
     }
     // (import ./configurations flakeContext)
     // (import ./deploy flakeContext)
+    // (import ./droid flakeContext)
     // (import ./home flakeContext)
     // (import ./modules flakeContext)
     // (import ./overlays flakeContext)
