@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  xlib,
   ...
 }:
 # Shared "strict" home-manager module.
@@ -17,46 +18,45 @@
 # (which stay NixOS-only for now). When this module is wired into NixOS hosts
 # via sharedModules, deduplicate those files.
 {
-  home.packages = with pkgs; [
-    # Lazy (alias lc)
-    lazycli
+  home = {
+    packages = with pkgs; [
+      # Lazy (alias lc)
+      lazycli
 
-    # IDE
-    fresh-editor # EDITOR
+      # IDE
+      fresh-editor # EDITOR
 
-    # Base utils
-    curl
-    wget
-    fd
-    tree
-    dust
-    gdu
-    mc
-    rsync
-    jq
-    unzip
-    zip
-    zstd
+      # Base utils
+      curl
+      wget
+      fd
+      tree
+      dust
+      gdu
+      mc
+      rsync
+      jq
+      unzip
+      zip
+      zstd
 
-    # Net diagnostic
-    mtr
-    dnsutils
+      # Net diagnostic
+      mtr
+      dnsutils
 
-    # Monitoring
-    htop
-  ];
-
-  home.sessionVariables = {
-    TUCKR_HOME = "$HOME/Storage/dotfiles";
-    EDITOR = "fresh";
+      # Monitoring
+      htop
+    ];
+    sessionVariables = {
+      TUCKR_HOME = "$HOME/Storage/dotfiles";
+      EDITOR = "fresh";
+    };
+    file.".nanorc".text = ''
+      set nowrap
+      set tabstospaces
+      set tabsize 2
+    '';
   };
-
-  home.file.".nanorc".text = ''
-    set nowrap
-    set tabstospaces
-    set tabsize 2
-  '';
-
   programs = {
     # ---- Shell: zsh ----
     zsh = {
@@ -90,6 +90,7 @@
         lg = "lazygit";
         lc = "lazycli";
         gp = "git pull";
+        ns = "nix-on-droid switch --flake ~/.config/nix-on-droid#${xlib.device.hostname}";
         gp-ns = "gp && ns";
         gc = "git add . && git commit -m 'dev: автокоммит $(date +'%Y-%m-%d %H:%M:%S')'";
         y = "yazi";
@@ -97,7 +98,8 @@
         beet-path-library = "realpath --relative-to='${config.home.homeDirectory}/.config/beets/My' .";
         z-proxy = "export ALL_PROXY=socks5://localhost:10808";
         zh-proxy = "export HTTPS_PROXY=http://localhost:10808 && export HTTP_PROXY=http://localhost:10808";
-
+        nix-dir = "cd ~/.config/nix-on-droid";
+        
         # beets
         beet-ima = "beet im ./ -A";
 

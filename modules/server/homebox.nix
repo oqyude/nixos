@@ -30,7 +30,7 @@ in
     "d ${configDir} 0755 homebox homebox -"
     "z ${configDir} 0755 homebox homebox -"
   ];
-  
+
   fileSystems = {
     "${varDir}" = {
       device = "${configDir}";

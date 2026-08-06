@@ -18,7 +18,7 @@ let
     }:
     {
       imports = [
-        inputs.self.nixosModules.default # base defaultModule (termux-trimmed)
+        inputs.self.nixosModules.strict
       ];
 
       xlib.device = {
@@ -44,25 +44,26 @@ let
         nano
 
         # Some common stuff that people expect to have
-        openssh
-        treefmt
-        git
-        procps
-        psmisc # provides killall (attr `killall` was removed from nixpkgs)
+        bzip2
         diffutils
         findutils
-        util-linux # renamed from utillinux
-        tzdata
-        hostname
-        man
+        git
         gnugrep
         gnupg
         gnused
         gnutar
-        bzip2
         gzip
-        zip
+        hostname
+        man
+        ncurses
+        openssh
+        procps
+        psmisc # provides killall (attr `killall` was removed from nixpkgs)
+        treefmt
+        tzdata
         unzip
+        util-linux # renamed from utillinux
+        zip
       ];
 
       # Backup etc files instead of failing to activate generation if a file already exists in /etc
@@ -71,12 +72,17 @@ let
       # Shared userspace home-manager config (same cozy shell as on NixOS hosts).
       # nix-on-droid forces home.username / home.homeDirectory from user.*,
       # so the strict module must not set them.
+      # xlib is injected via home-manager.extraSpecialArgs (the HM submodule
+      # does not inherit the nix-on-droid module args).
       home-manager = {
         useGlobalPkgs = true;
         backupFileExtension = "hm-bak";
+        extraSpecialArgs = {
+          inherit xlib;
+        };
         config = { ... }: {
           imports = [
-            ../home/shared/strict.nix
+            ../home/termux.nix
           ];
           home.stateVersion = "24.05";
         };

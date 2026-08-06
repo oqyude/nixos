@@ -120,7 +120,6 @@
     }
     // (import ./configurations flakeContext)
     // (import ./deploy flakeContext)
-    // (import ./droid flakeContext)
     // (import ./home flakeContext)
     // (import ./modules flakeContext)
     // (import ./overlays flakeContext)
