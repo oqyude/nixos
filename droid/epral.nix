@@ -26,6 +26,11 @@ let
         hostname = "epral";
       };
 
+      # Login shell. nix-on-droid writes /etc/passwd from user.shell on every
+      # activation, so `chsh` is useless here — set it in nix instead.
+      # (default is bashInteractive)
+      user.shell = "${pkgs.zsh}/bin/zsh";
+
       # Minimal termux settings (nix-on-droid options only:
       # environment.*, nix.*, time.*, user.*, system.*, android-integration.*)
 
