@@ -51,11 +51,18 @@
       TUCKR_HOME = "$HOME/Storage/dotfiles";
       EDITOR = "fresh";
     };
-    file.".nanorc".text = ''
-      set nowrap
-      set tabstospaces
-      set tabsize 2
-    '';
+    file = {
+      ".nanorc".text = ''
+        set nowrap
+        set tabstospaces
+        set tabsize 2
+      '';
+      # Authorized keys for sshd (see modules/termux/default.nix).
+      # Declarative for now — the Store/.ssh symlink scheme is postponed.
+      ".ssh/authorized_keys".text = ''
+        ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKduJia+unaQQdN6X5syaHvnpIutO+yZwvfiCP4qKQ/P
+      '';
+    };
   };
   programs = {
     # ---- Shell: zsh ----
@@ -68,7 +75,7 @@
         enable = true;
         theme = "robbyrussell";
       };
-      loginExtra = "clear && fastfetch";
+      loginExtra = "clear && fastfetch && cd ~/.config/nix-on-droid";
       initContent = ''
         beet-p() {
           local base="${config.home.homeDirectory}/.config/beets/My"
@@ -99,7 +106,8 @@
         z-proxy = "export ALL_PROXY=socks5://localhost:10808";
         zh-proxy = "export HTTPS_PROXY=http://localhost:10808 && export HTTP_PROXY=http://localhost:10808";
         nix-dir = "cd ~/.config/nix-on-droid";
-        
+        q-ssh = "sshd-start";
+
         # beets
         beet-ima = "beet im ./ -A";
 
