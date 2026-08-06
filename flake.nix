@@ -25,8 +25,11 @@
       };
     };
     nix-on-droid = {
-      url = "github:nix-community/nix-on-droid/master";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-community/nix-on-droid/testing"; # same branch as test/ on the device
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
     };
     deploy-rs = {
       url = "github:serokell/deploy-rs";
