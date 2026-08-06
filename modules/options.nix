@@ -16,6 +16,7 @@
             "vds"
             "vds-new"
             "wsl"
+            "termux"
           ];
           default = "minimal";
           description = "Type of device for this host.";

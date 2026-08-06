@@ -25,7 +25,7 @@
       };
     };
     nix-on-droid = {
-      url = "github:nix-community/nix-on-droid/testing"; # same branch as test/ on the device
+      url = "github:nix-community/nix-on-droid/testing"; # testing branch, used on the device
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";

@@ -1,19 +1,34 @@
-{ inputs, ... }@flakeContext:
+{
+  inputs,
+  ...
+}@flakeContext:
 let
   # Host: epral (Android device via nix-on-droid, aarch64-linux)
-  # Adapted from test/nix-on-droid.nix — the config that works on the device.
-  # NOTE: nix-on-droid uses its own module system (class = "nixOnDroid").
-  # Only nix-on-droid options exist here: environment.*, nix.*, time.*,
-  # networking.hosts, user.*, home-manager.*, system.stateVersion, android-integration.*
-  # NixOS-only options (boot.*, services.*, hardware.*, fileSystems.*, ...) do NOT exist.
+  # Integrates with the base defaultModule (imports.self.nixosModules.default),
+  # which is trimmed for the "termux" device type: NixOS-only modules
+  # (essentials, users.nix, home-manager, sops-nix, disko, grub2-themes)
+  # and nixpkgs.overlays are skipped so it evaluates under nix-on-droid's
+  # module system (class = "nixOnDroid").
   nixOnDroidModule =
     {
-      config,
       lib,
       pkgs,
+      xlib,
       ...
     }:
     {
+      imports = [
+        inputs.self.nixosModules.default # base defaultModule (termux-trimmed)
+      ];
+
+      xlib.device = {
+        type = "termux";
+        hostname = "epral";
+      };
+
+      # Minimal termux settings (nix-on-droid options only:
+      # environment.*, nix.*, time.*, user.*, system.*, android-integration.*)
+
       # user.userName defaults to "nix-on-droid"; set it to override.
       # user.home is read-only: /data/data/com.termux.nix/files/home
 
@@ -48,6 +63,20 @@ let
       # Backup etc files instead of failing to activate generation if a file already exists in /etc
       environment.etcBackupExtension = ".bak";
 
+      # Shared userspace home-manager config (same cozy shell as on NixOS hosts).
+      # nix-on-droid forces home.username / home.homeDirectory from user.*,
+      # so the strict module must not set them.
+      home-manager = {
+        useGlobalPkgs = true;
+        backupFileExtension = "hm-bak";
+        config = { ... }: {
+          imports = [
+            ../home/shared/strict.nix
+          ];
+          home.stateVersion = "24.05";
+        };
+      };
+
       # Read the changelog before changing this value
       system.stateVersion = "24.05";
 
@@ -69,4 +98,7 @@ inputs.nix-on-droid.lib.nixOnDroidConfiguration {
   modules = [
     nixOnDroidModule
   ];
+  extraSpecialArgs = {
+    deviceType = "termux";
+  };
 }
