@@ -62,6 +62,10 @@
       ".ssh/authorized_keys".text = ''
         ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKduJia+unaQQdN6X5syaHvnpIutO+yZwvfiCP4qKQ/P
       '';
+      # nix-on-droid's session-init adds ~/.nix-defexpr/channels to NIX_PATH
+      # unconditionally; nix warns about the missing dir on every invocation.
+      # Making it exist silences the warning.
+      ".nix-defexpr/channels/nixpkgs/.keep".text = "";
     };
   };
   programs = {
@@ -106,7 +110,7 @@
         z-proxy = "export ALL_PROXY=socks5://localhost:10808";
         zh-proxy = "export HTTPS_PROXY=http://localhost:10808 && export HTTP_PROXY=http://localhost:10808";
         nix-dir = "cd ~/.config/nix-on-droid";
-        q-ssh = "sshd-start";
+        q-ssh = "sv-start"; # start all supervised services (sshd, tailscaled, ...); manage with `sv status sshd` etc
 
         # beets
         beet-ima = "beet im ./ -A";

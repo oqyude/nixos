@@ -8,6 +8,30 @@ let
   sshdDir = "${config.user.home}/sshd";
   sshdTmpDir = "${config.user.home}/sshd-tmp";
   port = 8022;
+  serviceDir = "${config.user.home}/service";
+  tailscaleState = "${config.user.home}/tailscale/tailscaled.state";
+
+  # runit run-scripts (executable store paths, linked into ~/service).
+  sshdRun = pkgs.writeScriptBin "sshd-run" ''
+    #!${pkgs.runtimeShell}
+    exec ${pkgs.openssh}/bin/sshd -f /etc/ssh/sshd_config -D
+  '';
+  tailscaledRun = pkgs.writeScriptBin "tailscaled-run" ''
+    #!${pkgs.runtimeShell}
+    # real tun: requires /dev/net/tun access (root: su -c 'chmod 666 /dev/net/tun').
+    # If unavailable, fall back to userspace networking:
+    #   exec ${pkgs.tailscale}/bin/tailscaled --tun=userspace-networking --socks5-server=localhost:1055 --state=${tailscaleState}
+    exec ${pkgs.tailscale}/bin/tailscaled --state=${tailscaleState}
+  '';
+  svLogRun = pkgs.writeScriptBin "sv-log-run" ''
+    #!${pkgs.runtimeShell}
+    mkdir -p ./main
+    exec ${pkgs.runit}/bin/svlogd -tt ./main
+  '';
+  svStart = pkgs.writeScriptBin "sv-start" ''
+    #!${pkgs.runtimeShell}
+    exec ${pkgs.runit}/bin/runsvdir ${serviceDir}
+  '';
 in
 {
   # Minimal sshd server for LAN access (e.g. `ssh epral` from other hosts).
@@ -33,7 +57,26 @@ in
     fi
   '';
 
+  # runit service tree: ~/service/<name>/{run,log/run}. run/ and log/run are
+  # symlinks into the nix store (read-only is fine; runsvdir writes only to
+  # the <name>/supervise dirs). /etc/service is symlinked for `sv status`.
+  build.activation.services = ''
+    $DRY_RUN_CMD mkdir -p ${serviceDir}/sshd/log ${serviceDir}/tailscaled/log
+    $DRY_RUN_CMD ln -sfn ${sshdRun}/bin/sshd-run ${serviceDir}/sshd/run
+    $DRY_RUN_CMD ln -sfn ${svLogRun}/bin/sv-log-run ${serviceDir}/sshd/log/run
+    $DRY_RUN_CMD ln -sfn ${tailscaledRun}/bin/tailscaled-run ${serviceDir}/tailscaled/run
+    $DRY_RUN_CMD ln -sfn ${svLogRun}/bin/sv-log-run ${serviceDir}/tailscaled/log/run
+    $DRY_RUN_CMD ln -sfn ${serviceDir} /etc/service
+  '';
+
   environment.packages = [
+    pkgs.runit
+    pkgs.tailscale
+
+    # one command brings up all supervised services (sshd, tailscaled, ...)
+    svStart
+
+    # manual fallback for sshd only
     (pkgs.writeScriptBin "sshd-start" ''
       #!${pkgs.runtimeShell}
       exec ${pkgs.openssh}/bin/sshd -f /etc/ssh/sshd_config -D "$@"
