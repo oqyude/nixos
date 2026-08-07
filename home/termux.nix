@@ -62,10 +62,6 @@
       ".ssh/authorized_keys".text = ''
         ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKduJia+unaQQdN6X5syaHvnpIutO+yZwvfiCP4qKQ/P
       '';
-      # nix-on-droid's session-init adds ~/.nix-defexpr/channels to NIX_PATH
-      # unconditionally; nix warns about the missing dir on every invocation.
-      # Making it exist silences the warning.
-      ".nix-defexpr/channels/nixpkgs/.keep".text = "";
     };
   };
   programs = {
