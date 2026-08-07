@@ -4,11 +4,6 @@
   inputs,
   ...
 }:
-let
-  master = import inputs.nixpkgs-master {
-    system = "x86_64-linux";
-  };
-in
 {
   environment = {
     systemPackages = with pkgs; [

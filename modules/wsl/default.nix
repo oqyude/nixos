@@ -7,7 +7,6 @@
 {
   imports = [
     ../software/beets
-    ../software/whisper.nix
     ./containers
     ./nix-serve.nix
     # ./tools

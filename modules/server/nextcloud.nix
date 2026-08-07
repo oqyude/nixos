@@ -6,13 +6,6 @@
   xlib,
   ...
 }:
-let
-  previous = import inputs.nixpkgs-master {
-    system = "x86_64-linux";
-    config.allowUnfree = true;
-    config.allowUnfreePredicate = true;
-  };
-in
 {
   services = {
     nextcloud-whiteboard-server = {
@@ -96,7 +89,7 @@ in
       extraAppsEnable = true;
       appstoreEnable = false;
       notify_push = {
-        enable = true;
+        enable = false;
         bendDomainToLocalhost = true;
         nextcloudUrl = "https://nextcloud.home.arpa";
       };

@@ -5,11 +5,6 @@
   xlib,
   ...
 }:
-let
-  stable = import inputs.nixpkgs-master {
-    system = "x86_64-linux";
-  };
-in
 {
   services = {
     samba-wsdd = {

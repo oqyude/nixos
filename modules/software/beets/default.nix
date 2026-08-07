@@ -7,31 +7,8 @@
   ...
 }:
 let
-  stable = import inputs.nixpkgs-beets {
-    system = "x86_64-linux";
-  };
-in
-let
-  # depsOverlay = import ./dependencies.nix {
-  #   # ./dependencies-full.nix if broken
-  #   inherit (pkgs) fetchurl fetchgit fetchhg;
-  #   inherit pkgs;
-  # };
-  # python3 = pkgs.python3.override {
-  #   packageOverrides = depsOverlay;
-  # };
   beetsEnv = pkgs.python314.withPackages (
     ps: with ps; [
-      # et-xmlfile
-      # exceptiongroup
-      # markdown-it-py
-      # mdurl
-      # munkres
-      # musicbrainzngs
-      # openpyxl
-      # pygments
-      # rich
-      # sniffio
       anyio
       beautifulsoup4
       beetcamp
@@ -68,7 +45,6 @@ let
       requests
       requests-ratelimiter
       scipy
-      # setuptools
       six
       socksio
       soupsieve

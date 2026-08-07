@@ -8,25 +8,6 @@
   programs = {
     mangohud.enable = true;
     keepassxc.enable = true;
-    zed-editor = {
-      enable = false;
-      extensions = [
-        "nix"
-      ];
-      userSettings = {
-        "telemetry" = {
-          "diagnostics" = false;
-          "metrics" = false;
-        };
-        "ui_font_size" = 20;
-        "buffer_font_size" = 26;
-        "theme" = {
-          "mode" = "system";
-          "light" = "Ayu Light";
-          "dark" = "Ayu Dark";
-        };
-      };
-    };
   };
   services = {
     kdeconnect.enable = true;
@@ -34,12 +15,6 @@
   };
   home = {
     packages = with pkgs; [
-      # Surfing
-      # (brave.override {
-      #   commandLineArgs = [
-      #     "--password-store=basic" # on purpose to make it break "--password-store=gnome-libsecret"
-      #   ];
-      # })
       brave
       v2rayn
 
@@ -48,8 +23,6 @@
       # amdgpu_top
       vscodium
       ayugram-desktop
-      # vesktop
-      # discord
       gramps
       kdePackages.filelight
       localsend
