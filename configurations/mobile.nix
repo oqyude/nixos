@@ -105,6 +105,9 @@ let
       time.timeZone = "Europe/Moscow";
 
       android-integration.termux-setup-storage.enable = true;
+
+      # Provides `am` (termux-am) — required by termux-api's broadcast backend.
+      android-integration.am.enable = true;
     };
 in
 inputs.nix-on-droid.lib.nixOnDroidConfiguration {

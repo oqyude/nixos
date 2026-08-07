@@ -86,5 +86,10 @@ in
       #!${pkgs.runtimeShell}
       exec ${pkgs.openssh}/bin/sshd -f /etc/ssh/sshd_config -D "$@"
     '')
+
+    # termux-battery-status, termux-notification, termux-clipboard-*, ...
+    # Needs the Termux:API Android app (com.termux.api, from F-Droid) as the
+    # actual backend; see termux-api.nix.
+    (pkgs.callPackage ./termux-api.nix { })
   ];
 }

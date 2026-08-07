@@ -116,11 +116,8 @@
         # beets
         beet-ima = "beet im ./ -A";
 
-        # ssh
-        z-s = "ssh sapphira";
-        z-st = "ssh sapphira-tailscale";
-        z-o = "ssh otreca";
-        z-ot = "ssh otreca-tailscale";
+        # ssh (hosts live in programs.ssh.settings below)
+        # NOTE: lamet / pubray-1 have no Host entry yet — kept as aliases.
         z-l = "ssh lamet";
         z-lt = "ssh lamet-tailscale";
         z-p-1 = "ssh pubray-1";
@@ -226,6 +223,59 @@
         };
         pull = {
           rebase = true;
+        };
+      };
+    };
+
+    # ---- SSH ----
+    # Declarative ~/.ssh/config, same as the one previously copied by hand.
+    # matchBlocks is deprecated in current home-manager; use `settings`
+    # (bare attr names become `Host` headers, keys are upstream directives).
+    ssh = {
+      enable = true;
+      # Reproduce the old enableDefaultConfig values explicitly.
+      enableDefaultConfig = false;
+      settings = {
+        "*" = {
+          ForwardAgent = false;
+          AddKeysToAgent = "no";
+          Compression = false;
+          ServerAliveInterval = 0;
+          ServerAliveCountMax = 3;
+          HashKnownHosts = false;
+          UserKnownHostsFile = "~/.ssh/known_hosts";
+          ControlMaster = "no";
+          ControlPath = "~/.ssh/master-%r@%n:%p";
+          ControlPersist = "no";
+        };
+        sapphira = {
+          HostName = "192.168.1.20";
+          User = "oqyude";
+        };
+        sapphira-tailscale = {
+          HostName = "100.64.0.0";
+          User = "oqyude";
+        };
+        otreca-old = {
+          HostName = "217.60.3.12";
+          User = "oqyude";
+        };
+        otreca = {
+          HostName = "109.248.161.5";
+          User = "oqyude";
+        };
+        otreca-tailscale = {
+          HostName = "100.64.1.0";
+          User = "oqyude";
+        };
+        rydiwo = {
+          HostName = "192.168.1.102";
+          User = "oqyude";
+        };
+        epral = {
+          HostName = "192.168.1.101";
+          User = "oqyude";
+          Port = 8022;
         };
       };
     };
