@@ -53,11 +53,12 @@ in
   # unconditionally; nix warns about the missing dir on every invocation.
   # Making it exist silences the warning. Must be done in activation (not
   # home-manager): ~/.nix-defexpr/channels is a symlink into
-  # ~/.local/state/nix/profiles/channels, which home-manager cannot link
-  # into.
+  # ~/.local/state/nix/profiles/channels (dangling until it exists), which
+  # home-manager cannot link into. mkdir -p refuses to traverse a dangling
+  # symlink, so create the real target dir instead.
   build.activation.nixdefexpr = ''
-    $DRY_RUN_CMD mkdir -p "${config.user.home}/.nix-defexpr/channels/nixpkgs"
-    $DRY_RUN_CMD touch "${config.user.home}/.nix-defexpr/channels/nixpkgs/.keep"
+    $DRY_RUN_CMD mkdir -p "${config.user.home}/.local/state/nix/profiles/channels/nixpkgs"
+    $DRY_RUN_CMD touch "${config.user.home}/.local/state/nix/profiles/channels/nixpkgs/.keep"
   '';
 
   # runit service tree: ~/service/<name>/{run,log/run}. run/ and log/run are
