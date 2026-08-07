@@ -32,6 +32,10 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ cmake ];
 
+  # CMakeLists.txt declares cmake_minimum_required(VERSION 3.0.0), but modern
+  # CMake refuses to configure with < 3.5. Bump the floor via policy override.
+  cmakeFlags = [ "-DCMAKE_POLICY_VERSION_MINIMUM=3.5" ];
+
   # termux-api.c hardcodes PREFIX for `am` and `termux-callback`. On
   # nix-on-droid `am` comes from android-integration.am (termux-am) via PATH;
   # termux-callback lives in our own libexec dir.
