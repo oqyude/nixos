@@ -80,6 +80,11 @@
         theme = "robbyrussell";
       };
       loginExtra = "clear && fastfetch && cd ~/.config/nix-on-droid";
+      # .zshenv — sourced by zsh in ALL sessions incl. non-login ssh commands.
+      # runit from nixpkgs defaults to /var/service as SVDIR, but our tree
+      # lives at ~/service (symlinked as /etc/service). Export it so that
+      # `sv status sshd` works without qualifying the path.
+      envExtra = "export SVDIR=/etc/service";
       initContent = ''
         beet-p() {
           local base="${config.home.homeDirectory}/.config/beets/My"
@@ -110,7 +115,7 @@
         z-proxy = "export ALL_PROXY=socks5://localhost:10808";
         zh-proxy = "export HTTPS_PROXY=http://localhost:10808 && export HTTP_PROXY=http://localhost:10808";
         nix-dir = "cd ~/.config/nix-on-droid";
-        q-ssh = "sv-start"; # start all supervised services (sshd, tailscaled, ...); manage with `sv status sshd` etc
+        q-ssh = "sv-start"; # start all supervised services (sshd, ...); manage with `sv status sshd` etc
 
         # beets
         beet-ima = "beet im ./ -A";
