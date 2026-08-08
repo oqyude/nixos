@@ -23,7 +23,7 @@
     ./postgresql.nix
     ./power.nix
     ./samba.nix
-    ./step-ca.nix
+    # ./step-ca.nix
     ./syncthing.nix
     ./systemd.nix
     # ../containers/remnawave.nix

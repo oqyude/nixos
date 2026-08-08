@@ -17,7 +17,7 @@ in
   services.onlyoffice = {
     enable = true;
     # package = previous.onlyoffice-documentserver;
-    hostname = "office.home.arpa";
+    hostname = "office.zeroq.su";
     port = 8090;
     allowLocalConnections = true;
     wopi = true;

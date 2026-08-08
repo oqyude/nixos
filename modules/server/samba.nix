@@ -10,7 +10,7 @@
     samba-wsdd = {
       enable = true;
       openFirewall = true;
-      hostname = "sapphira.home.arpa";
+      hostname = "sapphira";
       discovery = true;
     };
     samba = {

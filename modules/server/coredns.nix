@@ -15,7 +15,7 @@
               192.168.1.20 flux.zeroq.su
               192.168.1.20 git.zeroq.su
               192.168.1.20 glances.zeroq.su
-              192.168.1.20 homebox.home.arpa
+              192.168.1.20 homebox.zeroq.su
               192.168.1.20 immich.zeroq.su
               192.168.1.20 kuma.zeroq.su
               192.168.1.20 navidrome.zeroq.su

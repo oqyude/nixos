@@ -11,7 +11,7 @@
     nextcloud-whiteboard-server = {
       enable = true;
       settings = {
-        NEXTCLOUD_URL = "https://nextcloud.home.arpa";
+        NEXTCLOUD_URL = "https://nextcloud.zeroq.su";
       };
       secrets = [ config.sops.secrets.nextcloud-whiteboard-jwt.path ];
     };
@@ -20,8 +20,8 @@
       hostName = "talk.private";
       backends.nextcloud = {
         urls = [
-          "https://nextcloud.home.arpa"
           "https://nextcloud.zeroq.su"
+          # "https://nextcloud.home.arpa"
         ];
         secretFile = config.sops.secrets.nextcloud-talk-secret.path;
       };
@@ -40,9 +40,9 @@
           secretFile = config.sops.secrets.turn-secret.path;
           apikeyFile = config.sops.secrets.turn-api-key.path;
           servers = [
-            "turn:turn.home.arpa:3478?transport=udp"
-            "turn:turn.home.arpa:3478?transport=tcp"
-            # "turns:turn.home.arpa:5349?transport=tcp"
+            "turn:turn.zeroq.su:3478?transport=udp"
+            "turn:turn.zeroq.su:3478?transport=tcp"
+            # "turns:turn.zeroq.su:5349?transport=tcp"
           ];
         };
       };
@@ -72,26 +72,28 @@
         trusted_domains = [
           "100.64.0.0"
           "192.168.1.20"
+          "37.128.246.126"
           "localhost"
+          "nextcloud.home.arpa"
           "nextcloud.private"
           "nextcloud.zeroq.su"
-          "office.zeroq.su"
           "office.home.arpa"
-          "nextcloud.home.arpa"
+          "office.zeroq.su"
         ];
         trusted_proxies = [
           "100.64.1.0"
-          "192.168.1.20"
           "109.248.161.5"
+          "192.168.1.20"
+          "37.128.246.126"
         ];
         overwriteprotocol = "https"; # maybe no
       };
       extraAppsEnable = true;
       appstoreEnable = false;
       notify_push = {
-        enable = false;
+        enable = true;
         bendDomainToLocalhost = true;
-        nextcloudUrl = "https://nextcloud.home.arpa";
+        nextcloudUrl = "https://nextcloud.zeroq.su";
       };
       # phpPackage = pkgs.php85;
       extraApps = {

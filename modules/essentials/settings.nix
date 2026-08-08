@@ -15,7 +15,7 @@
     settings = {
       require-sigs = false;
       substituters = [
-        "http://100.64.0.0:5000"
+        "https://nix-cache.zeroq.su"
         "https://cache.nixos.org"
         "https://nix-community.cachix.org"
         "https://mirror.yandex.ru/nixos"
@@ -27,7 +27,7 @@
         # "https://nixos.snix.store" # https://nixos.snix.store/
       ];
       trusted-public-keys = [
-        "nix-cache.home.arpa:be5jFLkiwNyOep/McxSafB3jguBmztxx+oJ46ySyc/s="
+        "nix-cache.zeroq.su:be5jFLkiwNyOep/McxSafB3jguBmztxx+oJ46ySyc/s="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
       stalled-download-timeout = 8;

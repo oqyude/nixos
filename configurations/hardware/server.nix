@@ -28,6 +28,7 @@
     kernel = {
       sysctl = {
         "fs.inotify.max_user_watches" = "204800";
+        "net.ipv4.ip_forward" = 1;
       };
     };
     kernelModules = [
