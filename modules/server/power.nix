@@ -13,10 +13,4 @@
     power-profiles-daemon.enable = lib.mkForce false;
     throttled.enable = false;
   };
-
-  environment = {
-    systemPackages = with pkgs; [
-      cpupower-gui
-    ];
-  };
 }

@@ -8,8 +8,8 @@
 let
   serviceName = "rsync-services-sync";
   serverAddress = "oqyude@100.64.0.0";
-  serverDir = "/mnt/services/nodes/vds";
-  nodeDir = "/mnt/services";
+  serverDir = "${xlib.dirs.services-nodes-folder}/${xlib.device.hostname}";
+  nodeDir = "${xlib.dirs.services-mnt-folder}";
 in
 {
   systemd = {

@@ -118,6 +118,11 @@
           default = "/mnt/services";
           description = "All services folder.";
         };
+        services-nodes-folder = lib.mkOption {
+          type = lib.types.str;
+          default = "${config.xlib.dirs.services-mnt-folder}/nodes";
+          description = "All nodes folder.";
+        };
         postgresql-folder = lib.mkOption {
           type = lib.types.str;
           default = "${config.xlib.dirs.services-mnt-folder}/postgresql";

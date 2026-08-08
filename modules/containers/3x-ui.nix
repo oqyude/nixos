@@ -5,6 +5,9 @@
   xlib,
   ...
 }:
+let
+  panel = "${xlib.dirs.services-nodes-folder}/${xlib.device.hostname}/3x-ui";
+in
 {
   virtualisation = {
     podman = {
@@ -25,8 +28,8 @@
           "TZ" = "Europe/Moscow";
         };
         volumes = [
-          "${xlib.dirs.services-mnt-folder}/containers/3x-ui/cert/:/root/cert:rw"
-          "${xlib.dirs.services-mnt-folder}/containers/3x-ui/db/:/etc/x-ui:rw"
+          "${panel}/cert/:/root/cert:rw"
+          "${panel}/db/:/etc/x-ui:rw"
         ];
         log-driver = "journald";
         extraOptions = [
@@ -97,13 +100,13 @@
     };
     # Folders
     tmpfiles.rules = [
-      "d /mnt 0755 root root -"
-      "d /mnt/services 0755 root root -"
-      "d /mnt/services/containers 0755 root root -"
-      "d /mnt/services/containers/3x-ui 0755 root root -"
-      "d /mnt/services/containers/3x-ui/cert 0755 root root -"
-      "d /mnt/services/containers/3x-ui/db 0755 root root -"
-      "Z /mnt/services/containers/3x-ui 0755 root root -"
+      "d ${xlib.dirs.services-mnt-folder} 0755 root root -"
+      "d ${xlib.dirs.services-nodes-folder} 0755 root root -"
+      "d ${xlib.dirs.services-nodes-folder}/${xlib.device.hostname} 0755 root root -"
+      "d ${panel} 0755 root root -"
+      "d ${panel}/db 0755 root root -"
+      "d ${panel}/cert 0755 root root -"
+      "Z ${panel} 0755 root root -"
     ];
   };
 
