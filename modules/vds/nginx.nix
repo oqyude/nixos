@@ -17,7 +17,7 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       virtualHosts = {
-        "x.zeroq.su" = {
+        "pubray1.zeroq.su" = {
           forceSSL = true;
           enableACME = true;
           locations = {
@@ -45,7 +45,7 @@ in
   security.acme = {
     acceptTerms = true;
     defaults = {
-      email = "go.bin043120@gmail.com";
+      email = "oqyude@gmail.com";
     };
   };
   networking.firewall.allowedTCPPorts = [

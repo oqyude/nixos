@@ -6,6 +6,9 @@
   xlib,
   ...
 }:
+let
+  navidromeDir = "/var/lib/services/navidrome-point";
+in
 {
   services = {
     navidrome = {
@@ -15,19 +18,19 @@
       settings = {
         Address = "0.0.0.0";
         Port = 4533;
-        MusicFolder = "${xlib.dirs.server-home}/Music";
+        MusicFolder = "${navidromeDir}";
       };
     };
   };
-  # systemd.mounts = [
-  #   {
-  #     enable = true;
-  #     options = "bind,x-systemd.automount,nofail";
-  #     requires = [ "local-fs.target" ];
-  #     type = "none";
-  #     wantedBy = [ "multi-user.target" ];
-  #     what = "${xlib.dirs.server-home}/Music";
-  #     where = "/home/${xlib.device.username}/.config/beets";
-  #   }
-  # ];
+  systemd.mounts = [
+    {
+      enable = true;
+      options = "bind,x-systemd.automount,nofail";
+      requires = [ "local-fs.target" ];
+      type = "none";
+      wantedBy = [ "multi-user.target" ];
+      what = "${xlib.dirs.server-home}/Music";
+      where = "${navidromeDir}";
+    }
+  ];
 }

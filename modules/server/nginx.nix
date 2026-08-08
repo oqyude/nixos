@@ -64,6 +64,28 @@ in
             client_max_body_size 5G;
           '';
         };
+        "x.zeroq.su" = {
+          forceSSL = true;
+          enableACME = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://${server}:2049";
+              proxyWebsockets = true;
+            };
+            "/subs/" = {
+              proxyPass = "http://${server}:2096";
+              proxyWebsockets = true;
+            };
+            "/subsjs/" = {
+              proxyPass = "http://${server}:2096";
+              proxyWebsockets = true;
+            };
+            "/clash/" = {
+              proxyPass = "http://${server}:2096";
+              proxyWebsockets = true;
+            };
+          };
+        };
         # "pdf.home.arpa" = {
         #   forceSSL = true;
         #   enableACME = true;

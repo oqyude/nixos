@@ -4,6 +4,7 @@
 }:
 {
   imports = [
+    ../containers/3x-ui.nix
     ../software/beets
     ./acme.nix
     ./bentopdf.nix
@@ -23,9 +24,9 @@
     ./postgresql.nix
     ./power.nix
     ./samba.nix
-    # ./step-ca.nix
     ./syncthing.nix
     ./systemd.nix
+    # ./step-ca.nix
     # ../containers/remnawave.nix
     # ./coturn.nix
     # ./mealie.nix
