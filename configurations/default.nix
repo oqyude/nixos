@@ -1,13 +1,15 @@
 { inputs, ... }@flakeContext:
+let
+  mkSystem = import ../lib/mkSystem.nix flakeContext;
+in
 {
   nixosConfigurations = {
-    default = import ./any.nix flakeContext; # default
-    atoridu = import ./mini-pc.nix flakeContext; # atoridu
-    rydiwo = import ./mini-laptop.nix flakeContext; # rydiwo
-    otreca = import ./vds.nix flakeContext; # vds
-    otreca-new = import ./vds-new.nix flakeContext; # vds-new
-    sapphira = import ./server.nix flakeContext; # sapphira
-    wsl = import ./wsl.nix flakeContext; # wsl
+    default = mkSystem (import ./any.nix); # default
+    atoridu = mkSystem (import ./mini-pc.nix); # atoridu
+    rydiwo = mkSystem (import ./mini-laptop.nix); # rydiwo
+    otreca = mkSystem (import ./vds.nix); # vds
+    sapphira = mkSystem (import ./server.nix); # sapphira
+    wsl = mkSystem (import ./wsl.nix); # wsl
   };
   nixOnDroidConfigurations = {
     epral = import ./mobile.nix flakeContext; # epral (Android via nix-on-droid)

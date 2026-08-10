@@ -14,7 +14,6 @@
             "secondary"
             "server"
             "vds"
-            "vds-new"
             "wsl"
             "termux"
           ];

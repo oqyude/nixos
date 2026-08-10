@@ -1,132 +1,122 @@
-{ inputs, ... }@flakeContext:
-let
-  nixosModule =
-    {
-      config,
-      lib,
-      pkgs,
-      xlib,
-      ...
-    }:
-    {
-      xlib.device = {
-        type = "server";
-        hostname = "sapphira";
-      };
+{
+  deviceType = "server";
+  hostname = "sapphira";
+  modules = [
+    (
+      {
+        config,
+        inputs,
+        lib,
+        pkgs,
+        xlib,
+        ...
+      }:
+      {
+        imports = [
+          ./hardware/server.nix
+          inputs.self.nixosModules.default
+        ];
 
-      imports = [
-        ./hardware/server.nix
-        inputs.self.nixosModules.default
-      ];
-
-      boot = {
-        # kernelPackages = pkgs.linuxPackages_xanmod_stable;
-        hardwareScan = true;
-        loader = {
-          systemd-boot.enable = lib.mkDefault true;
-          efi.canTouchEfiVariables = lib.mkDefault true;
-        };
-      };
-
-      hardware = {
-        bluetooth.enable = true;
-        graphics = {
-          enable = true;
-          extraPackages = with pkgs; [
-            intel-media-driver
-            intel-ocl
-            intel-vaapi-driver
-          ];
-        };
-        intel-gpu-tools.enable = true;
-      };
-
-      fileSystems = {
-        # External drive
-        "${xlib.dirs.server-home}" = {
-          device = "/dev/disk/by-uuid/37e53ebc-5343-a94d-9fe2-0ca39e13a8de";
-          fsType = "ext4";
-        };
-        # Archive drive
-        "${xlib.dirs.archive-drive}" = {
-          device = "/dev/disk/by-label/archive";
-          fsType = "exfat";
-          options = [
-            "nofail"
-            "uid=1000"
-            "gid=1000"
-          ];
-        };
-        # Mobile SD-Card
-        "${xlib.dirs.mobile-drive}" = {
-          device = "/dev/disk/by-uuid/7EB1-DC99";
-          fsType = "exfat";
-          options = [
-            "nofail"
-            "uid=1000"
-            "gid=1000"
-          ];
-        };
-        # Services in /mnt folder
-        "${xlib.dirs.services-mnt-folder}" = {
-          device = "${xlib.dirs.services-folder}";
-          fsType = "none";
-          options = [
-            "bind"
-            "nofail"
-          ];
-        };
-      };
-
-      systemd.tmpfiles.rules = [
-        "z ${xlib.dirs.services-mnt-folder} 0777 root root -"
-      ];
-
-      services = {
-        earlyoom.enable = true;
-        journald = {
-          extraConfig = ''
-            SystemMaxUse=512M
-          '';
-        };
-        openssh = {
-          enable = true;
-          allowSFTP = true;
-          hostKeys = [
-            {
-              path = "/etc/ssh/id_ed25519";
-              type = "ed25519";
-            }
-          ];
-          settings = {
-            PasswordAuthentication = false;
-            PermitRootLogin = "yes";
-            UsePAM = true;
+        boot = {
+          # kernelPackages = pkgs.linuxPackages_xanmod_stable;
+          hardwareScan = true;
+          loader = {
+            systemd-boot.enable = lib.mkDefault true;
+            efi.canTouchEfiVariables = lib.mkDefault true;
           };
         };
-      };
 
-      networking = {
-        hostName = "${xlib.device.hostname}";
-        networkmanager.enable = true;
-        firewall.enable = false;
-        # nameservers = [
-        #   "192.168.1.1"
-        #   "127.0.0.1"
-        # ];
-      };
+        hardware = {
+          bluetooth.enable = true;
+          graphics = {
+            enable = true;
+            extraPackages = with pkgs; [
+              intel-media-driver
+              intel-ocl
+              intel-vaapi-driver
+            ];
+          };
+          intel-gpu-tools.enable = true;
+        };
 
-      system = {
-        stateVersion = "25.05";
-      };
-    };
-in
-inputs.nixpkgs.lib.nixosSystem {
-  modules = [
-    nixosModule
+        fileSystems = {
+          # External drive
+          "${xlib.dirs.server-home}" = {
+            device = "/dev/disk/by-uuid/37e53ebc-5343-a94d-9fe2-0ca39e13a8de";
+            fsType = "ext4";
+          };
+          # Archive drive
+          "${xlib.dirs.archive-drive}" = {
+            device = "/dev/disk/by-label/archive";
+            fsType = "exfat";
+            options = [
+              "nofail"
+              "uid=1000"
+              "gid=1000"
+            ];
+          };
+          # Mobile SD-Card
+          "${xlib.dirs.mobile-drive}" = {
+            device = "/dev/disk/by-uuid/7EB1-DC99";
+            fsType = "exfat";
+            options = [
+              "nofail"
+              "uid=1000"
+              "gid=1000"
+            ];
+          };
+          # Services in /mnt folder
+          "${xlib.dirs.services-mnt-folder}" = {
+            device = "${xlib.dirs.services-folder}";
+            fsType = "none";
+            options = [
+              "bind"
+              "nofail"
+            ];
+          };
+        };
+
+        systemd.tmpfiles.rules = [
+          "z ${xlib.dirs.services-mnt-folder} 0777 root root -"
+        ];
+
+        services = {
+          earlyoom.enable = true;
+          journald = {
+            extraConfig = ''
+              SystemMaxUse=512M
+            '';
+          };
+          openssh = {
+            enable = true;
+            allowSFTP = true;
+            hostKeys = [
+              {
+                path = "/etc/ssh/id_ed25519";
+                type = "ed25519";
+              }
+            ];
+            settings = {
+              PasswordAuthentication = false;
+              PermitRootLogin = "yes";
+              UsePAM = true;
+            };
+          };
+        };
+
+        networking = {
+          networkmanager.enable = true;
+          firewall.enable = false;
+          # nameservers = [
+          #   "192.168.1.1"
+          #   "127.0.0.1"
+          # ];
+        };
+
+        system = {
+          stateVersion = "25.05";
+        };
+      }
+    )
   ];
-  system = "x86_64-linux";
-  specialArgs = {
-    deviceType = "server";
-  };
 }

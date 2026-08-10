@@ -9,7 +9,6 @@ let
   user = "${inputs.self.nixosConfigurations.default.config.xlib.device.username}";
   server = "sapphira";
   vds = "otreca";
-  vds-new = "otreca-new";
   mini-laptop = "rydiwo";
 in
 {
@@ -19,7 +18,6 @@ in
     nodes = {
       "${server}" = mkDeploy "${server}";
       "${vds}" = mkDeploy "${vds}";
-      "${vds-new}" = mkDeploy "${vds-new}";
       "${mini-laptop}" = mkDeploy "${mini-laptop}";
     };
   };

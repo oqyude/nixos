@@ -67,7 +67,7 @@
       };
     };
     proxy-suite = {
-      url = "github:Mic92/sops-nix";
+      url = "github:FUFSoB/proxy-suite-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix = {

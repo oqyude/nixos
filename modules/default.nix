@@ -28,6 +28,7 @@ let
       nixpkgs.overlays = with inputs; [
         self.nixosOverlays.default
       ];
+      networking.hostName = lib.mkDefault config.xlib.device.hostname;
       _module.args = {
         inputs = inputs;
         xlib = config.xlib;

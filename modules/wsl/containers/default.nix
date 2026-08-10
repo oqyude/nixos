@@ -6,7 +6,8 @@
 }:
 {
   imports = [
-    # ./3x-ui.nix
+    # shared container modules live in ../../containers
+    # ../../containers/3x-ui.nix
   ];
 
   environment.systemPackages = with pkgs; [
