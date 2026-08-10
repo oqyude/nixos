@@ -3,6 +3,9 @@
   xlib,
   ...
 }:
+let
+  sourceDir = "${xlib.dirs.services-mnt-folder}/trilium";
+in
 {
   services.trilium-server = {
     enable = false;
@@ -11,10 +14,10 @@
       hostName = "trilium";
     };
     host = "0.0.0.0";
-    dataDir = "/mnt/services/trilium";
+    dataDir = "${sourceDir}";
   };
 
   systemd.tmpfiles.rules = [
-    "z /mnt/services/trilium 0750 trilium trilium -"
+    "z ${sourceDir} 0750 trilium trilium -"
   ];
 }

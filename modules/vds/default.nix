@@ -14,7 +14,6 @@
   ];
   systemd.tmpfiles.rules = [
     "d /mnt 0755 root root -"
-    "d /mnt/services 0755 root root -"
-    "d /mnt/services/containers 0755 root root -"
+    "d ${xlib.dirs.services-mnt-folder} 0755 root root -"
   ];
 }

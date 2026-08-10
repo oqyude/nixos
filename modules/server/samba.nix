@@ -5,6 +5,10 @@
   xlib,
   ...
 }:
+let
+  sourceDir = "${xlib.dirs.services-mnt-folder}/samba";
+  targetDir = "/var/lib/samba";
+in
 {
   services = {
     samba-wsdd = {
@@ -65,19 +69,21 @@
     };
   };
 
-  systemd.tmpfiles.rules = [
-    "d ${xlib.dirs.services-mnt-folder}/samba 0755 root root -"
-    "z ${xlib.dirs.services-mnt-folder}/samba 0755 root root -"
-  ];
-
-  fileSystems = {
-    "/var/lib/samba" = {
-      device = "${xlib.dirs.services-mnt-folder}/samba";
-      fsType = "none";
-      options = [
-        "bind"
-        "nofail"
-      ];
-    };
+  systemd = {
+    tmpfiles.rules = [
+      "d ${sourceDir} 0755 root root -"
+      "z ${sourceDir} 0755 root root -"
+    ];
+    mounts = [
+      {
+        enable = true;
+        options = "bind,x-systemd.automount,nofail";
+        requires = [ "local-fs.target" ];
+        type = "none";
+        wantedBy = [ "multi-user.target" ];
+        what = "${sourceDir}";
+        where = "${targetDir}";
+      }
+    ];
   };
 }

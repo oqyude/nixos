@@ -1,5 +1,6 @@
 {
   lib,
+  xlib,
   ...
 }:
 {
@@ -26,7 +27,7 @@
     ./samba.nix
     ./syncthing.nix
     ./systemd.nix
-    # ./step-ca.nix
+    ./uptime-kuma.nix
     # ../containers/remnawave.nix
     # ./coturn.nix
     # ./mealie.nix
@@ -34,13 +35,16 @@
     # ./n8n.nix
     # ./netdata.nix
     # ./nfs.nix
-    # ./node-red.nix
     # ./open-webui.nix
     # ./rsync.nix
+    # ./step-ca.nix
     # ./stirling-pdf.nix
     # ./transmission.nix
     # ./trilium.nix
-    # ./uptime-kuma.nix
     # ./zerotier.nix
+  ];
+  systemd.tmpfiles.rules = [
+    "d /mnt 0755 root root -"
+    "d ${xlib.dirs.services-mnt-folder} 0755 root root -"
   ];
 }

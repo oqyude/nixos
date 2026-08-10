@@ -6,27 +6,34 @@
   xlib,
   ...
 }:
+let
+  sourceDir = "${xlib.dirs.services-mnt-folder}/postgresql";
+  targetDir = "/var/lib/postgresql";
+in
 {
   services = {
     postgresql = {
       enable = true;
       package = pkgs.postgresql_17;
-      # dataDir = "${xlib.dirs.services-mnt-folder}/postgresql";
     };
     # postgresqlBackup.enable = true;
   };
 
-  fileSystems."/var/lib/postgresql" = {
-    device = "${xlib.dirs.services-mnt-folder}/postgresql";
-    fsType = "none";
-    options = [
-      "bind"
-      "nofail"
+  systemd = {
+    tmpfiles.rules = [
+      "d ${sourceDir} 0760 postgres postgres -"
+      "z ${sourceDir} 0760 postgres postgres -"
+    ];
+    mounts = [
+      {
+        enable = true;
+        options = "bind,x-systemd.automount,nofail";
+        requires = [ "local-fs.target" ];
+        type = "none";
+        wantedBy = [ "multi-user.target" ];
+        what = "${sourceDir}";
+        where = "${targetDir}";
+      }
     ];
   };
-
-  systemd.tmpfiles.rules = [
-    "z ${xlib.dirs.services-mnt-folder}/postgresql 0760 postgres postgres -"
-    # "z ${config.services.postgresql.dataDir} 0760 postgres postgres -"
-  ];
 }

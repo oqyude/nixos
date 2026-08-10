@@ -6,9 +6,13 @@
   inputs,
   ...
 }:
+let
+  targetDir = "/var/lib/private/uptime-kuma";
+  sourceDir = "${xlib.dirs.services-mnt-folder}/uptime-kuma";
+in
 {
   services.uptime-kuma = {
-    enable = false;
+    enable = true;
     settings = {
       PORT = "4001";
       HOST = "0.0.0.0";
@@ -19,7 +23,7 @@
     "z ${xlib.dirs.services-mnt-folder}/uptime-kuma 0755 nobody nogroup -"
   ];
 
-  fileSystems."/var/lib/private/uptime-kuma" = {
+  fileSystems."${targetDir}" = {
     device = "${xlib.dirs.services-mnt-folder}/uptime-kuma";
     fsType = "none";
     options = [

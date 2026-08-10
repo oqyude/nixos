@@ -6,8 +6,8 @@
   ...
 }:
 let
-  configDir = "${xlib.dirs.services-mnt-folder}/step-ca";
-  varDir = "/var/lib/step-ca";
+  sourceDir = "${xlib.dirs.services-mnt-folder}/step-ca";
+  targetDir = "/var/lib/step-ca";
 in
 {
   services.step-ca = {
@@ -17,9 +17,9 @@ in
     openFirewall = true;
     intermediatePasswordFile = config.sops.secrets.intermediate-password.path;
     settings = {
-      root = "${varDir}/certs/root_ca.crt";
-      crt = "${varDir}/certs/intermediate_ca.crt";
-      key = "${varDir}/secrets/intermediate_ca_key";
+      root = "${targetDir}/certs/root_ca.crt";
+      crt = "${targetDir}/certs/intermediate_ca.crt";
+      key = "${targetDir}/secrets/intermediate_ca_key";
       # address = "0.0.0.0:9000";
       dnsNames = [
         "*.zeroq.su"
@@ -28,7 +28,7 @@ in
       ];
       db = {
         type = "badgerv2";
-        dataSource = "${varDir}/db";
+        dataSource = "${targetDir}/db";
       };
       authority = {
         claims = {
@@ -69,8 +69,8 @@ in
     };
   };
 
-  fileSystems."${varDir}" = {
-    device = "${configDir}";
+  fileSystems."${targetDir}" = {
+    device = "${sourceDir}";
     fsType = "none";
     options = [
       "bind"
@@ -85,9 +85,9 @@ in
   };
 
   systemd.tmpfiles.rules = [
-    "d ${configDir} 0755 nobody nogroup -"
-    "z ${configDir} 0755 nobody nogroup -"
-    "Z ${configDir}/ 0700 nobody nogroup -"
+    "d ${sourceDir} 0755 nobody nogroup -"
+    "z ${sourceDir} 0755 nobody nogroup -"
+    "Z ${sourceDir}/ 0700 nobody nogroup -"
   ];
 
   sops.secrets = {

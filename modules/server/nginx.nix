@@ -86,47 +86,7 @@ in
             };
           };
         };
-        # "pdf.home.arpa" = {
-        #   forceSSL = true;
-        #   enableACME = true;
-        #   locations = {
-        #     "/" = {
-        #       proxyPass = "http://127.0.0.1:8446";
-        #       proxyWebsockets = true;
-        #     };
-        #   };
-        #   extraConfig = ''
-        #     client_max_body_size 5G;
-        #   '';
-        # };
-        # "homebox.home.arpa" = {
-        #   forceSSL = true;
-        #   enableACME = true;
-        #   locations = {
-        #     "/" = {
-        #       proxyPass = "http://127.0.0.1:7745";
-        #       proxyWebsockets = true;
-        #     };
-        #   };
-        # };
-        # "nextcloud.home.arpa" = {
-        #   forceSSL = true;
-        #   enableACME = true;
-        #   locations = {
-        #     "/" = {
-        #       proxyPass = "http://127.0.0.1:10000";
-        #       proxyWebsockets = true;
-        #     };
-        #     "/whiteboard" = {
-        #       proxyPass = "http://127.0.0.1:3002";
-        #       proxyWebsockets = true;
-        #     };
-        #   };
-        #   extraConfig = ''
-        #     client_max_body_size 5G;
-        #   '';
-        # };
-        # "talk.home.arpa" = {
+        # "talk.zeroq.su" = {
         #   forceSSL = true;
         #   enableACME = true;
         #   # locations = {
@@ -139,7 +99,7 @@ in
         #     client_max_body_size 5G;
         #   '';
         # };
-        # "turn.home.arpa" = {
+        # "turn.zeroq.su" = {
         #   forceSSL = true;
         #   enableACME = true;
         #   locations = {
@@ -152,7 +112,7 @@ in
         #     client_max_body_size 5G;
         #   '';
         # };
-        # "ca.zeroq.su" = {
+        # "ca.home.arpa" = {
         #   forceSSL = true;
         #   enableACME = true;
         #   locations."/" = {
@@ -163,18 +123,7 @@ in
         #     client_max_body_size 5G;
         #   '';
         # };
-        # "git.home.arpa" = {
-        #   forceSSL = true;
-        #   enableACME = true;
-        #   locations."/" = {
-        #     proxyPass = "http://127.0.0.1:3000";
-        #     proxyWebsockets = true;
-        #   };
-        #   extraConfig = ''
-        #     client_max_body_size 5G;
-        #   '';
-        # };
-        # "n8n.home.arpa" = {
+        # "n8n.zeroq.su" = {
         #   forceSSL = true;
         #   enableACME = true;
         #   locations."/" = {
@@ -339,14 +288,14 @@ in
             proxyWebsockets = true;
           };
         };
-        "n8n.zeroq.su" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:5678";
-            proxyWebsockets = true;
-          };
-        };
+        # "n8n.zeroq.su" = {
+        #   forceSSL = true;
+        #   enableACME = true;
+        #   locations."/" = {
+        #     proxyPass = "http://${server}:5678";
+        #     proxyWebsockets = true;
+        #   };
+        # };
         # "office.zeroq.su" = {
         #   enableACME = true;
         #   forceSSL = true;

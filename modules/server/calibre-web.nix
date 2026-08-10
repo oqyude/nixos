@@ -6,9 +6,12 @@
   ...
 }:
 let
-  stable = import inputs.nixpkgs-previous {
-    system = "x86_64-linux";
-  };
+  # stable = import inputs.nixpkgs-previous {
+  #   system = "x86_64-linux";
+  # };
+  libraryDir = "${xlib.dirs.services-mnt-folder}/calibre-web-library";
+  sourceDir = "${xlib.dirs.services-mnt-folder}/calibre-web";
+  targetDir = "/var/lib/calibre-web";
 in
 {
   services = {
@@ -17,7 +20,7 @@ in
       enable = true;
       # dataDir = "${xlib.dirs.services-mnt-folder}/calibre-web";
       options = {
-        calibreLibrary = "${xlib.dirs.services-mnt-folder}/calibre-web-library";
+        calibreLibrary = "${libraryDir}";
         enableBookUploading = true;
         enableKepubify = true;
         enableBookConversion = false;
@@ -40,13 +43,15 @@ in
   };
 
   systemd.tmpfiles.rules = [
-    "d ${xlib.dirs.services-mnt-folder}/calibre-web 0755 calibre-web calibre-web -"
-    "d ${xlib.dirs.services-mnt-folder}/calibre-web-library 0755 calibre-web calibre-web -"
+    "d ${libraryDir} 0755 calibre-web calibre-web -"
+    "d ${sourceDir} 0755 calibre-web calibre-web -"
+    "Z ${libraryDir} 0755 calibre-web calibre-web -"
+    "Z ${sourceDir} 0755 calibre-web calibre-web -"
   ];
 
   fileSystems = {
-    "/var/lib/calibre-web" = {
-      device = "${xlib.dirs.services-mnt-folder}/calibre-web";
+    "${targetDir}" = {
+      device = "${sourceDir}";
       fsType = "none";
       options = [
         "bind"

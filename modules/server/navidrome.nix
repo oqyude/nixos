@@ -7,7 +7,8 @@
   ...
 }:
 let
-  navidromeDir = "/var/lib/services/navidrome-point";
+  pointDir = "/var/lib/services/navidrome-point";
+  libraryDir = "${xlib.dirs.server-home}/Music";
 in
 {
   services = {
@@ -18,7 +19,7 @@ in
       settings = {
         Address = "0.0.0.0";
         Port = 4533;
-        MusicFolder = "${navidromeDir}";
+        MusicFolder = "${pointDir}";
       };
     };
   };
@@ -29,8 +30,8 @@ in
       requires = [ "local-fs.target" ];
       type = "none";
       wantedBy = [ "multi-user.target" ];
-      what = "${xlib.dirs.server-home}/Music";
-      where = "${navidromeDir}";
+      what = "${libraryDir}";
+      where = "${pointDir}";
     }
   ];
 }
