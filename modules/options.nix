@@ -31,6 +31,13 @@
           description = "Hostname...";
         };
       };
+      ssh = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Enable SSH server with the standard config.";
+        };
+      };
       dirs = {
         user-home = lib.mkOption {
           type = lib.types.str;

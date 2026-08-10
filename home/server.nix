@@ -19,22 +19,6 @@ in
     ./minimal.nix
   ];
   home.file = mkLinks;
-  xdg = {
-    enable = true;
-    autostart.enable = true;
-    userDirs = {
-      enable = true;
-      createDirectories = false;
-      desktop = null;
-      documents = null;
-      download = null;
-      music = null;
-      pictures = null;
-      publicShare = null;
-      templates = null;
-      videos = null;
-    };
-  };
   home.activation = {
     yaziSync = ''
       ${pkgs.rsync}/bin/rsync -Lrv --no-A --no-X "${config.home.homeDirectory}/.config/yazi/" "${xlib.dirs.storage}/yazi/"

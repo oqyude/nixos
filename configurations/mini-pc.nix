@@ -4,11 +4,10 @@
   modules = [
     (
       {
-        config,
-        inputs,
         lib,
         pkgs,
         xlib,
+        inputs,
         ...
       }:
       {
@@ -69,76 +68,35 @@
           };
         };
 
-        hardware = {
-          bluetooth.enable = true;
+        services.xserver = {
+          videoDrivers = [
+            "amdgpu"
+          ];
         };
-
-        networking = {
-          networkmanager.enable = true;
-          firewall.enable = false;
-        };
-
-        i18n = {
-          extraLocaleSettings = {
-            LC_ADDRESS = "ru_RU.UTF-8";
-            LC_IDENTIFICATION = "ru_RU.UTF-8";
-            LC_MEASUREMENT = "ru_RU.UTF-8";
-            LC_MONETARY = "ru_RU.UTF-8";
-            LC_NAME = "ru_RU.UTF-8";
-            LC_NUMERIC = "ru_RU.UTF-8";
-            LC_PAPER = "ru_RU.UTF-8";
-            LC_TELEPHONE = "ru_RU.UTF-8";
-            LC_TIME = "ru_RU.UTF-8";
-          };
-        };
-
-        services = {
-          #logrotate.checkConfig = false;
-          #power-profiles-daemon.enable = false;
-          xserver = {
-            videoDrivers = [
-              "amdgpu"
-            ];
-          };
-          syncthing = {
-            enable = true;
-            systemService = true;
-            configDir = "${xlib.dirs.user-storage}/Syncthing/${config.system.name}";
-            dataDir = "${xlib.dirs.user-home}";
-            group = "users";
-            user = "${xlib.device.username}";
-          };
-          pipewire = {
-            enable = lib.mkDefault true;
-            systemWide = true;
-            alsa.enable = false;
-            alsa.support32Bit = true;
-            pulse.enable = true;
-            jack.enable = true;
-            extraConfig.pipewire = {
-              "99-default.conf" = {
-                "context.properties" = {
-                  "default.clock.rate" = 96000;
-                  "default.clock.allowed-rates" = [
-                    44100
-                    48000
-                    96000
-                  ];
-                  "default.clock.quantum" = 1024;
-                  "default.clock.min-quantum" = 256;
-                  "default.clock.max-quantum" = 2048;
-                };
+        services.pipewire = {
+          enable = lib.mkDefault true;
+          systemWide = true;
+          alsa.enable = false;
+          alsa.support32Bit = true;
+          pulse.enable = true;
+          jack.enable = true;
+          extraConfig.pipewire = {
+            "99-default.conf" = {
+              "context.properties" = {
+                "default.clock.rate" = 96000;
+                "default.clock.allowed-rates" = [
+                  44100
+                  48000
+                  96000
+                ];
+                "default.clock.quantum" = 1024;
+                "default.clock.min-quantum" = 256;
+                "default.clock.max-quantum" = 2048;
               };
             };
           };
-          thermald.enable = true;
-          earlyoom.enable = true;
         };
         nixpkgs.config.pulseaudio = true;
-
-        security = {
-          rtkit.enable = true;
-        };
 
         system.stateVersion = "26.05";
       }

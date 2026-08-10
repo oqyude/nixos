@@ -4,11 +4,10 @@
   modules = [
     (
       {
-        config,
-        inputs,
         lib,
         pkgs,
         xlib,
+        inputs,
         ...
       }:
       {
@@ -80,29 +79,7 @@
           "z ${xlib.dirs.services-mnt-folder} 0777 root root -"
         ];
 
-        services = {
-          earlyoom.enable = true;
-          journald = {
-            extraConfig = ''
-              SystemMaxUse=512M
-            '';
-          };
-          openssh = {
-            enable = true;
-            allowSFTP = true;
-            hostKeys = [
-              {
-                path = "/etc/ssh/id_ed25519";
-                type = "ed25519";
-              }
-            ];
-            settings = {
-              PasswordAuthentication = false;
-              PermitRootLogin = "yes";
-              UsePAM = true;
-            };
-          };
-        };
+        xlib.ssh.enable = true;
 
         networking = {
           networkmanager.enable = true;

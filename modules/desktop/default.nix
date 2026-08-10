@@ -3,6 +3,7 @@
   inputs,
   lib,
   pkgs,
+  xlib,
   ...
 }:
 {
@@ -10,6 +11,54 @@
     ./environment
     ./theming.nix
   ];
+
+  # Things every desktop host has in common
+  hardware.bluetooth.enable = true;
+
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "ru_RU.UTF-8";
+    LC_IDENTIFICATION = "ru_RU.UTF-8";
+    LC_MEASUREMENT = "ru_RU.UTF-8";
+    LC_MONETARY = "ru_RU.UTF-8";
+    LC_NAME = "ru_RU.UTF-8";
+    LC_NUMERIC = "ru_RU.UTF-8";
+    LC_PAPER = "ru_RU.UTF-8";
+    LC_TELEPHONE = "ru_RU.UTF-8";
+    LC_TIME = "ru_RU.UTF-8";
+  };
+
+  networking = {
+    networkmanager.enable = true;
+    firewall.enable = false;
+  };
+
+  security.rtkit.enable = true;
+
+  services = {
+    syncthing = {
+      enable = true;
+      systemService = true;
+      configDir = "${xlib.dirs.user-storage}/Syncthing/${config.system.name}";
+      dataDir = "${xlib.dirs.user-home}";
+      group = "users";
+      user = "${xlib.device.username}";
+    };
+    thermald.enable = true;
+    xserver = {
+      enable = true;
+      xkb = {
+        layout = "us,ru";
+        variant = "";
+        # options = "grp:alt_shift_toggle";
+      };
+    };
+    libinput.enable = true;
+    colord.enable = true;
+    printing = {
+      enable = true;
+      cups-pdf.enable = true;
+    };
+  };
 
   boot = {
     plymouth = {
@@ -52,22 +101,6 @@
     gamemode.enable = true;
     steam.enable = true;
     xwayland.enable = true;
-  };
-  services = {
-    xserver = {
-      enable = true;
-      xkb = {
-        layout = "us,ru";
-        variant = "";
-        # options = "grp:alt_shift_toggle";
-      };
-    };
-    libinput.enable = true;
-    colord.enable = true;
-    printing = {
-      enable = true;
-      cups-pdf.enable = true;
-    };
   };
   # environment = {
   #   systemPackages = [

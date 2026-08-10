@@ -5,11 +5,11 @@
     (
       {
         config,
-        inputs,
         lib,
         modulesPath,
         pkgs,
         xlib,
+        inputs,
         ...
       }:
       {
@@ -43,42 +43,17 @@
           };
         };
 
-        services = {
-          earlyoom.enable = true;
-          journald = {
-            extraConfig = ''
-              SystemMaxUse=512M
-            '';
-          };
-          openssh = {
-            enable = true;
-            allowSFTP = true;
-            openFirewall = true;
-            hostKeys = [
-              {
-                path = "/etc/ssh/id_ed25519";
-                type = "ed25519";
-              }
-            ];
-            settings = {
-              PasswordAuthentication = false;
-              PermitRootLogin = "yes";
-              UsePAM = true;
-            };
-          };
-          tailscale = {
-            enable = true;
-            openFirewall = true;
-          };
+        xlib.ssh.enable = true;
+        services.openssh.openFirewall = true;
+
+        services.tailscale = {
+          enable = true;
+          openFirewall = true;
         };
         networking = {
           nameservers = [
             "1.1.1.1"
             "8.8.8.8"
-            # "2001:4860:4860::8844"
-            # "2001:4860:4860::8888"
-            # "2606:4700:4700::1111"
-            # "2606:4700:4700::1001"
           ];
           networkmanager.enable = true;
           tempAddresses = "disabled";

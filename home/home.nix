@@ -20,6 +20,30 @@ let
             if username == "root" then lib.mkDefault "/${username}" else lib.mkDefault "/home/${username}";
           enableNixpkgsReleaseCheck = false;
         };
+        # Headless hosts: no GUI user dirs
+        xdg =
+          lib.mkIf
+            (builtins.elem xlib.device.type [
+              "server"
+              "vds"
+              "wsl"
+            ])
+            {
+              enable = true;
+              autostart.enable = true;
+              userDirs = {
+                enable = true;
+                createDirectories = false;
+                desktop = null;
+                documents = null;
+                download = null;
+                music = null;
+                pictures = null;
+                publicShare = null;
+                templates = null;
+                videos = null;
+              };
+            };
       };
       mkRootModule = username: {
         home = {
