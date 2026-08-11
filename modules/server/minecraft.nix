@@ -24,12 +24,14 @@ in
     servers = {
       vanilla = {
         enable = true;
-        package = pkgs.fabricServers.fabric-26_2;
+        package = pkgs.fabricServers.fabric-26_2.override {
+          jre_headless = pkgs.jdk25_headless;
+        };
         jvmOpts = "-Xmx2G -Xms1G";
         enableReload = true;
         serverProperties = {
-          view-distance=6;
-          simulation-distance=4;
+          view-distance = 6;
+          simulation-distance = 4;
           online-mode = false;
           difficulty = 3;
           gamemode = 1;

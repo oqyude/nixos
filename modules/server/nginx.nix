@@ -73,10 +73,10 @@ let
       port = 8083;
       body = true;
     }
-    {
-      domain = "mc.zeroq.su";
-      port = 25565;
-    }
+    # {
+    #   domain = "mc.zeroq.su";
+    #   port = 25565;
+    # }
     {
       domain = "nix-cache.zeroq.su";
       port = 5000;
