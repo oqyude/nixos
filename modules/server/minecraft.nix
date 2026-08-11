@@ -24,10 +24,12 @@ in
     servers = {
       vanilla = {
         enable = true;
-        package = pkgs.minecraftServers.vanilla-26_2;
+        package = pkgs.fabricServers.fabric-26_2;
         jvmOpts = "-Xmx2G -Xms1G";
         enableReload = true;
         serverProperties = {
+          view-distance=6;
+          simulation-distance=4;
           online-mode = false;
           difficulty = 3;
           gamemode = 1;
@@ -36,6 +38,20 @@ in
           motd = "ZeroQ сервак майна епта!";
           enable-rcon = true;
           "rcon.password" = "zeroq";
+        };
+        symlinks.mods = {
+          "lithium-fabric-0.25.3+mc26.2.jar" = pkgs.fetchurl {
+            url = "https://cdn.modrinth.com/data/gvQqBUqZ/versions/f7vZ0VWU/lithium-fabric-0.25.3%2Bmc26.2.jar";
+            hash = "sha256-/d6S4jjoB1+JrX9wHyo9WFSviLqaZ2VxhKRAexBKxWM=";
+          };
+          "ferritecore-9.0.0-fabric.jar" = pkgs.fetchurl {
+            url = "https://cdn.modrinth.com/data/uXXizFIs/versions/d5ddUdiB/ferritecore-9.0.0-fabric.jar";
+            hash = "sha256-ITlmxy7ZZ6zHOSvrKKhm+6MB/1a5l2wueAHC233mvyI=";
+          };
+          "krypton-0.3.1.jar" = pkgs.fetchurl {
+            url = "https://cdn.modrinth.com/data/fQEb0iXm/versions/5WeL0Nkz/krypton-0.3.1.jar";
+            hash = "sha256-XqiQFWGXPSnlHnUUadUtkhAPNIq0YeEYb2cBLpNCDEg=";
+          };
         };
       };
     };
