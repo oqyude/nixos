@@ -42,21 +42,30 @@ in
     # };
   };
 
-  systemd.tmpfiles.rules = [
-    "d ${libraryDir} 0755 calibre-web calibre-web -"
-    "d ${sourceDir} 0755 calibre-web calibre-web -"
-    "Z ${libraryDir} 0755 calibre-web calibre-web -"
-    "Z ${sourceDir} 0755 calibre-web calibre-web -"
-  ];
-
-  fileSystems = {
-    "${targetDir}" = {
-      device = "${sourceDir}";
-      fsType = "none";
-      options = [
-        "bind"
-        "nofail"
+  systemd.tmpfiles.rules =
+    xlib.helpers.mkTmpDirs {
+      dir = libraryDir;
+      mode = "0755";
+      user = "calibre-web";
+      group = "calibre-web";
+      types = [
+        "d"
+        "Z"
+      ];
+    }
+    ++ xlib.helpers.mkTmpDirs {
+      dir = sourceDir;
+      mode = "0755";
+      user = "calibre-web";
+      group = "calibre-web";
+      types = [
+        "d"
+        "Z"
       ];
     };
+
+  fileSystems = xlib.helpers.mkBindMount {
+    what = sourceDir;
+    where = targetDir;
   };
 }

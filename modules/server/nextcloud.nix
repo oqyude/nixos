@@ -201,7 +201,7 @@
   #     };
 
   systemd.tmpfiles.rules = [
-    "z ${config.services.nextcloud.home} 0750 nextcloud nextcloud -"
+    (xlib.helpers.mkTmpfile "z" config.services.nextcloud.home "0750" "nextcloud" "nextcloud")
   ];
 
   environment.systemPackages = [

@@ -21,6 +21,6 @@
   };
 
   systemd.tmpfiles.rules = [
-    "z /mnt/services/memos 0750 memos memos -"
+    (xlib.helpers.mkTmpfile "z" "${xlib.dirs.services-mnt-folder}/memos" "0750" "memos" "memos")
   ];
 }

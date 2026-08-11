@@ -44,7 +44,7 @@
     # ./zerotier.nix
   ];
   systemd.tmpfiles.rules = [
-    "d /mnt 0755 root root -"
-    "d ${xlib.dirs.services-mnt-folder} 0755 root root -"
+    (xlib.helpers.mkTmpfile "d" "/mnt" "0755" "root" "root")
+    (xlib.helpers.mkTmpfile "d" xlib.dirs.services-mnt-folder "0755" "root" "root")
   ];
 }

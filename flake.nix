@@ -36,6 +36,7 @@
     utils.url = "github:numtide/flake-utils";
     flake-compat.url = "github:edolstra/flake-compat";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nix-systems.url = "github:nix-systems/default";
     # nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     # flake-utils.url = "github:numtide/flake-utils";
     # flake-parts.url = "github:hercules-ci/flake-parts";
@@ -70,6 +71,14 @@
     grub2-themes = {
       url = "github:vinceliuice/grub2-themes";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-minecraft = {
+      url = "github:Infinidoge/nix-minecraft";
+      inputs = {
+        flake-compat.follows = "flake-compat";
+        nixpkgs.follows = "nixpkgs";
+        systems.follows = "nix-systems";
+      };
     };
     # nix-index-database = {
     #   url = "github:nix-community/nix-index-database";

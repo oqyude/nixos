@@ -2,23 +2,54 @@
   config,
   xlib,
   lib,
-  pkgs,
   ...
 }:
+let
+  user = "${xlib.device.username}";
+  userGroup = config.users.users."${user}".group;
+
+  # sops secret factory: name == key by default, owner/group default to root
+  mkSecret =
+    {
+      path,
+      mode,
+      key ? null,
+      owner ? null,
+      group ? null,
+    }:
+    {
+      format = "yaml";
+      inherit path mode;
+    }
+    // lib.optionalAttrs (key != null) { inherit key; }
+    // lib.optionalAttrs (owner != null) { inherit owner; }
+    // lib.optionalAttrs (group != null) { inherit group; };
+
+  # default owner = device user
+  mkUserSecret =
+    args:
+    mkSecret (
+      args
+      // {
+        owner = user;
+        group = userGroup;
+      }
+    );
+in
 {
   xlib.device.username = "oqyude";
 
   users = {
     mutableUsers = false;
     users = {
-      "${xlib.device.username}" = {
-        name = "${xlib.device.username}";
+      "${user}" = {
+        name = "${user}";
         isNormalUser = true;
         group = "users";
         description = "Jor Oqyude";
         hashedPasswordFile = config.sops.secrets.hashed_password.path; # hashed_password
         homeMode = "700";
-        home = "/home/${xlib.device.username}";
+        home = "/home/${user}";
         extraGroups = [
           "audio"
           "disk"
@@ -46,51 +77,32 @@
     secrets = {
       hashed_password = {
         neededForUsers = true;
+        format = "yaml";
         key = "hashed_password";
-        format = "yaml";
       };
-      age_key_private = {
-        format = "yaml";
-        key = "age_key_private";
-        path = "/home/${xlib.device.username}/.config/sops/age/keys.txt";
-        owner = config.users.users."${xlib.device.username}".name;
-        group = config.users.users."${xlib.device.username}".group;
+      age_key_private = mkUserSecret {
+        path = "${xlib.dirs.user-home}/.config/sops/age/keys.txt";
         mode = "0600";
       };
-      ssh_key_private = {
-        format = "yaml";
-        key = "ssh_key_private";
-        path = "/home/${xlib.device.username}/.ssh/id_ed25519";
-        owner = config.users.users."${xlib.device.username}".name;
-        group = config.users.users."${xlib.device.username}".group;
+      ssh_key_private = mkUserSecret {
+        path = "${xlib.dirs.user-home}/.ssh/id_ed25519";
         mode = "0600";
       };
-      ssh_key_public = {
-        format = "yaml";
-        key = "ssh_key_public";
-        path = "/home/${xlib.device.username}/.ssh/id_ed25519.pub";
-        owner = config.users.users."${xlib.device.username}".name;
-        group = config.users.users."${xlib.device.username}".group;
+      ssh_key_public = mkUserSecret {
+        path = "${xlib.dirs.user-home}/.ssh/id_ed25519.pub";
         mode = "0655";
       };
-      ssh_key_private_root = {
-        format = "yaml";
+      ssh_key_private_root = mkSecret {
         key = "ssh_key_private";
         path = "/root/.ssh/id_ed25519";
-        owner = "root";
-        group = "root";
         mode = "0600";
       };
-      ssh_key_public_root = {
-        format = "yaml";
+      ssh_key_public_root = mkSecret {
         key = "ssh_key_public";
         path = "/root/.ssh/id_ed25519.pub";
-        owner = "root";
-        group = "root";
         mode = "0655";
       };
-      ssh_key_public_host = {
-        format = "yaml";
+      ssh_key_public_host = mkSecret {
         key = "ssh_key_public";
         path = "/etc/ssh/id_ed25519.pub";
         mode = "0655";

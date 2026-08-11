@@ -20,15 +20,11 @@ in
   };
 
   systemd.tmpfiles.rules = [
-    "z ${xlib.dirs.services-mnt-folder}/uptime-kuma 0755 nobody nogroup -"
+    (xlib.helpers.mkTmpfile "z" sourceDir "0755" "nobody" "nogroup")
   ];
 
-  fileSystems."${targetDir}" = {
-    device = "${xlib.dirs.services-mnt-folder}/uptime-kuma";
-    fsType = "none";
-    options = [
-      "bind"
-      "nofail"
-    ];
+  fileSystems = xlib.helpers.mkBindMount {
+    what = sourceDir;
+    where = targetDir;
   };
 }

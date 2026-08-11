@@ -18,6 +18,6 @@ in
   };
 
   systemd.tmpfiles.rules = [
-    "z ${sourceDir} 0750 trilium trilium -"
+    (xlib.helpers.mkTmpfile "z" sourceDir "0750" "trilium" "trilium")
   ];
 }

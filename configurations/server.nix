@@ -38,42 +38,26 @@
           intel-gpu-tools.enable = true;
         };
 
-        fileSystems = {
-          # External drive
-          "${xlib.dirs.server-home}" = {
-            device = "/dev/disk/by-uuid/37e53ebc-5343-a94d-9fe2-0ca39e13a8de";
-            fsType = "ext4";
+        fileSystems =
+          (xlib.helpers.mkExfatMount {
+            path = xlib.dirs.archive-drive;
+            label = "archive";
+          })
+          // (xlib.helpers.mkExfatMount {
+            path = xlib.dirs.mobile-drive;
+            uuid = "7EB1-DC99";
+          })
+          // (xlib.helpers.mkBindMount {
+            what = xlib.dirs.services-folder;
+            where = xlib.dirs.services-mnt-folder;
+          })
+          // {
+            # External drive
+            "${xlib.dirs.server-home}" = {
+              device = "/dev/disk/by-uuid/37e53ebc-5343-a94d-9fe2-0ca39e13a8de";
+              fsType = "ext4";
+            };
           };
-          # Archive drive
-          "${xlib.dirs.archive-drive}" = {
-            device = "/dev/disk/by-label/archive";
-            fsType = "exfat";
-            options = [
-              "nofail"
-              "uid=1000"
-              "gid=1000"
-            ];
-          };
-          # Mobile SD-Card
-          "${xlib.dirs.mobile-drive}" = {
-            device = "/dev/disk/by-uuid/7EB1-DC99";
-            fsType = "exfat";
-            options = [
-              "nofail"
-              "uid=1000"
-              "gid=1000"
-            ];
-          };
-          # Services in /mnt folder
-          "${xlib.dirs.services-mnt-folder}" = {
-            device = "${xlib.dirs.services-folder}";
-            fsType = "none";
-            options = [
-              "bind"
-              "nofail"
-            ];
-          };
-        };
 
         systemd.tmpfiles.rules = [
           "z ${xlib.dirs.services-mnt-folder} 0777 root root -"

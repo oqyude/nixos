@@ -127,6 +127,32 @@
         "type": "github"
       }
     },
+    "nix-minecraft": {
+      "inputs": {
+        "flake-compat": [
+          "flake-compat"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "systems": [
+          "nix-systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1786414302,
+        "narHash": "sha256-FNGnUYud1D3BqE1JU2Uef+puLB2Rml7gKSdIGQOb550=",
+        "owner": "Infinidoge",
+        "repo": "nix-minecraft",
+        "rev": "cacc8cd89550f0cbec7103f3db5e96d1a66c58e7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Infinidoge",
+        "repo": "nix-minecraft",
+        "type": "github"
+      }
+    },
     "nix-on-droid": {
       "inputs": {
         "home-manager": [
@@ -152,6 +178,21 @@
         "owner": "nix-community",
         "ref": "testing",
         "repo": "nix-on-droid",
+        "type": "github"
+      }
+    },
+    "nix-systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
         "type": "github"
       }
     },
@@ -348,7 +389,9 @@
         "flake-compat": "flake-compat",
         "grub2-themes": "grub2-themes",
         "home-manager": "home-manager",
+        "nix-minecraft": "nix-minecraft",
         "nix-on-droid": "nix-on-droid",
+        "nix-systems": "nix-systems",
         "nixos-hardware": "nixos-hardware",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_2",

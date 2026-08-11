@@ -68,14 +68,9 @@ in
     };
   };
   systemd.mounts = [
-    {
-      enable = true;
-      options = "bind,x-systemd.automount,nofail";
-      requires = [ "local-fs.target" ];
-      type = "none";
-      wantedBy = [ "multi-user.target" ];
+    (xlib.helpers.mkSystemdBind {
       what = "/home/${xlib.device.username}/Music";
       where = "/home/${xlib.device.username}/.config/beets";
-    }
+    })
   ];
 }

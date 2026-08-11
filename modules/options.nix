@@ -3,6 +3,17 @@
   lib,
   ...
 }:
+let
+  # Option factory for the xlib.dirs namespace
+  mkDir =
+    default: description:
+    lib.mkOption {
+      type = lib.types.str;
+      inherit default description;
+    };
+
+  helpers = import ../lib/xlib.nix { inherit lib; };
+in
 {
   options = {
     xlib = {
@@ -39,101 +50,30 @@
         };
       };
       dirs = {
-        user-home = lib.mkOption {
-          type = lib.types.str;
-          default = "/home/${config.xlib.device.username}";
-          description = "User home directory.";
-        };
-        user-storage = lib.mkOption {
-          type = lib.types.str;
-          default = "${config.xlib.dirs.user-home}/Storage";
-          description = "User storage directory.";
-        };
-        archive-drive = lib.mkOption {
-          type = lib.types.str;
-          default = "/mnt/archive";
-          description = "Archive drive mount point.";
-        };
-        lamet-drive = lib.mkOption {
-          type = lib.types.str;
-          default = "/mnt/lamet";
-          description = "Lamet drive mount point.";
-        };
-        mobile-drive = lib.mkOption {
-          type = lib.types.str;
-          default = "/mnt/mobile";
-          description = "Mobile drive mount point.";
-        };
-        therima-drive = lib.mkOption {
-          type = lib.types.str;
-          default = "/mnt/therima";
-          description = "Therima drive mount point.";
-        };
-        vetymae-drive = lib.mkOption {
-          type = lib.types.str;
-          default = "/mnt/vetymae";
-          description = "Vetymae drive mount point.";
-        };
-        soptur-drive = lib.mkOption {
-          type = lib.types.str;
-          default = "/mnt/soptur";
-          description = "Soptur drive mount point.";
-        };
-        wsl-home = lib.mkOption {
-          type = lib.types.str;
-          default = "/mnt/c/Users/${config.xlib.device.username}";
-          description = "WSL home directory.";
-        };
-        wsl-storage = lib.mkOption {
-          type = lib.types.str;
-          default = "${config.xlib.dirs.wsl-home}/Storage";
-          description = "WSL storage directory.";
-        };
-        server-home = lib.mkOption {
-          type = lib.types.str;
-          default = "/home/${config.xlib.device.username}/External";
-          description = "Server home directory.";
-        };
-        server-credentials = lib.mkOption {
-          type = lib.types.str;
-          default = "${config.xlib.dirs.server-home}/Credentials/server";
-          description = "Server credentials directory.";
-        };
-        storage = lib.mkOption {
-          type = lib.types.str;
-          default = "${config.xlib.dirs.server-home}/Storage";
-          description = "General storage directory.";
-        };
-        calibre-library = lib.mkOption {
-          type = lib.types.str;
-          default = "${config.xlib.dirs.server-home}/Books-Library";
-          description = "Calibre library directory.";
-        };
-        music-library = lib.mkOption {
-          type = lib.types.str;
-          default = "${config.xlib.dirs.user-home}/Music";
-          description = "Music library directory.";
-        };
-        services-folder = lib.mkOption {
-          type = lib.types.str;
-          default = "${config.xlib.dirs.server-home}/Services";
-          description = "All services folder.";
-        };
-        services-mnt-folder = lib.mkOption {
-          type = lib.types.str;
-          default = "/mnt/services";
-          description = "All services folder.";
-        };
-        services-nodes-folder = lib.mkOption {
-          type = lib.types.str;
-          default = "${config.xlib.dirs.services-mnt-folder}/nodes";
-          description = "All nodes folder.";
-        };
-        postgresql-folder = lib.mkOption {
-          type = lib.types.str;
-          default = "${config.xlib.dirs.services-mnt-folder}/postgresql";
-          description = "PostgreSQL service folder.";
-        };
+        user-home = mkDir "/home/${config.xlib.device.username}" "User home directory.";
+        user-storage = mkDir "${config.xlib.dirs.user-home}/Storage" "User storage directory.";
+        archive-drive = mkDir "/mnt/archive" "Archive drive mount point.";
+        lamet-drive = mkDir "/mnt/lamet" "Lamet drive mount point.";
+        mobile-drive = mkDir "/mnt/mobile" "Mobile drive mount point.";
+        therima-drive = mkDir "/mnt/therima" "Therima drive mount point.";
+        vetymae-drive = mkDir "/mnt/vetymae" "Vetymae drive mount point.";
+        soptur-drive = mkDir "/mnt/soptur" "Soptur drive mount point.";
+        wsl-home = mkDir "/mnt/c/Users/${config.xlib.device.username}" "WSL home directory.";
+        wsl-storage = mkDir "${config.xlib.dirs.wsl-home}/Storage" "WSL storage directory.";
+        server-home = mkDir "/home/${config.xlib.device.username}/External" "Server home directory.";
+        server-credentials = mkDir "${config.xlib.dirs.server-home}/Credentials/server" "Server credentials directory.";
+        storage = mkDir "${config.xlib.dirs.server-home}/Storage" "General storage directory.";
+        calibre-library = mkDir "${config.xlib.dirs.server-home}/Books-Library" "Calibre library directory.";
+        music-library = mkDir "${config.xlib.dirs.user-home}/Music" "Music library directory.";
+        services-folder = mkDir "${config.xlib.dirs.server-home}/Services" "All services folder.";
+        services-mnt-folder = mkDir "/mnt/services" "All services folder.";
+        services-nodes-folder = mkDir "${config.xlib.dirs.services-mnt-folder}/nodes" "All nodes folder.";
+        postgresql-folder = mkDir "${config.xlib.dirs.services-mnt-folder}/postgresql" "PostgreSQL service folder.";
+      };
+      helpers = lib.mkOption {
+        type = lib.types.anything;
+        default = helpers;
+        description = "Shared helper functions (see lib/xlib.nix).";
       };
     };
   };

@@ -69,13 +69,9 @@ in
     };
   };
 
-  fileSystems."${targetDir}" = {
-    device = "${sourceDir}";
-    fsType = "none";
-    options = [
-      "bind"
-      "nofail"
-    ];
+  fileSystems = xlib.helpers.mkBindMount {
+    what = sourceDir;
+    where = targetDir;
   };
 
   environment = {
@@ -84,11 +80,14 @@ in
     ];
   };
 
-  systemd.tmpfiles.rules = [
-    "d ${sourceDir} 0755 nobody nogroup -"
-    "z ${sourceDir} 0755 nobody nogroup -"
-    "Z ${sourceDir}/ 0700 nobody nogroup -"
-  ];
+  systemd.tmpfiles.rules =
+    xlib.helpers.mkTmpDirs {
+      dir = sourceDir;
+      mode = "0755";
+      user = "nobody";
+      group = "nogroup";
+    }
+    ++ [ (xlib.helpers.mkTmpfile "Z" "${sourceDir}/" "0700" "nobody" "nogroup") ];
 
   sops.secrets = {
     intermediate-password = {

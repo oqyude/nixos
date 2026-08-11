@@ -6,7 +6,7 @@
 }:
 {
   systemd.tmpfiles.rules = [
-    "z /export 0755 nobody nogroup -"
+    (xlib.helpers.mkTmpfile "z" "/export" "0755" "nobody" "nogroup")
   ];
   services.nfs = {
     server = {

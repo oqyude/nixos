@@ -7,6 +7,83 @@
 }:
 let
   server = "192.168.1.20";
+
+  # Standard TLS proxy vhost: "/" -> http://server:port
+  # Returns { name = domain; value = vhost; } for builtins.listToAttrs
+  mkProxy =
+    {
+      domain,
+      port,
+      addSSL ? false,
+      body ? false,
+    }:
+    {
+      name = domain;
+      value = {
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://${server}:${toString port}";
+          proxyWebsockets = true;
+        };
+      }
+      // lib.optionalAttrs (!addSSL) { forceSSL = true; }
+      // lib.optionalAttrs addSSL { addSSL = true; }
+      // lib.optionalAttrs body {
+        extraConfig = ''
+          client_max_body_size 5G;
+        '';
+      };
+    };
+
+  # Simple proxy sites
+  sites = [
+    {
+      domain = "immich.zeroq.su";
+      port = 2283;
+      addSSL = true;
+      body = true;
+    }
+    {
+      domain = "kuma.zeroq.su";
+      port = 4001;
+    }
+    {
+      domain = "health.zeroq.su";
+      port = 19999;
+    }
+    {
+      domain = "git.zeroq.su";
+      port = 3000;
+    }
+    {
+      domain = "homebox.zeroq.su";
+      port = 7745;
+    }
+    {
+      domain = "flux.zeroq.su";
+      port = 6061;
+    }
+    {
+      domain = "navidrome.zeroq.su";
+      port = 4533;
+      addSSL = true;
+    }
+    {
+      domain = "calibre.zeroq.su";
+      port = 8083;
+      body = true;
+    }
+    {
+      domain = "nix-cache.zeroq.su";
+      port = 5000;
+      body = true;
+    }
+    {
+      domain = "pdf.zeroq.su";
+      port = 8446;
+      body = true;
+    }
+  ];
 in
 {
   services = {
@@ -16,7 +93,7 @@ in
       recommendedOptimisation = true;
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
-      virtualHosts = {
+      virtualHosts = (builtins.listToAttrs (map mkProxy sites)) // {
         "nextcloud.private" = {
           forceSSL = false;
           enableACME = false;
@@ -169,49 +246,6 @@ in
         #     client_max_body_size 5G;
         #   '';
         # };
-        "immich.zeroq.su" = {
-          addSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:2283";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
-        "kuma.zeroq.su" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:4001";
-            proxyWebsockets = true;
-          };
-        };
-        "health.zeroq.su" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:19999";
-            proxyWebsockets = true;
-          };
-        };
-        "git.zeroq.su" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:3000";
-            proxyWebsockets = true;
-          };
-        };
-        "homebox.zeroq.su" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:7745";
-            proxyWebsockets = true;
-          };
-        };
         # "agent.zeroq.su" = {
         #   forceSSL = true;
         #   enableACME = true;
@@ -254,22 +288,6 @@ in
             #     return 200 "dh=c2d103553a4cfdaa1b7952a87a7d8120a1e167cc";
             #   '';
             # };
-          };
-        };
-        "flux.zeroq.su" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:6061";
-            proxyWebsockets = true;
-          };
-        };
-        "navidrome.zeroq.su" = {
-          addSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:4533";
-            proxyWebsockets = true;
           };
         };
         "vetymae.opencodes.zeroq.su" = {
@@ -318,39 +336,6 @@ in
               proxyPass = "http://${server}:3002";
               proxyWebsockets = true;
             };
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
-        "calibre.zeroq.su" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:8083";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
-        "nix-cache.zeroq.su" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:5000";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 5G;
-          '';
-        };
-        "pdf.zeroq.su" = {
-          forceSSL = true;
-          enableACME = true;
-          locations."/" = {
-            proxyPass = "http://${server}:8446";
-            proxyWebsockets = true;
           };
           extraConfig = ''
             client_max_body_size 5G;

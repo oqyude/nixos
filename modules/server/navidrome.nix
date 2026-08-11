@@ -24,14 +24,9 @@ in
     };
   };
   systemd.mounts = [
-    {
-      enable = true;
-      options = "bind,x-systemd.automount,nofail";
-      requires = [ "local-fs.target" ];
-      type = "none";
-      wantedBy = [ "multi-user.target" ];
-      what = "${libraryDir}";
-      where = "${pointDir}";
-    }
+    (xlib.helpers.mkSystemdBind {
+      what = libraryDir;
+      where = pointDir;
+    })
   ];
 }

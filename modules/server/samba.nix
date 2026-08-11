@@ -6,8 +6,11 @@
   ...
 }:
 let
-  sourceDir = "${xlib.dirs.services-mnt-folder}/samba";
-  targetDir = "/var/lib/samba";
+  storage = xlib.helpers.mkServiceStorage {
+    name = "samba";
+    user = "root";
+    group = "root";
+  };
 in
 {
   services = {
@@ -69,21 +72,5 @@ in
     };
   };
 
-  systemd = {
-    tmpfiles.rules = [
-      "d ${sourceDir} 0755 root root -"
-      "z ${sourceDir} 0755 root root -"
-    ];
-    mounts = [
-      {
-        enable = true;
-        options = "bind,x-systemd.automount,nofail";
-        requires = [ "local-fs.target" ];
-        type = "none";
-        wantedBy = [ "multi-user.target" ];
-        what = "${sourceDir}";
-        where = "${targetDir}";
-      }
-    ];
-  };
+  systemd = storage.systemd;
 }

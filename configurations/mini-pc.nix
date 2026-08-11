@@ -18,47 +18,25 @@
           self.nixosModules.default
         ];
 
-        fileSystems = {
-          "${xlib.dirs.therima-drive}" = {
-            enable = false;
-            device = "/dev/disk/by-uuid/C0A2DDEFA2DDEA44";
-            fsType = "ntfs3";
-            options = [
-              "defaults"
-              "uid=1000"
-              "gid=1000"
-              "fmask=0007"
-              "dmask=0007"
-              "nofail"
-            ];
-          };
-          "${xlib.dirs.vetymae-drive}" = {
-            enable = false;
-            device = "/dev/disk/by-uuid/6408433908430A0E";
-            fsType = "ntfs3";
-            options = [
-              "defaults"
-              "uid=1000"
-              "gid=1000"
-              "fmask=0007"
-              "dmask=0007"
-              "nofail"
-            ];
-          };
-          "${xlib.dirs.soptur-drive}" = {
-            enable = false;
-            device = "/dev/disk/by-uuid/C00C56E40C56D54E";
-            fsType = "ntfs3";
-            options = [
-              "defaults"
-              "uid=1000"
-              "gid=1000"
-              "fmask=0007"
-              "dmask=0007"
-              "nofail"
-            ];
-          };
-        };
+        fileSystems = lib.listToAttrs (
+          map (xlib.helpers.mkNtfsMount) [
+            {
+              path = xlib.dirs.therima-drive;
+              uuid = "C0A2DDEFA2DDEA44";
+              enable = false;
+            }
+            {
+              path = xlib.dirs.vetymae-drive;
+              uuid = "6408433908430A0E";
+              enable = false;
+            }
+            {
+              path = xlib.dirs.soptur-drive;
+              uuid = "C00C56E40C56D54E";
+              enable = false;
+            }
+          ]
+        );
 
         boot = {
           kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;

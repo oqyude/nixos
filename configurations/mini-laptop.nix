@@ -25,17 +25,10 @@
           };
         };
 
-        fileSystems."${xlib.dirs.lamet-drive}" = {
-          device = "/dev/disk/by-uuid/DC76BD3576BD116E";
-          fsType = "ntfs3";
-          options = [
-            "defaults"
-            "uid=1000"
-            "gid=1000"
-            "fmask=0000"
-            "dmask=0000"
-            "nofail"
-          ];
+        fileSystems = xlib.helpers.mkNtfsMount {
+          path = xlib.dirs.lamet-drive;
+          uuid = "DC76BD3576BD116E";
+          mask = "0000";
         };
 
         xlib.ssh.enable = true;
