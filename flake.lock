@@ -356,7 +356,6 @@
         "proxy-suite": "proxy-suite",
         "sops-nix": "sops-nix",
         "utils": "utils",
-        "zapret": "zapret_2",
         "zeroq-credentials": "zeroq-credentials"
       }
     },
@@ -464,21 +463,6 @@
       "original": {
         "owner": "Flowseal",
         "repo": "zapret-discord-youtube",
-        "type": "github"
-      }
-    },
-    "zapret_2": {
-      "locked": {
-        "lastModified": 1767430655,
-        "narHash": "sha256-f9PricXeNm3lG1tk2TepPPY+wxM5y0ezo1HSzNn4BQ8=",
-        "owner": "oqyude",
-        "repo": "zapret-easyflake",
-        "rev": "302e77aae5fc6030a9c3bcc781d6514d87b19d11",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oqyude",
-        "repo": "zapret-easyflake",
         "type": "github"
       }
     },

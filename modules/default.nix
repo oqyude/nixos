@@ -45,25 +45,6 @@ let
       networking.hostName = lib.mkDefault config.xlib.device.hostname;
       _module.args = moduleArgs config;
     };
-  publicModule =
-    {
-      config,
-      lib,
-      xlib,
-      ...
-    }:
-    {
-      imports = with inputs; [
-        ./essentials
-        ./users.nix
-        ./options.nix
-
-        disko.nixosModules.disko # disko module
-        sops-nix.nixosModules.sops # sops module
-      ];
-
-      _module.args = moduleArgs config;
-    };
   strictModule =
     {
       config,
@@ -87,7 +68,6 @@ in
 {
   nixosModules = {
     default = defaultModule;
-    public = publicModule;
     strict = strictModule;
   };
 }

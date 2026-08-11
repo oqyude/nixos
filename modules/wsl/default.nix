@@ -6,11 +6,9 @@
 }:
 {
   imports = [
-    ../software/beets
+    ../pkgs/beets.nix
     ./containers
     ./nix-serve.nix
     # ./tools
-    #../server/open-webui.nix
-    #../services/tts.nix
   ];
 }

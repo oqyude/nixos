@@ -6,7 +6,7 @@
 {
   imports = [
     ../containers/3x-ui.nix
-    ../software/beets
+    ../pkgs/beets.nix
     ./acme.nix
     ./bentopdf.nix
     ./calibre-web.nix
