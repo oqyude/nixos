@@ -74,6 +74,10 @@ let
       body = true;
     }
     {
+      domain = "mc.zeroq.su";
+      port = 25565;
+    }
+    {
       domain = "nix-cache.zeroq.su";
       port = 5000;
       body = true;

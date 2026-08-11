@@ -7,8 +7,8 @@
   ...
 }:
 let
-  pointDir = "/var/lib/services/navidrome-point";
   libraryDir = "${xlib.dirs.server-home}/Music";
+  pointDir = "/var/lib/services/navidrome-point";
 in
 {
   services = {

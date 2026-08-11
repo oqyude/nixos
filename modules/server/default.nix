@@ -16,6 +16,7 @@
     ./glances.nix
     ./homebox.nix
     ./immich.nix
+    ./minecraft.nix
     ./miniflux.nix
     ./navidrome.nix
     ./nextcloud.nix
