@@ -23,10 +23,15 @@ let
     stream {
         ssl_preread on;
 
+        # pubray1.zeroq.su SNI → 3x-ui panel (TLS terminated inside the
+        # container using the LE cert mounted from /var/lib/acme/).
+        # Everything else (including any sni the REALITY client uses,
+        # e.g. media.mediavitrina.ru) → Xray. So a single domain
+        # pubray1.zeroq.su serves both panel and Xray — the SNI in the
+        # TLS ClientHello disambiguates.
         map $ssl_preread_server_name $sni_backend {
           default            xray;
           pubray1.zeroq.su   panel;
-          pubrayx1.zeroq.su  xray;
         }
 
         upstream panel {
