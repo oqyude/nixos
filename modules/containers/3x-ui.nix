@@ -7,6 +7,29 @@
 }:
 let
   panel = "${xlib.dirs.services-nodes-folder}/${xlib.device.hostname}/3x-ui";
+  certDomain = xlib.services."3x-ui".certDomain or null;
+  certMounts =
+    if certDomain == null then [ ]
+    else [
+      # Let's Encrypt cert for the panel domain — mounted read-only so
+      # 3x-ui can serve the panel over its own TLS. webCertFile /
+      # webKeyFile in the x-ui settings table must point at
+      # /root/cert/fullchain.pem and /root/cert/key.pem respectively.
+      "/var/lib/acme/${certDomain}/fullchain.pem:/root/cert/fullchain.pem:ro"
+      "/var/lib/acme/${certDomain}/key.pem:/root/cert/key.pem:ro"
+    ];
+  basePorts = [
+    "0.0.0.0:2049:2049/tcp"
+    "0.0.0.0:2096:2096/tcp"
+    "0.0.0.0:14380-15379:14380-15379/tcp"
+    "0.0.0.0:14380-15379:14380-15379/udp"
+  ];
+  realityPorts =
+    # Only vds needs the 15380→443 forwarding that lets nginx stream
+    # pass-through Xray REALITY while Xray itself sees the connection
+    # arriving on 443 (matching its REALITY inbound config).
+    lib.optional xlib.services."3x-ui".reality443Forwarding
+      "0.0.0.0:15380:443/tcp";
 in
 {
   virtualisation = {
@@ -30,32 +53,18 @@ in
         volumes = [
           "${panel}/cert/:/root/cert:rw"
           "${panel}/db/:/etc/x-ui:rw"
-          # Let's Encrypt cert for pubray1.zeroq.su — mounted read-only so
-          # 3x-ui can serve the panel over its own TLS (required for the
-          # nginx stream SNI-route on 443 → panel:2049 to work without
-          # HTTP termination at nginx). webCertFile / webKeyFile in the
-          # x-ui settings table must point at /root/cert/fullchain.pem
-          # and /root/cert/key.pem respectively.
-          "/var/lib/acme/pubray1.zeroq.su/fullchain.pem:/root/cert/fullchain.pem:ro"
-          "/var/lib/acme/pubray1.zeroq.su/key.pem:/root/cert/key.pem:ro"
-        ];
+        ] ++ certMounts;
         log-driver = "journald";
         # Port-forwarded networking (replaces --network=host).
-        # Bridges the same ports that were previously reachable while
-        # --network=host was set:
-        #   2049/tcp            — 3x-ui web panel (TLS, SNI-routed from 443)
-        #   2096/tcp            — subscription endpoint (reverse-proxied by nginx)
+        # Common across all nodes that import this module:
+        #   2049/tcp            — 3x-ui web panel
+        #   2096/tcp            — subscription endpoint
         #   14380-15379/tcp+udp — Xray inbounds (matches firewall open range)
+        # Vds-only (xlib.services.3x-ui.reality443Forwarding = true):
         #   15380→443/tcp       — Xray REALITY inbound (nginx stream on 443 → 15380)
         # Adding a new inbound through the 3x-ui panel on a port outside
         # this range will require extending this list and rebuilding.
-        ports = [
-          "0.0.0.0:2049:2049/tcp"
-          "0.0.0.0:2096:2096/tcp"
-          "0.0.0.0:14380-15379:14380-15379/tcp"
-          "0.0.0.0:14380-15379:14380-15379/udp"
-          "0.0.0.0:15380:443/tcp"
-        ];
+        ports = basePorts ++ realityPorts;
       };
     };
   };
