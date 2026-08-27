@@ -32,8 +32,19 @@ in
           "${panel}/db/:/etc/x-ui:rw"
         ];
         log-driver = "journald";
-        extraOptions = [
-          "--network=host"
+        # Port-forwarded networking (replaces --network=host).
+        # Bridges the same ports that were previously reachable while
+        # --network=host was set:
+        #   2049/tcp            — 3x-ui web panel (reverse-proxied by nginx)
+        #   2096/tcp            — subscription endpoint (reverse-proxied by nginx)
+        #   14380-15380/tcp+udp — Xray inbounds (matches firewall open range)
+        # Adding a new inbound through the 3x-ui panel on a port outside
+        # this range will require extending this list and rebuilding.
+        ports = [
+          "0.0.0.0:2049:2049/tcp"
+          "0.0.0.0:2096:2096/tcp"
+          "0.0.0.0:14380-15380:14380-15380/tcp"
+          "0.0.0.0:14380-15380:14380-15380/udp"
         ];
       };
     };
