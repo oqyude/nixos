@@ -30,21 +30,31 @@ in
         volumes = [
           "${panel}/cert/:/root/cert:rw"
           "${panel}/db/:/etc/x-ui:rw"
+          # Let's Encrypt cert for pubray1.zeroq.su — mounted read-only so
+          # 3x-ui can serve the panel over its own TLS (required for the
+          # nginx stream SNI-route on 443 → panel:2049 to work without
+          # HTTP termination at nginx). webCertFile / webKeyFile in the
+          # x-ui settings table must point at /root/cert/fullchain.pem
+          # and /root/cert/key.pem respectively.
+          "/var/lib/acme/pubray1.zeroq.su/fullchain.pem:/root/cert/fullchain.pem:ro"
+          "/var/lib/acme/pubray1.zeroq.su/key.pem:/root/cert/key.pem:ro"
         ];
         log-driver = "journald";
         # Port-forwarded networking (replaces --network=host).
         # Bridges the same ports that were previously reachable while
         # --network=host was set:
-        #   2049/tcp            — 3x-ui web panel (reverse-proxied by nginx)
+        #   2049/tcp            — 3x-ui web panel (TLS, SNI-routed from 443)
         #   2096/tcp            — subscription endpoint (reverse-proxied by nginx)
-        #   14380-15380/tcp+udp — Xray inbounds (matches firewall open range)
+        #   14380-15379/tcp+udp — Xray inbounds (matches firewall open range)
+        #   15380→443/tcp       — Xray REALITY inbound (nginx stream on 443 → 15380)
         # Adding a new inbound through the 3x-ui panel on a port outside
         # this range will require extending this list and rebuilding.
         ports = [
           "0.0.0.0:2049:2049/tcp"
           "0.0.0.0:2096:2096/tcp"
-          "0.0.0.0:14380-15380:14380-15380/tcp"
-          "0.0.0.0:14380-15380:14380-15380/udp"
+          "0.0.0.0:14380-15379:14380-15379/tcp"
+          "0.0.0.0:14380-15379:14380-15379/udp"
+          "0.0.0.0:15380:443/tcp"
         ];
       };
     };
