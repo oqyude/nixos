@@ -101,6 +101,26 @@
         "type": "github"
       }
     },
+    "justray": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788279413,
+        "narHash": "sha256-8ygcOBE66W/+EasYGImeU+CfJHi5gT8mFD0KujF1hHc=",
+        "owner": "luynrs",
+        "repo": "justray",
+        "rev": "e2a33af09b0b92ef09f8e557dfa1f5710b58122b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "luynrs",
+        "repo": "justray",
+        "type": "github"
+      }
+    },
     "nix-formatter-pack": {
       "inputs": {
         "nixpkgs": [
@@ -389,6 +409,7 @@
         "flake-compat": "flake-compat",
         "grub2-themes": "grub2-themes",
         "home-manager": "home-manager",
+        "justray": "justray",
         "nix-minecraft": "nix-minecraft",
         "nix-on-droid": "nix-on-droid",
         "nix-systems": "nix-systems",

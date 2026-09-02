@@ -100,6 +100,7 @@
       # Test
       rgx
       net-tools
+      usbtree
       # lazydocker
       # dtop
       # framework-tool-tui
@@ -108,6 +109,9 @@
   environment.variables.EDITOR = "fresh";
   programs = {
     # nix-ld.enable = true;
+    justray = {
+      enable = true;
+    };
     nano = {
       enable = true;
       nanorc = ''

@@ -33,6 +33,7 @@ let
           # nix-index-database.nixosModules.nix-index # nix-index module
           grub2-themes.nixosModules.default # grub2 themes module
           sops-nix.nixosModules.sops # sops module
+          justray.nixosModules.default
           self.homeConfigurations.default.nixosModule # default homeConfigurations
           disko.nixosModules.disko # disko module
         ]

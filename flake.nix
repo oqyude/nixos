@@ -32,6 +32,12 @@
         utils.follows = "utils";
       };
     };
+    justray = {
+      url = "github:luynrs/justray";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
 
     utils.url = "github:numtide/flake-utils";
     flake-compat.url = "github:edolstra/flake-compat";
