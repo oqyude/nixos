@@ -38,7 +38,7 @@
     syncthing = {
       enable = true;
       systemService = true;
-      configDir = "${xlib.dirs.user-storage}/Syncthing/${config.system.name}";
+      configDir = "${xlib.dirs.user-storage}/persist/Syncthing/${config.system.name}";
       dataDir = "${xlib.dirs.user-home}";
       group = "users";
       user = "${xlib.device.username}";
