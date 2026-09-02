@@ -85,12 +85,14 @@ let
         extraSpecialArgs = {
           inherit xlib;
         };
-        config = { ... }: {
-          imports = [
-            ../home/termux.nix
-          ];
-          home.stateVersion = "24.05";
-        };
+        config =
+          { ... }:
+          {
+            imports = [
+              ../home/termux.nix
+            ];
+            home.stateVersion = "24.05";
+          };
       };
 
       # Read the changelog before changing this value

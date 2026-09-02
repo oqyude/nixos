@@ -27,7 +27,7 @@ in
     ./modules/dconf.nix
     ./modules/packages.nix
     ./modules/plasma-manager.nix
-    ./modules/noctalia.nix
+    # ./modules/noctalia.nix
   ];
   xdg = {
     enable = true;

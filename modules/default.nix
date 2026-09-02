@@ -36,7 +36,7 @@ let
           self.homeConfigurations.default.nixosModule # default homeConfigurations
           disko.nixosModules.disko # disko module
         ]
-        ++ lib.optional isDesktop ../desktop # desktop class: primary/secondary
+        ++ lib.optional isDesktop ./desktop # desktop class: primary/secondary
         # device-type module dir; "minimal" has no extra modules
         ++ lib.optional (!isDesktop && deviceType != "minimal") (./. + "/${deviceType}");
       nixpkgs.overlays = with inputs; [

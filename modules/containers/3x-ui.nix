@@ -9,7 +9,8 @@ let
   panel = "${xlib.dirs.services-nodes-folder}/${xlib.device.hostname}/3x-ui";
   certDomain = xlib.services."3x-ui".certDomain or null;
   certMounts =
-    if certDomain == null then [ ]
+    if certDomain == null then
+      [ ]
     else
       # LE cert mounted read-only so 3x-ui can terminate TLS itself.
       # The 3x-ui settings table must point webCertFile / webKeyFile at
@@ -54,7 +55,8 @@ in
         volumes = [
           "${panel}/cert/:/root/cert:rw"
           "${panel}/db/:/etc/x-ui:rw"
-        ] ++ certMounts;
+        ]
+        ++ certMounts;
         log-driver = "journald";
         # Adding a new inbound through the 3x-ui panel on a port outside
         # the 14380-15379 range requires extending basePorts and rebuilding.
@@ -97,7 +99,10 @@ in
     tmpfiles.rules = [
       (xlib.helpers.mkTmpfile "d" xlib.dirs.services-mnt-folder "0755" "root" "root")
       (xlib.helpers.mkTmpfile "d" xlib.dirs.services-nodes-folder "0755" "root" "root")
-      (xlib.helpers.mkTmpfile "d" "${xlib.dirs.services-nodes-folder}/${xlib.device.hostname}" "0755" "root" "root")
+      (xlib.helpers.mkTmpfile "d" "${xlib.dirs.services-nodes-folder}/${xlib.device.hostname}" "0755"
+        "root"
+        "root"
+      )
       (xlib.helpers.mkTmpfile "d" panel "0755" "root" "root")
       (xlib.helpers.mkTmpfile "d" "${panel}/db" "0755" "root" "root")
       (xlib.helpers.mkTmpfile "d" "${panel}/cert" "0755" "root" "root")
