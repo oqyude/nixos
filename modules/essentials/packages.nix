@@ -101,6 +101,7 @@
       rgx
       net-tools
       usbtree
+      iperf3
       # lazydocker
       # dtop
       # framework-tool-tui
