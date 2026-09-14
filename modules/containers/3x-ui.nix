@@ -46,7 +46,7 @@ in
     oci-containers = {
       backend = "podman";
       containers."3xui_app" = {
-        image = "ghcr.io/mhsanaei/3x-ui:latest";
+        image = "ghcr.io/mhsanaei/3x-ui:v3.7.0";
         environment = {
           "XRAY_VMESS_AEAD_FORCED" = "false";
           "XUI_ENABLE_FAIL2BAN" = "true";
