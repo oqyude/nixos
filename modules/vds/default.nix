@@ -11,7 +11,6 @@
     ./systemd.nix
     # ./glances.nix
     # ./netbird.nix
-    # ./xray.nix
   ];
   # VDS hosts the public-facing Xray REALITY inbound on container:443,
   # fronted by nginx stream on host:443 → host:15380 → container:443.
