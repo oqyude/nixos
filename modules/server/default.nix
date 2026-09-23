@@ -6,6 +6,7 @@
 {
   imports = [
     ../containers/3x-ui.nix
+    # ../containers/tape-rotation.nix
     ../pkgs/beets.nix
     ./acme.nix
     ./bentopdf.nix
@@ -16,7 +17,6 @@
     ./glances.nix
     ./homebox.nix
     ./immich.nix
-    # ./minecraft.nix
     ./miniflux.nix
     ./navidrome.nix
     ./nextcloud.nix
@@ -29,11 +29,11 @@
     ./syncthing.nix
     ./systemd.nix
     ./uptime-kuma.nix
-    ../containers/tape-rotation.nix
     # ../containers/remnawave.nix
     # ./coturn.nix
     # ./mealie.nix
     # ./memos.nix
+    # ./minecraft.nix
     # ./n8n.nix
     # ./netdata.nix
     # ./nfs.nix
