@@ -125,7 +125,7 @@
           notes
           onlyoffice
           polls
-          previewgenerator
+          # previewgenerator
           spreed
           tables
           tasks

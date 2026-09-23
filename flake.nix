@@ -36,6 +36,7 @@
       url = "github:luynrs/justray";
       inputs = {
         nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
       };
     };
 
@@ -45,6 +46,7 @@
       inputs.systems.follows = "nix-systems";
     };
     flake-compat.url = "github:edolstra/flake-compat";
+    flake-parts.url = "github:hercules-ci/flake-parts";
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware/master";
       # без follows nixos-hardware лочит свой собственный nixpkgs (две копии в lock/store)
@@ -53,7 +55,6 @@
     nix-systems.url = "github:nix-systems/default";
     # nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     # flake-utils.url = "github:numtide/flake-utils";
-    # flake-parts.url = "github:hercules-ci/flake-parts";
     # noctalia = {
     #   url = "github:noctalia-dev/noctalia-shell";
     #   inputs.nixpkgs.follows = "nixpkgs";
