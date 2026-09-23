@@ -39,9 +39,17 @@
       };
     };
 
-    utils.url = "github:numtide/flake-utils";
+    utils = {
+      url = "github:numtide/flake-utils";
+      # flake-utils тянет systems (nix-systems/default) сам -> наследуем корневой, чтобы не плодить дубль-узел в flake.lock
+      inputs.systems.follows = "nix-systems";
+    };
     flake-compat.url = "github:edolstra/flake-compat";
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware/master";
+      # без follows nixos-hardware лочит свой собственный nixpkgs (две копии в lock/store)
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-systems.url = "github:nix-systems/default";
     # nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     # flake-utils.url = "github:numtide/flake-utils";
