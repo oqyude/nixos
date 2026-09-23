@@ -123,7 +123,7 @@
           mail
           music
           notes
-          onlyoffice
+          # onlyoffice
           polls
           # previewgenerator
           spreed

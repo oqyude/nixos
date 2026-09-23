@@ -6,13 +6,13 @@
   xlib,
   ...
 }:
-let
-  # previous = import inputs.nixpkgs-master {
-  #   system = "x86_64-linux";
-  #   config.allowUnfree = true;
-  #   config.allowUnfreePredicate = true;
-  # };
-in
+# let
+#   previous = import inputs.nixpkgs-master {
+#     system = "x86_64-linux";
+#     config.allowUnfree = true;
+#     config.allowUnfreePredicate = true;
+#   };
+# in
 {
   services.onlyoffice = {
     enable = true;
