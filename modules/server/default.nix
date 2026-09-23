@@ -29,6 +29,7 @@
     ./syncthing.nix
     ./systemd.nix
     ./uptime-kuma.nix
+    ../containers/tape-rotation.nix
     # ../containers/remnawave.nix
     # ./coturn.nix
     # ./mealie.nix

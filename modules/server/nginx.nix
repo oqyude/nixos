@@ -62,6 +62,10 @@ let
       port = 6061;
     }
     {
+      domain = "tape-rotation.zeroq.su";
+      port = 5174;
+    }
+    {
       domain = "navidrome.zeroq.su";
       port = 4533;
       addSSL = true;
