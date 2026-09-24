@@ -6,7 +6,7 @@
 {
   imports = [
     ../containers/3x-ui.nix
-    # ../containers/tape-rotation.nix
+    ../containers/tape-rotation.nix
     ../pkgs/beets.nix
     ./acme.nix
     ./bentopdf.nix
