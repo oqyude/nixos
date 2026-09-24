@@ -15,8 +15,11 @@
 #                            file attachments at /app/uploads
 #   - taperotation-frontend: nginx serving the built React app on :80,
 #                            proxying /api to http://backend:8001
-# The backend container gets the network alias "backend" so the
-# frontend's baked-in nginx upstream (compose service name) resolves.
+# The backend container gets a static IP on the shared network and the
+# frontend maps "backend" → that IP via --add-host, because this host's
+# CoreDNS service owns port 53 on every interface: the podman network DNS
+# plugin (aardvark-dns) cannot bind on the network gateway, so a network
+# with dns_enabled would refuse to attach containers.
 #
 # Published host port 5174 → container:80 for the web UI. Keep it out
 # of networking.firewall like the other panel ports and front it with an
@@ -41,13 +44,12 @@ in
         flags = [ "--all" ];
       };
       dockerCompat = true;
-      defaultNetwork.settings.dns_enabled = true;
     };
     oci-containers = {
       backend = "podman";
       containers = {
         "taperotation-backend" = {
-          image = "elizaroveugene/taperotation-backend:latest";
+          image = "docker.io/elizaroveugene/taperotation-backend:latest";
           environment = {
             "DATABASE_URL" = "sqlite:////data/taperotation.db";
             "JWT_EXPIRE_MINUTES" = "480";
@@ -64,18 +66,22 @@ in
           log-driver = "journald";
           extraOptions = [
             "--network=taperotation_default"
-            # frontend nginx proxies /api to http://backend:8001
-            "--network-alias=backend"
+            # Static IP the frontend reaches "backend" at (see --add-host
+            # in the frontend container; network DNS is disabled).
+            "--ip=10.89.0.10"
           ];
         };
         "taperotation-frontend" = {
-          image = "elizaroveugene/taperotation-frontend:latest";
+          image = "docker.io/elizaroveugene/taperotation-frontend:latest";
           ports = [
             "0.0.0.0:5174:80/tcp"
           ];
           log-driver = "journald";
           extraOptions = [
             "--network=taperotation_default"
+            # Baked-in nginx upstream is http://backend:8001; resolve it via
+            # /etc/hosts since the network has no DNS plugin.
+            "--add-host=backend:10.89.0.10"
           ];
         };
       };
@@ -118,7 +124,13 @@ in
           ExecStop = "podman network rm -f taperotation_default";
         };
         script = ''
-          podman network inspect taperotation_default || podman network create taperotation_default
+          # Always (re)create the stack network: the host's CoreDNS owns :53
+          # on every interface, so the network DNS plugin (aardvark-dns)
+          # can't bind on the gateway → --disable-dns. --subnet backs the
+          # backend's static IP. Recreate-on-start also self-heals after a
+          # `podman system prune` removed the (temporarily unused) network.
+          podman network rm -f taperotation_default >/dev/null 2>&1 || true
+          podman network create --disable-dns --subnet=10.89.0.0/24 taperotation_default
         '';
         partOf = [ "podman-compose-tape-rotation-root.target" ];
         wantedBy = [ "podman-compose-tape-rotation-root.target" ];
@@ -130,8 +142,8 @@ in
           TimeoutSec = 300;
         };
         script = ''
-          podman pull elizaroveugene/taperotation-backend:latest
-          podman pull elizaroveugene/taperotation-frontend:latest
+          podman pull docker.io/elizaroveugene/taperotation-backend:latest
+          podman pull docker.io/elizaroveugene/taperotation-frontend:latest
           systemctl restart podman-taperotation-backend.service podman-taperotation-frontend.service
         '';
       };
