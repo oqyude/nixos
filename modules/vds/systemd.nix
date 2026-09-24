@@ -19,7 +19,7 @@ in
         unitConfig.RequiresMountsFor = [ ];
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];
-        wantedBy = [ "multi-user.target" ];
+        # Только по таймеру: НЕ блокируем boot и активацию nixos-rebuild.
         script = ''
           set -euo pipefail
 
@@ -29,30 +29,20 @@ in
           SSH_CMD="$SSH \
             -o BatchMode=yes \
             -o ConnectTimeout=5 \
+            -o ServerAliveInterval=5 \
+            -o ServerAliveCountMax=3 \
             -o StrictHostKeyChecking=no"
-
-          echo "Waiting for server..."
-
-          for i in $(seq 1 60); do
-            echo "Attempt $i"
-
-            if $SSH_CMD ${serverAddress} true >/dev/null 2>&1; then
-              echo "Server available"
-              break
-            fi
-
-            sleep 5
-          done
-
-          # final check
-          $SSH_CMD ${serverAddress} true >/dev/null 2>&1
 
           mkdir -p "${nodeDir}"
 
+          # best-effort: сервер недоступен -> выходим сразу, никаких циклов ожидания
+          if ! $SSH_CMD ${serverAddress} true >/dev/null 2>&1; then
+            echo "Server ${serverAddress} unreachable, skipping sync"
+            exit 0
+          fi
+
           if [ ! -d "${nodeDir}" ] || [ -z "$(ls -A "${nodeDir}")" ]; then
             echo "Pull <- ${serverAddress}"
-
-            mkdir -p "${nodeDir}"
 
             $RSYNC \
               -e "$SSH_CMD" \
@@ -77,6 +67,9 @@ in
           Nice = 10;
           CPUQuota = "5%";
           IOSchedulingClass = "idle";
+          # страховка от зависшего rsync/ssh; легитимная большая синхронизация
+          # укладывается в это окно (на фоне idle-приоритета)
+          TimeoutStartSec = 600;
         };
       };
     };
