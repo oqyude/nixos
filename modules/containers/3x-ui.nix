@@ -20,22 +20,15 @@ let
         "key.pem"
       ];
   basePorts = [
-    # 2049/tcp            — 3x-ui web panel
-    # 2096/tcp            — subscription endpoint
-    # 14380-15379/tcp+udp — Xray inbounds (matches firewall open range)
-    "0.0.0.0:2049:2049/tcp"
-    "0.0.0.0:2096:2096/tcp"
+    # Local-only upstreams for the 3x-ui panel and subscription endpoint.
+    # The direct Xray inbound remains publicly reachable on 8443.
+    "127.0.0.1:2049:2049/tcp"
+    "127.0.0.1:2096:2096/tcp"
     "0.0.0.0:8443:8443/tcp"
-    "0.0.0.0:8443:8443/udp"
-    "0.0.0.0:18443:18443/tcp"
-    "0.0.0.0:18443:18443/udp"
-    # "0.0.0.0:14380-15379:14380-15379/tcp"
-    # "0.0.0.0:14380-15379:14380-15379/udp"
   ];
-  # VDS-only: nginx stream forwards host:443 → host:15380 → container:443,
-  # so Xray inside the container sees its REALITY inbound on its real
-  # configured port 443.
-  realityPorts = lib.optional xlib.services."3x-ui".reality443Forwarding "0.0.0.0:15380:443/tcp";
+  # VDS-only: nginx stream forwards host:443 → 127.0.0.1:15380 →
+  # container:443, so Xray sees its REALITY inbound on port 443.
+  realityPorts = lib.optional xlib.services."3x-ui".reality443Forwarding "127.0.0.1:15380:443/tcp";
 in
 {
   virtualisation = {
@@ -117,26 +110,6 @@ in
 
   # Enable container name DNS for all Podman networks.
   networking.firewall = {
-    # allowedUDPPortRanges = [
-    #   {
-    #     from = 8443;
-    #     to = 15380;
-    #   }
-    # ];
-    # allowedTCPPortRanges = [
-    #   {
-    #     from = 14380;
-    #     to = 15380;
-    #   }
-    # ];
-    allowedUDPPorts = [
-      18443
-      8443
-    ];
-    allowedTCPPorts = [
-      18443
-      8443
-    ];
     interfaces =
       let
         matchAll = if !config.networking.nftables.enable then "podman+" else "podman*";
