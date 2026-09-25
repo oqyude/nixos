@@ -145,19 +145,19 @@ in
         enableACME = true;
         locations = {
           "/" = {
-            proxyPass = "http://${server}:2049";
+            proxyPass = "http://127.0.0.1:2049";
             proxyWebsockets = true;
           };
           "/subs/" = {
-            proxyPass = "http://${server}:2096";
+            proxyPass = "http://127.0.0.1:2096";
             proxyWebsockets = true;
           };
           "/subsjs/" = {
-            proxyPass = "http://${server}:2096";
+            proxyPass = "http://127.0.0.1:2096";
             proxyWebsockets = true;
           };
           "/clash/" = {
-            proxyPass = "http://${server}:2096";
+            proxyPass = "http://127.0.0.1:2096";
             proxyWebsockets = true;
           };
         };
