@@ -14,7 +14,7 @@
   ];
   # VDS hosts the public-facing Xray REALITY inbound on container:443,
   # fronted by nginx stream on host:443 → host:15380 → container:443.
-  xlib.services."3x-ui" = {
+  host."3x-ui" = {
     certDomain = "pubray1.zeroq.su";
     reality443Forwarding = true;
   };

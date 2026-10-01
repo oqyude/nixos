@@ -37,8 +37,6 @@ let
     );
 in
 {
-  xlib.device.username = "oqyude";
-
   users = {
     mutableUsers = false;
     users = {

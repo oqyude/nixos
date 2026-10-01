@@ -2,26 +2,28 @@
   inputs,
   ...
 }:
+# Builds a NixOS system from a host record.
+#
+# `xlib` is the pure host value (lib/xlib.nix `mkXlib`) built in
+# configurations/default.nix. It is handed to every module as the `xlib`
+# argument, so modules read plain `xlib.*` data instead of `config.xlib.*`
+# and the host record stays the single source of truth.
 {
-  deviceType,
-  hostname ? null,
+  xlib,
   modules ? [ ],
   system ? "x86_64-linux",
+  ...
 }:
 let
   lib = inputs.nixpkgs.lib;
 in
 lib.nixosSystem {
-  inherit system;
-  modules = modules ++ [
-    {
-      xlib.device = {
-        type = deviceType;
-      }
-      // lib.optionalAttrs (hostname != null) { inherit hostname; };
-    }
-  ];
+  inherit
+    system
+    modules
+    ;
   specialArgs = {
-    inherit deviceType inputs;
+    inherit inputs;
+    inherit xlib;
   };
 }

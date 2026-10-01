@@ -6,7 +6,9 @@ let
       path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos inputs.self.nixosConfigurations.${hostname};
     };
   };
-  user = "${inputs.self.nixosConfigurations.default.config.xlib.device.username}";
+  # Login user for every deploy target. Read from the hoisted xlib instead of
+  # digging through a built NixOS configuration.
+  user = "${inputs.self.xlib.default.device.username}";
   server = "sapphira";
   vds = "otreca";
   mini-laptop = "rydiwo";

@@ -50,7 +50,7 @@
   # there are other vhosts on the same port). Cert is still mounted in
   # case 3x-ui is later reconfigured to terminate TLS itself (e.g. for
   # direct node-API access); nginx doesn't have to use it.
-  xlib.services."3x-ui".certDomain = "x.zeroq.su";
+  host."3x-ui".certDomain = "x.zeroq.su";
   systemd.tmpfiles.rules = [
     (xlib.helpers.mkTmpfile "d" "/mnt" "0755" "root" "root")
     (xlib.helpers.mkTmpfile "d" xlib.dirs.services-mnt-folder "0755" "root" "root")

@@ -9,6 +9,7 @@ let
   # (essentials, users.nix, home-manager, sops-nix, disko, grub2-themes)
   # and nixpkgs.overlays are skipped so it evaluates under nix-on-droid's
   # module system (class = "nixOnDroid").
+  xlib = import ../lib/xlib.nix { lib = inputs.nixpkgs.lib; };
   nixOnDroidModule =
     {
       lib,
@@ -20,11 +21,6 @@ let
       imports = [
         inputs.self.nixosModules.strict
       ];
-
-      xlib.device = {
-        type = "termux";
-        hostname = "epral";
-      };
 
       # Login shell. nix-on-droid writes /etc/passwd from user.shell on every
       # activation, so `chsh` is useless here — set it in nix instead.
@@ -120,6 +116,13 @@ inputs.nix-on-droid.lib.nixOnDroidConfiguration {
     nixOnDroidModule
   ];
   extraSpecialArgs = {
-    deviceType = "termux";
+    # `xlib` is the same value shape NixOS hosts get (lib/mkSystem.nix);
+    # the hostname lives here because nixOnDroidConfigurations is keyed by
+    # both "epral" and the "default" alias, so it cannot come from the
+    # attribute name.
+    xlib = xlib.mkXlib {
+      hostname = "epral";
+      type = "termux";
+    };
   };
 }

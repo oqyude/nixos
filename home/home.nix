@@ -53,11 +53,7 @@ let
             imports = [
               (./. + "/${xlib.device.type}.nix")
             ];
-            headless = builtins.elem xlib.device.type [
-              "server"
-              "vds"
-              "wsl"
-            ];
+            headless = xlib.isHeadless;
           };
         };
         sharedModules = [

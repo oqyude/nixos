@@ -3,30 +3,20 @@ let
   # NixOS-only modules. termux runs nix-on-droid (its own module system,
   # class = "nixOnDroid"): options like services.*, users.*, sops.*, disko.*
   # and nixpkgs.overlays (flake assertion) do not exist there.
-  moduleArgs = config: {
-    inherit inputs;
-    xlib = config.xlib;
-  };
+  #
+  # `xlib` arrives as a module argument (see lib/mkSystem.nix) and is plain
+  # data, not a module option, so nothing here has to declare or set it.
   defaultModule =
     {
-      config,
-      deviceType,
       lib,
       xlib,
       ...
     }:
-    let
-      isDesktop = builtins.elem deviceType [
-        "primary"
-        "secondary"
-      ];
-    in
     {
       imports =
         with inputs;
         [
           ./essentials
-          ./options.nix
           ./users.nix
 
           home-manager.nixosModules.home-manager # home-manager module
@@ -37,33 +27,27 @@ let
           self.homeConfigurations.default.nixosModule # default homeConfigurations
           disko.nixosModules.disko # disko module
         ]
-        ++ lib.optional isDesktop ./desktop # desktop class: primary/secondary
+        # desktop class: primary/secondary
+        ++ lib.optional xlib.isDesktop ./desktop
         # device-type module dir; "minimal" has no extra modules
-        ++ lib.optional (!isDesktop && deviceType != "minimal") (./. + "/${deviceType}");
+        ++ lib.optional (!xlib.isDesktop && xlib.device.type != "minimal") (./. + "/${xlib.device.type}");
       nixpkgs.overlays = with inputs; [
         self.nixosOverlays.default
       ];
-      networking.hostName = lib.mkDefault config.xlib.device.hostname;
-      _module.args = moduleArgs config;
+      networking.hostName = lib.mkDefault xlib.device.hostname;
     };
   strictModule =
     {
-      config,
-      deviceType,
-      lib,
       xlib,
       ...
     }:
     {
-      imports = with inputs; [
+      imports = [
         # ./essentials
         # ./users.nix
-        ./options.nix
-        (./. + "/${deviceType}")
+        (./. + "/${xlib.device.type}")
         # sops-nix.nixosModules.sops
       ];
-
-      _module.args = moduleArgs config;
     };
 in
 {
