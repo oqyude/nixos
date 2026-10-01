@@ -17,6 +17,7 @@ let
         with inputs;
         [
           ./essentials
+          ./options.nix
           ./users.nix
 
           home-manager.nixosModules.home-manager # home-manager module
@@ -45,6 +46,7 @@ let
       imports = [
         # ./essentials
         # ./users.nix
+        ./options.nix
         (./. + "/${xlib.device.type}")
         # sops-nix.nixosModules.sops
       ];

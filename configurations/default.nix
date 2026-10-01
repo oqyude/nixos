@@ -2,13 +2,13 @@
 let
   lib = inputs.nixpkgs.lib;
   mkSystem = import ../lib/mkSystem.nix flakeContext;
-  xlibLib = import ../lib/xlib.nix { inherit lib; };
+  xlibLib = import ../lib/xlib { inherit lib; };
 
   # One record per host. The attribute name IS the hostname, so it is written
   # exactly once; `hostname` is only needed where the attribute name is not
   # the real hostname (the `default` entry).
   #
-  #   device   device type, must be a key of `devices` in lib/xlib.nix
+  #   device   device type, must be a key of `devices` in lib/xlib/device.nix
   #   modules  module body for this host
   hosts = {
     default = {
