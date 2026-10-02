@@ -45,11 +45,21 @@ in
         isNormalUser = true;
         group = "users";
         # Pinned, not left to NixOS' nextfree logic: the ntfs3/exfat mount
-        # helpers (lib/xlib/helpers.nix) write the same uid into their mount
-        # options, so both sides have to agree or NTFS files show up as owned
-        # by `nobody`. NixOS has no per-user `gid` option — the primary group
-        # id comes from `group` above.
-        uid = xlib.device.uid;
+        # helpers (lib/xlib/helpers.nix) bake xlib.device.uid into their mount
+        # options, so normally both sides agree and NTFS/exFAT files do not
+        # show up as owned by `nobody`. NixOS has no per-user `gid` option —
+        # the primary group id comes from `group` above.
+        #
+        # sapphira is the one exception, and only until its filesystem gets
+        # migrated: /var/lib/nixos/uid-map still reserves 1000 for the
+        # long-removed `yuyus` and NixOS never renumbers an existing user, so
+        # the live `oqyude` there is uid 1001. Without this branch a rebuild
+        # would rewrite the user to 1000 while every file is still owned by
+        # 1001. The cost: the exFAT mounts on sapphira still get uid=1000 from
+        # xlib.device.uid, so that user cannot write to /mnt/archive or
+        # /mnt/mobile until the id question is settled.
+        # TODO: delete this branch once sapphira is migrated to 1000.
+        uid = if xlib.device.hostname == "sapphira" then 1001 else xlib.device.uid;
         description = "Jor Oqyude";
         hashedPasswordFile = config.sops.secrets.hashed_password.path; # hashed_password
         homeMode = "700";

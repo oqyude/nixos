@@ -57,7 +57,9 @@ in
       gid ? 1000,
     }:
     let
-      capabilities = devices.${type} or (throw "xlib: unknown device type '${type}', expected one of ${lib.concatStringsSep ", " (builtins.attrNames devices)}");
+      capabilities =
+        devices.${type}
+          or (throw "xlib: unknown device type '${type}', expected one of ${lib.concatStringsSep ", " (builtins.attrNames devices)}");
     in
     {
       inherit

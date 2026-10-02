@@ -1,0 +1,21 @@
+# torch is installed separately in the Dockerfile from the CPU-only index;
+# do not add it here or pip would pull the ~2.5 GB CUDA build over it.
+#
+# ru_g2p.py (from zaakirio/kokoro-ru) imports three things stock kokoro does not
+# pull on its own: the espeak-ng backend of misaki, ruaccent for stress, and the
+# phonemizer fork whose EspeakWrapper misaki drives.
+kokoro==0.9.4
+misaki[en]>=0.9.4
+phonemizer-fork
+espeakng-loader
+ruaccent
+
+# kokoro's Albert encoder and ruaccent's ONNX exports both go through
+# transformers. ru_g2p.py shims token_type_ids for v5, so the floor is what
+# matters, not the ceiling.
+transformers>=4.46
+
+fastapi
+uvicorn
+imageio-ffmpeg
+numpy>=1.26,<3
