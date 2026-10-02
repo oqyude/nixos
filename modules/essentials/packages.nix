@@ -2,6 +2,7 @@
   config,
   pkgs,
   inputs,
+  xlib,
   ...
 }:
 {
@@ -185,7 +186,7 @@
       enable = true;
       config = {
         user = {
-          name = "oqyude";
+          name = xlib.device.username;
           email = "oqyude@gmail.com";
         };
         pull = {

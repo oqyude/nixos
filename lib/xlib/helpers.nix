@@ -1,5 +1,10 @@
 {
   lib,
+  # The primary user's ids, bound from xlib.device by mkXlib. ntfs3/exfat
+  # volumes carry POSIX ids, so a mount using anything other than the real
+  # uid/gid shows every file as owned by `nobody`.
+  uid,
+  gid,
   ...
 }:
 # Pure helper functions for module definitions.
@@ -105,8 +110,8 @@ let
         fsType = "ntfs3";
         options = [
           "defaults"
-          "uid=1000"
-          "gid=1000"
+          "uid=${toString uid}"
+          "gid=${toString gid}"
           "fmask=${mask}"
           "dmask=${mask}"
           "nofail"
@@ -128,8 +133,8 @@ let
         fsType = "exfat";
         options = [
           "nofail"
-          "uid=1000"
-          "gid=1000"
+          "uid=${toString uid}"
+          "gid=${toString gid}"
         ];
       };
     };

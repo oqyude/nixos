@@ -64,7 +64,7 @@
         dbtype = "pgsql";
         dbuser = "nextcloud";
         dbname = "nextcloud";
-        adminuser = "oqyude";
+        adminuser = xlib.device.username;
         adminpassFile = config.sops.secrets.nextcloud-adminpass.path;
       };
       settings = {

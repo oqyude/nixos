@@ -49,6 +49,12 @@ in
       hostname,
       type,
       username ? "oqyude",
+      # The primary user is pinned to 1000 rather than left to NixOS'
+      # nextfree logic: the mount helpers below write uid=/gid= into
+      # ntfs3/exfat options, and an NTFS/exFAT volume mounted with a
+      # different id shows every file as owned by `nobody`.
+      uid ? 1000,
+      gid ? 1000,
     }:
     let
       capabilities = devices.${type} or (throw "xlib: unknown device type '${type}', expected one of ${lib.concatStringsSep ", " (builtins.attrNames devices)}");
@@ -58,6 +64,8 @@ in
         hostname
         type
         username
+        uid
+        gid
         ;
       isDesktop = capabilities.desktop;
       isHeadless = capabilities.headless;

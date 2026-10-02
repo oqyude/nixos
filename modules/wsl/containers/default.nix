@@ -7,7 +7,7 @@
 {
   imports = [
     # shared container modules live in ../../containers
-    # ../../containers/3x-ui.nix
+    ../../containers/silero-tts.nix
   ];
 
   environment.systemPackages = with pkgs; [

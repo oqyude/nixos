@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  xlib,
   ...
 }:
 {
@@ -20,7 +21,7 @@
     };
     shellInit = ''
       beet-p() {
-        local base="/home/oqyude/.config/beets/My"
+        local base="${xlib.dirs.user-home}/.config/beets/My"
         local rel
         rel=$(realpath --relative-to="$base" "$PWD")
         beet mod "path:$rel" playlist="$*"
@@ -29,7 +30,7 @@
         beet im ./ -S $*
       }
       beet-path() {
-        realpath --relative-to="/home/oqyude/.config/beets/My" "$1"
+        realpath --relative-to="${xlib.dirs.user-home}/.config/beets/My" "$1"
       }
     '';
     shellAliases = {
@@ -45,7 +46,7 @@
       gc = "git add . && git commit -m 'dev: автокоммит $(date +'%Y-%m-%d %H:%M:%S')'";
       y = "yazi";
       nix-shellp = "nix-shell --run $SHELL -p";
-      beet-path-library = "realpath --relative-to='/home/oqyude/.config/beets/My' .";
+      beet-path-library = "realpath --relative-to='${xlib.dirs.user-home}/.config/beets/My' .";
       z-proxy = "export ALL_PROXY=socks5://localhost:10808";
       zh-proxy = "export HTTPS_PROXY=http://localhost:10808 && export HTTP_PROXY=http://localhost:10808";
 

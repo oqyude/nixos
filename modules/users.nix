@@ -44,6 +44,12 @@ in
         name = "${user}";
         isNormalUser = true;
         group = "users";
+        # Pinned, not left to NixOS' nextfree logic: the ntfs3/exfat mount
+        # helpers (lib/xlib/helpers.nix) write the same uid into their mount
+        # options, so both sides have to agree or NTFS files show up as owned
+        # by `nobody`. NixOS has no per-user `gid` option — the primary group
+        # id comes from `group` above.
+        uid = xlib.device.uid;
         description = "Jor Oqyude";
         hashedPasswordFile = config.sops.secrets.hashed_password.path; # hashed_password
         homeMode = "700";

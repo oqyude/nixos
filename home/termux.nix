@@ -218,7 +218,7 @@
       enable = true;
       settings = {
         user = {
-          name = "oqyude";
+          name = xlib.device.username;
           email = "oqyude@gmail.com";
         };
         pull = {
@@ -250,31 +250,31 @@
         };
         sapphira = {
           HostName = "192.168.1.20";
-          User = "oqyude";
+          User = xlib.device.username;
         };
         sapphira-tailscale = {
           HostName = "100.64.0.0";
-          User = "oqyude";
+          User = xlib.device.username;
         };
         otreca-old = {
           HostName = "217.60.3.12";
-          User = "oqyude";
+          User = xlib.device.username;
         };
         otreca = {
           HostName = "109.248.161.5";
-          User = "oqyude";
+          User = xlib.device.username;
         };
         otreca-tailscale = {
           HostName = "100.64.1.0";
-          User = "oqyude";
+          User = xlib.device.username;
         };
         rydiwo = {
           HostName = "192.168.1.102";
-          User = "oqyude";
+          User = xlib.device.username;
         };
         epral = {
           HostName = "192.168.1.101";
-          User = "oqyude";
+          User = xlib.device.username;
           Port = 8022;
         };
       };

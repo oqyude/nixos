@@ -40,6 +40,8 @@ in
       hostname,
       type,
       username ? "oqyude",
+      uid ? 1000,
+      gid ? 1000,
     }:
     let
       device = mkDevice {
@@ -47,6 +49,8 @@ in
           hostname
           type
           username
+          uid
+          gid
           ;
       };
     in
@@ -56,11 +60,19 @@ in
           hostname
           type
           username
+          uid
+          gid
           ;
       };
       isDesktop = device.isDesktop;
       isHeadless = device.isHeadless;
       dirs = mkDirs username;
-      inherit helpers;
+      # Bind the host's ids into the mount helpers, so ntfs3/exfat options
+      # carry the same uid/gid the primary user actually has.
+      helpers = import ./helpers.nix {
+        inherit lib;
+        uid = device.uid;
+        gid = device.gid;
+      };
     };
 }

@@ -7,7 +7,7 @@
 }:
 let
   serviceName = "rsync-services-sync";
-  serverAddress = "oqyude@100.64.0.0";
+  serverAddress = "${xlib.device.username}@100.64.0.0";
   serverDir = "${xlib.dirs.services-nodes-folder}/${xlib.device.hostname}";
   nodeDir = "${xlib.dirs.services-mnt-folder}";
 in

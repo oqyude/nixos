@@ -27,10 +27,10 @@ let
       # (default is bashInteractive)
       user.shell = "${pkgs.zsh}/bin/zsh";
 
-      # SSH user (matches `User oqyude` in the client's ~/.ssh/config).
+      # SSH user (matches the `User` entries in the client's ~/.ssh/config).
       # Default is "nix-on-droid"; home stays at the read-only
       # /data/data/com.termux.nix/files/home either way.
-      user.userName = "oqyude";
+      user.userName = xlib.device.username;
 
       # Minimal termux settings (nix-on-droid options only:
       # environment.*, nix.*, time.*, user.*, system.*, android-integration.*)

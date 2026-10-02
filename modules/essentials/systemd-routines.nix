@@ -11,13 +11,13 @@
         description = "Prebuild NixOS closure";
         serviceConfig = {
           CPUQuota = "20%";
-          User = "oqyude";
+          User = xlib.device.username;
           Group = "users";
           Nice = 10;
           Type = "oneshot";
           WorkingDirectory = "/tmp";
           Environment = [
-            "HOME=/home/oqyude"
+            "HOME=${xlib.dirs.user-home}"
           ];
           ExecStart = ''
             ${pkgs.nix}/bin/nix build --no-link /etc/nixos#nixosConfigurations.${config.networking.hostName}.config.system.build.toplevel
