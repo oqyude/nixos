@@ -13,24 +13,18 @@ let
   # config revision: edit a file, `nixos-rebuild`, and the unit below rebuilds
   # and restarts. Reading the context off a checkout at runtime would leave the
   # running container untraceable back to any config.
-  source = pkgs.linkFarm "kokoro-tts-source" [
-    {
-      name = "Dockerfile";
-      path = toString ./kokoro-tts/Dockerfile;
-    }
-    {
-      name = "app.py";
-      path = toString ./kokoro-tts/app.py;
-    }
-    {
-      name = "fetch_assets.py";
-      path = toString ./kokoro-tts/fetch_assets.py;
-    }
-    {
-      name = "requirements.txt";
-      path = toString ./kokoro-tts/requirements.txt;
-    }
-  ];
+  #
+  # runCommand rather than linkFarm: linkFarm entries are symlinks into other
+  # store paths, and `podman build` only mounts the context root, so every COPY
+  # fails with "copier: get: lstat ...: no such file or directory". Copying the
+  # bytes in leaves the context with no symlinks that escape its root.
+  source = pkgs.runCommand "kokoro-tts-source" { } ''
+    mkdir -p "$out"
+    cp -L ${./kokoro-tts/Dockerfile} "$out/Dockerfile"
+    cp -L ${./kokoro-tts/app.py} "$out/app.py"
+    cp -L ${./kokoro-tts/fetch_assets.py} "$out/fetch_assets.py"
+    cp -L ${./kokoro-tts/requirements.txt} "$out/requirements.txt"
+  '';
 
   image = "localhost/kokoro-tts:latest";
 
@@ -64,11 +58,16 @@ in
           ];
 
           environment = {
-            # Inference is CPU-bound and already threaded inside torch; these
-            # keep it from oversubscribing a small machine.
-            KOKORO_THREADS = "4";
-            OMP_NUM_THREADS = "4";
-            MKL_NUM_THREADS = "4";
+            # Inference is CPU-bound and already threaded inside torch. Measured
+            # on a 24-logical-core host: median end-to-end latency for a 5.6 s
+            # utterance was 1.203 s at 4 threads, 0.979 s at 12, 0.980 s at 16
+            # and 1.87 s at 24, so the useful ceiling is the physical core count
+            # and oversubscribing it roughly doubles the wait. These three must
+            # stay equal to the Dockerfile ENV and the app.py default: whichever
+            # of the three is set wins over the others.
+            KOKORO_THREADS = "12";
+            OMP_NUM_THREADS = "12";
+            MKL_NUM_THREADS = "12";
             TZ = "Europe/Moscow";
           };
 

@@ -1,4 +1,7 @@
-FROM python:3.12-slim-bookworm
+# Fully qualified on purpose: NixOS ships a podman registries.conf without
+# unqualified-search-registries, so a bare "python:3.12-slim-bookworm" fails to
+# resolve before the build even starts.
+FROM docker.io/library/python:3.12-slim-bookworm
 
 # Pinned, not "main": a rebuild that only touched the Nix module must not
 # silently pick up different weights. Bump these deliberately.
@@ -8,6 +11,9 @@ ARG KOKORO_RU_REVISION=d649c57b239b18c4c384378127cbf01dba039bc1
 # a second 327 MB one.
 ARG KOKORO_RU_VOICES=sveta,masha,dima
 
+# Thread counts, not a guess: see app.py THREADS. 12 was the measured plateau on
+# a 24-logical-core host, and 24 was ~2x worse. Must stay equal to the Nix
+# module's environment.environment, which wins over this ENV.
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
@@ -17,9 +23,9 @@ ENV PYTHONUNBUFFERED=1 \
     KOKORO_RU_REVISION=${KOKORO_RU_REVISION} \
     KOKORO_RU_VOICES=${KOKORO_RU_VOICES} \
     KOKORO_MODEL_DIR=/app/kokoro-ru \
-    KOKORO_THREADS=4 \
-    OMP_NUM_THREADS=4 \
-    MKL_NUM_THREADS=4 \
+    KOKORO_THREADS=12 \
+    OMP_NUM_THREADS=12 \
+    MKL_NUM_THREADS=12 \
     TZ=Europe/Moscow
 
 WORKDIR /app
@@ -39,12 +45,18 @@ RUN pip install --index-url https://download.pytorch.org/whl/cpu torch
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
-COPY app.py fetch_assets.py ./
+# fetch_assets.py is copied on its own and app.py only after the snapshot, never
+# as one COPY. A single COPY would tie the 639 MB download to the application
+# source: any edit to app.py would invalidate this layer and refetch every
+# checkpoint as hundreds of anonymous, rate-limited requests.
+COPY fetch_assets.py ./
 
 # Bakes the checkpoints, the acute-aware espeak data and ruaccent's ONNX models
 # into the layer, which is what lets the container start with no network and no
 # writable volume.
 RUN python fetch_assets.py
+
+COPY app.py ./
 
 EXPOSE 8000
 
