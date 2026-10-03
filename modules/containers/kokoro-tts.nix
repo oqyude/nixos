@@ -107,7 +107,8 @@ in
           after = [ "podman-build-kokoro-tts.service" ];
           requires = [ "podman-build-kokoro-tts.service" ];
           serviceConfig.Restart = lib.mkOverride 90 "always";
-          wantedBy = [ "multi-user.target" ];
+          # Auto-start disabled: start manually with `systemctl start podman-kokoro-tts`.
+          wantedBy = [ ];
         };
       };
     };
