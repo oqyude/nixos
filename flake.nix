@@ -1,9 +1,6 @@
 {
   description = "oqyude flake";
   inputs = {
-    # My
-    zeroq-credentials.url = "git+ssh://git@github.com/oqyude/zeroq-credentials.git"; # flake of creds
-
     # nixpkgs
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # nixpkgs-master.url = "github:NixOS/nixpkgs/master";
