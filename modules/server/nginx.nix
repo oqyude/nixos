@@ -194,6 +194,17 @@ in
           proxyWebsockets = true;
         };
       };
+      # sapphira itself: opencode web runs as a systemd user service
+      # (programs.opencode.web.enable in home/modules/opencode.nix) on
+      # 127.0.0.1:4096 with --hostname 0.0.0.0.
+      "opencode.zeroq.su" = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:4096";
+          proxyWebsockets = true;
+        };
+      };
       "nextcloud.zeroq.su" = {
         forceSSL = true;
         enableACME = true;

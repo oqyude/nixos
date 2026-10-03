@@ -8,6 +8,7 @@
 {
   imports = [
     ./minimal.nix
+    ./modules/opencode.nix
   ];
   home.file = xlib.helpers.mkSymlinks config {
     "${config.home.homeDirectory}/External/Music" = "Music";

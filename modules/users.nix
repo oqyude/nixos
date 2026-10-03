@@ -8,7 +8,9 @@ let
   user = "${xlib.device.username}";
   userGroup = config.users.users."${user}".group;
 
-  # sops secret factory: name == key by default, owner/group default to root
+  # sops secret factory: name == key by default, owner/group default to root.
+  # `format` and `sopsFile` default to yaml + defaultSopsFile, matching every
+  # pre-existing caller.
   mkSecret =
     {
       path,
@@ -16,14 +18,16 @@ let
       key ? null,
       owner ? null,
       group ? null,
+      format ? "yaml",
+      sopsFile ? null,
     }:
     {
-      format = "yaml";
-      inherit path mode;
+      inherit format path mode;
     }
     // lib.optionalAttrs (key != null) { inherit key; }
     // lib.optionalAttrs (owner != null) { inherit owner; }
-    // lib.optionalAttrs (group != null) { inherit group; };
+    // lib.optionalAttrs (group != null) { inherit group; }
+    // lib.optionalAttrs (sopsFile != null) { inherit sopsFile; };
 
   # default owner = device user
   mkUserSecret =
@@ -97,6 +101,35 @@ in
       age_key_private = mkUserSecret {
         path = "${xlib.dirs.user-home}/.config/sops/age/keys.txt";
         mode = "0600";
+      };
+      # opencode web server creds + Gemini API key.
+      # Decrypted as a single dotenv file (no `key`) and consumed by the
+      # systemd user unit opencode-web as EnvironmentFile.
+      # Source: secrets/opencode.env (encrypted, see sops/age below).
+      opencode_server = mkUserSecret {
+        path = "${xlib.dirs.user-home}/.config/opencode/server.env";
+        mode = "0600";
+        format = "dotenv";
+        sopsFile = ../secrets/opencode.env;
+      };
+      # opencode provider credentials (XDG_DATA_HOME/opencode/...).
+      # Both files are read by opencode at startup to populate the providers
+      # list. Mirror of ~/.local/share/opencode/ on the workstation.
+      # key = "" → decrypt the WHOLE file as-is (the JSON has no top-level
+      # field named after the secret; it IS the secret).
+      opencode_auth = mkUserSecret {
+        path = "${xlib.dirs.user-home}/.local/share/opencode/auth.json";
+        mode = "0600";
+        format = "json";
+        sopsFile = ../secrets/opencode-auth.json;
+        key = "";
+      };
+      opencode_account = mkUserSecret {
+        path = "${xlib.dirs.user-home}/.local/share/opencode/account.json";
+        mode = "0600";
+        format = "json";
+        sopsFile = ../secrets/opencode-account.json;
+        key = "";
       };
       ssh_key_private = mkUserSecret {
         path = "${xlib.dirs.user-home}/.ssh/id_ed25519";
