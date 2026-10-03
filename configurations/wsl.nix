@@ -35,5 +35,11 @@
     defaultUser = xlib.device.username;
   };
 
+  # Enable SSH server on WSL NixOS so sapphira can drive it directly via a
+  # ProxyCommand chain through the Windows OpenSSH layer. The shared
+  # essentials/ssh.nix module wires host keys, sops-managed user keys, and
+  # passwordless key auth — nothing to repeat here.
+  host.ssh.enable = true;
+
   system.stateVersion = "24.11";
 }
