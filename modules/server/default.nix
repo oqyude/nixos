@@ -10,6 +10,7 @@
     ../pkgs/beets.nix
     ./acme.nix
     ./bentopdf.nix
+    ./builder.nix
     ./calibre-web.nix
     ./chrony.nix
     ./coredns.nix

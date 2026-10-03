@@ -9,6 +9,7 @@
     ../pkgs/beets.nix
     ./containers
     ./nix-serve.nix
+    ./builder.nix
     # ./tools
   ];
 }
