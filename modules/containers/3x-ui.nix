@@ -181,14 +181,22 @@ containers."3xui_app" = {
         # or API) have their Reality public fields moved to top-level on the
         # next launch. The migration is idempotent — a no-op once fields are
         # top-level — so it's safe to run on every container start.
+        #
+        # The script is piped into the container via stdin rather than
+        # referenced by its host-side /nix/store path (which does not exist
+        # inside the container). Restart=on-failure so a transient container
+        # race (e.g. 3x-ui still seeding the DB on first start) is retried
+        # instead of silently passing.
         "migrate-3xui-reality" = {
           path = [ pkgs.podman ];
           serviceConfig = {
             Type = "oneshot";
             RemainAfterExit = true;
+            Restart = "on-failure";
+            RestartSec = 5;
           };
           script = ''
-            ${pkgs.podman}/bin/podman exec -i 3xui_app python3 ${migrateScript} || true
+            ${pkgs.podman}/bin/podman exec -i 3xui_app python3 < ${migrateScript}
           '';
           after = [ "podman-3xui_app.service" ];
           wantedBy = [ "podman-compose-3x-ui-root.target" ];
