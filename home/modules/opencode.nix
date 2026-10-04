@@ -306,6 +306,43 @@ in
     ];
   };
 
+  # RAM constraints for the opencode-web user service.
+  #
+  # Sapphira has 5.6 GiB RAM with a ~1 GiB baseline (syncthing + immich + gitea
+  # + x-ui + nextcloud php-fpm). When something else spikes (immich-ml jobs,
+  # syncthing indexer, etc.) the system OOM killer activates and picks the
+  # largest cgroup — opencode at ~260 MiB – 1.4 GiB peak was being chosen and
+  # systemd then restarted it every few seconds (`RestartSec=5`), masking the
+  # real cause as a "service crash". The 2026-10-04 incident was exactly this.
+  #
+  # Three knobs together make opencode stop being an OOM victim AND stop being
+  # the source of an OOM:
+  #
+  #   MemoryHigh     soft pressure threshold: kernel reclaims aggressively
+  #                  once the cgroup hits this. Process keeps running.
+  #   MemoryMax      hard cap: cgroup-local OOM kills Node if exceeded. The
+  #                  HOST survives — only this process dies, no restart storm.
+  #   OOMScoreAdjust negative bias for the system-wide OOM killer: opencode
+  #                  is killed last, after syncthing/immich/etc.
+  #   OOMPolicy      "continue" — systemd does NOT auto-restart on cgroup
+  #                  OOM-kill. Without this, a spike triggers the same
+  #                  restart-loop the host saw today.
+  #
+  # Sizes are derived from observed peak (1.4 GiB at 16:36, 1.1 GiB at 16:59).
+  # MemoryHigh = 1G gives headroom for normal runs; MemoryMax = 2G caps
+  # pathological growth. Tweak both together if a workload legitimately
+  # needs more.
+  #
+  # Refs:
+  #   https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html
+  #   https://www.freedesktop.org/software/systemd/man/systemd.exec.html#OOMScoreAdjust=
+  systemd.user.services.opencode-web.serviceConfig = {
+    MemoryHigh = "1G";
+    MemoryMax = "2G";
+    OOMScoreAdjust = -900;
+    OOMPolicy = "continue";
+  };
+
   # Workaround: home-manager activation updates the GC root `current-home`
   # only at the very end (line 358 of the generated activate script), AFTER all
   # `home.activation.*` dag entries have run. So we cannot read current-home
