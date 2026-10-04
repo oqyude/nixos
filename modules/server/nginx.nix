@@ -225,5 +225,26 @@ in
   networking.firewall.allowedTCPPorts = [
     80
     443
+    8443
   ];
+
+  # TCP-level proxy for the 3x-ui xray inbound on 8443. nginx doesn't
+  # unwrap TLS here — `proxy_pass` just relays opaque TCP bytes between
+  # the client and the xray inside the 3x-ui container. Podman's
+  # userspace port-forward mangles the Reality ClientHello, so we go
+  # via nginx stream (same pattern as VDS uses for port 443) instead:
+  #   client → nginx stream :8443 → 127.0.0.1:15380 → podman → xray :8443.
+  # Reality auth and TLS are preserved end-to-end.
+  services.nginx.streamConfig = ''
+    upstream xray_in_8443 {
+      server 127.0.0.1:15380;
+    }
+
+    server {
+      listen 8443;
+      proxy_pass xray_in_8443;
+      proxy_timeout 600s;
+      proxy_connect_timeout 5s;
+    }
+  '';
 }

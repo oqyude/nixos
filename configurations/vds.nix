@@ -42,12 +42,17 @@
   };
 
   host.ssh.enable = true;
-  services.openssh.openFirewall = true;
+  # SSH is reachable only over Tailscale (not on the public internet).
+  # This otreca VDS is reached by deploy-rs and by oqyude over the
+  # tailnet, so exposing 22 to ens3 is pure attack surface.
+  services.openssh.openFirewall = false;
 
   services.tailscale = {
     enable = true;
     openFirewall = true;
   };
+  # Open port 22 only on the tailscale interface.
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
   networking = {
     nameservers = [
       "1.1.1.1"
