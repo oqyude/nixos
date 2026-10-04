@@ -34,9 +34,20 @@ let
     # port-forward mangles it and clients see the fallback cert.
     "127.0.0.1:15380:8443/tcp"
   ];
-  # VDS-only: nginx stream forwards host:443 → 127.0.0.1:15380 →
-  # container:443, so Xray sees its REALITY inbound on port 443.
-  realityPorts = lib.optional config.host."3x-ui".reality443Forwarding "127.0.0.1:15380:443/tcp";
+  # VDS-only: nginx stream forwards host:443 → 127.0.0.1:15380 via SNI
+  # (see modules/server/nginx.nix). The container's only Reality inbound
+  # listens on 8443, so nginx's SNI-routed connection to host:15380
+  # lands on the correct inbound. A `-p ...:15380:443/tcp` mapping is
+  # therefore unnecessary and was removed: podman 5.x refuses two
+  # `-p` flags that bind the same host port (the second `-p
+  # 127.0.0.1:15380:443/tcp` produced
+  # `Error: cannot listen on the TCP port: listen tcp4 127.0.0.1:15380:
+  # bind: address already in use` and a start-limit-hit loop).
+  #
+  # Removed 2026-10-04. The reality443Forwarding host option is kept
+  # so configurations can continue to declare the intent; only the
+  # broken port-mapping generation is gone.
+  realityPorts = [ ];
   # Workaround for a 3x-ui panel bug (both 3.8.5 and 3.9.0 reproduce it): when
   # generating bin/config.json from the inbounds DB rows, the panel drops the
   # inner `realitySettings.settings.{publicKey,fingerprint,serverName,spiderX,
