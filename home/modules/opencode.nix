@@ -336,7 +336,18 @@ in
   # Refs:
   #   https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html
   #   https://www.freedesktop.org/software/systemd/man/systemd.exec.html#OOMScoreAdjust=
-  systemd.user.services.opencode-web.serviceConfig = {
+  # Override the [Service] section emitted by `programs.opencode.web`.
+  # Upstream writes its own [Service] keys (ExecStart, EnvironmentFile,
+  # Restart, RestartSec); merging on the same `Service` attrset unions both
+  # sides into the same systemd section, so cgroup limits land where systemd
+  # actually reads them.
+  #
+  # NOTE: do NOT use `serviceConfig = { ... }` here — it is rendered as a
+  # literal `[serviceConfig]` section header by home-manager, which systemd
+  # silently ignores (verified on sapphira, journal: "Unknown section
+  # 'serviceConfig'. Ignoring."). The previous version of this block was
+  # exactly that, so the OOM/cgroup protection above never took effect.
+  systemd.user.services.opencode-web.Service = {
     MemoryHigh = "1G";
     MemoryMax = "2G";
     OOMScoreAdjust = -900;

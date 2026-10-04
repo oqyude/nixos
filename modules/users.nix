@@ -68,6 +68,11 @@ in
         hashedPasswordFile = config.sops.secrets.hashed_password.path; # hashed_password
         homeMode = "700";
         home = "/home/${user}";
+        # Linger keeps `user@<uid>.service` (the systemd user manager) alive
+        # across logouts, so user services like opencode-web survive when no
+        # SSH/login session is active. Without this the service is torn down
+        # together with the user manager on the last session close.
+        linger = true;
         extraGroups = [
           "audio"
           "disk"
