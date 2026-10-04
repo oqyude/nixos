@@ -45,7 +45,16 @@
   # cores, the bottleneck host). All builder wiring — fixing the
   # `system-features` to drop the unsupported `kvm`, and adding the SSH
   # user `oqyude` to trusted-users — lives in modules/wsl/builder.nix.
-  host.builder.enable = true;
+  #
+  # ---- DISABLED 2026-10-04 ----
+  # Remote building temporarily turned off builder-side. The default of
+  # `host.builder.enable` is `false` (modules/options.nix), so
+  # modules/wsl/builder.nix's `lib.mkIf enable` block is skipped: WSL
+  # keeps its default system-features and trusted-users, and no SSH-side
+  # state changes. Re-enable by uncommenting the assignment below and
+  # removing the DISABLED banner in configurations/server.nix.
+  #
+  # host.builder.enable = true;
 
   system.stateVersion = "24.11";
 }

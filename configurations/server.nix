@@ -73,46 +73,56 @@
   # `proxyCommand` is what marks this builder as needing the SSH matchBlock
   # (see modules/server/builder.nix). A builder reachable directly would
   # omit it.
-  host.builder.clients = [
-    {
-      hostName = "vetymae-nix";
-      sshUser = "oqyude";
-      sshKey = "/root/.ssh/id_ed25519";
-      # NixOS calls this `systems` (plural), not `systemTypes`. The
-      # default is empty — every derivation is rejected. The WSL NixOS
-      # runs on x86_64-linux, matching sapphira.
-      systems = [ "x86_64-linux" ];
-      # vetymae-nix drops kvm + nixos-test from its advertised
-      # system-features (see modules/wsl/builder.nix). Listing them here
-      # would not break anything (Nix intersects), but listing the
-      # features the WSL actually has is the documented contract.
-      supportedFeatures = [
-        "benchmark"
-        "big-parallel"
-      ];
-      mandatoryFeatures = [ ];
-      maxJobs = 24;
-      speedFactor = 0.5;
-      # Keep the SSH session alive across many small builds in one daemon
-      # session — compile-heavy workloads spam the daemon with hundreds of
-      # derivations and ControlMaster collapses those into one Windows hop.
-      # NB: `nix.buildMachines` has no `sshOptions` attribute, so the
-      # ControlMaster directive lives in the SSH matchBlock instead (see
-      # modules/server/builder.nix).
-      #
-      # The OpenSSH alias for this host (matches the user's
-      # ~/.ssh/config so known_hosts entries do not collide with the
-      # Windows OpenSSH entry on 127.0.0.1/vetymae) is consumed only by
-      # the SSH matchBlock below — not by `nix.buildMachines`, which has
-      # no such attribute.
-      hostKeyAlias = "wsl-nixos-on-vetymae";
-      # Use the Windows host's IP directly so the nix-daemon (running as
-      # root, without the user's ~/.ssh/config) does not need a separate
-      # `vetymae` host alias. With StrictHostKeyChecking=accept-new the
-      # first connection adds the Windows host key to /root/.ssh/known_hosts.
-      proxyCommand = "ssh oqyude@192.168.1.100 'wsl -d NixOS -- nc 127.0.0.1 22'";
-    }
-  ];
+  #
+  # ---- DISABLED 2026-10-04 ----
+  # Remote building temporarily turned off coordinator-side. `host.builder.clients`
+  # falls back to its default `[]` (declared in modules/options.nix), so
+  # modules/server/builder.nix's `lib.mkIf (clients != [])` never fires and no
+  # buildMachines / SSH blocks / distributedBuilds override get generated.
+  # All builds run locally on sapphira's 2 cores. Re-enable by removing the
+  # Nix comments on the block below (and on `host.builder.enable = true;`
+  # in configurations/wsl.nix).
+  #
+  # host.builder.clients = [
+  #   {
+  #     hostName = "vetymae-nix";
+  #     sshUser = "oqyude";
+  #     sshKey = "/root/.ssh/id_ed25519";
+  #     # NixOS calls this `systems` (plural), not `systemTypes`. The
+  #     # default is empty — every derivation is rejected. The WSL NixOS
+  #     # runs on x86_64-linux, matching sapphira.
+  #     systems = [ "x86_64-linux" ];
+  #     # vetymae-nix drops kvm + nixos-test from its advertised
+  #     # system-features (see modules/wsl/builder.nix). Listing them here
+  #     # would not break anything (Nix intersects), but listing the
+  #     # features the WSL actually has is the documented contract.
+  #     supportedFeatures = [
+  #       "benchmark"
+  #       "big-parallel"
+  #     ];
+  #     mandatoryFeatures = [ ];
+  #     maxJobs = 24;
+  #     speedFactor = 0.5;
+  #     # Keep the SSH session alive across many small builds in one daemon
+  #     # session — compile-heavy workloads spam the daemon with hundreds of
+  #     # derivations and ControlMaster collapses those into one Windows hop.
+  #     # NB: `nix.buildMachines` has no `sshOptions` attribute, so the
+  #     # ControlMaster directive lives in the SSH matchBlock instead (see
+  #     # modules/server/builder.nix).
+  #     #
+  #     # The OpenSSH alias for this host (matches the user's
+  #     # ~/.ssh/config so known_hosts entries do not collide with the
+  #     # Windows OpenSSH entry on 127.0.0.1/vetymae) is consumed only by
+  #     # the SSH matchBlock below — not by `nix.buildMachines`, which has
+  #     # no such attribute.
+  #     hostKeyAlias = "wsl-nixos-on-vetymae";
+  #     # Use the Windows host's IP directly so the nix-daemon (running as
+  #     # root, without the user's ~/.ssh/config) does not need a separate
+  #     # `vetymae` host alias. With StrictHostKeyChecking=accept-new the
+  #     # first connection adds the Windows host key to /root/.ssh/known_hosts.
+  #     proxyCommand = "ssh oqyude@192.168.1.100 'wsl -d NixOS -- nc 127.0.0.1 22'";
+  #   }
+  # ];
 
   networking = {
     networkmanager.enable = true;
