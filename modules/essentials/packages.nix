@@ -103,6 +103,7 @@
       net-tools
       usbtree
       iperf3
+      glow
       # lazydocker
       # dtop
       # framework-tool-tui
