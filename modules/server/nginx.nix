@@ -123,6 +123,21 @@ in
         forceSSL = true;
         enableACME = true;
       };
+      # vtimeline.zeroq.su — stub behind HTTP basic auth.
+      # Credentials are pulled from sops (format = yaml, key = "passwords"),
+      # file content is htpasswd-format (one "user:hash" per line).
+      # Empty file = 401 for everyone until somebody populates the secret:
+      #   sops modules/server/secrets/vtimeline-htpasswd.yaml
+      #   htpasswd -nbB <login> <password> | sed 's/:$//'
+      "vtimeline.zeroq.su" = {
+        forceSSL = true;
+        enableACME = true;
+        root = pkgs.writeTextDir "index.html" "<!doctype html><html><body>Nothing here yet.</body></html>";
+        extraConfig = ''
+          auth_basic "vtimeline";
+          auth_basic_user_file ${config.sops.secrets.vtimeline-htpasswd.path};
+        '';
+      };
       "pdf.private" = {
         forceSSL = false;
         enableACME = false;
@@ -251,4 +266,19 @@ in
     80
     443
   ];
+
+  # htpasswd file for vtimeline.zeroq.su basic auth.
+  # Source layout (per modules/server/secrets/vtimeline-htpasswd.yaml):
+  #   passwords: |
+  #     <user>:<bcrypt-or-apr1-hash>
+  # sops-nix extracts the `passwords` key as the only decrypted content.
+  # The resulting file is consumed by nginx via auth_basic_user_file.
+  sops.secrets.vtimeline-htpasswd = {
+    format = "yaml";
+    key = "passwords";
+    sopsFile = ./secrets/vtimeline-htpasswd.yaml;
+    owner = "nginx";
+    group = "nginx";
+    mode = "0640";
+  };
 }

@@ -26,6 +26,7 @@
               192.168.1.20 syncthing.zeroq.su
               192.168.1.20 talk.zeroq.su
               192.168.1.20 turn.zeroq.su
+              192.168.1.20 vtimeline.zeroq.su
               fallthrough
           }
           cache 300
