@@ -123,16 +123,16 @@ in
         forceSSL = true;
         enableACME = true;
       };
-      # vtimeline.zeroq.su — stub behind HTTP basic auth.
-      # Credentials are pulled from sops (format = yaml, key = "passwords"),
-      # file content is htpasswd-format (one "user:hash" per line).
-      # Empty file = 401 for everyone until somebody populates the secret:
-      #   sops modules/server/secrets/vtimeline-htpasswd.yaml
-      #   htpasswd -nbB <login> <password> | sed 's/:$//'
+      # vtimeline.zeroq.su — static site behind HTTP basic auth.
+      # Files live under /home/oqyude/External/Git/VeeamTimelineView/public_html,
+      # which is bind-mounted to /var/lib/vtimeline (see systemd.mounts below)
+      # because /home/oqyude is mode 700 and the nginx user (uid 60) cannot
+      # traverse it. Credentials are pulled from sops; see the sops.secrets
+      # block at the bottom of this file.
       "vtimeline.zeroq.su" = {
         forceSSL = true;
         enableACME = true;
-        root = pkgs.writeTextDir "index.html" "<!doctype html><html><body>Nothing here yet.</body></html>";
+        root = "/var/lib/vtimeline";
         extraConfig = ''
           auth_basic "vtimeline";
           auth_basic_user_file ${config.sops.secrets.vtimeline-htpasswd.path};
@@ -265,6 +265,20 @@ in
   networking.firewall.allowedTCPPorts = [
     80
     443
+  ];
+
+  # Bind-mount the vtimeline source tree into /var/lib so the nginx user
+  # (uid 60) doesn't have to traverse /home/oqyude (mode 700). The mount is
+  # lazy (x-systemd.automount) and nofail, so a missing /home/oqyude/External
+  # only shows up as a per-request 500/403, never as a hard boot failure.
+  systemd.mounts = [
+    (xlib.helpers.mkSystemdBind {
+      what = "/home/oqyude/External/Git/VeeamTimelineView/public_html";
+      where = "/var/lib/vtimeline";
+    })
+  ];
+  systemd.tmpfiles.rules = [
+    (xlib.helpers.mkTmpfile "d" "/var/lib/vtimeline" "0755" "nginx" "nginx")
   ];
 
   # htpasswd file for vtimeline.zeroq.su basic auth.
