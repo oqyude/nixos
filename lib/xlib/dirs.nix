@@ -14,6 +14,7 @@ in
     server-home
     services-mnt-folder
     ;
+  opencode-server-env = "${user-home}/.config/opencode/server.env";
 
   user-storage = "${user-home}/Storage";
   wsl-storage = "${wsl-home}/Storage";

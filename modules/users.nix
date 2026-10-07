@@ -111,8 +111,11 @@ in
       # Decrypted as a single dotenv file (no `key`) and consumed by the
       # systemd user unit opencode-web as EnvironmentFile.
       # Source: secrets/opencode.env (encrypted, see sops/age below).
+      # Path is shared with home/modules/opencode.nix via xlib.dirs so the
+      # sops materialization and the systemd EnvironmentFile can never
+      # silently desync.
       opencode_server = mkUserSecret {
-        path = "${xlib.dirs.user-home}/.config/opencode/server.env";
+        path = xlib.dirs.opencode-server-env;
         mode = "0600";
         format = "dotenv";
         sopsFile = ../secrets/opencode.env;
