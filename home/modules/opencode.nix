@@ -13,6 +13,7 @@
   config,
   lib,
   pkgs,
+  xlib,
   ...
 }:
 let
@@ -270,6 +271,16 @@ in
   };
 
   # ~/.config/opencode/oh-my-openagent.json — read by the plugin on startup.
+  #
+  # NOTE: the oh-my-openagent plugin runs a `2026-07-opencode-config-unification`
+  # migration on every startup that backs up this file and tries to write its
+  # consolidated form to ~/.omo/omo.jsonc. The backup directory name embeds the
+  # source's content-hashed store path; because HM does not delete the previous
+  # generation's store path until garbage collection, the same path is reused on
+  # every retry and omo logs "Migration backup path already exists" forever.
+  # Recovery: `rm -rf ~/.omo/migration-backup-*` and let omo retry; if the
+  # migration keeps failing on the same backup path, the plugin/omo version
+  # probably expects a new schema and this config needs updating.
   xdg.configFile."opencode/oh-my-openagent.json".text = builtins.toJSON ohMyOpenagentConfig;
 
   # Same extras on the user's PATH too, so `omo doctor` and standalone invocations
@@ -297,7 +308,7 @@ in
   # `config.sops.*` — sops-nix options are NixOS-only).
   programs.opencode.web = {
     enable = true;
-    environmentFile = "${config.home.homeDirectory}/.config/opencode/server.env";
+    environmentFile = xlib.dirs.opencode-server-env;
     extraArgs = [
       "--hostname"
       "0.0.0.0"
@@ -336,17 +347,16 @@ in
   # Refs:
   #   https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html
   #   https://www.freedesktop.org/software/systemd/man/systemd.exec.html#OOMScoreAdjust=
-  # Override the [Service] section emitted by `programs.opencode.web`.
-  # Upstream writes its own [Service] keys (ExecStart, EnvironmentFile,
-  # Restart, RestartSec); merging on the same `Service` attrset unions both
-  # sides into the same systemd section, so cgroup limits land where systemd
-  # actually reads them.
+  # cgroup/OOM knobs added on top of the [Service] section emitted by
+  # `programs.opencode.web`. home-manager unions multiple definitions of the
+  # same systemd unit attrset, so ExecStart/Restart/EnvironmentFile from
+  # upstream and MemoryHigh/MemoryMax/OOMScoreAdjust/OOMPolicy from here
+  # land in the same [Service] block systemd actually reads.
   #
-  # NOTE: do NOT use `serviceConfig = { ... }` here — it is rendered as a
-  # literal `[serviceConfig]` section header by home-manager, which systemd
-  # silently ignores (verified on sapphira, journal: "Unknown section
-  # 'serviceConfig'. Ignoring."). The previous version of this block was
-  # exactly that, so the OOM/cgroup protection above never took effect.
+  # NOTE: do NOT use `serviceConfig = { ... }` — home-manager renders that
+  # as a literal `[serviceConfig]` section, which systemd silently ignores
+  # (`Unknown section 'serviceConfig'. Ignoring.`). The cgroup protection
+  # above would never take effect (verified on sapphira, c73a698).
   systemd.user.services.opencode-web.Service = {
     MemoryHigh = "1G";
     MemoryMax = "2G";
@@ -360,10 +370,15 @@ in
   # from a dag entry — it still points to the OLD generation at the time our
   # script executes. Instead, read `new-home`, which the activator writes
   # BEFORE any dag entry runs and which already points at the new generation.
+  #
+  # The versioned symlink (`home-manager-NN-link`) is found by following
+  # `home-manager` one hop rather than hardcoding `home-manager-24-link`,
+  # so this keeps working across HM major-version bumps.
   home.activation.relinkHomeManager = lib.hm.dag.entryAfter [] ''
-    target="$HOME/.local/state/nix/profiles/home-manager-24-link"
+    hmVersioned="$(readlink "$HOME/.local/state/nix/profiles/home-manager" 2>/dev/null || true)"
+    target="$HOME/.local/state/nix/profiles/$hmVersioned"
     newGen="$(readlink -e "''${XDG_STATE_HOME:-$HOME/.local/state}/home-manager/gcroots/new-home" 2>/dev/null || true)"
-    if [[ -n "$newGen" && "$(readlink -f "$target")" != "$newGen" ]]; then
+    if [[ -n "$hmVersioned" && -n "$newGen" && "$(readlink -f "$target")" != "$newGen" ]]; then
       echo "home-manager: relinking $target -> $newGen"
       ln -sfn "$newGen" "$target"
     fi
