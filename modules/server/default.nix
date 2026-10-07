@@ -6,6 +6,7 @@
 {
   imports = [
     ../containers/3x-ui.nix
+    ../containers/open-webui.nix
     ../containers/tape-rotation.nix
     ../pkgs/beets.nix
     ./acme.nix
@@ -38,7 +39,6 @@
     # ./n8n.nix
     # ./netdata.nix
     # ./nfs.nix
-    # ./open-webui.nix
     # ./rsync.nix
     # ./step-ca.nix
     # ./stirling-pdf.nix

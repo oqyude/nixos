@@ -20,6 +20,7 @@
               192.168.1.20 kuma.zeroq.su
               192.168.1.20 navidrome.zeroq.su
               192.168.1.20 nextcloud.zeroq.su
+              192.168.1.20 open.zeroq.su
               192.168.1.20 office.zeroq.su
               192.168.1.20 pdf.zeroq.su
               192.168.1.20 syncthing.zeroq.su

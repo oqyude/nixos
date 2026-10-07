@@ -65,6 +65,12 @@ let
       domain = "tape-rotation.zeroq.su";
       port = 5174;
     }
+    # NOTE: open.zeroq.su is intentionally NOT in this `sites` list —
+    # mkProxy hard-codes ${server} = 192.168.1.20, but the Open WebUI
+    # container binds to 127.0.0.1:8080 only (loopback, see
+    # modules/containers/open-webui.nix). The vhost is added directly
+    # to `virtualHosts` below, alongside x.zeroq.su (3x-ui panel,
+    # same loopback-only pattern).
     {
       domain = "navidrome.zeroq.su";
       port = 4533;
@@ -161,6 +167,25 @@ in
             proxyWebsockets = true;
           };
         };
+      };
+      # Open WebUI — same loopback-only pattern as x.zeroq.su above.
+      # The container listens on 127.0.0.1:8080 (modules/containers/open-webui.nix),
+      # so we proxy_pass to 127.0.0.1, not the LAN IP. The two extra
+      # directives are required by the upstream HTTPS docs:
+      # proxy_buffering off for SSE streaming (markdown in chat breaks
+      # under the default `proxy_buffering on` from recommendedProxySettings),
+      # and a 300 s read timeout for long LLM completions.
+      "open.zeroq.su" = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8080";
+          proxyWebsockets = true;
+        };
+        extraConfig = ''
+          proxy_buffering off;
+          proxy_read_timeout 300s;
+        '';
       };
       "zeroq.su" = {
         forceSSL = true;
