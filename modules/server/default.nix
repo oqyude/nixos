@@ -10,6 +10,7 @@
     ../containers/tape-rotation.nix
     ../pkgs/beets.nix
     ./acme.nix
+    ./authelia.nix
     ./bentopdf.nix
     ./builder.nix
     ./calibre-web.nix
@@ -52,6 +53,13 @@
   # case 3x-ui is later reconfigured to terminate TLS itself (e.g. for
   # direct node-API access); nginx doesn't have to use it.
   host."3x-ui".certDomain = "x.zeroq.su";
+  # Authelia SSO — currently protects vtimeline.zeroq.su (replaces the
+  # previous nginx auth_basic htpasswd). Cookie domain is .zeroq.su so a
+  # single Authelia session covers every protected vhost under the zone.
+  host.authelia = {
+    enable = true;
+    cookieDomain = "zeroq.su";
+  };
   systemd.tmpfiles.rules = [
     (xlib.helpers.mkTmpfile "d" "/mnt" "0755" "root" "root")
     (xlib.helpers.mkTmpfile "d" xlib.dirs.services-mnt-folder "0755" "root" "root")

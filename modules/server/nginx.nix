@@ -123,20 +123,77 @@ in
         forceSSL = true;
         enableACME = true;
       };
-      # vtimeline.zeroq.su — static site behind HTTP basic auth.
+      # vtimeline.zeroq.su — static site behind Authelia forward-auth.
       # Files live under /home/oqyude/External/Git/VeeamTimelineView/public_html,
       # which is bind-mounted to /var/lib/vtimeline (see systemd.mounts below)
       # because /home/oqyude is mode 700 and the nginx user (uid 60) cannot
-      # traverse it. Credentials are pulled from sops; see the sops.secrets
-      # block at the bottom of this file.
+      # traverse it. Authentication is delegated to Authelia via
+      # auth_request: nginx sub-requests /authelia on every hit, Authelia
+      # returns 2xx if the session cookie is valid or 401 (which nginx
+      # converts into a 401 to the client; Authelia's response headers
+      # carry the redirect target). The login UI itself is served by the
+      # authelia.zeroq.su vhost below — same Authelia container, different
+      # vhost.
       "vtimeline.zeroq.su" = {
         forceSSL = true;
         enableACME = true;
         root = "/var/lib/vtimeline";
-        extraConfig = ''
-          auth_basic "vtimeline";
-          auth_basic_user_file ${config.sops.secrets.vtimeline-htpasswd.path};
-        '';
+        locations = {
+          "/" = {
+            extraConfig = ''
+              auth_request /authelia;
+              auth_request_set $authelia_user $upstream_http_remote_user;
+              # Authelia for an anonymous user on a `one_factor`-protected
+              # vhost returns 302 + Location to the login UI by default
+              # (because nginx forwards Accept: text/html). nginx's
+              # auth_request only treats 2xx/4xx as pass/deny, so a bare
+              # 302 surfaces to the client as 500 ("auth request
+              # unexpected status"). Converting 401 → 302 to the
+              # login page handles that case. Authelia returns 401 only
+              # when the subrequest advertises Accept: application/json
+              # (see the /authelia block below).
+              # `$request_uri` is the URI path only — Authelia would
+              # then resolve `rd` as relative to its own `authelia_url`
+              # and send the user back to `authelia.zeroq.su/<path>`,
+              # not `vtimeline.zeroq.su/<path>`, after a successful
+              # login. Pass the full origin (scheme + host + path) so
+              # Authelia constructs an absolute redirect back to the
+              # original vhost.
+              error_page 401 =302 https://authelia.zeroq.su/?rd=$scheme://$host$request_uri;
+            '';
+          };
+          "= /authelia" = {
+            extraConfig = ''
+              internal;
+              proxy_pass http://127.0.0.1:9091/api/authz/forward-auth;
+              proxy_set_header X-Original-URL $request_uri;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header X-Forwarded-Host $host;
+              proxy_set_header X-Forwarded-Method $request_method;
+              proxy_set_header X-Forwarded-Uri $request_uri;
+              proxy_set_header X-Forwarded-For $remote_addr;
+              # Force Authelia to respond with 401 (not 302 + Location) so
+              # the error_page 401 =302 rule above can take over. With the
+              # default Accept: text/html Authelia sends a 302 with an
+              # absolute Location, which auth_request surfaces to the client
+              # as 500 ("unexpected status").
+              proxy_set_header Accept "application/json";
+            '';
+          };
+        };
+      };
+      # Authelia login UI — same podman container on 127.0.0.1:9091 as the
+      # forward-auth endpoint above, just exposed on a separate vhost so
+      # Authelia has a stable absolute URL to redirect users to. Authelia
+      # generates internal links against $session.cookies[0].authelia_url,
+      # which is set to https://${autheliaFqdn}/ in modules/server/authelia.nix.
+      "authelia.zeroq.su" = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:9091";
+          proxyWebsockets = true;
+        };
       };
       "pdf.private" = {
         forceSSL = false;
@@ -281,18 +338,10 @@ in
     (xlib.helpers.mkTmpfile "d" "/var/lib/vtimeline" "0755" "nginx" "nginx")
   ];
 
-  # htpasswd file for vtimeline.zeroq.su basic auth.
-  # Source layout (per modules/server/secrets/vtimeline-htpasswd.yaml):
-  #   passwords: |
-  #     <user>:<bcrypt-or-apr1-hash>
-  # sops-nix extracts the `passwords` key as the only decrypted content.
-  # The resulting file is consumed by nginx via auth_basic_user_file.
-  sops.secrets.vtimeline-htpasswd = {
-    format = "yaml";
-    key = "passwords";
-    sopsFile = ./secrets/vtimeline-htpasswd.yaml;
-    owner = "nginx";
-    group = "nginx";
-    mode = "0640";
-  };
+  # Note: the previous vtimeline-htpasswd sops declaration lived here. It
+  # was removed when authelia replaced nginx's auth_basic (see the vtimeline
+  # vhost above). The encrypted file modules/server/secrets/vtimeline-htpasswd.yaml
+  # itself was kept untouched per the repo policy of not modifying secrets
+  # without explicit owner sign-off; delete it with `sops --version` and
+  # `rm` once the cutover is verified.
 }

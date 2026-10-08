@@ -10,6 +10,7 @@
       zeroq.su:53 {
           hosts {
               109.248.161.5 x.zeroq.su
+              192.168.1.20 authelia.zeroq.su
               192.168.1.20 calibre.zeroq.su
               192.168.1.20 dns.zeroq.su
               192.168.1.20 flux.zeroq.su
