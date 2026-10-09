@@ -1,3 +1,10 @@
+---
+aliases: []
+cssclasses: 
+date-created: 2026-10-09T19:01
+date-modified: 2026-10-09T20:23
+tags: []
+---
 # AGENTS.md
 
 NixOS-конфиг домашнего флота. 6 NixOS-хостов + Android (`nix-on-droid`).
