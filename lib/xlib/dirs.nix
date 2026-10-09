@@ -24,6 +24,7 @@ in
   services-folder = "${server-home}/Services";
   services-nodes-folder = "${services-mnt-folder}/nodes";
   postgresql-folder = "${services-mnt-folder}/postgresql";
+  authelia-folder = "${services-mnt-folder}/authelia";
   music-library = "${user-home}/Music";
 
   archive-drive = "/mnt/archive";

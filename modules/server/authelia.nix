@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  xlib,
   ...
 }:
 # Authelia — SSO reverse-proxy (single-factor password login) for protected
@@ -12,26 +13,30 @@
 # Wiring:
 #   - The internal API listens on 127.0.0.1:9091 only (overrides the nixpkgs
 #     default `tcp://:9091/` which would bind all interfaces).
-#   - Three secrets (jwt, storage encryption key, users_database) come from
+#   - Two secrets (jwt, storage encryption key) come from
 #     modules/server/secrets/authelia.yaml via sops-nix, materialised at
 #     /run/secrets/<name> by the time authelia.service starts.
 #   - nginx is the only ingress: authelia.zeroq.su vhosts the login UI and
 #     every protected vhost (currently vtimeline.zeroq.su) does
 #     `auth_request /authelia` against 127.0.0.1:9091 (see nginx.nix).
-#   - users_database.yml is symlinked into /var/lib/authelia/ so the path
-#     configured in `settings.authentication_backend.file.path` resolves
-#     to the sops materialised file. The symlink target is created by
-#     sops-nix before this unit starts, so no race.
+#   - users_database lives at ${xlib.dirs.authelia-folder}/users_database.yml
+#     under /mnt/services/authelia/ — outside of sops, intentionally, so it
+#     can be edited at runtime without `nixos-rebuild` (authelia lazy-reads
+#     the file on each authentication attempt). The directory + file are
+#     pre-created by systemd.tmpfiles below with `authelia:authelia` 0750/0400.
 #
 # Version: pinned transitively via flake inputs.nixpkgs → pkgs.authelia.
-# `nix flake update` will roll it forward; no overlay needed.
+# `nix flake update` will roll it forward; no overlay needed. Package is
+# also exposed via `environment.systemPackages` so the `authelia` CLI is on
+# PATH for the `authelia-hash` shell alias (Argon2id password hashing).
 #
 # Secrets layout in modules/server/secrets/authelia.yaml (sops-encrypted):
 #   jwt_secret              -> /run/secrets/authelia-jwt-secret
 #   storage_encryption_key  -> /run/secrets/authelia-storage-encryption-key
-#   users_database          -> /run/secrets/authelia-users-database
-#                              (multiline YAML string, written verbatim by
-#                               sops-nix and consumed as a settingsFile)
+#
+# The users database is NOT in this file — it lives at
+# ${xlib.dirs.authelia-folder}/users_database.yml (see the wiring block
+# above), edited at runtime without `nixos-rebuild`.
 #
 # Guarded by `builtins.pathExists` so a missing sops file does NOT break
 # `nixos-rebuild switch` — the flake evaluates, Authelia stays disabled
@@ -76,6 +81,22 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # Authelia CLI binary on PATH so the `authelia-hash` shell alias works
+    # without `nix-shell`. Same `pkgs.authelia` as the daemon's `package`
+    # below — nothing is rebuilt, just exposed.
+    environment.systemPackages = [ pkgs.authelia ];
+
+    # Pre-create the runtime users_database location at /mnt/services/authelia/.
+    # Authelia is enabled only on `server`-typed hosts (see server/default.nix)
+    # where /mnt/services is the durable mountpoint from `mkServiceStorage`.
+    # The "d" rule creates the directory; the "f" rule seeds an empty file
+    # if absent so authelia.service starts cleanly (and rejects every login
+    # until the file is populated — desired safe default).
+    systemd.tmpfiles.rules = [
+      "d ${xlib.dirs.authelia-folder} 0750 authelia authelia - -"
+      "f ${xlib.dirs.authelia-folder}/users_database.yml 0400 authelia authelia - -"
+    ];
+
     services.authelia.instances."" = {
       enable = true;
       # Default is already pkgs.authelia; pinned here for clarity and to
@@ -98,13 +119,14 @@ in
           format = "text";
         };
         authentication_backend.file = {
-          # Read directly from the sops materialised file at /run/secrets/.
+          # Live users database under /mnt/services/authelia/users_database.yml.
           # Authelia does NOT validate-config this path — it only opens it
-          # when verifying a user password (lazy read). Putting the same
-          # file into settingsFiles would force viper to parse it as
-          # configuration, and the `users:` top-level key would fail the
-          # schema check (users.* is schema-foreign).
-          path = sopsPath "authelia-users-database";
+          # when verifying a user password (lazy read on every login attempt),
+          # so the file can be edited at runtime without restarting the
+          # service. Permissions/owner are set by the systemd.tmpfiles rule
+          # above; sops materialisation was removed intentionally so editing
+          # works without `nixos-rebuild`.
+          path = "${xlib.dirs.authelia-folder}/users_database.yml";
           password = {
             algorithm = "argon2id";
             iterations = 3;
@@ -178,7 +200,10 @@ in
     # evaluates when ./secrets/authelia.yaml hasn't been created yet —
     # a clean checkout would otherwise fail every nixos-rebuild switch.
     # Once the file exists and is encrypted, this condition becomes true
-    # and the three secrets are wired in.
+    # and the two secrets (jwt + storage encryption key) are wired in.
+    # `users_database` is not sops-managed — see the comment on
+    # `settings.authentication_backend.file.path` above for its runtime
+    # location under ${xlib.dirs.authelia-folder}/.
     sops.secrets = lib.optionalAttrs sopsReady {
       "authelia-jwt-secret" = {
         format = "yaml";
@@ -191,19 +216,6 @@ in
       "authelia-storage-encryption-key" = {
         format = "yaml";
         key = "storage_encryption_key";
-        sopsFile = ./secrets/authelia.yaml;
-        owner = "authelia";
-        group = "authelia";
-        mode = "0400";
-      };
-      # users_database is a multiline YAML string in the sops file
-      # (top-level `users_database: |` block with `users: <name>: ...`
-      # beneath). sops-nix writes the decoded block verbatim to
-      # /run/secrets/authelia-users-database, where the symlink rule
-      # above makes it appear at /var/lib/authelia/users_database.yml.
-      "authelia-users-database" = {
-        format = "yaml";
-        key = "users_database";
         sopsFile = ./secrets/authelia.yaml;
         owner = "authelia";
         group = "authelia";

@@ -63,6 +63,29 @@
       z-p-1 = "ssh pubray-1";
       z-map-local-proxy = "ssh -R 10808:localhost:10808";
 
+      # authelia — Argon2id hash with the exact params configured for the
+      # authelia daemon (memory=65536, iterations=3, parallelism=4,
+      # salt-length=16). Defaults already match, but explicit so an upstream
+      # default change can't silently produce a hash the daemon rejects.
+      #
+      # Note: the old `authelia hash-password --argon2id` form is from
+      # Authelia ≤4.35. Current CLI is `crypto hash generate argon2
+      # -v argon2id`. The subcommand takes no positional password — it
+      # prompts with confirmation (omit confirmation with `--no-confirm`)
+      # or accepts `--password <value>`.
+      #
+      # Example usage:
+      #   authelia-hash
+      #     # interactive prompt (twice — confirmation), then hash on stdout
+      #   authelia-hash --no-confirm
+      #     # single prompt, hash on stdout
+      #   authelia-hash --no-confirm --password 'mypassword'
+      #     # non-interactive (for scripts)
+      #
+      # Output goes to stdout — append it to users_database.yml by hand:
+      #   authelia-hash --no-confirm >> /mnt/services/authelia/users_database.yml
+      authelia-hash = "authelia crypto hash generate argon2 -v argon2id -i 3 -m 65536 -p 4 -s 16";
+
       # Somethings
       reboot-bios = "sudo systemctl reboot --firmware-setup";
 
