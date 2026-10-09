@@ -42,32 +42,32 @@ let
 
     agents = {
       sisyphus = {
-        model = "opencode/claude-opus-5";
+        model = "minimax-coding-plan/MiniMax-M3";
         variant = "max";
-        fallback_models = [
-          { model = "opencode/kimi-k3"; }
+        models = [
+          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
           {
-            model = "opencode/gpt-5.6-sol";
+            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
             variant = "medium";
           }
-          { model = "opencode/glm-5"; }
+          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
           { model = "opencode/big-pickle"; }
         ];
       };
       hephaestus = {
-        model = "opencode/gpt-5.6-sol";
+        model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
         variant = "medium";
       };
       oracle = {
-        model = "opencode/gpt-5.6-sol";
+        model = "minimax-coding-plan/MiniMax-M3";
         variant = "xhigh";
-        fallback_models = [
+        models = [
           {
-            model = "opencode/gemini-3.1-pro";
+            model = "minimax-coding-plan/MiniMax-M3";
             variant = "high";
           }
           {
-            model = "opencode/claude-opus-5";
+            model = "minimax-coding-plan/MiniMax-M3";
             variant = "max";
           }
         ];
@@ -76,67 +76,67 @@ let
         model = "minimax-coding-plan/MiniMax-M3";
       };
       explore = {
-        model = "opencode/gpt-5-nano";
-        fallback_models = [
+        model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
+        models = [
           { model = "minimax-coding-plan/MiniMax-M3"; }
         ];
       };
       "multimodal-looker" = {
-        model = "opencode/gpt-5.6-sol";
+        model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
         variant = "low";
-        fallback_models = [
-          { model = "opencode/gpt-5-nano"; }
+        models = [
+          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
         ];
       };
       prometheus = {
-        model = "opencode/claude-fable-5";
+        model = "minimax-coding-plan/MiniMax-M3";
         variant = "high";
-        fallback_models = [
+        models = [
           {
-            model = "opencode/kimi-k3";
+            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
             variant = "high";
           }
         ];
       };
       metis = {
-        model = "opencode/claude-opus-5";
+        model = "minimax-coding-plan/MiniMax-M3";
         variant = "high";
-        fallback_models = [
+        models = [
           {
-            model = "opencode/kimi-k3";
+            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
             variant = "low";
           }
         ];
       };
       momus = {
-        model = "opencode/gpt-5.6-sol";
+        model = "minimax-coding-plan/MiniMax-M3";
         variant = "xhigh";
-        fallback_models = [
+        models = [
           {
-            model = "opencode/claude-opus-5";
+            model = "minimax-coding-plan/MiniMax-M3";
             variant = "max";
           }
           {
-            model = "opencode/gemini-3.1-pro";
+            model = "minimax-coding-plan/MiniMax-M3";
             variant = "high";
           }
         ];
       };
       atlas = {
-        model = "opencode/claude-sonnet-4-6";
-        fallback_models = [
+        model = "minimax-coding-plan/MiniMax-M3";
+        models = [
           {
-            model = "opencode/gpt-5.6-sol";
+            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
             variant = "medium";
           }
           { model = "minimax-coding-plan/MiniMax-M3"; }
         ];
       };
       "sisyphus-junior" = {
-        model = "opencode/claude-sonnet-4-6";
-        fallback_models = [
+        model = "minimax-coding-plan/MiniMax-M3";
+        models = [
           {
-            model = "opencode/gpt-5.6-sol";
+            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
             variant = "medium";
           }
           { model = "minimax-coding-plan/MiniMax-M3"; }
@@ -147,92 +147,92 @@ let
 
     categories = {
       "visual-engineering" = {
-        model = "opencode/gemini-3.1-pro";
+        model = "minimax-coding-plan/MiniMax-M3";
         variant = "high";
         fallback_models = [
-          { model = "opencode/glm-5"; }
+          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
           {
-            model = "opencode/claude-opus-5";
+            model = "minimax-coding-plan/MiniMax-M3";
             variant = "max";
           }
         ];
       };
       ultrabrain = {
-        model = "opencode/gpt-5.6-sol";
+        model = "minimax-coding-plan/MiniMax-M3";
         variant = "xhigh";
         fallback_models = [
           {
-            model = "opencode/gemini-3.1-pro";
+            model = "minimax-coding-plan/MiniMax-M3";
             variant = "high";
           }
           {
-            model = "opencode/claude-opus-5";
+            model = "minimax-coding-plan/MiniMax-M3";
             variant = "max";
           }
         ];
       };
       deep = {
-        model = "opencode/gpt-5.6-sol";
+        model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
         variant = "medium";
         fallback_models = [
           {
-            model = "opencode/claude-opus-5";
+            model = "minimax-coding-plan/MiniMax-M3";
             variant = "max";
           }
           {
-            model = "opencode/gemini-3.1-pro";
+            model = "minimax-coding-plan/MiniMax-M3";
             variant = "high";
           }
         ];
       };
       artistry = {
-        model = "opencode/gemini-3.1-pro";
+        model = "minimax-coding-plan/MiniMax-M3";
         variant = "high";
         fallback_models = [
           {
-            model = "opencode/claude-opus-5";
+            model = "minimax-coding-plan/MiniMax-M3";
             variant = "max";
           }
           {
-            model = "opencode/gpt-5.6-sol";
+            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
             variant = "high";
           }
         ];
       };
       quick = {
-        model = "opencode/gpt-5.4-mini";
+        model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
         fallback_models = [
-          { model = "opencode/gemini-3-flash"; }
+          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
           { model = "minimax-coding-plan/MiniMax-M3"; }
-          { model = "opencode/gpt-5-nano"; }
+          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
         ];
       };
       "unspecified-low" = {
-        model = "opencode/claude-sonnet-4-6";
+        model = "minimax-coding-plan/MiniMax-M3";
         fallback_models = [
           {
-            model = "opencode/gpt-5.6-sol";
+            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
             variant = "medium";
           }
-          { model = "opencode/gemini-3-flash"; }
+          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
           { model = "minimax-coding-plan/MiniMax-M3"; }
         ];
       };
       "unspecified-high" = {
-        model = "opencode/claude-sonnet-4-6";
+        model = "minimax-coding-plan/MiniMax-M3";
         fallback_models = [
           {
-            model = "opencode/gpt-5.6-sol";
+            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
             variant = "medium";
           }
-          { model = "opencode/gemini-3-flash"; }
+          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
           { model = "minimax-coding-plan/MiniMax-M3"; }
         ];
       };
       writing = {
-        model = "opencode/gemini-3-flash";
+        model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
         fallback_models = [
-          { model = "opencode/claude-sonnet-4-6"; }
+          { model = "minimax-coding-plan/MiniMax-M3"; }
           { model = "minimax-coding-plan/MiniMax-M3"; }
         ];
       };
