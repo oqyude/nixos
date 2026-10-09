@@ -31,6 +31,7 @@
     ./samba.nix
     ./syncthing.nix
     ./systemd.nix
+    ./ttyd.nix
     ./uptime-kuma.nix
     # ../containers/remnawave.nix
     # ./coturn.nix

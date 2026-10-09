@@ -182,6 +182,50 @@ in
           };
         };
       };
+      # tty.zeroq.su — web-shell (ttyd) behind Authelia forward-auth.
+      # ttyd listens on 127.0.0.1:7681 only (modules/server/ttyd.nix), so
+      # nginx is the only ingress. Same auth_request / 401→302 wiring as
+      # vtimeline.zeroq.su above — the wildcard rule `*.zeroq.su` in
+      # modules/server/authelia.nix already covers this subdomain under
+      # `one_factor`, so no policy change is needed.
+      "tty.zeroq.su" = {
+        forceSSL = true;
+        enableACME = true;
+        locations = {
+          "/" = {
+            proxyPass = "http://127.0.0.1:7681";
+            proxyWebsockets = true;
+            extraConfig = ''
+              auth_request /authelia;
+              auth_request_set $authelia_user $upstream_http_remote_user;
+              # Same 401→302 trick as vtimeline.zeroq.su: a bare 302 from
+              # Authelia surfaces to the client as a 500 ("auth request
+              # unexpected status"), so we rewrite the response status to
+              # a 302 pointing at the authelia login UI with an absolute
+              # `$scheme://$host$request_uri` so the post-login `rd`
+              # lands the user back on tty.zeroq.su, not on
+              # authelia.zeroq.su/<path>.
+              error_page 401 =302 https://authelia.zeroq.su/?rd=$scheme://$host$request_uri;
+            '';
+          };
+          "= /authelia" = {
+            extraConfig = ''
+              internal;
+              proxy_pass http://127.0.0.1:9091/api/authz/forward-auth;
+              proxy_set_header X-Original-URL $request_uri;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header X-Forwarded-Host $host;
+              proxy_set_header X-Forwarded-Method $request_method;
+              proxy_set_header X-Forwarded-Uri $request_uri;
+              proxy_set_header X-Forwarded-For $remote_addr;
+              # Same Accept-forces-401 trick as vtimeline.zeroq.su — see
+              # the comment there for why Authelia's default 302 is
+              # harmful here.
+              proxy_set_header Accept "application/json";
+            '';
+          };
+        };
+      };
       # Authelia login UI — same podman container on 127.0.0.1:9091 as the
       # forward-auth endpoint above, just exposed on a separate vhost so
       # Authelia has a stable absolute URL to redirect users to. Authelia

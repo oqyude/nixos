@@ -3,10 +3,17 @@
 # Mirrors ~/.config/opencode/ on the current workstation.
 # Imported by home/server.nix (sapphira). Auto-enables programs.opencode.
 #
-# Three files this module owns on disk (via xdg.configFile):
+# Files this module owns on disk:
 #   ~/.config/opencode/opencode.json         <- programs.opencode.settings
 #   ~/.config/opencode/tui.json              <- programs.opencode.tui
-#   ~/.config/opencode/oh-my-openagent.json  <- oh-my-openagent plugin config
+#   ~/.omo/omo.jsonc                         <- oh-my-openagent plugin's PRIMARY
+#                                              runtime config (>= v5.x reads
+#                                              only this path; the legacy
+#                                              ~/.config/opencode/oh-my-openagent.json
+#                                              is read only by the migration shim).
+#   ~/.config/opencode/oh-my-openagent.json  <- legacy mirror, kept so omo doctor
+#                                              and any downgrade that re-reads
+#                                              the old path see the same content.
 #
 # Override any field in the importing module if needed.
 {
@@ -17,10 +24,21 @@
   ...
 }:
 let
-  # Body of ~/.config/opencode/oh-my-openagent.json.
+  # Body of ~/.omo/omo.jsonc (and the legacy mirror).
   # Loaded by the oh-my-openagent opencode plugin on startup.
+  #
+  # Plugins >= 5.x resolve their config from ~/.omo/omo.jsonc, NOT from
+  # ~/.config/opencode/oh-my-openagent.json. Pinning _migrations here prevents
+  # the 2026-07-opencode-config-unification migration from running on every
+  # startup and re-backing-up the file (which would otherwise leave us with
+  # an empty omo.jsonc that drops every agent override — see the journal entry
+  # below).
   ohMyOpenagentConfig = {
-    "$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json";
+    "$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/omo.schema.json";
+    _migrations = [
+      "2026-07-opencode-config-unification"
+      "2026-08-reasoning-unification"
+    ];
 
     agents = {
       sisyphus = {
@@ -270,17 +288,29 @@ in
     };
   };
 
-  # ~/.config/opencode/oh-my-openagent.json — read by the plugin on startup.
+  # ~/.omo/omo.jsonc — primary file the oh-my-openagent plugin reads at runtime
+  # (>= v5.x). This path lives outside XDG_CONFIG_HOME (~/.config), so use
+  # home.file rather than xdg.configFile.
   #
-  # NOTE: the oh-my-openagent plugin runs a `2026-07-opencode-config-unification`
-  # migration on every startup that backs up this file and tries to write its
-  # consolidated form to ~/.omo/omo.jsonc. The backup directory name embeds the
-  # source's content-hashed store path; because HM does not delete the previous
-  # generation's store path until garbage collection, the same path is reused on
-  # every retry and omo logs "Migration backup path already exists" forever.
-  # Recovery: `rm -rf ~/.omo/migration-backup-*` and let omo retry; if the
-  # migration keeps failing on the same backup path, the plugin/omo version
-  # probably expects a new schema and this config needs updating.
+  # ~/.config/opencode/oh-my-openagent.json is kept as a legacy mirror so
+  # `omo doctor`, the migration shim, and any future downgrade that re-reads the
+  # old path see the same content.
+  #
+  # MIGRATION TRAP (do not just point back at the legacy path):
+  #   The plugin runs a `2026-07-opencode-config-unification` migration on every
+  #   startup that backs up ~/.omo/omo.jsonc and tries to rewrite it from
+  #   ~/.config/opencode/oh-my-openagent.json. The backup directory name embeds
+  #   the source's content-hashed store path; because HM does not delete the
+  #   previous generation's store path until garbage collection, the same path
+  #   is reused on every retry and omo logs "Migration backup path already
+  #   exists" forever — meanwhile the user's agent overrides disappear and the
+  #   plugin's built-in fallback chain (which references providers like
+  #   kimi-for-coding that opencode's provider registry no longer ships) gets
+  #   picked instead, surfacing as `ProviderModelNotFoundError:
+  #   kimi-for-coding/kimi-for-coding-highspeed` on every subagent spawn.
+  #   Pinning _migrations above makes the migration a no-op; the omo.jsonc
+  #   below is the actual config the plugin sees.
+  home.file."${config.home.homeDirectory}/.omo/omo.jsonc".text = builtins.toJSON ohMyOpenagentConfig;
   xdg.configFile."opencode/oh-my-openagent.json".text = builtins.toJSON ohMyOpenagentConfig;
 
   # Same extras on the user's PATH too, so `omo doctor` and standalone invocations
