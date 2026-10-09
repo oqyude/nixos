@@ -100,8 +100,10 @@ let
   # а в 24.x был путём. `lib.getExe` умеет оба: derivation → bin/<name>,
   # string → возвращает как есть.
   userShellExe =
-    let shell = config.users.users.${cfg.user}.shell or "/run/current-system/sw/bin/bash";
-    in if builtins.isString shell then shell else lib.getExe shell;
+    let
+      shell = config.users.users.${cfg.user}.shell or "/run/current-system/sw/bin/bash";
+    in
+    if builtins.isString shell then shell else lib.getExe shell;
 in
 {
   services.ttyd = {
@@ -109,7 +111,11 @@ in
     port = 7681;
     interface = "127.0.0.1";
     user = "oqyude";
-    entrypoint = [ userShellExe "-i" "-l" ];
+    entrypoint = [
+      userShellExe
+      "-i"
+      "-l"
+    ];
     writeable = true;
     checkOrigin = true;
     maxClients = 0;

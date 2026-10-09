@@ -32,7 +32,8 @@ let
   # of relying on `@/etc/nix/machines`, which Nix 2.34 parses but does
   # not act on (the daemon's `external-builders` list stays empty and the
   # client reports "configure remote builders via 'builders'" forever).
-  formatBuilder = b:
+  formatBuilder =
+    b:
     let
       # Nix 2.34 refuses to dispatch derivations to a builder whose protocol
       # is `ssh` (the NixOS default): the daemon leaves `external-builders`
@@ -42,19 +43,19 @@ let
       proto = "ssh-ng://";
       user = if b.sshUser != null && b.sshUser != "" then "${b.sshUser}@" else "";
       systems =
-        if b.system != null then b.system
-        else if b.systems != [ ] then lib.concatStringsSep "," b.systems
-        else "-";
+        if b.system != null then
+          b.system
+        else if b.systems != [ ] then
+          lib.concatStringsSep "," b.systems
+        else
+          "-";
       sshKey = if b.sshKey != null && b.sshKey != "" then b.sshKey else "-";
       maxJobs = toString b.maxJobs;
       speedFactor = toString b.speedFactor;
       allFeats = b.supportedFeatures ++ b.mandatoryFeatures;
-      supported =
-        if allFeats == [ ] then "-"
-        else lib.concatStringsSep "," allFeats;
+      supported = if allFeats == [ ] then "-" else lib.concatStringsSep "," allFeats;
       mandatory =
-        if b.mandatoryFeatures == [ ] then "-"
-        else lib.concatStringsSep "," b.mandatoryFeatures;
+        if b.mandatoryFeatures == [ ] then "-" else lib.concatStringsSep "," b.mandatoryFeatures;
       publicKey = if b.publicHostKey != null then b.publicHostKey else "-";
     in
     lib.concatStringsSep " " [

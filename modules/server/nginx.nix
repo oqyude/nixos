@@ -123,23 +123,24 @@ in
         forceSSL = true;
         enableACME = true;
       };
-      # vtimeline.zeroq.su — static site behind Authelia forward-auth.
-      # Files live under /home/oqyude/External/Git/VeeamTimelineView/public_html,
-      # which is bind-mounted to /var/lib/vtimeline (see systemd.mounts below)
-      # because /home/oqyude is mode 700 and the nginx user (uid 60) cannot
-      # traverse it. Authentication is delegated to Authelia via
-      # auth_request: nginx sub-requests /authelia on every hit, Authelia
-      # returns 2xx if the session cookie is valid or 401 (which nginx
-      # converts into a 401 to the client; Authelia's response headers
-      # carry the redirect target). The login UI itself is served by the
-      # authelia.zeroq.su vhost below — same Authelia container, different
-      # vhost.
+      # vtimeline.zeroq.su — Veeam Timeline View. Reverse-proxies the
+      # entire vhost to a local Node.js/Express process (managed by
+      # systemd as `vtimeline-api` — see modules/server/vtimeline.nix),
+      # which serves both the static frontend (public_html/) and the
+      # /api/uploads JSON-upload CRUD over a single listener on
+      # 127.0.0.1:8000. Authelia forward-auth is wired on `/` so every
+      # hit (static OR /api/*) requires a valid session cookie.
+      #
+      # client_max_body_size 6m matches the server.js body limit
+      # (5 MB hard cap). nginx's default 1m would 413 any upload near
+      # the cap before the request reached the node process.
       "vtimeline.zeroq.su" = {
         forceSSL = true;
         enableACME = true;
-        root = "/var/lib/vtimeline";
         locations = {
           "/" = {
+            proxyPass = "http://127.0.0.1:8000";
+            proxyWebsockets = true;
             extraConfig = ''
               auth_request /authelia;
               auth_request_set $authelia_user $upstream_http_remote_user;
@@ -160,6 +161,7 @@ in
               # Authelia constructs an absolute redirect back to the
               # original vhost.
               error_page 401 =302 https://authelia.zeroq.su/?rd=$scheme://$host$request_uri;
+              client_max_body_size 6m;
             '';
           };
           "= /authelia" = {
@@ -366,20 +368,6 @@ in
   networking.firewall.allowedTCPPorts = [
     80
     443
-  ];
-
-  # Bind-mount the vtimeline source tree into /var/lib so the nginx user
-  # (uid 60) doesn't have to traverse /home/oqyude (mode 700). The mount is
-  # lazy (x-systemd.automount) and nofail, so a missing /home/oqyude/External
-  # only shows up as a per-request 500/403, never as a hard boot failure.
-  systemd.mounts = [
-    (xlib.helpers.mkSystemdBind {
-      what = "/home/oqyude/External/Git/VeeamTimelineView/public_html";
-      where = "/var/lib/vtimeline";
-    })
-  ];
-  systemd.tmpfiles.rules = [
-    (xlib.helpers.mkTmpfile "d" "/var/lib/vtimeline" "0755" "nginx" "nginx")
   ];
 
   # Note: the previous vtimeline-htpasswd sops declaration lived here. It

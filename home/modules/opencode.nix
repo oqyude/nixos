@@ -34,7 +34,8 @@ let
   # an empty omo.jsonc that drops every agent override — see the journal entry
   # below).
   ohMyOpenagentConfig = {
-    "$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/omo.schema.json";
+    "$schema" =
+      "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/omo.schema.json";
     _migrations = [
       "2026-07-opencode-config-unification"
       "2026-08-reasoning-unification"
@@ -404,7 +405,7 @@ in
   # The versioned symlink (`home-manager-NN-link`) is found by following
   # `home-manager` one hop rather than hardcoding `home-manager-24-link`,
   # so this keeps working across HM major-version bumps.
-  home.activation.relinkHomeManager = lib.hm.dag.entryAfter [] ''
+  home.activation.relinkHomeManager = lib.hm.dag.entryAfter [ ] ''
     hmVersioned="$(readlink "$HOME/.local/state/nix/profiles/home-manager" 2>/dev/null || true)"
     target="$HOME/.local/state/nix/profiles/$hmVersioned"
     newGen="$(readlink -e "''${XDG_STATE_HOME:-$HOME/.local/state}/home-manager/gcroots/new-home" 2>/dev/null || true)"

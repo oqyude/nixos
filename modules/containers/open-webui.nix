@@ -92,8 +92,7 @@ in
         # is the only source — and the container will refuse to start with
         # WEBUI_SECRET_KEY="" (env.py:762 — SystemExit). The error message is
         # the clear signal that the secret needs to be created.
-        environmentFiles = lib.optional (builtins.pathExists ./secrets/open-webui.env)
-          "/run/secrets/open-webui-env";
+        environmentFiles = lib.optional (builtins.pathExists ./secrets/open-webui.env) "/run/secrets/open-webui-env";
         volumes = [
           "${panel}/data:/app/backend/data:rw"
         ];

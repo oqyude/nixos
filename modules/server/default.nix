@@ -32,6 +32,7 @@
     ./syncthing.nix
     ./systemd.nix
     ./ttyd.nix
+    ./vtimeline.nix
     ./uptime-kuma.nix
     # ../containers/remnawave.nix
     # ./coturn.nix
