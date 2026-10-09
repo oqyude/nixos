@@ -6,6 +6,15 @@
   xlib,
   ...
 }:
+let
+  # Composite env file path shared by the generator
+  # (remnawave-env.service below) and the container's `environmentFiles`.
+  # Lifting to a single binding prevents the two copies from drifting
+  # apart in future edits — see invariant S1 in docs/arch/invariants.md.
+  # Note: this is NOT a sops materialization (it's written by a oneshot),
+  # so `config.sops.secrets.<...>.path` is not the right primitive here.
+  envFile = "/run/secrets/remnawave-env";
+in
 {
   # Runtime
   virtualisation.podman = {
@@ -58,7 +67,7 @@
       # "WEBHOOK_URL" = "https://your-webhook-url.com/endpoint";
     };
     environmentFiles = [
-      "/run/secrets/remnawave-env"
+      envFile
     ];
     ports = [
       "3003:3003/tcp"
@@ -126,14 +135,14 @@
         User = "root";
       };
       script = ''
-        cat > /run/secrets/remnawave-env <<EOF
+        cat > ${envFile} <<EOF
           DATABASE_URL=$(cat ${config.sops.secrets.DATABASE_URL.path})
           DATABASE_PASSWORD=$(cat ${config.sops.secrets.DATABASE_PASSWORD.path})
           JWT_AUTH_SECRET=$(cat ${config.sops.secrets.JWT_AUTH_SECRET.path})
           JWT_API_TOKENS_SECRET=$(cat ${config.sops.secrets.JWT_API_TOKENS_SECRET.path})
           WEBHOOK_SECRET_HEADER=$(cat ${config.sops.secrets.WEBHOOK_SECRET_HEADER.path})
           EOF
-        chmod 600 /run/secrets/remnawave-env
+        chmod 600 ${envFile}
       '';
       wantedBy = [ "multi-user.target" ];
     };

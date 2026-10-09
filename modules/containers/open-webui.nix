@@ -92,7 +92,15 @@ in
         # is the only source — and the container will refuse to start with
         # WEBUI_SECRET_KEY="" (env.py:762 — SystemExit). The error message is
         # the clear signal that the secret needs to be created.
-        environmentFiles = lib.optional (builtins.pathExists ./secrets/open-webui.env) "/run/secrets/open-webui-env";
+        # Path comes from the sops block below (`config.sops.secrets.<attr>.path`)
+        # rather than a hardcoded "/run/secrets/<attr>" — see invariant S1
+        # in docs/arch/invariants.md. Guards the sopsFile existence so the
+        # block is optional; the same predicate is what `sops.secrets` uses
+        # to decide whether to declare the attr at all, so `.path` is only
+        # read when the secret actually exists.
+        environmentFiles =
+          lib.optional (builtins.pathExists ./secrets/open-webui.env)
+            config.sops.secrets."open-webui-env".path;
         volumes = [
           "${panel}/data:/app/backend/data:rw"
         ];

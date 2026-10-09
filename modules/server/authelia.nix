@@ -44,11 +44,6 @@
 let
   cfg = config.host.authelia;
   sopsReady = builtins.pathExists ./secrets/authelia.yaml;
-  # sops-nix materialises each `sops.secrets.<attr-name>` at
-  # /run/secrets/<attr-name> by default. Hardcoding the path here keeps
-  # the module independent of how the secret attr is named; rename only
-  # the sops block below if a different path is needed.
-  sopsPath = name: "/run/secrets/${name}";
 in
 {
   options.host.authelia = {
@@ -105,8 +100,12 @@ in
       package = pkgs.authelia;
 
       secrets = lib.mkIf sopsReady {
-        jwtSecretFile = sopsPath "authelia-jwt-secret";
-        storageEncryptionKeyFile = sopsPath "authelia-storage-encryption-key";
+        # Read paths through `config.sops.secrets.<attr>.path` (not via a
+        # hardcoded "/run/secrets/<attr>") so that any future `path =`
+        # override on the sops block below is picked up automatically —
+        # see invariant S1 in docs/arch/invariants.md.
+        jwtSecretFile = config.sops.secrets."authelia-jwt-secret".path;
+        storageEncryptionKeyFile = config.sops.secrets."authelia-storage-encryption-key".path;
       };
 
       settings = {

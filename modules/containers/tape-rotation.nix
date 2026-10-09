@@ -58,7 +58,9 @@ in
             "NOTIFY_DAYS_BEFORE" = "7";
             "TZ" = "Europe/Moscow";
           };
-          environmentFiles = [ "/run/secrets/tape-rotation-env" ];
+          # Path resolved from the sops block at the bottom of this file —
+          # see invariant S1 in docs/arch/invariants.md.
+          environmentFiles = [ config.sops.secrets."tape-rotation-env".path ];
           volumes = [
             "${panel}/db:/data:rw"
             "${panel}/uploads:/app/uploads:rw"
