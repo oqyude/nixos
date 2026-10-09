@@ -1,0 +1,272 @@
+{
+  "metaagent_version": "3.0.0",
+  "session_id": "metaagent-init-2026-10-09",
+  "target_repo": "S:/Git/nixos",
+  "goal": "Установить metaagent, перенести накопленные данные (AGENTS.md, docs/arch/*) в структуру .agent/.",
+  "project_type": "existing",
+  "date": "2026-10-09T20:30",
+  "phases": {
+    "init": "completed",
+    "analyse": "pending",
+    "roadmap": "pending",
+    "design": "skipped",
+    "decomposition": "pending",
+    "execution": "pending",
+    "metastate": "pending",
+    "handoff": "pending"
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "A1: mobile.nix импортирует несуществующий lib/xlib.nix",
+      "type": "fix",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": [],
+      "acceptance_criteria": [
+        "nix flake check проходит на .#nixOnDroidConfigurations.epral",
+        "configurations/mobile.nix:12 использует import ../lib/xlib"
+      ],
+      "files": ["configurations/mobile.nix"],
+      "blocks": ["T15", "T16"],
+      "notes": "Правка как в configurations/default.nix:5. До правки epral мертв."
+    },
+    {
+      "id": "T2",
+      "title": "A2: убедиться, что nix flake check вообще запускается",
+      "type": "verify",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": ["T1"],
+      "acceptance_criteria": [
+        "nix flake check зелёный (после T1)",
+        "checks в deploy покрывают всё дерево outputs"
+      ],
+      "files": ["deploy/default.nix"],
+      "blocks": ["T15"]
+    },
+    {
+      "id": "T3",
+      "title": "A3: явная финальная политика nftables на VDS",
+      "type": "fix",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": [],
+      "acceptance_criteria": [
+        "nft list ruleset на otreca показывает явное последнее правило или policy",
+        "firewall.* либо выключен, либо синхронизирован с nftables (не оба сразу)",
+        "ssh с внешнего адреса работает"
+      ],
+      "files": ["configurations/vds.nix"],
+      "blocks": ["T11", "T12"],
+      "notes": "Сначала диагностика: nft list ruleset, systemctl status nftables firewall-nftables. Политика — белый список (предпочтительно) или мягкий вариант с явным финальным правилом."
+    },
+    {
+      "id": "T4",
+      "title": "B1: guard на несмонтированный носитель /mnt/services",
+      "type": "security",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": [],
+      "acceptance_criteria": [
+        "В xlib/helpers.nix есть mkStorageGuard",
+        "postgresql, samba, homebox, gitea, navidrome, syncthing, uptime-kuma, immich, nextcloud, calibre-web, 3x-ui, tape-rotation используют mkStorageGuard",
+        "Имитация отказа: umount /mnt/services + systemctl start postgresql → FAIL, а не пустая база",
+        "В AGENTS.md добавлена строка про findmnt перед рестартом (уже в R4)"
+      ],
+      "files": [
+        "lib/xlib/helpers.nix",
+        "modules/server/postgresql.nix",
+        "modules/server/samba.nix",
+        "modules/server/homebox.nix",
+        "modules/server/gitea.nix",
+        "modules/server/navidrome.nix",
+        "modules/server/syncthing.nix",
+        "modules/server/uptime-kuma.nix",
+        "modules/server/immich.nix",
+        "modules/server/nextcloud.nix",
+        "modules/server/calibre-web.nix",
+        "modules/containers/3x-ui.nix",
+        "modules/containers/tape-rotation.nix"
+      ],
+      "blocks": [],
+      "notes": "ConditionPathIsMountPoint=/mnt/services НЕ использовать (bind-mount внутри одной ФС не меняет st_dev). Надёжны requiresMountsFor или ConditionPathIsMountPoint на xlib.dirs.server-home."
+    },
+    {
+      "id": "T5",
+      "title": "B2: зафиксировать, что бэкапов в конфигурации нет",
+      "type": "documentation",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": [],
+      "acceptance_criteria": [
+        "В project-rules.md (R1.x) явно сказано, что бэкапы вне Nix",
+        "В project-state.md Open Concerns указано, что бэкапы — внешние"
+      ],
+      "files": [".agent/rules/project-rules.md", ".agent/context/project-state.md"],
+      "blocks": [],
+      "notes": "Ждёт ответа 5.6 — где бэкапы и как проверять. Не код, а запись."
+    },
+    {
+      "id": "T6",
+      "title": "C1: вернуть расследование 3x-ui, потерянное при откате",
+      "type": "documentation",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": [],
+      "acceptance_criteria": [
+        "git show 9974784:modules/containers/3x-ui-migration-notes.md > .agent/decisions/notes/3x-ui-xray-26.9.md (или аналогичный путь)",
+        "Файл дополнен вердиктом: миграция 26.7 → 26.9 провалена, откат осознанный, причина — X25519MLKEM768"
+      ],
+      "files": [".agent/decisions/notes/3x-ui-xray-26.9.md"],
+      "blocks": [],
+      "notes": "200 строк удалены в 22a19be. git show 9974784:... — восстановить."
+    },
+    {
+      "id": "T7",
+      "title": "C2: зафиксировать фактические версии панели и ядра 3x-ui",
+      "type": "investigation",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": [],
+      "acceptance_criteria": [
+        "podman images ... | grep 3x-ui — записано",
+        "podman inspect ghcr.io/mhsanaei/3x-ui — RepoDigests записано",
+        "podman exec 3xui_app /app/bin/xray-linux-amd64 version — записано",
+        "В modules/containers/3x-ui.nix:54 :latest заменён на конкретный тег/digest"
+      ],
+      "files": ["modules/containers/3x-ui.nix"],
+      "blocks": ["T8"]
+    },
+    {
+      "id": "T8",
+      "title": "C3: убрать сервис автообновления 3x-ui",
+      "type": "fix",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": [],
+      "acceptance_criteria": [
+        "podman-update-3xui_app удалён из modules/containers/3x-ui.nix",
+        "Закомментированный таймер (строки 97-103) удалён",
+        "Оставлен комментарий-предупреждение"
+      ],
+      "files": ["modules/containers/3x-ui.nix"],
+      "blocks": [],
+      "notes": "Обновление панели через pull = путь, по которому в 2026-10-04 декларация разошлась с рантаймом. Автоматизировать нельзя."
+    },
+    {
+      "id": "T9",
+      "title": "C4: записать в project-rules, что ядро Xray — состояние панели, а не Nix",
+      "type": "documentation",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": [],
+      "acceptance_criteria": [
+        "В project-rules.md (R1.x) явно сказано: версия ядра Xray выбирается в UI панели и лежит в её sqlite-БД, то есть вне Nix",
+        "Перед деплоем/рестартом 3x-ui проверять версию ядра в панели"
+      ],
+      "files": [".agent/rules/project-rules.md"],
+      "blocks": []
+    },
+    {
+      "id": "T10",
+      "title": "C5: решить судьбу reality443Forwarding",
+      "type": "decision",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": [],
+      "acceptance_criteria": [
+        "Решение: (а) оставить + описать в инвариантах, или (б) погасить опцию в vds/default.nix + убрать из options.nix, или (в) довести до рабочего состояния",
+        "Решение зафиксировано в .agent/decisions/"
+      ],
+      "files": ["modules/vds/default.nix", "modules/options.nix", "modules/containers/3x-ui.nix"],
+      "blocks": [],
+      "notes": "Связано с 6.9."
+    },
+    {
+      "id": "T11",
+      "title": "D1: пробросы роутера — главный недостающий инвариант",
+      "type": "documentation",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": ["T3"],
+      "acceptance_criteria": [
+        "В project-rules.md (R1.3) формулировка: «Экспозиция наружу определяется пробросами на роутере, не openFirewall. На sapphira networking.firewall.enable = false намеренно. Список пробросов: 22, 80, 443, 8443 (3x-ui/Xray REALITY), 22000 (syncthing). Новый сервис не становится доступен из интернета, пока не добавлен проброс.» (уже сделано)",
+        "В project-state.md Network секция содержит список пробросов"
+      ],
+      "files": [".agent/rules/project-rules.md", ".agent/context/project-state.md"],
+      "blocks": []
+    },
+    {
+      "id": "T12",
+      "title": "D2: зафиксировать 100.64.0.0 как Tailscale-адрес sapphira",
+      "type": "documentation",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": [],
+      "acceptance_criteria": [
+        "В project-rules.md (R1.4) инвариант сформулирован (уже сделано)",
+        "Список из 4 мест, которые придётся править при смене: modules/server/nginx.nix, modules/server/nextcloud.nix, modules/vds/systemd.nix, modules/vds/nginx.nix"
+      ],
+      "files": [".agent/rules/project-rules.md"],
+      "blocks": []
+    },
+    {
+      "id": "T13",
+      "title": "D3: убрать мёртвое правило firewall на sapphira",
+      "type": "fix",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": ["T11"],
+      "acceptance_criteria": [
+        "modules/server/nginx.nix:225-228 (allowedTCPPorts = [80 443]) удалено или помечено комментарием «депенит от D1»"
+      ],
+      "files": ["modules/server/nginx.nix"],
+      "blocks": []
+    },
+    {
+      "id": "T14",
+      "title": "E1: написать AGENTS.md в корне (с metaagent-шапкой)",
+      "type": "documentation",
+      "status": "completed",
+      "origin": "user:direct",
+      "depends_on": [],
+      "acceptance_criteria": [
+        "AGENTS.md содержит: yaml frontmatter (для Obsidian dataview), metaagent-указатель, краткую выжимку nixos (хосты, инварианты, ловушки, куда лезть, проверки, где не лезть)"
+      ],
+      "files": ["AGENTS.md"],
+      "blocks": [],
+      "notes": "Сделано в этой инициализации (см. объединённый AGENTS.md)."
+    },
+    {
+      "id": "T15",
+      "title": "E2: выбрать проверки, которые заменят половину инвариантов",
+      "type": "decision",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": ["T2"],
+      "acceptance_criteria": [
+        "Список из 7 кандидатов (см. analysis-report.md §5) отфильтрован владельцем",
+        "Выбранные проверки превращены в CI или git pre-commit hook"
+      ],
+      "files": [],
+      "blocks": []
+    },
+    {
+      "id": "T16",
+      "title": "E3: судьба 15 закомментированных модулей в modules/server/default.nix:33-47",
+      "type": "refactor",
+      "status": "pending",
+      "origin": "user:direct",
+      "depends_on": ["T1"],
+      "acceptance_criteria": [
+        "Решение: удалить или оставить как референс",
+        "Если удалять — то 15 модулей (remnawave, coturn, mealie, memos, minecraft, n8n, netdata, nfs, open-webui, rsync, step-ca, stirling-pdf, transmission, trilium, zerotier) перенесены в archive или удалены"
+      ],
+      "files": ["modules/server/default.nix"],
+      "blocks": []
+    }
+  ],
+  "backlog_count": 23,
+  "backlog_note": "Открытые вопросы из roadmap/sources.md (F: 2.2, 2.5, 2.6, 3.2, 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.3, 5.4, 5.5, 5.6, 6.6, 6.7, 6.8, 6.9, 7.4, 8.2, 8.4, 8.5, 8.6) ждут ответа владельца и станут задачами после ответа."
+}

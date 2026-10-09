@@ -1,0 +1,36 @@
+{
+  "metaagent_version": "3.0.0",
+  "session_id": "metaagent-init-2026-10-09",
+  "target_repo": "S:/Git/nixos",
+  "goal": "Установить metaagent, перенести накопленные данные (AGENTS.md, docs/arch/*) в структуру .agent/.",
+  "project_type": "existing",
+  "phases": {
+    "init": "completed",
+    "analyse": "completed",
+    "roadmap": "completed",
+    "design": "skipped",
+    "decomposition": "completed",
+    "execution": "in_progress",
+    "metastate": "pending",
+    "handoff": "pending"
+  },
+  "tasks": [
+    { "id": "T1", "title": "A1: mobile.nix импортирует несуществующий lib/xlib.nix", "status": "pending", "origin": "user:direct" },
+    { "id": "T2", "title": "A2: убедиться, что nix flake check вообще запускается", "status": "pending", "origin": "user:direct" },
+    { "id": "T3", "title": "A3: явная финальная политика nftables на VDS", "status": "pending", "origin": "user:direct" },
+    { "id": "T4", "title": "B1: guard на несмонтированный носитель /mnt/services", "status": "pending", "origin": "user:direct" },
+    { "id": "T5", "title": "B2: зафиксировать, что бэкапов в конфигурации нет", "status": "pending", "origin": "user:direct" },
+    { "id": "T6", "title": "C1: вернуть расследование 3x-ui, потерянное при откате", "status": "pending", "origin": "user:direct" },
+    { "id": "T7", "title": "C2: зафиксировать фактические версии панели и ядра 3x-ui", "status": "pending", "origin": "user:direct" },
+    { "id": "T8", "title": "C3: убрать сервис автообновления 3x-ui", "status": "pending", "origin": "user:direct" },
+    { "id": "T9", "title": "C4: записать, что ядро Xray — состояние панели, а не Nix", "status": "pending", "origin": "user:direct" },
+    { "id": "T10", "title": "C5: решить судьбу reality443Forwarding", "status": "pending", "origin": "user:direct" },
+    { "id": "T11", "title": "D1: пробросы роутера — главный недостающий инвариант", "status": "pending", "origin": "user:direct" },
+    { "id": "T12", "title": "D2: зафиксировать 100.64.0.0 как Tailscale-адрес sapphira", "status": "pending", "origin": "user:direct" },
+    { "id": "T13", "title": "D3: убрать мёртвое правило firewall на sapphira", "status": "pending", "origin": "user:direct" },
+    { "id": "T14", "title": "E1: написать AGENTS.md в корне (с metaagent-шапкой)", "status": "completed", "origin": "user:direct" },
+    { "id": "T15", "title": "E2: выбрать проверки, которые заменят половину инвариантов", "status": "pending", "origin": "user:direct" },
+    { "id": "T16", "title": "E3: судьба 15 закомментированных модулей", "status": "pending", "origin": "user:direct" }
+  ],
+  "last_updated": "2026-10-09T20:30"
+}
