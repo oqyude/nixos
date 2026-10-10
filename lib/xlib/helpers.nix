@@ -178,7 +178,13 @@ in
   # or merge with an existing serviceConfig:
   #   serviceConfig = xlib.helpers.mkStorageGuard xlib // { ...other fields... };
   mkStorageGuard = xlib: {
-    RequiresMountsFor = [ xlib.dirs.server-home ];
+    # Guard via ConditionPathIsMountPoint ONLY. We intentionally do
+    # NOT add RequiresMountsFor: that creates a dependency that causes
+    # systemd to auto-remount the filesystem when starting the unit,
+    # which defeats the guard (tested and confirmed: v8 test on
+    # sapphira, 2026-10-10). Ordering should be expressed via After=
+    # on the .mount unit in the consumer's systemd.services block,
+    # not via a guard-creating dependency here.
     ConditionPathIsMountPoint = [ xlib.dirs.server-home ];
   };
 }
