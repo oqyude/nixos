@@ -21,6 +21,14 @@
       "blocked_by": [
         "user: open question 5.6 (where are backups, how are they verified)"
       ]
+    },
+    {
+      "id": "0003",
+      "title": "Цепочка 3x-ui REALITY на otreca — что нельзя менять (R1.10-R1.13)",
+      "status": "accepted",
+      "date": "2026-10-10",
+      "file": ".agent/decisions/0003-3x-ui-reality-chain.md",
+      "tags": ["3x-ui", "xray", "reality", "otreca", "nginx", "invariant", "R1.10", "R1.11", "R1.12", "R1.13", "T10"]
     }
   ],
   "proposals": [
