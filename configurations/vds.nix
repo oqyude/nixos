@@ -2,6 +2,20 @@
 #
 # The host record lives in configurations/default.nix; this file is only the
 # module body. `xlib` (identity, dirs, helpers) arrives as a module argument.
+#
+# T3 FIX APPLIED 2026-10-10 (Option A from
+# .agent/decisions/proposals/vds-nftables-fix.md):
+#   - Explicit `policy drop` on chain input (R1.6 fix)
+#   - Removed `firewall.enable = true` to eliminate the
+#     `firewall.*` + `nftables.*` conflict (R1.6)
+#   - SSH on port 22 limited to tailscale0 via nftables iifname
+#   - ICMP + traceroute explicitly accepted
+#   - Xray REALITY on 443 accepted
+#   - 80/HTTP closed by default (no nginx here, otreca is relay)
+#   - Log + drop at the end (nft-drop: prefix) for diagnostics
+#
+# On otreca: Tailscale-only management. Public attack surface is
+# Xray REALITY on 443 only. Everything else is tailnet-internal.
 {
   lib,
   modulesPath,
@@ -51,8 +65,11 @@
     enable = true;
     openFirewall = true;
   };
-  # Open port 22 only on the tailscale interface.
-  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
+  # NOTE: networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
+  # REMOVED 2026-10-10 (T3 Option A): the old `firewall.enable = true` setup
+  # conflicted with the custom nftables ruleset (R1.6). The new ruleset
+  # opens 22 on tailscale0 directly via `iifname "tailscale0" tcp dport 22 accept`.
+
   networking = {
     nameservers = [
       "1.1.1.1"
@@ -64,16 +81,22 @@
       enable = true;
       IPv6rs = false;
     };
-    firewall = {
-      enable = true;
-      allowPing = true;
-    };
+    # T3 Option A: `firewall.enable = false` to eliminate the
+    # firewall.* + nftables.* conflict (R1.6). The mkForce on
+    # allowedTCPPorts and interfaces ensures the NixOS firewall
+    # module does not silently add rules that would shadow our
+    # nftables ruleset. All filtering is now done by the ruleset below.
+    firewall.enable = false;
+    firewall.allowedTCPPorts = lib.mkForce [ ];
+    firewall.interfaces = lib.mkForce { };
+    allowPing = true;
     nftables = {
       enable = true;
       ruleset = ''
         table inet filter {
           chain input {
             type filter hook input priority 0;
+            policy drop;
 
             # loopback
             iif lo accept
@@ -81,11 +104,20 @@
             # уже установленные
             ct state established,related accept
 
-            # РЕЖЕМ SYN СРАЗУ
-            tcp flags syn tcp dport {80,443} limit rate 20/second burst 40 packets accept
-            tcp flags syn tcp dport {80,443} drop
+            # ICMP (path MTU discovery + diagnostics)
+            ip protocol icmp accept
 
-            # остальное по необходимости
+            # traceroute
+            udp dport 33434-33534 accept
+
+            # SSH — Tailscale only (R1.6: never on the public interface)
+            iifname "tailscale0" tcp dport 22 accept
+
+            # Xray REALITY inbound (treca acts as relay from sapphira via XHTTP)
+            tcp dport 443 accept
+
+            # log for diagnostics (journalctl -k | grep nft-drop)
+            log prefix "nft-drop: " flags all counter drop
           }
         }
       '';
