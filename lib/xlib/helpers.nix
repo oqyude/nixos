@@ -179,6 +179,6 @@ in
   #   serviceConfig = xlib.helpers.mkStorageGuard xlib // { ...other fields... };
   mkStorageGuard = xlib: {
     RequiresMountsFor = [ xlib.dirs.server-home ];
-    ConditionPathIsMountPoint = [ "!${xlib.dirs.server-home}" ];
+    ConditionPathIsMountPoint = [ xlib.dirs.server-home ];
   };
 }
