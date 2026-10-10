@@ -27,7 +27,11 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT"
 
 LATEST_ALLOWLIST=(
+  # R1.5: 3x-ui panel frozen on :latest; Xray version is panel state (R1.8)
   "ghcr.io/mhsanaei/3x-ui:latest"
+  # tape-rotation: data on External (storage-guarded); manual updates
+  "docker.io/elizaroveugene/taperotation-backend:latest"
+  "docker.io/elizaroveugene/taperotation-frontend:latest"
 )
 
 SKIP_BUILD=false
