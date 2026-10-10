@@ -128,6 +128,13 @@
             # Xray REALITY inbound (treca acts as relay from sapphira via XHTTP)
             tcp dport 443 accept
 
+            # 3x-ui Xray REALITY inbound on container (0.0.0.0:8443:8443 in
+            # modules/containers/3x-ui.nix). Direct public mapping — NOT
+            # proxied through nginx (that was `reality443Forwarding`,
+            # погашен в T10). ADDED 2026-10-10: previous T3 fix missed
+            # this port, Xray was unreachable from outside.
+            tcp dport 8443 accept
+
             # log for diagnostics (journalctl -k | grep nft-drop)
             log prefix "nft-drop: " flags all counter drop
           }
