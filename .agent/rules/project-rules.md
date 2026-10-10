@@ -47,6 +47,14 @@
    sqlite-БД. Перед любым деплоем/ребутом 3x-ui на sapphira —
    проверить версию ядра в панели. Nix декларирует панель (`:latest`),
    но не ядро.
+9. **`reality443Forwarding = true` на VDS обязателен, НЕ удалять.**
+   `modules/vds/nginx.nix` маршрутизирует реальный `443` через stream:
+   `pubray1.zeroq.su → 127.0.0.1:2049` (панель), всё остальное
+   (в т.ч. SNI `media.mediavitrina.ru` для REALITY-клиентов) →
+   `127.0.0.1:15380 → container:443`. Маппинг `127.0.0.1:15380:443/tcp`
+   публикует опция `reality443Forwarding` (T10/C5 «погасил» её 2026-10-10 —
+   Xray REALITY стал недоступен при живых SSH и pubray1.zeroq.su;
+   восстановлено `07a0437`, manifest T10 → status `pending`).
 
 ### R2. home-manager `Service` ≠ `serviceConfig`
 
@@ -102,7 +110,7 @@ nix build .#nixosConfigurations.<хост>.config.system.build.toplevel --dry-ru
 | `mobile.nix:95`, `wsl.nix:59` | `stateVersion` 24.05 / 24.11 vs 26.05 | Каждый хост зафиксирован на своей версии |
 | `users.nix:66` | `uid = if hostname == "sapphira" then 1001 else …` | Костыль под 1000 = удалённый `yuyus`; удалять только после миграции ФС |
 | `3x-ui.nix:54` | `image = …:latest` | Панель намеренно latest; ядро Xray — состояние панели, см. R1.8 |
-| `3x-ui.nix:33-35` | `reality443Forwarding = true` на VDS | Следствие отката `c8d4a12`; смысл утрачен, см. задачу C5 |
+| `3x-ui.nix:33-35` | `reality443Forwarding = true` на VDS | **Обязательно, НЕ удалять** (R1.10). nginx stream (`vds/nginx.nix`) маршрутизирует `443 → 127.0.0.1:15380 → container:443`; без маппинга Xray REALITY мёртв. Удаление T10/C5 сломало — восстановлено `07a0437` |
 | `server/default.nix:37-50` | 14 закомментированных модулей (13 архивировано, 1 stirling-pdf удалён в 5dd7a58) | Отключены осознанно, см. задачу T16 |
 | `opencode.nix:339` | `systemd.user.services.opencode-web.Service` | `serviceConfig` рендерится в секцию `[serviceConfig]`, systemd молча игнорирует (`c73a698`); см. R2 |
 | `vds.nix:73-91` | nftables без финального правила | Известный пробел, см. задачу A3 |

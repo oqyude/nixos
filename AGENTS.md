@@ -84,7 +84,7 @@ flake.nix
 | `mobile.nix:95`, `wsl.nix:59` | `stateVersion` 24.05 / 24.11 vs 26.05 | Каждый хост зафиксирован на своей версии |
 | `users.nix:66` | `uid = if hostname == "sapphira" then 1001 else …` | Костыль под 1000 = удалённый `yuyus`; удалять только после миграции ФС |
 | `3x-ui.nix:54` | `image = …:latest` | Панель намеренно latest; ядро Xray — на 26.7.x |
-| `3x-ui.nix:33-35` | `reality443Forwarding = true` на VDS | Следствие отката `c8d4a12`; см. задачу T10 |
+| `3x-ui.nix:33-35` | `reality443Forwarding = true` на VDS | **Обязательно, НЕ удалять.** nginx stream (`vds/nginx.nix`) маршрутизирует `443 → 127.0.0.1:15380 → container:443`; без маппинга Xray REALITY мёртв. Удаление T10/C5 сломало — восстановлено `07a0437` |
 | `server/default.nix:37-50` | 14 закомментированных модулей (13 архивировано, 1 stirling-pdf удалён в 5dd7a58) | Отключены осознанно, см. задачу T16 |
 | `opencode.nix:339` | `systemd.user.services.opencode-web.Service` | `serviceConfig` рендерится в секцию `[serviceConfig]`, systemd молча игнорирует; см. R2 |
 | `vds.nix:73-91` | nftables без финального правила | Известный пробел, см. задачу T3 |
