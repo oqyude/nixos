@@ -58,9 +58,24 @@
         container at /root/cert/fullchain.pem and key.pem.
       '';
     };
-    # reality443Forwarding was removed (T10/C5, 2026-10-10). The
-    # option's purpose was lost after the c8d4a12 revert (manifest:177-178);
-    # nginx stream on otreca still works without it. See ADR-0002
-    # in .agent/decisions/ for the decision record.
+    # Publish host:15380 → container:443. Only nodes that host an
+    # Xray REALITY inbound on container:443 need this (so nginx
+    # stream can forward TLS to Xray via 127.0.0.1:15380 while Xray
+    # itself sees incoming connections on its configured port 443).
+    # Set false on nodes that only run the 3x-ui panel.
+    #
+    # RESTORED 2026-10-10: this option was wrongly removed by T10/C5.
+    # modules/vds/nginx.nix still routes pubrayx1.zeroq.su/default →
+    # 127.0.0.1:15380, so without this mapping the nginx stream points
+    # at a dead port and Xray REALITY is unreachable.
+    reality443Forwarding = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        When true, publish host:15380 → container:443 so Xray
+        inside the container can serve REALITY on its real
+        configured port 443 (nginx stream forwards 443 → 15380).
+      '';
+    };
   };
 }

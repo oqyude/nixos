@@ -30,6 +30,9 @@ let
     "127.0.0.1:2096:2096/tcp"
     "0.0.0.0:8443:8443/tcp"
   ];
+  # VDS-only: nginx stream forwards host:443 → 127.0.0.1:15380 →
+  # container:443, so Xray sees its REALITY inbound on port 443.
+  realityPorts = lib.optional config.host."3x-ui".reality443Forwarding "127.0.0.1:15380:443/tcp";
 in
 {
   # `host."3x-ui"` options are declared in modules/options.nix: they are set
@@ -62,7 +65,7 @@ in
           log-driver = "journald";
           # Adding a new inbound through the 3x-ui panel on a port outside
           # the 14380-15379 range requires extending basePorts and rebuilding.
-          ports = basePorts;
+          ports = basePorts ++ realityPorts;
         };
       };
     };

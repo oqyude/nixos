@@ -175,7 +175,7 @@
       "id": "T10",
       "title": "C5: решить судьбу reality443Forwarding",
       "type": "decision",
-      "status": "completed",
+      "status": "pending",
       "origin": "user:direct",
       "depends_on": [],
       "acceptance_criteria": [
@@ -184,7 +184,7 @@
       ],
       "files": ["modules/vds/default.nix", "modules/options.nix", "modules/containers/3x-ui.nix"],
       "blocks": [],
-      "notes": "Решение (б): опция погашена. Удалена из options.nix:66-74, realityPorts из 3x-ui.nix:33-35, reality443Forwarding = true из vds/default.nix:19. ADR-note в options.nix (комментарий на месте удаления) + в 3x-ui.nix + vds/default.nix."
+      "notes": "REVERTED 2026-10-10. Решение (б) оказалось ОШИБОЧНЫМ: modules/vds/nginx.nix (не тронут) всё ещё маршрутизирует pubrayx1.zeroq.su/default → 127.0.0.1:15380, поэтому после удаления маппинга 127.0.0.1:15380:443/tcp nginx stream смотрит в мёртвый порт и Xray REALITY недоступен (владелец: 'xray по прежнему не работает'). Восстановлено: reality443Forwarding в options.nix, reality443Forwarding=true в vds/default.nix, realityPorts в 3x-ui.nix + ports = basePorts ++ realityPorts. Проверено: nix eval показывает [..., \"127.0.0.1:15380:443/tcp\"]. Решение вернуться к (а): опция нужна, её роль — публикация 15380→443 для nginx stream SNI-routing."
     },
     {
       "id": "T11",
