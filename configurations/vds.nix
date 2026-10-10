@@ -119,6 +119,12 @@
             # SSH (22) — open on all interfaces (owner: no iifname restriction)
             tcp dport 22 accept
 
+            # HTTP (80) — needed for ACME HTTP-01 challenge (LE cert renewal)
+            # and for HTTP → HTTPS redirect if nginx vhost is configured.
+            # ADDED 2026-10-10: previous T3 fix accidentally dropped port 80,
+            # breaking pubray1.zeroq.su cert renewal.
+            tcp dport 80 accept
+
             # Xray REALITY inbound (treca acts as relay from sapphira via XHTTP)
             tcp dport 443 accept
 
