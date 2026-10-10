@@ -3,19 +3,22 @@
 # The host record lives in configurations/default.nix; this file is only the
 # module body. `xlib` (identity, dirs, helpers) arrives as a module argument.
 #
-# T3 FIX APPLIED 2026-10-10 (Option A from
-# .agent/decisions/proposals/vds-nftables-fix.md):
-#   - Explicit `policy drop` on chain input (R1.6 fix)
+# T3 FIX (minimal, R1.6 only) 2026-10-10:
+#   - Explicit `policy drop` on chain input (R1.6 fix — original ruleset
+#     had no policy, so it was implicit accept)
 #   - Removed `firewall.enable = true` to eliminate the
 #     `firewall.*` + `nftables.*` conflict (R1.6)
-#   - SSH on port 22 limited to tailscale0 via nftables iifname
-#   - ICMP + traceroute explicitly accepted
-#   - Xray REALITY on 443 accepted
-#   - 80/HTTP closed by default (no nginx here, otreca is relay)
+#   - SSH (22) open on ALL interfaces (no iifname restriction)
+#   - Xray REALITY (443) open
+#   - ICMP + traceroute (33434-33534) for diagnostics
+#   - 80/HTTP closed by default
 #   - Log + drop at the end (nft-drop: prefix) for diagnostics
 #
-# On otreca: Tailscale-only management. Public attack surface is
-# Xray REALITY on 443 only. Everything else is tailnet-internal.
+# CORRECTED 2026-10-10: removed `iifname "tailscale0"` restriction on
+# SSH — owner did not ask for that. SSH is open on ens3 too.
+#
+# On otreca: management via Tailscale OR public SSH. Public attack
+# surface is SSH (22) + Xray REALITY (443).
 {
   lib,
   modulesPath,
@@ -56,19 +59,20 @@
   };
 
   host.ssh.enable = true;
-  # SSH is reachable only over Tailscale (not on the public internet).
-  # This otreca VDS is reached by deploy-rs and by oqyude over the
-  # tailnet, so exposing 22 to ens3 is pure attack surface.
+  # SSH is reachable on all interfaces (public + Tailscale). The
+  # nftables ruleset below opens 22 explicitly. `openFirewall = false`
+  # because we manage the firewall via nftables, not the NixOS
+  # firewall module (see `firewall.enable = false` further down).
   services.openssh.openFirewall = false;
 
   services.tailscale = {
     enable = true;
     openFirewall = true;
   };
-  # NOTE: networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
-  # REMOVED 2026-10-10 (T3 Option A): the old `firewall.enable = true` setup
-  # conflicted with the custom nftables ruleset (R1.6). The new ruleset
-  # opens 22 on tailscale0 directly via `iifname "tailscale0" tcp dport 22 accept`.
+  # REMOVED 2026-10-10: networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ].
+  # SSH is now opened on ALL interfaces via the nftables ruleset below
+  # (`tcp dport 22 accept` — no iifname restriction).
+  # Owner corrected: "не помню, чтобы просил ограничивать 22 порт".
 
   networking = {
     nameservers = [
@@ -81,18 +85,17 @@
       enable = true;
       IPv6rs = false;
     };
-    # T3 Option A: `firewall.enable = false` to eliminate the
-    # firewall.* + nftables.* conflict (R1.6). The mkForce on
-    # allowedTCPPorts and interfaces ensures the NixOS firewall
-    # module does not silently add rules that would shadow our
+    # T3 (R1.6 fix): `firewall.enable = false` eliminates the
+    # `firewall.*` + `nftables.*` conflict. The `lib.mkForce` on
+    # `allowedTCPPorts` and `interfaces` prevents the NixOS firewall
+    # module from silently injecting rules that would shadow our
     # nftables ruleset. All filtering is now done by the ruleset below.
     firewall.enable = false;
     firewall.allowedTCPPorts = lib.mkForce [ ];
     firewall.interfaces = lib.mkForce { };
-    # allowPing removed 2026-10-10 (T3 Option A): with firewall.enable = false,
-    # `networking.allowPing` no longer exists as a top-level option. ICMP
-    # accept is now handled by the nftables ruleset below
-    # (`ip protocol icmp accept`).
+    # `networking.allowPing` was removed because with firewall.enable = false
+    # it no longer exists as a top-level option. ICMP accept is handled
+    # by the nftables ruleset below (`ip protocol icmp accept`).
     nftables = {
       enable = true;
       ruleset = ''
@@ -113,8 +116,8 @@
             # traceroute
             udp dport 33434-33534 accept
 
-            # SSH — Tailscale only (R1.6: never on the public interface)
-            iifname "tailscale0" tcp dport 22 accept
+            # SSH (22) — open on all interfaces (owner: no iifname restriction)
+            tcp dport 22 accept
 
             # Xray REALITY inbound (treca acts as relay from sapphira via XHTTP)
             tcp dport 443 accept
