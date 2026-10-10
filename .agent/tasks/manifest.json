@@ -50,7 +50,7 @@
       "id": "T3",
       "title": "A3: явная финальная политика nftables на VDS",
       "type": "fix",
-      "status": "completed",
+      "status": "pending",
       "origin": "user:direct",
       "depends_on": [],
       "acceptance_criteria": [
@@ -60,7 +60,7 @@
       ],
       "files": ["configurations/vds.nix"],
       "blocks": ["T11", "T12"],
-      "notes": "Applied 2026-10-10. 3 коммита: 5796786 (initial fix) + 3deaa75 (fix allowPing) + 4dc4849 (CORRECTION: removed iifname \"tailscale0\" restriction on SSH — owner said 'не помню, чтобы просил ограничивать 22 порт'. SSH now on all interfaces). Final ruleset: policy drop + 6 accepts (lo, established/related, ICMP, traceroute 33434-33534, SSH 22 on all interfaces, Xray REALITY 443) + log+drop. firewall.enable = false (R1.6 conflict resolved). lib.mkForce on allowedTCPPorts/interfaces prevents shadow rules. Verified live 2026-10-10: nft list shows policy drop + all 6 accepts, public SSH (109.248.161.5:22) works, Tailscale SSH (100.64.1.0:22) works, Xray 443 listening."
+      "notes": "REVERTED 2026-10-10: owner requested revert of all T3 firewall changes. 'по прежнему ничего не работает, сайт не открывается, reality не работает. это требует обсуждения.' Original vds.nix restored (commit 61b3724 baseline). 5 T3 commits reverted: 5796786, 3deaa75, 4dc4849, 2649e2f, 51ea19a + docs 677d39e, fafd3e2. Requires discussion before re-applying."
     },
     {
       "id": "T4",

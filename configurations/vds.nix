@@ -2,23 +2,6 @@
 #
 # The host record lives in configurations/default.nix; this file is only the
 # module body. `xlib` (identity, dirs, helpers) arrives as a module argument.
-#
-# T3 FIX (minimal, R1.6 only) 2026-10-10:
-#   - Explicit `policy drop` on chain input (R1.6 fix — original ruleset
-#     had no policy, so it was implicit accept)
-#   - Removed `firewall.enable = true` to eliminate the
-#     `firewall.*` + `nftables.*` conflict (R1.6)
-#   - SSH (22) open on ALL interfaces (no iifname restriction)
-#   - Xray REALITY (443) open
-#   - ICMP + traceroute (33434-33534) for diagnostics
-#   - 80/HTTP closed by default
-#   - Log + drop at the end (nft-drop: prefix) for diagnostics
-#
-# CORRECTED 2026-10-10: removed `iifname "tailscale0"` restriction on
-# SSH — owner did not ask for that. SSH is open on ens3 too.
-#
-# On otreca: management via Tailscale OR public SSH. Public attack
-# surface is SSH (22) + Xray REALITY (443).
 {
   lib,
   modulesPath,
@@ -59,21 +42,17 @@
   };
 
   host.ssh.enable = true;
-  # SSH is reachable on all interfaces (public + Tailscale). The
-  # nftables ruleset below opens 22 explicitly. `openFirewall = false`
-  # because we manage the firewall via nftables, not the NixOS
-  # firewall module (see `firewall.enable = false` further down).
+  # SSH is reachable only over Tailscale (not on the public internet).
+  # This otreca VDS is reached by deploy-rs and by oqyude over the
+  # tailnet, so exposing 22 to ens3 is pure attack surface.
   services.openssh.openFirewall = false;
 
   services.tailscale = {
     enable = true;
     openFirewall = true;
   };
-  # REMOVED 2026-10-10: networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ].
-  # SSH is now opened on ALL interfaces via the nftables ruleset below
-  # (`tcp dport 22 accept` — no iifname restriction).
-  # Owner corrected: "не помню, чтобы просил ограничивать 22 порт".
-
+  # Open port 22 only on the tailscale interface.
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
   networking = {
     nameservers = [
       "1.1.1.1"
@@ -85,24 +64,16 @@
       enable = true;
       IPv6rs = false;
     };
-    # T3 (R1.6 fix): `firewall.enable = false` eliminates the
-    # `firewall.*` + `nftables.*` conflict. The `lib.mkForce` on
-    # `allowedTCPPorts` and `interfaces` prevents the NixOS firewall
-    # module from silently injecting rules that would shadow our
-    # nftables ruleset. All filtering is now done by the ruleset below.
-    firewall.enable = false;
-    firewall.allowedTCPPorts = lib.mkForce [ ];
-    firewall.interfaces = lib.mkForce { };
-    # `networking.allowPing` was removed because with firewall.enable = false
-    # it no longer exists as a top-level option. ICMP accept is handled
-    # by the nftables ruleset below (`ip protocol icmp accept`).
+    firewall = {
+      enable = true;
+      allowPing = true;
+    };
     nftables = {
       enable = true;
       ruleset = ''
         table inet filter {
           chain input {
             type filter hook input priority 0;
-            policy drop;
 
             # loopback
             iif lo accept
@@ -110,33 +81,11 @@
             # уже установленные
             ct state established,related accept
 
-            # ICMP (path MTU discovery + diagnostics)
-            ip protocol icmp accept
+            # РЕЖЕМ SYN СРАЗУ
+            tcp flags syn tcp dport {80,443} limit rate 20/second burst 40 packets accept
+            tcp flags syn tcp dport {80,443} drop
 
-            # traceroute
-            udp dport 33434-33534 accept
-
-            # SSH (22) — open on all interfaces (owner: no iifname restriction)
-            tcp dport 22 accept
-
-            # HTTP (80) — needed for ACME HTTP-01 challenge (LE cert renewal)
-            # and for HTTP → HTTPS redirect if nginx vhost is configured.
-            # ADDED 2026-10-10: previous T3 fix accidentally dropped port 80,
-            # breaking pubray1.zeroq.su cert renewal.
-            tcp dport 80 accept
-
-            # Xray REALITY inbound (treca acts as relay from sapphira via XHTTP)
-            tcp dport 443 accept
-
-            # 3x-ui Xray REALITY inbound on container (0.0.0.0:8443:8443 in
-            # modules/containers/3x-ui.nix). Direct public mapping — NOT
-            # proxied through nginx (that was `reality443Forwarding`,
-            # погашен в T10). ADDED 2026-10-10: previous T3 fix missed
-            # this port, Xray was unreachable from outside.
-            tcp dport 8443 accept
-
-            # log for diagnostics (journalctl -k | grep nft-drop)
-            log prefix "nft-drop: " flags all counter drop
+            # остальное по необходимости
           }
         }
       '';
