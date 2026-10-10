@@ -60,7 +60,7 @@
       ],
       "files": ["configurations/vds.nix"],
       "blocks": ["T11", "T12"],
-      "notes": "Apply done 2026-10-10 (Tailscale на otreca восстановился). Option A из .agent/decisions/proposals/vds-nftables-fix.md: firewall.enable=false (R1.6 conflict resolved), lib.mkForce на allowedTCPPorts/interfaces, nftables chain input с policy drop + 5 explicit accepts (lo, established/related, ICMP, traceroute 33434-33534, SSH on tailscale0, Xray REALITY 443) + log+drop. Verified live: nft list ruleset показывает все правила, iptables пуст (нет shadow rules), SSH через Tailscale работает, Xray на 443 слушает. 2 коммита: 5796786 (основной fix) + 3deaa75 (fix allowPing — не существует на top-level networking когда firewall off)."
+      "notes": "Applied 2026-10-10. 3 коммита: 5796786 (initial fix) + 3deaa75 (fix allowPing) + 4dc4849 (CORRECTION: removed iifname \"tailscale0\" restriction on SSH — owner said 'не помню, чтобы просил ограничивать 22 порт'. SSH now on all interfaces). Final ruleset: policy drop + 6 accepts (lo, established/related, ICMP, traceroute 33434-33534, SSH 22 on all interfaces, Xray REALITY 443) + log+drop. firewall.enable = false (R1.6 conflict resolved). lib.mkForce on allowedTCPPorts/interfaces prevents shadow rules. Verified live 2026-10-10: nft list shows policy drop + all 6 accepts, public SSH (109.248.161.5:22) works, Tailscale SSH (100.64.1.0:22) works, Xray 443 listening."
     },
     {
       "id": "T4",
