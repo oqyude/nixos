@@ -65,9 +65,13 @@ flake.nix
 > Полные формулировки (с «Где» и «Почему») — в `.agent/rules/project-rules.md` (R1).
 
 1. **Все `outputs` флейка должны вычисляться.** `configurations/mobile.nix:12` импортировал несуществующий `lib/xlib.nix` — был сломан, `epral` не собирался. → задача T1.
-2. **External-диск обязан быть смонтирован** до старта `postgresql`, `n8n`, `samba`, `homebox`, `minecraft`, `3x-ui`, `tape-rotation`. → задача T4.
-3. **Сетевая граница sapphira — роутер.** 5 портов: **443, 80, 22000 (syncthing), 8443 (xray), 22 (ssh)**. `firewall.enable = false` намеренно. → задача T11.
-4. **`100.64.0.0` = Tailscale-адрес sapphira**, назначен вручную. В 4 файлах. → задача T12.
+2. **External-диск обязан быть смонтирован** до старта `postgresql`, `samba`, `homebox`,
+   `gitea`, `navidrome`, `syncthing`, `uptime-kuma`, `immich`, `nextcloud`,
+   `calibre-web`, `3x-ui`, `tape-rotation`. → задача T4.
+3. **Сетевая граница sapphira — роутер.** 5 портов: **443, 80, 22000 (syncthing), 8443 (xray), 22 (ssh)**. `firewall.enable = false` намеренно. nginx.nix (networking.firewall) мёртв (T13). → задача T11.
+4. **`100.64.0.0` = Tailscale-адрес sapphira**, назначен вручную. В `home/termux.nix:256`,
+   `modules/server/nextcloud.nix:73`, `modules/server/nginx.nix:109,253`,
+   `modules/vds/systemd.nix:10`. → задача T12.
 5. **3x-ui заморожен.** Панель на `:latest`, ядро Xray на 26.7.x. Миграция на 26.9.x провалена. → задачи T6–T10.
 6. **nftables на VDS требует явной финальной политики.** Текущий ruleset — без финального правила → неявный accept. → задача T3.
 7. **sops-пути — через `config.sops.secrets.<name>.path`.** Любой `path =` override на sops-блоке делает хардкод-потребителя молча сломанным. → ADR-0001.
@@ -81,7 +85,7 @@ flake.nix
 | `users.nix:66` | `uid = if hostname == "sapphira" then 1001 else …` | Костыль под 1000 = удалённый `yuyus`; удалять только после миграции ФС |
 | `3x-ui.nix:54` | `image = …:latest` | Панель намеренно latest; ядро Xray — на 26.7.x |
 | `3x-ui.nix:33-35` | `reality443Forwarding = true` на VDS | Следствие отката `c8d4a12`; см. задачу T10 |
-| `server/default.nix:33-47` | 15 закомментированных модулей | Отключены осознанно, см. задачу T16 |
+| `server/default.nix:37-50` | 14 закомментированных модулей (13 архивировано, 1 stirling-pdf удалён в 5dd7a58) | Отключены осознанно, см. задачу T16 |
 | `opencode.nix:339` | `systemd.user.services.opencode-web.Service` | `serviceConfig` рендерится в секцию `[serviceConfig]`, systemd молча игнорирует; см. R2 |
 | `vds.nix:73-91` | nftables без финального правила | Известный пробел, см. задачу T3 |
 | `100.64.0.0` | Первый адрес CGNAT `/10` | Tailscale-адрес sapphira, см. инв. 4 |

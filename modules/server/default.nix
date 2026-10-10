@@ -34,10 +34,12 @@
     ./ttyd.nix
     ./vtimeline.nix
     ./uptime-kuma.nix
-    # 14 modules archived to ../archive/{server-modules,containers}/ on
-    # 2026-10-09 (task E3 / T16). Reason: each was disabled individually
-    # over time; restoring requires re-enabling the import AND ensuring
-    # data mount + secrets are in place. Re-enable in a separate task.
+    # T16: 14 modules archived to ../archive/{server-modules,containers}/
+    # (13 in modules/server/default.nix:37-50, 2 in modules/containers/).
+    # T15: kokoro-tts and openhands (not imported) also archived.
+    # stirling-pdf.nix was deleted in 5dd7a58 (absorbed into bentopdf.nix).
+    # open-webui.nix was never commented — migrated to containers/,
+    # still active via ../containers/open-webui.nix above.
   ];
   # Server's 3x-ui is the controller panel at x.zeroq.su (nginx HTTP
   # terminates TLS upstream, no SNI-routing on 443 needed here because

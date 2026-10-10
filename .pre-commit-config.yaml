@@ -1,0 +1,13 @@
+repos:
+  - repo: local
+    hooks:
+      - id: nixos-flake-checks
+        name: nixos flake invariant checks
+        description: |
+          Runs .ci/checks.sh: sops path_regex compliance, no
+          `:latest` in container images (with R1.5/R1.8 whitelist),
+          and `nix flake check` (skippable via --no-build).
+        entry: .ci/checks.sh --no-build
+        language: script
+        pass_filenames: false
+        always_run: true

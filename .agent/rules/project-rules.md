@@ -12,16 +12,18 @@
    импортировал несуществующий `lib/xlib.nix` — был сломан, `epral` не
    собирался. Закреплено через `nix flake check`.
 2. **Носитель данных (`/home/oqyude/External`) обязан быть смонтирован** до
-   старта `postgresql`, `n8n`, `samba`, `homebox`, `minecraft`, `3x-ui`,
-   `tape-rotation`. `mkServiceStorage` даёт `bind,x-systemd.automount,nofail`
-   — без guard'а сервис стартует на пустой БД. Задача `B1` в `manifest.json`.
+   старта `postgresql`, `samba`, `homebox`, `gitea`, `navidrome`, `syncthing`,
+   `uptime-kuma`, `immich`, `nextcloud`, `calibre-web`, `3x-ui`, `tape-rotation`.
+   `mkStorageGuard` (T4) добавляет `RequiresMountsFor` + `ConditionPathIsMountPoint`
+   на `server-home` — без guard'а сервис стартует на пустой БД. → задача T4.
 3. **Сетевая граница sapphira — роутер.** `firewall.enable = false` намеренно.
    Роутер пробрасывает ровно 5 портов: **443, 80, 22000 (syncthing),
-   8443 (xray), 22 (ssh)**. `nginx.nix:225` (`allowedTCPPorts = [80 443]`) мёртв.
-   `openFirewall`/`allowedTCPPorts` на sapphira не имеют эффекта.
+   8443 (xray), 22 (ssh)**. `nginx.nix` (networking.firewall) `allowedTCPPorts`
+   мёртв (T13). `openFirewall`/`allowedTCPPorts` на sapphira не имеют эффекта.
 4. **`100.64.0.0` = Tailscale-адрес sapphira**, назначен вручную. Не сеть, не
-   ошибка. Используется в `nginx.nix`, `nextcloud.nix` (`trusted_proxies`),
-   `vds/systemd.nix`, `vds/nginx.nix`. При смене — править 4 файла.
+   ошибка. Используется в `home/termux.nix:256`, `modules/server/nextcloud.nix:73`
+   (`trusted_proxies`), `modules/server/nginx.nix:109,253`,
+   `modules/vds/systemd.nix:10`. При смене — править 4 файла.
 5. **3x-ui заморожен.** Панель на последней версии (образ `:latest`),
    ядро Xray на 26.7.x. Миграция на 26.9.x провалена. Обходные скрипты
    (timer, migrateScript) отключены осознанно. **Не** обновлять ядро через
@@ -94,7 +96,7 @@ nix build .#nixosConfigurations.<хост>.config.system.build.toplevel --dry-ru
 | `users.nix:66` | `uid = if hostname == "sapphira" then 1001 else …` | Костыль под 1000 = удалённый `yuyus`; удалять только после миграции ФС |
 | `3x-ui.nix:54` | `image = …:latest` | Панель намеренно latest; ядро Xray — состояние панели, см. R1.8 |
 | `3x-ui.nix:33-35` | `reality443Forwarding = true` на VDS | Следствие отката `c8d4a12`; смысл утрачен, см. задачу C5 |
-| `server/default.nix:33-47` | 15 закомментированных модулей | Отключены осознанно, см. задачу E3 |
+| `server/default.nix:37-50` | 14 закомментированных модулей (13 архивировано, 1 stirling-pdf удалён в 5dd7a58) | Отключены осознанно, см. задачу T16 |
 | `opencode.nix:339` | `systemd.user.services.opencode-web.Service` | `serviceConfig` рендерится в секцию `[serviceConfig]`, systemd молча игнорирует (`c73a698`); см. R2 |
 | `vds.nix:73-91` | nftables без финального правила | Известный пробел, см. задачу A3 |
 | `100.64.0.0` | Первый адрес CGNAT `/10` | Tailscale-адрес sapphira, см. R1.4 |

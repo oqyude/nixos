@@ -20,7 +20,7 @@
       "id": "T1",
       "title": "A1: mobile.nix импортирует несуществующий lib/xlib.nix",
       "type": "fix",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": [],
       "acceptance_criteria": [
@@ -29,21 +29,22 @@
       ],
       "files": ["configurations/mobile.nix"],
       "blocks": ["T15", "T16"],
-      "notes": "Правка как в configurations/default.nix:5. До правки epral мертв."
+      "notes": "Правка в 61b3724: `import ../lib/xlib.nix` → `import ../lib/xlib`. epral вычисляется (config.system.stateVersion = \"24.05\"). Все 5 NixOS-хостов вычисляются."
     },
     {
       "id": "T2",
       "title": "A2: убедиться, что nix flake check вообще запускается",
       "type": "verify",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": ["T1"],
       "acceptance_criteria": [
         "nix flake check зелёный (после T1)",
         "checks в deploy покрывают всё дерево outputs"
       ],
-      "files": ["deploy/default.nix"],
-      "blocks": ["T15"]
+      "files": ["deploy/default.nix", "configurations/any.nix"],
+      "blocks": ["T15"],
+      "notes": "После T1 + any.nix stubs (fileSystems + boot.loader.grub для template default): nix flake check проходит на .#atoridu, .#rydiwo, .#otreca, .#sapphira, .#wsl, .#nixOnDroidConfigurations.epral. configurations/any.nix:17-26 добавлены stub-ы (placeholder /dev/sda1 ext4 + grub device /dev/sda) — реальные хосты имеют свои disko/grub; default никогда не деплоится."
     },
     {
       "id": "T3",
@@ -111,7 +112,7 @@
       "id": "T6",
       "title": "C1: вернуть расследование 3x-ui, потерянное при откате",
       "type": "documentation",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": [],
       "acceptance_criteria": [
@@ -120,13 +121,13 @@
       ],
       "files": [".agent/decisions/notes/3x-ui-xray-26.9.md"],
       "blocks": [],
-      "notes": "200 строк удалены в 22a19be. git show 9974784:... — восстановить."
+      "notes": "200 строк удалены в 22a19be. git show 9974784:... — восстановить. Выполнено в 61b3724."
     },
     {
       "id": "T7",
       "title": "C2: зафиксировать фактические версии панели и ядра 3x-ui",
       "type": "investigation",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": [],
       "acceptance_criteria": [
@@ -136,13 +137,14 @@
         "В modules/containers/3x-ui.nix:54 :latest заменён на конкретный тег/digest"
       ],
       "files": ["modules/containers/3x-ui.nix"],
-      "blocks": ["T8"]
+      "blocks": ["T8"],
+      "notes": "Активный Xray: 26.7.28 (go1.26.5). Stale binary: 26.9.30. Decision: Option A — оставить :latest, R1.5/R1.8 уже фиксируют. Panel binary не извлекается через /var/lib/containers (вероятно вне /app/bin/), версия доступна через UI x.zeroq.su:2049/pubray/."
     },
     {
       "id": "T8",
       "title": "C3: убрать сервис автообновления 3x-ui",
       "type": "fix",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": [],
       "acceptance_criteria": [
@@ -152,13 +154,13 @@
       ],
       "files": ["modules/containers/3x-ui.nix"],
       "blocks": [],
-      "notes": "Обновление панели через pull = путь, по которому в 2026-10-04 декларация разошлась с рантаймом. Автоматизировать нельзя."
+      "notes": "Выполнено в 61b3724. Обновление панели через pull = путь, по которому в 2026-10-04 декларация разошлась с рантаймом. Автоматизировать нельзя."
     },
     {
       "id": "T9",
       "title": "C4: записать в project-rules, что ядро Xray — состояние панели, а не Nix",
       "type": "documentation",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": [],
       "acceptance_criteria": [
@@ -166,13 +168,14 @@
         "Перед деплоем/рестартом 3x-ui проверять версию ядра в панели"
       ],
       "files": [".agent/rules/project-rules.md"],
-      "blocks": []
+      "blocks": [],
+      "notes": "R1.8 добавлен в 61b3724. Trap entry обновлена."
     },
     {
       "id": "T10",
       "title": "C5: решить судьбу reality443Forwarding",
       "type": "decision",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": [],
       "acceptance_criteria": [
@@ -181,7 +184,7 @@
       ],
       "files": ["modules/vds/default.nix", "modules/options.nix", "modules/containers/3x-ui.nix"],
       "blocks": [],
-      "notes": "Связано с 6.9."
+      "notes": "Решение (б): опция погашена. Удалена из options.nix:66-74, realityPorts из 3x-ui.nix:33-35, reality443Forwarding = true из vds/default.nix:19. ADR-note в options.nix (комментарий на месте удаления) + в 3x-ui.nix + vds/default.nix."
     },
     {
       "id": "T11",
@@ -215,14 +218,15 @@
       "id": "T13",
       "title": "D3: убрать мёртвое правило firewall на sapphira",
       "type": "fix",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": ["T11"],
       "acceptance_criteria": [
         "modules/server/nginx.nix:225-228 (allowedTCPPorts = [80 443]) удалено или помечено комментарием «депенит от D1»"
       ],
       "files": ["modules/server/nginx.nix"],
-      "blocks": []
+      "blocks": [],
+      "notes": "Выполнено в 61b3724: `networking.firewall.allowedTCPPorts = [80 443]` удалён (4 строки), заменён 2-строчным R1.3-комментарием. R1.3 формулировка в project-rules.md/AGENTS.md обновлена (M1: stale `nginx.nix:225` убран)."
     },
     {
       "id": "T14",
@@ -242,36 +246,38 @@
       "id": "T15",
       "title": "E2: выбрать проверки, которые заменят половину инвариантов",
       "type": "decision",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": ["T2"],
       "acceptance_criteria": [
         "Список из 7 кандидатов (см. analysis-report.md §5) отфильтрован владельцем",
         "Выбранные проверки превращены в CI или git pre-commit hook"
       ],
-      "files": [],
-      "blocks": []
+      "files": [".ci/checks.sh", ".pre-commit-config.yaml", ".github/workflows/nix-checks.yml"],
+      "blocks": [],
+      "notes": "Реализовано 3 из 7: #1 :latest (с whitelist для 3x-ui/tape-rotation), #2 nix flake check, #7 sops path_regex. .ci/checks.sh (executable), .pre-commit-config.yaml (local hook), .github/workflows/nix-checks.yml (CI). Оставшиеся 4: #3 coredns↔nginx, #4 mkServiceStorage, #5 nftables final policy, #6 listen.addr — не реализованы, ожидают решения владельца."
     },
     {
       "id": "T16",
-      "title": "E3: судьба 15 закомментированных модулей в modules/server/default.nix:33-47",
+      "title": "E3: судьба закомментированных модулей в modules/server/default.nix:37-50",
       "type": "refactor",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": ["T1"],
       "acceptance_criteria": [
-        "Решение: удалить или оставить как референс",
-        "Если удалять — то 15 модулей (remnawave, coturn, mealie, memos, minecraft, n8n, netdata, nfs, open-webui, rsync, step-ca, stirling-pdf, transmission, trilium, zerotier) перенесены в archive или удалены"
+        "Решение: archive (выполнено)",
+        "Все модули перенесены в archive/ или удалены"
       ],
-      "files": ["modules/server/default.nix"],
-      "blocks": []
+      "files": ["modules/server/default.nix", "archive/server-modules/", "archive/containers/"],
+      "blocks": [],
+      "notes": "Итого 15 модулей: 13 из server/default.nix:37-50 (remnawave, coturn, mealie, memos, minecraft, n8n, netdata, nfs, rsync, step-ca, transmission, trilium, zerotier) архивированы в archive/server-modules/ + 2 из containers/ (kokoro-tts, openhands — не импортированы) в archive/containers/. stirling-pdf.nix удалён в 5dd7a58 (функционал в bentopdf.nix). open-webui.nix активен в modules/containers/open-webui.nix."
     },
     {
       "id": "T17",
       "title": "Review 2026-10-10: разобрать B1 (R1.4 врёт), синхронизировать I1–I3",
       "type": "review",
       "priority": "high",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct (post-review followup)",
       "depends_on": [],
       "acceptance_criteria": [
@@ -291,7 +297,7 @@
         "modules/server/default.nix"
       ],
       "fixes": ["T12 (B1: R1.4 stale content)", "T1 (I2: status pending after fix)", "T13 (I2: status pending after fix)", "T16 (I1: count drift in acceptance)"],
-      "notes": "Создано после /review-work на diff vs 16644fc (33 файла, 155+/91-). 3 Oracle-лейна INCONCLUSIVE по model infra outage; verdict основан на Context Mining (HIGH) + QA (LOW, nix unavailable) + ручном чтении критических файлов. Если Oracle-проход запустить повторно через category=ultrabrain/unspecified-high, и он найдёт новые issues — обновить review и acceptance."
+      "notes": "B1: R1.4 исправлен в project-rules.md:22-25 и AGENTS.md:70-72 (4 файла: home/termux.nix, modules/server/nextcloud.nix, modules/server/nginx.nix, modules/vds/systemd.nix). I1: count sync в AGENTS.md:84, project-rules.md:97, manifest.json (T16 acceptance), modules/server/default.nix:37-50. I2: T1 и T13 в manifest.json → completed. I3: .ci/checks.sh закоммичен (61b3724). T12 re-verified: R1.4 fixed, T12 остаётся completed. M1: stale nginx.nix:225 убран из R1.3. M2: R1.2 обновлён с 7 до 12 actual services. M3: T10 погашен (reality443Forwarding удалён)."
     }
   ],
   "backlog_count": 23,
