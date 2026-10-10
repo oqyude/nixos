@@ -27,16 +27,15 @@
     {
       "id": "T3-A",
       "title": "nftables fix для otreca (R1.6: явная policy drop, убрать firewall/nftables конфликт, SSH только на tailscale0)",
-      "status": "proposed",
-      "date": "2026-10-09",
+      "status": "accepted",
+      "date": "2026-10-10",
       "files": [
-        ".agent/decisions/proposals/vds-nftables-fix.md"
+        ".agent/decisions/proposals/vds-nftables-fix.md",
+        "configurations/vds.nix"
       ],
       "tags": ["nftables", "vds", "otrecа", "security", "R1.6", "T3"],
       "task": "T3",
-      "blocked_by": [
-        "user: SSH-доступ на otreca должен быть восстановлен до apply"
-      ]
+      "notes": "Applied 2026-10-10 via nixos-rebuild switch on otreca. Verified live: nft list ruleset = policy drop + 5 accepts, iptables empty, SSH via Tailscale works, Xray REALITY on 443 listening."
     }
   ]
 }

@@ -50,7 +50,7 @@
       "id": "T3",
       "title": "A3: явная финальная политика nftables на VDS",
       "type": "fix",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": [],
       "acceptance_criteria": [
@@ -60,7 +60,7 @@
       ],
       "files": ["configurations/vds.nix"],
       "blocks": ["T11", "T12"],
-      "notes": "Apply deferred: требуется SSH на otreca (100.64.1.0 Tailscale и 109.248.161.5:22 оба timeout на 2026-10-10). VDS-провайдер должен восстановить доступ через KVM/IPMI/serial console. Proposal Option A в .agent/decisions/proposals/vds-nftables-fix.md готов к apply. До восстановления SSH — только README-уровень."
+      "notes": "Apply done 2026-10-10 (Tailscale на otreca восстановился). Option A из .agent/decisions/proposals/vds-nftables-fix.md: firewall.enable=false (R1.6 conflict resolved), lib.mkForce на allowedTCPPorts/interfaces, nftables chain input с policy drop + 5 explicit accepts (lo, established/related, ICMP, traceroute 33434-33534, SSH on tailscale0, Xray REALITY 443) + log+drop. Verified live: nft list ruleset показывает все правила, iptables пуст (нет shadow rules), SSH через Tailscale работает, Xray на 443 слушает. 2 коммита: 5796786 (основной fix) + 3deaa75 (fix allowPing — не существует на top-level networking когда firewall off)."
     },
     {
       "id": "T4",
