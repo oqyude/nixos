@@ -60,7 +60,7 @@
       ],
       "files": ["configurations/vds.nix"],
       "blocks": ["T11", "T12"],
-      "notes": "Сначала диагностика: nft list ruleset, systemctl status nftables firewall-nftables. Политика — белый список (предпочтительно) или мягкий вариант с явным финальным правилом."
+      "notes": "Apply deferred: требуется SSH на otreca (100.64.1.0 Tailscale и 109.248.161.5:22 оба timeout на 2026-10-10). VDS-провайдер должен восстановить доступ через KVM/IPMI/serial console. Proposal Option A в .agent/decisions/proposals/vds-nftables-fix.md готов к apply. До восстановления SSH — только README-уровень."
     },
     {
       "id": "T4",
@@ -97,16 +97,16 @@
       "id": "T5",
       "title": "B2: зафиксировать, что бэкапов в конфигурации нет",
       "type": "documentation",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": [],
       "acceptance_criteria": [
-        "В project-rules.md (R1.x) явно сказано, что бэкапы вне Nix",
+        "В project-rules.md (R1.x) явно сказано, что бэкапов в конфигурации нет",
         "В project-state.md Open Concerns указано, что бэкапы — внешние"
       ],
-      "files": [".agent/rules/project-rules.md", ".agent/context/project-state.md"],
+      "files": [".agent/rules/project-rules.md", ".agent/context/project-state.md", ".agent/decisions/0002-backups-external.md"],
       "blocks": [],
-      "notes": "Ждёт ответа 5.6 — где бэкапы и как проверять. Не код, а запись."
+      "notes": "Open question 5.6 (where are backups) не отвечен владельцем. Принят accepted risk: R1.9 formalized in project-rules.md: «Backups: external/unknown — accepted risk». Risk table + decision в .agent/decisions/0002-backups-external.md. Если владелец в будущем ответит на 5.6 — R1.9 отменяется и заменяется на R1.x с описанием бэкап-стратегии."
     },
     {
       "id": "T6",
