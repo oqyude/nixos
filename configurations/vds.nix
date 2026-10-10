@@ -89,7 +89,10 @@
     firewall.enable = false;
     firewall.allowedTCPPorts = lib.mkForce [ ];
     firewall.interfaces = lib.mkForce { };
-    allowPing = true;
+    # allowPing removed 2026-10-10 (T3 Option A): with firewall.enable = false,
+    # `networking.allowPing` no longer exists as a top-level option. ICMP
+    # accept is now handled by the nftables ruleset below
+    # (`ip protocol icmp accept`).
     nftables = {
       enable = true;
       ruleset = ''
