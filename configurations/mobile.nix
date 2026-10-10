@@ -9,7 +9,7 @@ let
   # (essentials, users.nix, home-manager, sops-nix, disko, grub2-themes)
   # and nixpkgs.overlays are skipped so it evaluates under nix-on-droid's
   # module system (class = "nixOnDroid").
-  xlib = import ../lib/xlib.nix { lib = inputs.nixpkgs.lib; };
+  xlib = import ../lib/xlib { lib = inputs.nixpkgs.lib; };
   nixOnDroidModule =
     {
       lib,

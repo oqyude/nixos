@@ -72,5 +72,7 @@ in
     };
   };
 
-  systemd = storage.systemd;
+  systemd = storage.systemd // {
+    services.samba.serviceConfig = xlib.helpers.mkStorageGuard xlib;
+  };
 }

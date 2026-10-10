@@ -25,12 +25,13 @@
     { "id": "T8", "title": "C3: убрать сервис автообновления 3x-ui", "status": "pending", "origin": "user:direct" },
     { "id": "T9", "title": "C4: записать, что ядро Xray — состояние панели, а не Nix", "status": "pending", "origin": "user:direct" },
     { "id": "T10", "title": "C5: решить судьбу reality443Forwarding", "status": "pending", "origin": "user:direct" },
-    { "id": "T11", "title": "D1: пробросы роутера — главный недостающий инвариант", "status": "pending", "origin": "user:direct" },
-    { "id": "T12", "title": "D2: зафиксировать 100.64.0.0 как Tailscale-адрес sapphira", "status": "pending", "origin": "user:direct" },
+    { "id": "T11", "title": "D1: пробросы роутера — главный недостающий инвариант", "status": "completed", "origin": "user:direct" },
+    { "id": "T12", "title": "D2: зафиксировать 100.64.0.0 как Tailscale-адрес sapphira", "status": "completed", "origin": "user:direct" },
     { "id": "T13", "title": "D3: убрать мёртвое правило firewall на sapphira", "status": "pending", "origin": "user:direct" },
     { "id": "T14", "title": "E1: написать AGENTS.md в корне (с metaagent-шапкой)", "status": "completed", "origin": "user:direct" },
     { "id": "T15", "title": "E2: выбрать проверки, которые заменят половину инвариантов", "status": "pending", "origin": "user:direct" },
-    { "id": "T16", "title": "E3: судьба 15 закомментированных модулей", "status": "pending", "origin": "user:direct" }
+    { "id": "T16", "title": "E3: судьба 15 закомментированных модулей", "status": "pending", "origin": "user:direct" },
+    { "id": "T17", "title": "Review 2026-10-10 followup: B1 (R1.4 врёт), I1–I3 sync", "status": "pending", "origin": "user:direct (post-review)", "priority": "high", "fixes": ["T12", "T1", "T13", "T16"], "report": ".agent/reviews/2026-10-10-review-dev-diff-vs-16644fc.md" }
   ],
-  "last_updated": "2026-10-09T20:30"
+  "last_updated": "2026-10-10T22:30:00"
 }

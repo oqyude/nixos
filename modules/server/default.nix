@@ -34,20 +34,10 @@
     ./ttyd.nix
     ./vtimeline.nix
     ./uptime-kuma.nix
-    # ../containers/remnawave.nix
-    # ./coturn.nix
-    # ./mealie.nix
-    # ./memos.nix
-    # ./minecraft.nix
-    # ./n8n.nix
-    # ./netdata.nix
-    # ./nfs.nix
-    # ./rsync.nix
-    # ./step-ca.nix
-    # ./stirling-pdf.nix
-    # ./transmission.nix
-    # ./trilium.nix
-    # ./zerotier.nix
+    # 14 modules archived to ../archive/{server-modules,containers}/ on
+    # 2026-10-09 (task E3 / T16). Reason: each was disabled individually
+    # over time; restoring requires re-enabling the import AND ensuring
+    # data mount + secrets are in place. Re-enable in a separate task.
   ];
   # Server's 3x-ui is the controller panel at x.zeroq.su (nginx HTTP
   # terminates TLS upstream, no SNI-routing on 443 needed here because

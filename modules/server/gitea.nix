@@ -22,10 +22,13 @@
     };
   };
 
-  systemd.tmpfiles.rules = xlib.helpers.mkTmpDirs {
-    dir = config.services.gitea.stateDir;
-    mode = "0755";
-    user = "gitea";
-    group = "gitea";
+  systemd = {
+    tmpfiles.rules = xlib.helpers.mkTmpDirs {
+      dir = config.services.gitea.stateDir;
+      mode = "0755";
+      user = "gitea";
+      group = "gitea";
+    };
+    services.gitea.serviceConfig = xlib.helpers.mkStorageGuard xlib;
   };
 }

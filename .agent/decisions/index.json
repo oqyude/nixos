@@ -1,6 +1,6 @@
 {
   "version": "3.0.0",
-  "updated_at": "2026-10-09T20:30",
+  "updated_at": "2026-10-09T22:30",
   "decisions": [
     {
       "id": "0001",
@@ -9,6 +9,34 @@
       "date": "2026-10-09",
       "file": ".agent/decisions/0001-sops-secrets-paths.md",
       "tags": ["sops", "secrets", "security", "invariant"]
+    },
+    {
+      "id": "0002",
+      "title": "Backups — external to Nix repo, awaiting 5.6 answer",
+      "status": "draft",
+      "date": "2026-10-09",
+      "file": ".agent/decisions/0002-backups-external.md",
+      "tags": ["backups", "documentation", "T5"],
+      "task": "T5",
+      "blocked_by": [
+        "user: open question 5.6 (where are backups, how are they verified)"
+      ]
+    }
+  ],
+  "proposals": [
+    {
+      "id": "T3-A",
+      "title": "nftables fix для otreca (R1.6: явная policy drop, убрать firewall/nftables конфликт, SSH только на tailscale0)",
+      "status": "proposed",
+      "date": "2026-10-09",
+      "files": [
+        ".agent/decisions/proposals/vds-nftables-fix.md"
+      ],
+      "tags": ["nftables", "vds", "otrecа", "security", "R1.6", "T3"],
+      "task": "T3",
+      "blocked_by": [
+        "user: SSH-доступ на otreca должен быть восстановлен до apply"
+      ]
     }
   ]
 }

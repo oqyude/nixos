@@ -14,4 +14,6 @@
     group = "users";
     user = "${xlib.device.username}";
   };
+
+  systemd.services.syncthing.serviceConfig = xlib.helpers.mkStorageGuard xlib;
 }

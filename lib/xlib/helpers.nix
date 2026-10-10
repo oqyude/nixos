@@ -158,4 +158,27 @@ in
     mkExfatMount
     mkSymlinks
     ;
+
+  # Storage guard. Returns a systemd serviceConfig fragment that prevents
+  # a service from starting when the external storage filesystem
+  # (`xlib.dirs.server-home` = `/home/$user/External`) is not actually
+  # mounted. Without this guard, services whose `stateDir` / `dataDir` /
+  # bind mount source is a subdir of `/mnt/services` would happily start
+  # on an empty bind mount and create a fresh empty database — silent
+  # data loss. See T4 (B1) in `.agent/tasks/manifest.json` and R1.2 in
+  # `.agent/rules/project-rules.md`.
+  #
+  # Why this anchor: bind mounts under `/mnt/services` are inside the
+  # same filesystem as External, so `ConditionPathIsMountPoint` on those
+  # paths always reports "yes" (st_dev matches) — useless. We anchor on
+  # `server-home` (the real mount) instead.
+  #
+  # Usage in a service module:
+  #   systemd.services.<name>.serviceConfig = xlib.helpers.mkStorageGuard xlib;
+  # or merge with an existing serviceConfig:
+  #   serviceConfig = xlib.helpers.mkStorageGuard xlib // { ...other fields... };
+  mkStorageGuard = xlib: {
+    RequiresMountsFor = [ xlib.dirs.server-home ];
+    ConditionPathIsMountPoint = [ "!${xlib.dirs.server-home}" ];
+  };
 }

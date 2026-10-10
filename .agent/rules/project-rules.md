@@ -33,6 +33,11 @@
 7. **sops-пути — через `config.sops.secrets.<name>.path`.** Любой
    `path =` override на sops-блоке делает хардкод-потребителя молча
    сломанным: rebuild зелёный, сервис стартует, контент пустой. См. ADR-0001.
+8. **Версия ядра Xray — состояние UI-панели 3x-ui, не Nix.** Ядро
+   ставится через UI панели (UI → xray version) и хранится в её
+   sqlite-БД. Перед любым деплоем/ребутом 3x-ui на sapphira —
+   проверить версию ядра в панели. Nix декларирует панель (`:latest`),
+   но не ядро.
 
 ### R2. home-manager `Service` ≠ `serviceConfig`
 
@@ -87,7 +92,7 @@ nix build .#nixosConfigurations.<хост>.config.system.build.toplevel --dry-ru
 | `server.nix:130` | `firewall.enable = false` при 20 сервисах на `0.0.0.0` | Роутер фильтрует, см. R1.3 |
 | `mobile.nix:95`, `wsl.nix:59` | `stateVersion` 24.05 / 24.11 vs 26.05 | Каждый хост зафиксирован на своей версии |
 | `users.nix:66` | `uid = if hostname == "sapphira" then 1001 else …` | Костыль под 1000 = удалённый `yuyus`; удалять только после миграции ФС |
-| `3x-ui.nix:54` | `image = …:latest` | Панель намеренно latest; ядро Xray — на 26.7.x |
+| `3x-ui.nix:54` | `image = …:latest` | Панель намеренно latest; ядро Xray — состояние панели, см. R1.8 |
 | `3x-ui.nix:33-35` | `reality443Forwarding = true` на VDS | Следствие отката `c8d4a12`; смысл утрачен, см. задачу C5 |
 | `server/default.nix:33-47` | 15 закомментированных модулей | Отключены осознанно, см. задачу E3 |
 | `opencode.nix:339` | `systemd.user.services.opencode-web.Service` | `serviceConfig` рендерится в секцию `[serviceConfig]`, systemd молча игнорирует (`c73a698`); см. R2 |

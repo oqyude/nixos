@@ -23,10 +23,13 @@ in
       };
     };
   };
-  systemd.mounts = [
-    (xlib.helpers.mkSystemdBind {
-      what = libraryDir;
-      where = pointDir;
-    })
-  ];
+  systemd = {
+    mounts = [
+      (xlib.helpers.mkSystemdBind {
+        what = libraryDir;
+        where = pointDir;
+      })
+    ];
+    services.navidrome.serviceConfig = xlib.helpers.mkStorageGuard xlib;
+  };
 }

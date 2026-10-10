@@ -19,9 +19,12 @@ in
     };
   };
 
-  systemd.tmpfiles.rules = [
-    (xlib.helpers.mkTmpfile "z" sourceDir "0755" "nobody" "nogroup")
-  ];
+  systemd = {
+    tmpfiles.rules = [
+      (xlib.helpers.mkTmpfile "z" sourceDir "0755" "nobody" "nogroup")
+    ];
+    services.uptime-kuma.serviceConfig = xlib.helpers.mkStorageGuard xlib;
+  };
 
   fileSystems = xlib.helpers.mkBindMount {
     what = sourceDir;

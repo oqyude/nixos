@@ -42,27 +42,30 @@ in
     # };
   };
 
-  systemd.tmpfiles.rules =
-    xlib.helpers.mkTmpDirs {
-      dir = libraryDir;
-      mode = "0755";
-      user = "calibre-web";
-      group = "calibre-web";
-      types = [
-        "d"
-        "Z"
-      ];
-    }
-    ++ xlib.helpers.mkTmpDirs {
-      dir = sourceDir;
-      mode = "0755";
-      user = "calibre-web";
-      group = "calibre-web";
-      types = [
-        "d"
-        "Z"
-      ];
-    };
+  systemd = {
+    tmpfiles.rules =
+      xlib.helpers.mkTmpDirs {
+        dir = libraryDir;
+        mode = "0755";
+        user = "calibre-web";
+        group = "calibre-web";
+        types = [
+          "d"
+          "Z"
+        ];
+      }
+      ++ xlib.helpers.mkTmpDirs {
+        dir = sourceDir;
+        mode = "0755";
+        user = "calibre-web";
+        group = "calibre-web";
+        types = [
+          "d"
+          "Z"
+        ];
+      };
+    services.calibre-web.serviceConfig = xlib.helpers.mkStorageGuard xlib;
+  };
 
   fileSystems = xlib.helpers.mkBindMount {
     what = sourceDir;

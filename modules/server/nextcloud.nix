@@ -200,9 +200,12 @@
   #       };
   #     };
 
-  systemd.tmpfiles.rules = [
-    (xlib.helpers.mkTmpfile "z" config.services.nextcloud.home "0750" "nextcloud" "nextcloud")
-  ];
+  systemd = {
+    tmpfiles.rules = [
+      (xlib.helpers.mkTmpfile "z" config.services.nextcloud.home "0750" "nextcloud" "nextcloud")
+    ];
+    services.nextcloud.serviceConfig = xlib.helpers.mkStorageGuard xlib;
+  };
 
   environment.systemPackages = [
     pkgs.nc4nix # Packaging helper for Nextcloud apps

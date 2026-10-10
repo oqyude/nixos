@@ -102,14 +102,18 @@ in
   systemd = {
     services = {
       "podman-taperotation-backend" = {
-        serviceConfig.Restart = lib.mkOverride 90 "always";
+        serviceConfig = xlib.helpers.mkStorageGuard xlib // {
+          Restart = lib.mkOverride 90 "always";
+        };
         after = [ "podman-network-taperotation_default.service" ];
         requires = [ "podman-network-taperotation_default.service" ];
         partOf = [ "podman-compose-tape-rotation-root.target" ];
         wantedBy = [ "podman-compose-tape-rotation-root.target" ];
       };
       "podman-taperotation-frontend" = {
-        serviceConfig.Restart = lib.mkOverride 90 "always";
+        serviceConfig = xlib.helpers.mkStorageGuard xlib // {
+          Restart = lib.mkOverride 90 "always";
+        };
         after = [
           "podman-network-taperotation_default.service"
           "podman-taperotation-backend.service"

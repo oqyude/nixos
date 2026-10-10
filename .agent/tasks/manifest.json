@@ -4,14 +4,14 @@
   "target_repo": "S:/Git/nixos",
   "goal": "Установить metaagent, перенести накопленные данные (AGENTS.md, docs/arch/*) в структуру .agent/.",
   "project_type": "existing",
-  "date": "2026-10-09T20:30",
+  "date": "2026-10-10T22:30",
   "phases": {
     "init": "completed",
     "analyse": "pending",
     "roadmap": "pending",
     "design": "skipped",
     "decomposition": "pending",
-    "execution": "pending",
+    "execution": "in_progress",
     "metastate": "pending",
     "handoff": "pending"
   },
@@ -187,7 +187,7 @@
       "id": "T11",
       "title": "D1: пробросы роутера — главный недостающий инвариант",
       "type": "documentation",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": ["T3"],
       "acceptance_criteria": [
@@ -201,7 +201,7 @@
       "id": "T12",
       "title": "D2: зафиксировать 100.64.0.0 как Tailscale-адрес sapphira",
       "type": "documentation",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": [],
       "acceptance_criteria": [
@@ -265,6 +265,33 @@
       ],
       "files": ["modules/server/default.nix"],
       "blocks": []
+    },
+    {
+      "id": "T17",
+      "title": "Review 2026-10-10: разобрать B1 (R1.4 врёт), синхронизировать I1–I3",
+      "type": "review",
+      "priority": "high",
+      "status": "pending",
+      "origin": "user:direct (post-review followup)",
+      "depends_on": [],
+      "acceptance_criteria": [
+        ".agent/reviews/2026-10-10-review-dev-diff-vs-16644fc.md прочитан целиком",
+        "B1 (R1.4 в .agent/rules/project-rules.md:22-24 и AGENTS.md:18-20) исправлен: 'vds/nginx.nix' → 'home/termux.nix' в обоих файлах",
+        "T12 в checkpoints.json И manifest.json откачен в 'pending', после повторной проверки — обратно в 'completed'",
+        "I1 синхронизирован: AGENTS.md:97, project-rules.md:97, manifest.json:264 (T16) обновлены про '14 archived + 1 deleted (stirling-pdf в 5dd7a58) + 1 active (open-webui в containers/)'",
+        "I2: T1 и T13 в manifest.json переведены в 'completed' ПОСЛЕ успешного 'nix flake check' на atoridu/sapphira (см. .ci/checks.sh)",
+        "I3: .ci/checks.sh закоммичен, вывод 'nix flake check' зелёный приложен к T1"
+      ],
+      "files": [
+        ".agent/reviews/2026-10-10-review-dev-diff-vs-16644fc.md",
+        ".agent/rules/project-rules.md",
+        "AGENTS.md",
+        ".agent/tasks/manifest.json",
+        ".agent/checkpoints.json",
+        "modules/server/default.nix"
+      ],
+      "fixes": ["T12 (B1: R1.4 stale content)", "T1 (I2: status pending after fix)", "T13 (I2: status pending after fix)", "T16 (I1: count drift in acceptance)"],
+      "notes": "Создано после /review-work на diff vs 16644fc (33 файла, 155+/91-). 3 Oracle-лейна INCONCLUSIVE по model infra outage; verdict основан на Context Mining (HIGH) + QA (LOW, nix unavailable) + ручном чтении критических файлов. Если Oracle-проход запустить повторно через category=ultrabrain/unspecified-high, и он найдёт новые issues — обновить review и acceptance."
     }
   ],
   "backlog_count": 23,

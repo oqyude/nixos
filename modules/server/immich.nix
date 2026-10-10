@@ -19,9 +19,12 @@
     };
   };
 
-  systemd.tmpfiles.rules = [
-    (xlib.helpers.mkTmpfile "z" config.services.immich.mediaLocation "0755" "immich" "immich")
-  ];
+  systemd = {
+    tmpfiles.rules = [
+      (xlib.helpers.mkTmpfile "z" config.services.immich.mediaLocation "0755" "immich" "immich")
+    ];
+    services.immich.serviceConfig = xlib.helpers.mkStorageGuard xlib;
+  };
 
   users.users.immich.extraGroups = [
     "video"

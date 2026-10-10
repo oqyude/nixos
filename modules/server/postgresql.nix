@@ -23,5 +23,7 @@ in
     # postgresqlBackup.enable = true;
   };
 
-  systemd = storage.systemd;
+  systemd = storage.systemd // {
+    services.postgresql.serviceConfig = xlib.helpers.mkStorageGuard xlib;
+  };
 }

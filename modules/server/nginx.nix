@@ -365,10 +365,8 @@ in
       };
     };
   };
-  networking.firewall.allowedTCPPorts = [
-    80
-    443
-  ];
+  # networking.firewall is intentionally unused on sapphira (R1.3):
+  # the network boundary is the router, not the host firewall.
 
   # Note: the previous vtimeline-htpasswd sops declaration lived here. It
   # was removed when authelia replaced nginx's auth_basic (see the vtimeline

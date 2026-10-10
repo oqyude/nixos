@@ -29,5 +29,7 @@ in
     };
   };
 
-  systemd = storage.systemd;
+  systemd = storage.systemd // {
+    services.homebox.serviceConfig = xlib.helpers.mkStorageGuard xlib;
+  };
 }
