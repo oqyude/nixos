@@ -64,7 +64,15 @@ let
     tftp-root = "${config.pxe-infra.artifacts.root}/tftpboot";
   };
 
-  filtered = base // tftpSettings // lib.optionalAttrs (!cfg.authoritative) {
+  # Boot filename: when the iPXE binary is staged, hand it to
+  # UEFI firmware in the DHCP offer so the firmware knows what
+  # to TFTP-fetch. Sent to all clients; the `tag:!known` filter
+  # below still drops requests from unknown MACs.
+  bootSettings = lib.optionalAttrs (config.pxe-infra.tftp.enable && config.pxe-infra.bootloader.enable) {
+    dhcp-boot = config.pxe-infra.bootloader.ipxeBinary;
+  };
+
+  filtered = base // tftpSettings // bootSettings // lib.optionalAttrs (!cfg.authoritative) {
     # Drop any DHCP request not carrying the `known` tag we set on
     # static hosts. This is the MAC filter that keeps the rig
     # from accidentally serving strangers if a real-LAN packet

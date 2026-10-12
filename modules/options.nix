@@ -334,5 +334,33 @@
         '';
       };
     };
+
+    # iPXE bootloader staging. Bridges the UEFI firmware (which
+    # speaks TFTP only) to the L3 HTTP server (which serves the
+    # actual image). Without this, the L4 VM gets a DHCP lease
+    # but has no filename to TFTP-fetch, so the chain stops there.
+    bootloader = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = ''
+          Whether to stage the iPXE EFI binary into the TFTP root
+          and write the static boot.ipxe script into the HTTP
+          root. Off disables the entire L4 boot chain.
+        '';
+      };
+      ipxeBinary = lib.mkOption {
+        type = lib.types.str;
+        default = "ipxe.efi";
+        description = ''
+          Filename of the iPXE EFI binary under the TFTP root.
+          The actual binary is taken from `pkgs.ipxe`; this only
+          controls the served filename and the `filename` DHCP
+          option handed to UEFI firmware. Defaults to the
+          universal UEFI binary; `snp.efi` is a smaller variant
+          that works on virtio-net only.
+        '';
+      };
+    };
   };
 }
