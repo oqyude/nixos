@@ -40,9 +40,12 @@ shellHook = ''
         export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
         export NIX_CHROMIUM=${pkgs.chromium}/bin/chromium
-        # Direct executable-path override (honoured by older Playwright and
-        # the `channel: "chromium"` code path).
-        export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH="$NIX_CHROMIUM"
+        # NOTE: there is deliberately no PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
+        # export. Playwright never reads that variable — verified 2026-10-12:
+        # no reference to it anywhere in playwright-core, and pointing
+        # PLAYWRIGHT_BROWSERS_PATH at an empty directory fails the suite even
+        # while the variable is set. The symlink farm below is the only thing
+        # that makes Playwright use the nixpkgs chromium. Don't re-add it.
         export PLAYWRIGHT_BROWSERS_PATH="$HOME/.cache/vtimeline-pw-browsers"
         mkdir -p "$PLAYWRIGHT_BROWSERS_PATH"
 
