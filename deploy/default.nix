@@ -12,6 +12,14 @@ let
   server = "sapphira";
   vds = "otreca";
   mini-laptop = "rydiwo";
+  # Only evaluate checks for the systems we actually deploy to. nixpkgs 26.11
+  # dropped x86_64-darwin, and deploy-rs's darwin packages throw at eval time
+  # (`throwIf ... "Nixpkgs 26.11 has dropped support for x86_64-darwin"`),
+  # which broke `nix flake show` / `nix flake check` for the whole flake.
+  # Nothing in `deploy` is darwin-specific — it is x86_64-linux only.
+  linuxDeployLibs = inputs.nixpkgs.lib.filterAttrs (
+    system: _: builtins.match ".*-linux" system != null
+  ) inputs.deploy-rs.lib;
 in
 {
   deploy = {
@@ -26,5 +34,5 @@ in
   # This is highly advised, and will prevent many possible mistakes
   checks = builtins.mapAttrs (
     system: deployLib: deployLib.deployChecks inputs.self.deploy
-  ) inputs.deploy-rs.lib;
+  ) linuxDeployLibs;
 }
