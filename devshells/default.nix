@@ -35,42 +35,78 @@ in
       # shell globally. Anything npm-side goes through `npm install` in the
       # project's own node_modules.
 
-      shellHook = ''
+shellHook = ''
         # Skip Playwright's own browser download — we use the system one.
         export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
+        export NIX_CHROMIUM=${pkgs.chromium}/bin/chromium
         # Direct executable-path override (honoured by older Playwright and
         # the `channel: "chromium"` code path).
-        export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
-
-        # Playwright 1.40+ uses a separate "chrome-headless-shell" binary
-        # in headless mode and looks for it under a hard-coded path
-        # ($PLAYWRIGHT_BROWSERS_PATH/chromium_headless_shell-<rev>/...).
-        # We satisfy that lookup by symlinking the nixpkgs chromium into a
-        # fake registry directory.
-        export NIX_CHROMIUM=${pkgs.chromium}/bin/chromium
-        export PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/vtimeline-pw-browsers
+        export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH="$NIX_CHROMIUM"
+        export PLAYWRIGHT_BROWSERS_PATH="$HOME/.cache/vtimeline-pw-browsers"
         mkdir -p "$PLAYWRIGHT_BROWSERS_PATH"
-        link_bin() {
-          local d="$PLAYWRIGHT_BROWSERS_PATH/$1"
-          mkdir -p "$d"
-          ln -sfn "$NIX_CHROMIUM" "$d/chrome-headless-shell"
-          ln -sfn "$NIX_CHROMIUM" "$d/chrome"
-        }
-        # Layouts derived from Playwright's EXECUTABLE_PATHS table for
-        # the chromium + chromium-headless-shell entries (linux-x64).
-        link_bin "chromium-1248/chrome-linux"
-        link_bin "chromium_headless_shell-1248/chrome-headless-shell-linux64"
 
-        # Convenience banner. The VeeamTimelineView project lives next to
-        # this flake repo (../VeeamTimelineView from the nixos checkout,
-        # i.e. S:\\Git\\VeeamTimelineView on Windows). We don't bake the
-        # path into the shellHook because Nix forbids escaping the flake
-        # source dir at eval time — print a hint and let the user `cd`.
-        echo "[vtimeline-devshell] node:   $(command -v node)"
-        echo "[vtimeline-devshell] python: $(command -v python3)"
-        echo "[vtimeline-devshell] chrome: $NIX_CHROMIUM"
-        echo "[vtimeline-devshell] run:    cd ../VeeamTimelineView && npm install && npm test"
+        # Locate the project. It is a sibling git repo, NOT a flake input, so
+        # the path can only be resolved when the shell starts — Nix forbids
+        # baking a path outside the flake source into the store path. sapphira
+        # keeps it on the external disk, Windows hosts use S:\Git.
+        VT_PROJECT=""
+        for cand in "$HOME/External/Git/VeeamTimelineView" \
+                    "$HOME/Git/VeeamTimelineView" \
+                    "$HOME/Projects/VeeamTimelineView" \
+                    "/s/Git/VeeamTimelineView"; do
+          if [ -d "$cand" ]; then VT_PROJECT="$cand"; break; fi
+        done
+        export VT_PROJECT
+
+        # Playwright resolves the browser through a revision-pinned directory
+        # name (chromium-<rev>). Hardcoding the revision silently breaks the
+        # next time the project bumps @playwright/test, so read the revisions
+        # from the project's own playwright-core/browsers.json (node is in
+        # this shell) and link the nixpkgs chromium into that layout.
+        pw_browser_dirs() {
+          local json="$VT_PROJECT/node_modules/playwright-core/browsers.json"
+          [ -n "$VT_PROJECT" ] && [ -f "$json" ] || return 1
+          node -e '
+            const b = require(process.argv[1]);
+            const LAYOUT = {
+              chromium: "chromium-REV/chrome-linux",
+              "chromium-headless-shell": "chromium_headless_shell-REV/chrome-headless-shell-linux64",
+            };
+            for (const x of b.browsers) {
+              const tpl = LAYOUT[x.name];
+              if (!tpl) continue;
+              console.log(tpl.replace("REV", x.revision));
+            }
+          ' "$json"
+        }
+
+        if pw_dirs=$(pw_browser_dirs) && [ -n "$pw_dirs" ]; then
+          while IFS= read -r sub; do
+            [ -n "$sub" ] || continue
+            mkdir -p "$PLAYWRIGHT_BROWSERS_PATH/$sub"
+            # Both names in both layouts: Playwright picks one per code path,
+            # and a stale extra symlink costs nothing.
+            ln -sfn "$NIX_CHROMIUM" "$PLAYWRIGHT_BROWSERS_PATH/$sub/chrome"
+            ln -sfn "$NIX_CHROMIUM" "$PLAYWRIGHT_BROWSERS_PATH/$sub/chrome-headless-shell"
+          done <<< "$pw_dirs"
+        else
+          echo "[vtimeline-devshell] WARNING: no playwright-core/browsers.json under \$VT_PROJECT." >&2
+          echo "[vtimeline-devshell]          Run 'npm install' in the project, else" >&2
+          echo "[vtimeline-devshell]          Playwright will not find a browser." >&2
+        fi
+
+        # Convenience banner.
+        echo "[vtimeline-devshell] node:    $(command -v node)"
+        echo "[vtimeline-devshell] python:  $(command -v python3)"
+        echo "[vtimeline-devshell] chrome:  $NIX_CHROMIUM"
+        if [ -n "$VT_PROJECT" ]; then
+          echo "[vtimeline-devshell] project: $VT_PROJECT"
+          echo "[vtimeline-devshell] run:     cd \"\$VT_PROJECT\" && npm install && npm test"
+        else
+          echo "[vtimeline-devshell] project: NOT FOUND"
+          echo "[vtimeline-devshell]          export VT_PROJECT=/path/to/VeeamTimelineView"
+        fi
       '';
     };
   };
