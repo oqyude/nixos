@@ -18,6 +18,7 @@
     ./dhcp.nix
     ./http.nix
     ./ipxe.nix
+    ./report-sink.nix
     ./vm.nix
   ];
 

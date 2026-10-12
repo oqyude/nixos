@@ -362,5 +362,32 @@
         '';
       };
     };
+
+    # Report sink: HTTP endpoint that receives the L4 VM's run
+    # report and writes it to disk. Layer L6 of
+    # docs/ARCHITECTURE.md. Per the architecture: "Needs to
+    # survive the VM disappearing, which rules out anything
+    # inside the guest."
+    reportSink = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = ''
+          Whether to run the report-sink HTTP service. Listens
+          on the bridge IP only and writes accepted reports to
+          /var/lib/pxe-infra/reports/<run_id>.json. Disabling
+          this drops the only path a report has to land.
+        '';
+      };
+      port = lib.mkOption {
+        type = lib.types.int;
+        default = 8080;
+        description = ''
+          TCP port for the report sink. Bound to the bridge IP
+          only; an unprivileged port so the daemon can run as a
+          DynamicUser with no CAP_NET_BIND_SERVICE.
+        '';
+      };
+    };
   };
 }
