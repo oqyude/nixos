@@ -78,4 +78,153 @@
       '';
     };
   };
+
+  # pxe-infra — isolated private bridge + MAC-filtered DHCP for PXE
+  # VM guests (L2 of docs/ARCHITECTURE.md, see also Q20/Q21/Q23 in
+  # docs/OPEN-QUESTIONS.md). Decoupled from the host's primary
+  # network stack: dnsmasq is bound to a Linux bridge that lives on
+  # a private subnet and never touches the LAN's DHCP server.
+  options.pxe-infra = {
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Master toggle for the PXE infrastructure rig (L2 of
+        docs/ARCHITECTURE.md). When enabled, this host gains an
+        isolated private bridge and a MAC-filtered DHCP server,
+        usable as a stand-alone VM/PXE test bed without touching
+        the real LAN.
+      '';
+    };
+
+    bridge = {
+      name = lib.mkOption {
+        type = lib.types.str;
+        default = "pxe0";
+        example = "pxe0";
+        description = ''
+          Name of the Linux bridge interface that PXE VMs attach
+          to. Brought up by a systemd oneshot (idempotent) and
+          explicitly unmanaged by NetworkManager so NM does not
+          reconfigure it.
+        '';
+      };
+      address = lib.mkOption {
+        type = lib.types.str;
+        default = "10.66.0.1";
+        example = "10.66.0.1";
+        description = ''
+          IP address assigned to the lab host on the private
+          bridge. The VM's default route should point here so
+          the lab host can always reach the VM via this address.
+        '';
+      };
+      prefixLength = lib.mkOption {
+        type = lib.types.int;
+        default = 24;
+        example = 24;
+        description = ''
+          CIDR prefix length for the bridge subnet. Must match
+          the chosen address (e.g. 10.66.0.1/24). Range and
+          gateway options below must all live inside this
+          subnet.
+        '';
+      };
+    };
+
+    dhcp = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = ''
+          Whether the bridge-side DHCP server (dnsmasq) should
+          run. Set false only if you bring your own DHCP server
+          on the bridge.
+        '';
+      };
+      authoritative = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = ''
+          When true, dnsmasq responds authoritatively to all DHCP
+          requests on the bridge (recommended only when nothing
+          else on the bridge exists). When false (default),
+          dnsmasq answers only MACs listed in `guests` and
+          silently drops everything else.
+        '';
+      };
+      rangeStart = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        example = "10.66.0.100";
+        description = ''
+          Lower bound of a free address pool handed out to guests
+          whose MAC is not explicitly listed. Leave null to
+          disable the pool and hand out leases only to MACs
+          listed in `guests`.
+        '';
+      };
+      rangeEnd = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        example = "10.66.0.200";
+        description = ''
+          Upper bound of the free address pool. See `rangeStart`.
+        '';
+      };
+      leaseTime = lib.mkOption {
+        type = lib.types.str;
+        default = "12h";
+        example = "1h";
+        description = ''
+          Default DHCP lease time handed to guests. Short values
+          are useful while iterating on the VM's identity; long
+          values are useful in steady state.
+        '';
+      };
+      guests = lib.mkOption {
+        type = lib.types.listOf (
+          lib.types.submodule {
+            options = {
+              mac = lib.mkOption {
+                type = lib.types.str;
+                example = "52:54:00:12:34:56";
+                description = ''
+                  MAC address of the guest NIC. Must be unique
+                  within the list. dnsmasq answers DHCP only for
+                  these MACs unless dhcp.authoritative is true.
+                '';
+              };
+              ip = lib.mkOption {
+                type = lib.types.str;
+                example = "10.66.0.10";
+                description = ''
+                  IP address handed to this guest. Must lie
+                  inside the bridge subnet.
+                '';
+              };
+              hostname = lib.mkOption {
+                type = lib.types.nullOr lib.types.str;
+                default = null;
+                example = "pxe-vm-01";
+                description = ''
+                  Optional hostname returned to the guest via
+                  DHCP. Useful when the image identity phase
+                  reads the DHCP-supplied hostname (per
+                  docs/OPEN-QUESTIONS.md #A.2).
+                '';
+              };
+            };
+          }
+        );
+        default = [ ];
+        description = ''
+          Reserved guests: list of MAC ↔ IP mappings (with
+          optional hostname). When `dhcp.authoritative` is false,
+          dnsmasq answers DHCP only for these guests and silently
+          drops everything else.
+        '';
+      };
+    };
+  };
 }
