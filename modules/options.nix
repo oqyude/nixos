@@ -286,5 +286,53 @@
         '';
       };
     };
+
+    # VM: a single QEMU/KVM guest that PXE-boots through the
+    # bridge. Layer L4 of docs/ARCHITECTURE.md. The guest is
+    # intentionally disposable — no persistent disk, no NVRAM
+    # persistence, restart on crash — so every run starts from
+    # the same state, which is the rig's whole reason to exist.
+    vm = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = ''
+          Whether to run a QEMU/KVM guest that PXE-boots through
+          the bridge. Disabled by default: enabling it spins up
+          the VM on boot, which the user may want to defer until
+          the artifact is staged.
+        '';
+      };
+      mac = lib.mkOption {
+        type = lib.types.str;
+        default = "52:54:00:12:34:56";
+        example = "52:54:00:12:34:56";
+        description = ''
+          MAC address of the guest's NIC. Choose from the
+          52:54:00:XX:XX:XX QEMU/OUI range. The same MAC must
+          appear in `dhcp.guests` when `dhcp.authoritative` is
+          false, otherwise the VM gets no lease.
+        '';
+      };
+      cpus = lib.mkOption {
+        type = lib.types.int;
+        default = 2;
+        example = 4;
+        description = ''
+          Number of virtual CPUs. Memory and CPU together cap
+          which tests can run on the rig (Phase 5 in
+          RUNNER-DESIGN.md).
+        '';
+      };
+      memory = lib.mkOption {
+        type = lib.types.str;
+        default = "2G";
+        example = "4G";
+        description = ''
+          RAM size in QEMU syntax (e.g. `2G`, `512M`). Caps the
+          testable memory in Phase 3 (RAM burnin).
+        '';
+      };
+    };
   };
 }

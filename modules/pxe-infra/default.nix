@@ -17,6 +17,7 @@
     ./bridge.nix
     ./dhcp.nix
     ./http.nix
+    ./vm.nix
   ];
 
   config = lib.mkIf config.pxe-infra.enable {
