@@ -226,5 +226,65 @@
         '';
       };
     };
+
+    # Where the boot artifacts land on disk. TFTP serves its
+    # `tftpboot` subdirectory; HTTP serves its `http` subdirectory.
+    # The contents themselves are produced elsewhere (mkosi under
+    # build/mkosi/, see docs/OPEN-QUESTIONS.md B.9/B.10) and copied
+    # in by whatever deployment step is in use.
+    artifacts = {
+      root = lib.mkOption {
+        type = lib.types.str;
+        default = "/var/lib/pxe-infra";
+        description = ''
+          Local directory under which the boot artifacts (kernel,
+          initramfs, rootfs/ISO, iPXE image) are expected to live.
+          TFTP serves the `tftpboot` subdirectory; HTTP serves the
+          `http` subdirectory. The pxe-infra module creates both
+          subdirectories at boot via systemd-tmpfiles; it does not
+          populate them.
+        '';
+      };
+    };
+
+    # HTTP server: nginx, bound to the bridge IP only. Carries the
+    # heavy payloads (kernel, initramfs, rootfs) per
+    # docs/ARCHITECTURE.md §L3.
+    http = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = ''
+          Whether to enable nginx for HTTP serving of kernel,
+          initramfs, and rootfs. Bound to the bridge interface only.
+        '';
+      };
+      port = lib.mkOption {
+        type = lib.types.int;
+        default = 80;
+        description = ''
+          TCP port for the HTTP server. Bound to the bridge IP only,
+          so it does not collide with any other HTTP service on the
+          LAN.
+        '';
+      };
+    };
+
+    # TFTP: piggybacks on the same dnsmasq instance as DHCP.
+    # ARCHITECTURE.md L3 separates TFTP from HTTP (different roles,
+    # different protocol); DHCP+TFTP sharing a daemon is a natural
+    # fit and avoids spinning up a second service.
+    tftp = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = ''
+          Whether dnsmasq should also serve TFTP for the iPXE boot
+          image. Reuses the same daemon and bridge binding as DHCP
+          (`bind-interfaces` + `interface=...` carry over). The
+          serve root is `artifacts.root/tftpboot`.
+        '';
+      };
+    };
   };
 }

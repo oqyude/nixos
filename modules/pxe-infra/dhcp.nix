@@ -56,7 +56,15 @@ let
     dhcp-host = dhcpHostLines ++ rangeLines;
   };
 
-  filtered = base // lib.optionalAttrs (!cfg.authoritative) {
+  # Optional TFTP module on the same dnsmasq instance. Used to
+  # hand out the iPXE bootloader (a few hundred KB) before the
+  # client switches to HTTP for the kernel/initramfs/rootfs.
+  tftpSettings = lib.optionalAttrs config.pxe-infra.tftp.enable {
+    enable-tftp = true;
+    tftp-root = "${config.pxe-infra.artifacts.root}/tftpboot";
+  };
+
+  filtered = base // tftpSettings // lib.optionalAttrs (!cfg.authoritative) {
     # Drop any DHCP request not carrying the `known` tag we set on
     # static hosts. This is the MAC filter that keeps the rig
     # from accidentally serving strangers if a real-LAN packet
