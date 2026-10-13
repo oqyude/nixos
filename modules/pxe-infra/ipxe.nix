@@ -39,11 +39,13 @@
     environment.etc."pxe-infra/http/boot.ipxe".source = pkgs.writeText "boot.ipxe" ''
       #!ipxe
       set boot-url http://${config.pxe-infra.bridge.address}/latest
-      sanboot ''${boot-url}/alpine-worker.raw || goto retry
+      imgfetch ''${boot-url}/alpine-worker.raw
+      boot || goto retry
       :retry
-      echo sanboot failed, retrying in 5s
+      echo boot failed, retrying in 5s
       sleep 5
-      sanboot ''${boot-url}/alpine-worker.raw
+      imgfetch ''${boot-url}/alpine-worker.raw
+      boot
     '';
   };
 }
