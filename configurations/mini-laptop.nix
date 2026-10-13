@@ -53,6 +53,7 @@
     enable = true;
     bridge.address = "10.66.0.1";
     bridge.prefixLength = 24;
+    bootloader.ipxeBinary = "snp.efi";  # SNP-only build, 310K, virtio-net-friendly
     vm = {
       enable = true;
       autostart = false;        # start manually when testing
