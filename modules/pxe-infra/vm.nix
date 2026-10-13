@@ -19,10 +19,16 @@
 #     nixpkgs doesn't ship that wrapper as a NixOS module
 #     for ad-hoc QEMU use. The tap+attach pattern is what
 #     `qemu-vm.nix` does under the hood for NixOS test VMs.
-#   - UEFI firmware via OVMF (UEFI only — B.6). The combined
-#     `OVMF.fd` is mounted read-only, so the VM has no
-#     persistent NVRAM; every restart is a fresh boot, which
-#     is the property we want.
+#   - UEFI firmware via OVMF (UEFI only — B.6), in split
+#     CODE+VARS form: OVMF_CODE.fd is mounted read-only, and
+#     a writable copy of OVMF_VARS.fd lives at
+#     /var/lib/pxe-infra/ovmf-vars.bin. Without a writable
+#     VARS the firmware raises #GP when iPXE tries to chain
+#     to the next boot device (ExitBootServices needs to
+#     record state in NVRAM, and a read-only VARS leaves
+#     RAX = 0xAF…AF and RIP inside OVMF). The file is seeded
+#     from the nixpkgs OVMF_VARS.fd on the first run and
+#     persists across restarts; delete it for a fresh NVRAM.
 #   - Boot order: network only (`-boot n`); no disk, no ISO.
 #   - `Restart=always` — failed or interrupted runs are safe to
 #     repeat without cleanup, per ARCHITECTURE.md §"Run
@@ -75,13 +81,21 @@
         ip link set pxe0-tap master ${config.pxe-infra.bridge.name}
         ip link set pxe0-tap up
 
+        # Seed the OVMF VARS file on first run. See the top
+        # comment for why a writable VARS is required.
+        VARS=/var/lib/pxe-infra/ovmf-vars.bin
+        if [ ! -f "$VARS" ]; then
+          cp ${pkgs.OVMF.fd}/FV/OVMF_VARS.fd "$VARS"
+        fi
+
         exec qemu-system-x86_64 \
           -name pxe-infra-vm \
           -machine type=q35,accel=kvm:tcg \
           -cpu host \
           -smp ${toString config.pxe-infra.vm.cpus} \
           -m ${config.pxe-infra.vm.memory} \
-          -drive if=pflash,format=raw,readonly=on,file=${pkgs.OVMF.fd}/FV/OVMF.fd \
+          -drive if=pflash,format=raw,readonly=on,file=${pkgs.OVMF.fd}/FV/OVMF_CODE.fd \
+          -drive if=pflash,format=raw,file=$VARS \
           -netdev tap,id=net0,ifname=pxe0-tap,script=no,downscript=no \
           -device virtio-net-pci,netdev=net0,mac=${config.pxe-infra.vm.mac} \
           -boot n \
