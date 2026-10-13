@@ -82,7 +82,7 @@
           -smp ${toString config.pxe-infra.vm.cpus} \
           -m ${config.pxe-infra.vm.memory} \
           -drive if=pflash,format=raw,readonly=on,file=${pkgs.OVMF.fd}/FV/OVMF.fd \
-          -netdev tap,id=net0,ifname=pxe0-tap \
+          -netdev tap,id=net0,ifname=pxe0-tap,script=no,downscript=no \
           -device virtio-net-pci,netdev=net0,mac=${config.pxe-infra.vm.mac} \
           -boot n \
           -nographic \
