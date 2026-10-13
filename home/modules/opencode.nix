@@ -1,4 +1,5 @@
-# Declarative OpenCode + oh-my-openagent (oh-my-opencode) plugin setup.
+# Declarative OpenCode + oh-my-openagent (oh-my-opencode) +
+# @bybrawe/opencode-loop plugin setup.
 #
 # Mirrors ~/.config/opencode/ on the current workstation.
 # Imported by home/server.nix (sapphira). Auto-enables programs.opencode.
@@ -267,7 +268,10 @@ in
 
     # ~/.config/opencode/opencode.json
     settings = {
-      plugin = [ "oh-my-openagent@latest" ];
+      plugins = [
+        "oh-my-openagent@latest"
+        "@bybrawe/opencode-loop@latest"
+      ];
       mcp = {
         webpage = {
           type = "local";
@@ -285,7 +289,10 @@ in
     # ~/.config/opencode/tui.json
     # Mirrors workstation: oh-my-openagent also registered for the TUI.
     tui = {
-      plugin = [ "oh-my-openagent@latest" ];
+      plugin = [
+        "oh-my-openagent@latest"
+        "@bybrawe/opencode-loop@latest"
+      ];
     };
   };
 
