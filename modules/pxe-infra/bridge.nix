@@ -29,7 +29,7 @@
       description = "pxe-infra: bring up ${config.pxe-infra.bridge.name} bridge";
       wantedBy = [ "multi-user.target" ];
       after = [ "systemd-modules-load.service" ];
-      wantedBefore = [ "dnsmasq.service" ];
+      before = [ "dnsmasq.service" ];
       path = [ pkgs.iproute2 ];
       serviceConfig = {
         Type = "oneshot";
