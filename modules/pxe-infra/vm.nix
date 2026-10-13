@@ -31,7 +31,12 @@
 
     systemd.services.pxe-infra-vm = {
       description = "pxe-infra: PXE-boot QEMU/KVM guest (L4)";
-      wantedBy = [ "multi-user.target" ];
+      # Autostart is off by default. The unit still exists, so
+      # `systemctl start pxe-infra-vm` is enough to bring the
+      # guest up for a test session; `systemctl stop` to tear
+      # it down. To bring it up on every boot, set
+      # pxe-infra.vm.autostart = true.
+      wantedBy = lib.optional config.pxe-infra.vm.autostart "multi-user.target";
       after = [
         "pxe-infra-bridge.service"
         "dnsmasq.service"

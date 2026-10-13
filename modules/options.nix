@@ -333,6 +333,21 @@
           testable memory in Phase 3 (RAM burnin).
         '';
       };
+      autostart = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = ''
+          Whether the QEMU guest starts on boot. Off by default:
+          for script-development iteration, you start it by hand
+          (`systemctl start pxe-infra-vm`) and stop it the same
+          way. Set this to true if you want the VM up whenever
+          rydiwo is up (e.g. while leaving a long unattended
+          test running). The systemd unit itself is always
+          present when pxe-infra.vm.enable is true, so toggling
+          autostart does not require anything beyond this
+          option flipping.
+        '';
+      };
     };
 
     # iPXE bootloader staging. Bridges the UEFI firmware (which
