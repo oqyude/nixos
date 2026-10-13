@@ -38,33 +38,32 @@
 
   # --------------------------------------------------------------------------
   # PXE infrastructure rig (L2 of docs/ARCHITECTURE.md).
-  # Uncomment to enable on rydiwo. The rig gives rydiwo an isolated
-  # Linux bridge (`pxe-infra.bridge.name`, default `pxe0`) plus a
-  # MAC-filtered dnsmasq DHCP server bound only to that bridge — the
-  # real LAN is not touched. The QEMU guest (L4) is configured but
-  # NOT autostarted: start it by hand with
+  # The rig gives rydiwo an isolated Linux bridge
+  # (`pxe-infra.bridge.name`, default `pxe0`) plus a MAC-filtered
+  # dnsmasq DHCP server bound only to that bridge — the real LAN is
+  # not touched. The QEMU guest (L4) is configured but NOT
+  # autostarted: start it by hand with
   #   systemctl start pxe-infra-vm
   # when a test session needs it, and stop it the same way. Set
   # `vm.autostart = true` here to bring the VM up on every boot
   # (e.g. for a long unattended test run). See `modules/options.nix`
   # (options.pxe-infra.*) for the full option surface and
   # `modules/pxe-infra/` for the implementation.
-  #
-  # pxe-infra = {
-  #   enable = true;
-  #   bridge.address = "10.66.0.1";
-  #   bridge.prefixLength = 24;
-  #   vm = {
-  #     enable = true;
-  #     autostart = false;        # start manually when testing
-  #   };
-  #   dhcp.guests = [
-  #     {
-  #       mac      = "52:54:00:12:34:56";
-  #       ip       = "10.66.0.10";
-  #       hostname = "pxe-vm-01";      # optional
-  #     }
-  #   ];
-  # };
+  pxe-infra = {
+    enable = true;
+    bridge.address = "10.66.0.1";
+    bridge.prefixLength = 24;
+    vm = {
+      enable = true;
+      autostart = false;        # start manually when testing
+    };
+    dhcp.guests = [
+      {
+        mac      = "52:54:00:12:34:56";
+        ip       = "10.66.0.10";
+        hostname = "pxe-vm-01";      # optional
+      }
+    ];
+  };
   # --------------------------------------------------------------------------
 }
