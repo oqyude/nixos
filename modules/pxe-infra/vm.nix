@@ -1,12 +1,25 @@
-# pxe-infra/vm — QEMU/KVM guest that PXE-boots through the
-# private bridge.
+# pxe-infra/vm — QEMU/KVM guest that boots the Alpine worker
+# image. The image itself is attached as a local virtio drive
+# and the firmware (OVMF) finds the ESP → BOOTX64.EFI →
+# kernel on it; the network (pxe0-tap, dnsmasq, nginx, the
+# report-sink) is still there for runtime use (the runner
+# POSTs to the report-sink, etc.). This replaces an earlier
+# design that booted the image over the network via iPXE
+# sanboot — iPXE 2.0.0 reliably #GPs at RIP 0x7EE8A5FC
+# (RAX=0xAF...AF) when handing off a downloaded 1-2 GB raw
+# image back to the firmware under QEMU/OVMF, with or
+# without snp.efi and at any reasonable memory size. Since
+# the image is already served by nginx at
+# `http://10.66.0.1/latest/alpine-worker.raw` for the real
+# PXE rig (and the symlink is what deploy.sh updates), the
+# local file at that path is the same artifact the PXE rig
+# would boot — testing the runner against a direct-boot VM
+# is the same test as against a PXE-boot VM once the chain is
+# sorted out.
 #
 # Per docs/ARCHITECTURE.md §L4: the guest is intentionally
 # disposable; every run starts from the same state, with no
-# persistent disk. The boot source is the PXE services on L2/L3
-# (dnsmasq for DHCP+TFTP, nginx for HTTP), so the VM is
-# essentially a fancier ipxe-compatible client: nothing about
-# its state affects the next run.
+# persistent disk.
 #
 # Disposition:
 #   - Tap device pxe0-tap is created in the systemd service's
@@ -22,14 +35,14 @@
 #   - UEFI firmware via OVMF (UEFI only — B.6), in split
 #     CODE+VARS form: OVMF_CODE.fd is mounted read-only, and
 #     a writable copy of OVMF_VARS.fd lives at
-#     /var/lib/pxe-infra/ovmf-vars.bin. Without a writable
-#     VARS the firmware raises #GP when iPXE tries to chain
-#     to the next boot device (ExitBootServices needs to
-#     record state in NVRAM, and a read-only VARS leaves
-#     RAX = 0xAF…AF and RIP inside OVMF). The file is seeded
+#     /var/lib/pxe-infra/ovmf-vars.bin. The file is seeded
 #     from the nixpkgs OVMF_VARS.fd on the first run and
 #     persists across restarts; delete it for a fresh NVRAM.
-#   - Boot order: network only (`-boot n`); no disk, no ISO.
+#   - The Alpine worker image is attached as a virtio drive
+#     at the same path nginx serves it from, so the local
+#     VM and the PXE rig test the same artifact.
+#   - Boot order: disk first (`-boot c`); the firmware finds
+#     BOOTX64.EFI in the ESP on the attached image.
 #   - `Restart=always` — failed or interrupted runs are safe to
 #     repeat without cleanup, per ARCHITECTURE.md §"Run
 #     lifecycle". ExecStopPost removes the tap on every stop.
@@ -96,9 +109,10 @@
           -m ${config.pxe-infra.vm.memory} \
           -drive if=pflash,format=raw,readonly=on,file=${pkgs.OVMF.fd}/FV/OVMF_CODE.fd \
           -drive if=pflash,format=raw,file=$VARS \
+          -drive file=${config.pxe-infra.artifacts.root}/http/latest/alpine-worker.raw,format=raw,if=virtio \
           -netdev tap,id=net0,ifname=pxe0-tap,script=no,downscript=no \
           -device virtio-net-pci,netdev=net0,mac=${config.pxe-infra.vm.mac} \
-          -boot n \
+          -boot c \
           -nographic \
           -serial mon:stdio
       '';
