@@ -56,6 +56,7 @@
     vm = {
       enable = true;
       autostart = false;        # start manually when testing
+      memory = "4G";            # iPXE needs 2G+ heap to sanboot a 2G raw image
     };
     dhcp.guests = [
       {
