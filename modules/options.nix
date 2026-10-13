@@ -348,6 +348,31 @@
           option flipping.
         '';
       };
+      bootMode = lib.mkOption {
+        type = lib.types.enum [ "direct" "pxe" ];
+        default = "direct";
+        description = ''
+          How the guest obtains its boot image.
+
+          `direct` attaches the deployed `latest/alpine-worker.raw`
+          as a virtio drive and uses `-boot c`. The OVMF firmware
+          finds BOOTX64.EFI in the image's ESP. This is the
+          rig's normal mode: the same artifact the PXE chain
+          would serve is loaded directly, the boot is
+          deterministic, and the firmware chain (TFTP→iPXE→HTTP)
+          is not exercised.
+
+          `pxe` uses `-boot n` and does NOT attach the virtio
+          drive. The firmware does PXE: dnsmasq hands out DHCP
+          and the iPXE binary, iPXE loads boot.ipxe over HTTP,
+          boot.ipxe boots the image. This exercises the full
+          L3 boot chain. iPXE 2.0.0 currently #GPs at the
+          handoff back to OVMF (RIP 0x7EE8A5FC, RAX 0xAF...AF)
+          under QEMU 11.x and OVMF 202608, so this mode is for
+          reproducing that bug (T10) and verifying fixes; the
+          rig itself should run in `direct` mode in steady state.
+        '';
+      };
     };
 
     # iPXE bootloader staging. Bridges the UEFI firmware (which

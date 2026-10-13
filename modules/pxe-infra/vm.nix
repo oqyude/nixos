@@ -104,6 +104,34 @@
           cp ${pkgs.OVMF.fd}/FV/OVMF_VARS.fd "$VARS"
         fi
 
+        # bootMode=direct: attach the deployed raw image as a
+        # virtio drive, boot from disk. Always works (proven E2E
+        # 2026-10-13), and is what the rig should run in steady
+        # state since the rig is a pipeline validator, not a
+        # test of the iPXE chain itself.
+        #
+        # bootMode=pxe: no virtio drive, -boot n. The firmware
+        # does PXE → dnsmasq hands out DHCP and the iPXE binary
+        # → iPXE loads boot.ipxe over HTTP → boot.ipxe boots
+        # the image via sanboot/kernel+initrd. This is the
+        # path that crashes at iPXE 2.0.0 ExitBootServices
+        # (RIP 0x7EE8A5FC, RAX 0xAF...AF). Used to reproduce
+        # T10 and verify any fix.
+        case "${config.pxe-infra.vm.bootMode}" in
+          pxe)
+            EXTRA_DRIVES=""
+            BOOT_ORDER=n
+            ;;
+          direct)
+            EXTRA_DRIVES="-drive file=${config.pxe-infra.artifacts.root}/http/latest/alpine-worker.raw,format=raw,if=virtio"
+            BOOT_ORDER=c
+            ;;
+          *)
+            echo "pxe-infra-vm: unknown bootMode '${config.pxe-infra.vm.bootMode}'" >&2
+            exit 1
+            ;;
+        esac
+
         exec qemu-system-x86_64 \
           -name pxe-infra-vm \
           -machine type=q35,accel=kvm:tcg \
@@ -112,10 +140,10 @@
           -m ${config.pxe-infra.vm.memory} \
           -drive if=pflash,format=raw,readonly=on,file=${pkgs.OVMF.fd}/FV/OVMF_CODE.fd \
           -drive if=pflash,format=raw,file=$VARS \
-          -drive file=${config.pxe-infra.artifacts.root}/http/latest/alpine-worker.raw,format=raw,if=virtio \
+          $EXTRA_DRIVES \
           -netdev tap,id=net0,ifname=pxe0-tap,script=no,downscript=no \
           -device virtio-net-pci,netdev=net0,mac=${config.pxe-infra.vm.mac} \
-          -boot c \
+          -boot $BOOT_ORDER \
           -nographic \
           -serial mon:stdio
       '';
