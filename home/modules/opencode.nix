@@ -1,6 +1,12 @@
 # Declarative OpenCode + oh-my-openagent (oh-my-opencode) +
 # @bybrawe/opencode-loop plugin setup.
 #
+# Workstation runs OpenCode 2.x (V2 schema, `plugins` plural); sapphira
+# runs OpenCode 1.18.x (V1 schema, `plugin` singular). The two hosts
+# intentionally diverge in the `settings` block until nixpkgs ships V2 —
+# see the comment above `settings` below. The `tui` block already uses
+# V1-compatible `plugin` (singular) on both hosts.
+#
 # Mirrors ~/.config/opencode/ on the current workstation.
 # Imported by home/server.nix (sapphira). Auto-enables programs.opencode.
 #
@@ -267,8 +273,13 @@ in
     ];
 
     # ~/.config/opencode/opencode.json
+    #
+    # NOTE (2026-10-13): sapphira is on OpenCode 1.18.x (V1 schema) via
+    # pkgs.opencode. V1 only reads `plugin` (singular); V2 introduces
+    # `plugins` (plural). If we ever ship OpenCode 2 via pkgs.opencode-2 or
+    # a custom flake input, switch this key back to `plugins = [...]`.
     settings = {
-      plugins = [
+      plugin = [
         "oh-my-openagent@latest"
         "@bybrawe/opencode-loop@latest"
       ];
