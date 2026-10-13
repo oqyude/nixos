@@ -39,13 +39,17 @@
     environment.etc."pxe-infra/http/boot.ipxe".source = pkgs.writeText "boot.ipxe" ''
       #!ipxe
       set boot-url http://${config.pxe-infra.bridge.address}/latest
-      imgfetch ''${boot-url}/alpine-worker.raw
-      boot || goto retry
+      # sanboot (not imgfetch+boot) is the right primitive for
+      # raw disk images: it presents the URL as a block device
+      # to the firmware, and the firmware walks the partition
+      # table to find a bootloader. `boot` tries to parse the
+      # blob as a UEFI PE executable, which a 2 GB raw disk
+      # is not.
+      sanboot ''${boot-url}/alpine-worker.raw || goto retry
       :retry
-      echo boot failed, retrying in 5s
+      echo sanboot failed, retrying in 5s
       sleep 5
-      imgfetch ''${boot-url}/alpine-worker.raw
-      boot
+      sanboot ''${boot-url}/alpine-worker.raw
     '';
   };
 }
