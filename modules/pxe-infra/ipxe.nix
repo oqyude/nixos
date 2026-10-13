@@ -39,17 +39,22 @@
     environment.etc."pxe-infra/http/boot.ipxe".source = pkgs.writeText "boot.ipxe" ''
       #!ipxe
       set boot-url http://${config.pxe-infra.bridge.address}/latest
-      # sanboot (not imgfetch+boot) is the right primitive for
-      # raw disk images: it presents the URL as a block device
-      # to the firmware, and the firmware walks the partition
-      # table to find a bootloader. `boot` tries to parse the
-      # blob as a UEFI PE executable, which a 2 GB raw disk
-      # is not.
-      sanboot ''${boot-url}/alpine-worker.raw || goto retry
+      # Test path: bypass sanboot entirely. Load the Alpine
+      # kernel and initrd from HTTP and hand off to UEFI. We
+      # expect the kernel to panic on rootfs (no /dev/sda*
+      # in this build), but the journal will show kernel boot
+      # output — enough to confirm iPXE's kernel/initrd/boot
+      # path works and rule out iPXE's HTTP/sanboot code as
+      # the source of the persistent #GP at RIP 0x7EE8A5FC.
+      kernel ''${boot-url}/vmlinuz-virt root=/dev/ram0 console=ttyS0,115200
+      initrd ''${boot-url}/initramfs-virt
+      boot || goto retry
       :retry
-      echo sanboot failed, retrying in 5s
+      echo boot failed, retrying in 5s
       sleep 5
-      sanboot ''${boot-url}/alpine-worker.raw
+      kernel ''${boot-url}/vmlinuz-virt root=/dev/ram0 console=ttyS0,115200
+      initrd ''${boot-url}/initramfs-virt
+      boot
     '';
   };
 }
