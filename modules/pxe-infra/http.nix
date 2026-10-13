@@ -21,10 +21,12 @@
       enable = true;
 
       virtualHosts."pxe-artifacts" = {
-        listen = [{
-          addr = config.pxe-infra.bridge.address;
-          port = config.pxe-infra.http.port;
-        }];
+        listen = [
+          {
+            addr = config.pxe-infra.bridge.address;
+            port = config.pxe-infra.http.port;
+          }
+        ];
         root = "${config.pxe-infra.artifacts.root}/http";
         # Directory listing for the artifact tree. Lets the user
         # point a browser at the bridge IP to see what versions are

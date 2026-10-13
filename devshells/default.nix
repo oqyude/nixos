@@ -11,7 +11,9 @@ let
   system = "x86_64-linux";
   pkgs = import inputs.nixpkgs {
     inherit system;
-    config = { allowUnfree = true; };
+    config = {
+      allowUnfree = true;
+    };
   };
 in
 {
@@ -35,7 +37,7 @@ in
       # shell globally. Anything npm-side goes through `npm install` in the
       # project's own node_modules.
 
-shellHook = ''
+      shellHook = ''
         # Skip Playwright's own browser download — we use the system one.
         export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 

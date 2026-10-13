@@ -1,11 +1,11 @@
 # Declarative OpenCode + oh-my-openagent (oh-my-opencode) +
 # @bybrawe/opencode-loop plugin setup.
 #
-# Workstation runs OpenCode 2.x (V2 schema, `plugins` plural); sapphira
-# runs OpenCode 1.18.x (V1 schema, `plugin` singular). The two hosts
-# intentionally diverge in the `settings` block until nixpkgs ships V2 —
-# see the comment above `settings` below. The `tui` block already uses
-# V1-compatible `plugin` (singular) on both hosts.
+# Sapphira runs OpenCode 1.18.x (V1 schema, `plugin` singular) via
+# pkgs.opencode. Workstation (vetymae) is on OpenCode 1.19.x — same V1
+# schema, same `plugin` (singular) field. Both hosts use the V1-compatible
+# `plugin` (singular) key. If/when nixpkgs ships OpenCode 2.x (V2 schema,
+# `plugins` plural), switch the `settings` block below accordingly.
 #
 # Mirrors ~/.config/opencode/ on the current workstation.
 # Imported by home/server.nix (sapphira). Auto-enables programs.opencode.
@@ -46,6 +46,7 @@ let
     _migrations = [
       "2026-07-opencode-config-unification"
       "2026-08-reasoning-unification"
+      "2026-09-category-deep-split"
     ];
 
     agents = {
@@ -179,7 +180,7 @@ let
           }
         ];
       };
-      deep = {
+      "deep-low" = {
         model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
         variant = "medium";
         fallback_models = [

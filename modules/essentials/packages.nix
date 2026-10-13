@@ -113,7 +113,7 @@
   programs = {
     # nix-ld.enable = true;
     justray = {
-      enable = true;
+      enable = false;
     };
     nano = {
       enable = true;

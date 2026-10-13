@@ -53,17 +53,17 @@
     enable = true;
     bridge.address = "10.66.0.1";
     bridge.prefixLength = 24;
-    bootloader.ipxeBinary = "snp.efi";  # SNP-only build, 310K, virtio-net-friendly
+    bootloader.ipxeBinary = "snp.efi"; # SNP-only build, 310K, virtio-net-friendly
     vm = {
       enable = true;
-      autostart = false;        # start manually when testing
-      memory = "4G";            # iPXE needs 2G+ heap to sanboot a 2G raw image
+      autostart = false; # start manually when testing
+      memory = "4G"; # iPXE needs 2G+ heap to sanboot a 2G raw image
     };
     dhcp.guests = [
       {
-        mac      = "52:54:00:12:34:56";
-        ip       = "10.66.0.10";
-        hostname = "pxe-vm-01";      # optional
+        mac = "52:54:00:12:34:56";
+        ip = "10.66.0.10";
+        hostname = "pxe-vm-01"; # optional
       }
     ];
   };

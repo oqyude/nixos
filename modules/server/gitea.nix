@@ -14,7 +14,10 @@
       appName = "ZeroQ Gitea Service";
       settings = {
         server = {
-          DOMAIN = "git.zeroq.su";
+          # nixpkgs-unstable removed `DOMAIN` — must use the full public URL
+          # in `ROOT_URL` instead. External entry is HTTPS via nginx with
+          # ACME (modules/server/nginx.nix:53), so scheme is https, no port.
+          ROOT_URL = "https://git.zeroq.su/";
           HTTP_PORT = 3000;
         };
         service.DISABLE_REGISTRATION = true;

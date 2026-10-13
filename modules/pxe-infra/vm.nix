@@ -75,7 +75,10 @@
         "dnsmasq.service"
         "nginx.service"
       ];
-      path = [ pkgs.qemu pkgs.iproute2 ];
+      path = [
+        pkgs.qemu
+        pkgs.iproute2
+      ];
 
       serviceConfig = {
         Type = "simple";

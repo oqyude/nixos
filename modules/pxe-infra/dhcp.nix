@@ -23,14 +23,13 @@ let
 
   # Build dhcp-host entries with a `known` tag attached, so when
   # authoritative = false we can drop everything else.
-  dhcpHostLines = map
-    (g:
-      let
-        body = if g.hostname != null
-          then "${g.mac},${g.ip},${g.hostname}"
-          else "${g.mac},${g.ip}";
-      in "${body},set:known")
-    cfg.guests;
+  dhcpHostLines = map (
+    g:
+    let
+      body = if g.hostname != null then "${g.mac},${g.ip},${g.hostname}" else "${g.mac},${g.ip}";
+    in
+    "${body},set:known"
+  ) cfg.guests;
 
   # Free address pool. Always set so dnsmasq actually opens
   # its DHCP server socket — without a `dhcp-range` line, dnsmasq
@@ -39,13 +38,14 @@ let
   # (dhcp-ignore=tag:!known) below, so unknown MACs never see a
   # lease, but the range must exist.
   dhcpRange =
-    if cfg.rangeStart != null && cfg.rangeEnd != null
-    then [ "${cfg.rangeStart},${cfg.rangeEnd},${cfg.leaseTime}" ]
+    if cfg.rangeStart != null && cfg.rangeEnd != null then
+      [ "${cfg.rangeStart},${cfg.rangeEnd},${cfg.leaseTime}" ]
     # Default: the entire bridge subnet minus the host address.
     # Hardcoded for /24 because the bridge defaults to
     # 10.66.0.1/24; if the bridge address/prefix changes,
     # update this default.
-    else [ "10.66.0.2,10.66.0.254,12h" ];
+    else
+      [ "10.66.0.2,10.66.0.254,12h" ];
 
   base = {
     # Bind to the private bridge only — never 0.0.0.0, never eth0.
@@ -81,17 +81,23 @@ let
   # UEFI firmware in the DHCP offer so the firmware knows what
   # to TFTP-fetch. Sent to all clients; the `tag:!known` filter
   # below still drops requests from unknown MACs.
-  bootSettings = lib.optionalAttrs (config.pxe-infra.tftp.enable && config.pxe-infra.bootloader.enable) {
-    dhcp-boot = config.pxe-infra.bootloader.ipxeBinary;
-  };
+  bootSettings =
+    lib.optionalAttrs (config.pxe-infra.tftp.enable && config.pxe-infra.bootloader.enable)
+      {
+        dhcp-boot = config.pxe-infra.bootloader.ipxeBinary;
+      };
 
-  filtered = base // tftpSettings // bootSettings // lib.optionalAttrs (!cfg.authoritative) {
-    # Drop any DHCP request not carrying the `known` tag we set on
-    # static hosts. This is the MAC filter that keeps the rig
-    # from accidentally serving strangers if a real-LAN packet
-    # somehow reached the bridge.
-    dhcp-ignore = "tag:!known";
-  };
+  filtered =
+    base
+    // tftpSettings
+    // bootSettings
+    // lib.optionalAttrs (!cfg.authoritative) {
+      # Drop any DHCP request not carrying the `known` tag we set on
+      # static hosts. This is the MAC filter that keeps the rig
+      # from accidentally serving strangers if a real-LAN packet
+      # somehow reached the bridge.
+      dhcp-ignore = "tag:!known";
+    };
 in
 {
   config = lib.mkIf (config.pxe-infra.enable && cfg.enable) {
