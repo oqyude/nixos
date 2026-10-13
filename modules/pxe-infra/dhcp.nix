@@ -38,7 +38,7 @@ let
   # times out. The range is gated by the MAC filter
   # (dhcp-ignore=tag:!known) below, so unknown MACs never see a
   # lease, but the range must exist.
-  dhcp-range =
+  dhcpRange =
     if cfg.rangeStart != null && cfg.rangeEnd != null
     then [ "${cfg.rangeStart},${cfg.rangeEnd},${cfg.leaseTime}" ]
     # Default: the entire bridge subnet minus the host address.
@@ -64,6 +64,9 @@ let
     log-facility = "-";
     # Static reservations.
     dhcp-host = dhcpHostLines;
+    # Free pool — must be present for the DHCP server socket to
+    # open at all. See `dhcpRange` above for the default.
+    dhcp-range = dhcpRange;
   };
 
   # Optional TFTP module on the same dnsmasq instance. Used to
