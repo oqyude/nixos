@@ -32,10 +32,20 @@ let
       in "${body},set:known")
     cfg.guests;
 
-  # Free address pool — only configured when both bounds are set.
-  rangeLines = lib.optionals
-    (cfg.rangeStart != null && cfg.rangeEnd != null)
-    [ "${cfg.rangeStart},${cfg.rangeEnd},${cfg.leaseTime}" ];
+  # Free address pool. Always set so dnsmasq actually opens
+  # its DHCP server socket — without a `dhcp-range` line, dnsmasq
+  # silently runs TFTP only and the UEFI firmware's DHCP DISCOVER
+  # times out. The range is gated by the MAC filter
+  # (dhcp-ignore=tag:!known) below, so unknown MACs never see a
+  # lease, but the range must exist.
+  dhcp-range =
+    if cfg.rangeStart != null && cfg.rangeEnd != null
+    then [ "${cfg.rangeStart},${cfg.rangeEnd},${cfg.leaseTime}" ]
+    # Default: the entire bridge subnet minus the host address.
+    # Hardcoded for /24 because the bridge defaults to
+    # 10.66.0.1/24; if the bridge address/prefix changes,
+    # update this default.
+    else [ "10.66.0.2,10.66.0.254,12h" ];
 
   base = {
     # Bind to the private bridge only — never 0.0.0.0, never eth0.
@@ -52,8 +62,8 @@ let
     log-dhcp = true;
     log-queries = false;
     log-facility = "-";
-    # Reservations + free pool (lists become repeated keys).
-    dhcp-host = dhcpHostLines ++ rangeLines;
+    # Static reservations.
+    dhcp-host = dhcpHostLines;
   };
 
   # Optional TFTP module on the same dnsmasq instance. Used to
