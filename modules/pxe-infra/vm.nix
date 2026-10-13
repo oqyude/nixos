@@ -65,7 +65,7 @@
           -cpu host \
           -smp ${toString config.pxe-infra.vm.cpus} \
           -m ${config.pxe-infra.vm.memory} \
-          -drive if=pflash,format=raw,readonly=on,file=${pkgs.OVMF.fd} \
+          -drive if=pflash,format=raw,readonly=on,file=${pkgs.OVMF.fd}/FV/OVMF.fd \
           -netdev bridge,id=net0,br=${config.pxe-infra.bridge.name} \
           -device virtio-net-pci,netdev=net0,mac=${config.pxe-infra.vm.mac} \
           -boot n \
