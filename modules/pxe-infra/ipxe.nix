@@ -56,5 +56,21 @@
       initrd ''${boot-url}/initramfs-virt
       boot
     '';
+    # autoexec.ipxe — iPXE on UEFI looks for `autoexec.ipxe` on the
+    # same TFTP server it was loaded from, and runs it as the boot
+    # script. Without it, the iPXE instance that replaced the
+    # firmware PXE ROM has nothing to chain to and ends up in
+    # "No more network devices" -> #GP (T10). This is a one-liner
+    # that bridges to the HTTP-served boot.ipxe.
+    #
+    # Discovered 2026-10-14 via the H1 reproduction in
+    # .agent/notes/T10-diagnostic-2026-10-14.md (pxe-infra-automation
+    # repo): the RIP at 0x7EC9456F was a different crash site
+    # than the previously-recorded 0x7EE8A5FC -- iPXE was dying
+    # before even reaching boot.ipxe.
+    environment.etc."pxe-infra/tftpboot/autoexec.ipxe".source =
+      pkgs.writeText "autoexec.ipxe" '''#!ipxe
+chain http://${config.pxe-infra.bridge.address}/boot.ipxe
+''';
   };
 }

@@ -39,6 +39,14 @@
       "d ${config.pxe-infra.artifacts.root}/tftpboot 0755 root root - -"
       "L+ ${config.pxe-infra.artifacts.root}/tftpboot/${config.pxe-infra.bootloader.ipxeBinary} - - - - /etc/static/pxe-infra/tftpboot/${config.pxe-infra.bootloader.ipxeBinary}"
       "L+ ${config.pxe-infra.artifacts.root}/http/boot.ipxe - - - - /etc/static/pxe-infra/http/boot.ipxe"
+      # autoexec.ipxe — chains to the HTTP-served boot.ipxe. iPXE
+      # in UEFI mode looks for `autoexec.ipxe` on the same TFTP
+      # server it was loaded from. The actual file is produced by
+      # ipxe.nix via pkgs.writeText and dropped under
+      # /etc/static/pxe-infra/tftpboot/; this rule symlinks it into
+      # the served root. See ipxe.nix and
+      # .agent/notes/T10-diagnostic-2026-10-14.md.
+      "L+ ${config.pxe-infra.artifacts.root}/tftpboot/autoexec.ipxe - - - - /etc/static/pxe-infra/tftpboot/autoexec.ipxe"
     ];
   };
 }
