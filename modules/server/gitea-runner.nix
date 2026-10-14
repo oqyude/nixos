@@ -67,9 +67,12 @@ in
       health_check.interval               = "5m";
       health_check.timeout                = "30s";
 
-      # Workspace on external disk — storage guard (above) keeps the
-      # daemon off an empty bind mount on first boot.
-      host.workdir_parent = "${xlib.dirs.services-mnt-folder}/gitea-runner-work";
+      # Workspace on rootfs (not on the /mnt/services bind mount) — observed
+      # in 2026-10-14 16:04/16:11 runs that a transient RO remount of the
+      # bind during nixos-rebuild activation surfaces as
+      #   mkdir …: read-only file system
+      # to act_runner. Workdir on /var/lib survives activation cycles.
+      host.workdir_parent = "/var/lib/gitea-runner/work";
 
       # Defence in depth even though host labels never pull images.
       container.docker_host = "";
@@ -88,11 +91,12 @@ in
     ];
   };
 
-  # ----- Workspace directory on external disk ------------------------------
-  # `d` creates if missing; `z` resets ownership if missing — guards the
-  # race where the external disk is detached mid-rebuild.
+  # ----- Workspace directory on rootfs --------------------------------------
+  # `d` creates if missing; `z` resets ownership if missing. Path is
+  # /var/lib/gitea-runner/work (rootfs), not on the external bind mount —
+  # see comment on `host.workdir_parent` above for why.
   systemd.tmpfiles.rules = xlib.helpers.mkTmpDirs {
-    dir   = "${xlib.dirs.services-mnt-folder}/gitea-runner-work";
+    dir   = "/var/lib/gitea-runner/work";
     mode  = "0755";
     user  = "gitea-runner";
     group = "gitea-runner";
