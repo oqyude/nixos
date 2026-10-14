@@ -1,5 +1,4 @@
-# Declarative OpenCode + oh-my-openagent (oh-my-opencode) +
-# @bybrawe/opencode-loop plugin setup.
+# Declarative OpenCode + oh-my-openagent (oh-my-opencode) plugin setup.
 #
 # Sapphira runs OpenCode 1.18.x (V1 schema, `plugin` singular) via
 # pkgs.opencode. Workstation (vetymae) is on OpenCode 1.19.x — same V1
@@ -282,7 +281,6 @@ in
     settings = {
       plugin = [
         "oh-my-openagent@latest"
-        "@bybrawe/opencode-loop@latest"
       ];
       mcp = {
         webpage = {
@@ -303,7 +301,6 @@ in
     tui = {
       plugin = [
         "oh-my-openagent@latest"
-        "@bybrawe/opencode-loop@latest"
       ];
     };
   };
