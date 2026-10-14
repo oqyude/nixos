@@ -67,12 +67,12 @@ in
       health_check.interval               = "5m";
       health_check.timeout                = "30s";
 
-      # Workspace on rootfs (not on the /mnt/services bind mount) — observed
-      # in 2026-10-14 16:04/16:11 runs that a transient RO remount of the
-      # bind during nixos-rebuild activation surfaces as
-      #   mkdir …: read-only file system
-      # to act_runner. Workdir on /var/lib survives activation cycles.
-      host.workdir_parent = "/var/lib/gitea-runner/work";
+      # Workspace on rootfs, outside the StateDirectory symlink at
+      # /var/lib/gitea-runner -> private/gitea-runner. The NixOS module
+      # drops /var/lib/private/* at mode 700 (root-only) so the runner
+      # user can't traverse into the symlink target. Use a sibling of
+      # the symlink instead — /var/lib/gitea-runner-work (mode 0755 in tmpfiles).
+      host.workdir_parent = "/var/lib/gitea-runner-work";
 
       # Defence in depth even though host labels never pull images.
       container.docker_host = "";
@@ -93,10 +93,10 @@ in
 
   # ----- Workspace directory on rootfs --------------------------------------
   # `d` creates if missing; `z` resets ownership if missing. Path is
-  # /var/lib/gitea-runner/work (rootfs), not on the external bind mount —
-  # see comment on `host.workdir_parent` above for why.
+  # /var/lib/gitea-runner-work (rootfs, sibling of the StateDirectory symlink),
+  # not under /var/lib/private/ which is mode 700 and only traversable by root.
   systemd.tmpfiles.rules = xlib.helpers.mkTmpDirs {
-    dir   = "/var/lib/gitea-runner/work";
+    dir   = "/var/lib/gitea-runner-work";
     mode  = "0755";
     user  = "gitea-runner";
     group = "gitea-runner";
