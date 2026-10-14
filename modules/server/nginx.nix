@@ -321,11 +321,24 @@ in
           proxyWebsockets = true;
         };
       };
+      # vetymae (Windows 11, 192.168.1.100) — opencode web, запускается
+      # алиасом `oc-serve` из Windows ~/.bashrc (`opencode serve --hostname
+      # 0.0.0.0 --port 4096`). Аутентификация включена через
+      # OPENCODE_SERVER_PASSWORD из того же .bashrc, поэтому апстрим отвечает
+      # 401 без пароля — это ожидаемо, не поломка.
+      #
+      # Upstream указывает на LAN, а не на 100.86.62.4 (Tailscale), потому
+      # что tailscaled на vetymae застрял в NoState с обнулённым
+      # PrivateNodeKey: узел виден в tailnet как online, но не принимает
+      # ни одного пакета (проверено с двух узлов — sapphira и otreca —
+      # и по 22, и по 4096). Рестарт службы Tailscale не помогает, нужен
+      # интерактивный `tailscale up` на самом хосте. Вернуться на tailnet
+      # стоит только после этого.
       "vetymae.opencodes.zeroq.su" = {
         forceSSL = true;
         enableACME = true;
         locations."/" = {
-          proxyPass = "http://100.86.62.4:4096";
+          proxyPass = "http://192.168.1.100:4096";
           proxyWebsockets = true;
         };
       };
