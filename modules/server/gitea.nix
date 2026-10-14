@@ -21,6 +21,9 @@
           HTTP_PORT = 3000;
         };
         service.DISABLE_REGISTRATION = true;
+        # Enable Gitea Actions (CI/CD). gitea-runner.nix provides the runner
+        # service; this flag only turns on the server-side action handlers.
+        actions.ENABLED = true;
       };
     };
   };

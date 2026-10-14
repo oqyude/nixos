@@ -17,6 +17,7 @@
     ./chrony.nix
     ./coredns.nix
     ./gitea.nix
+    ./gitea-runner.nix
     ./glances.nix
     ./homebox.nix
     ./immich.nix
