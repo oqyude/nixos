@@ -3,4 +3,4 @@
 __pycache__
 scripts
 .temp
-.opencode/
+.opencode//result

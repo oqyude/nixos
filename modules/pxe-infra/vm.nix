@@ -1,51 +1,56 @@
 # pxe-infra/vm — QEMU/KVM guest that boots the Alpine worker
 # image. The image itself is attached as a local virtio drive
-# and the firmware (OVMF) finds the ESP → BOOTX64.EFI →
-# kernel on it; the network (pxe0-tap, dnsmasq, nginx, the
-# report-sink) is still there for runtime use (the runner
-# POSTs to the report-sink, etc.). This replaces an earlier
-# design that booted the image over the network via iPXE
-# sanboot — iPXE 2.0.0 reliably #GPs at RIP 0x7EE8A5FC
-# (RAX=0xAF...AF) when handing off a downloaded 1-2 GB raw
-# image back to the firmware under QEMU/OVMF, with or
-# without snp.efi and at any reasonable memory size. Since
-# the image is already served by nginx at
-# `http://10.66.0.1/latest/alpine-worker.raw` for the real
-# PXE rig (and the symlink is what deploy.sh updates), the
-# local file at that path is the same artifact the PXE rig
-# would boot — testing the runner against a direct-boot VM
-# is the same test as against a PXE-boot VM once the chain is
-# sorted out.
+# (bootMode=direct) or fetched over the network via iPXE
+# (bootMode=pxe). The network (pxe0 bridge, dnsmasq, nginx,
+# the report-sink) is used for both runtime (runner POSTs to
+# the report-sink) and PXE boot.
 #
 # Per docs/ARCHITECTURE.md §L4: the guest is intentionally
 # disposable; every run starts from the same state, with no
 # persistent disk.
 #
-# Disposition:
-#   - Tap device pxe0-tap is created in the systemd service's
-#     pre-start and attached to ${bridge.name}; the systemd
-#     unit runs as root so the `ip tuntap add` works without
-#     any setuid helper. We use `-netdev tap,ifname=pxe0-tap`
-#     rather than `-netdev bridge,br=pxe0` because the latter
-#     needs QEMU's qemu-bridge-helper to be setuid (with a
-#     matching /etc/qemu/bridge.conf ACL), and the current
-#     nixpkgs doesn't ship that wrapper as a NixOS module
-#     for ad-hoc QEMU use. The tap+attach pattern is what
-#     `qemu-vm.nix` does under the hood for NixOS test VMs.
-#   - UEFI firmware via OVMF (UEFI only — B.6), in split
-#     CODE+VARS form: OVMF_CODE.fd is mounted read-only, and
-#     a writable copy of OVMF_VARS.fd lives at
-#     /var/lib/pxe-infra/ovmf-vars.bin. The file is seeded
-#     from the nixpkgs OVMF_VARS.fd on the first run and
-#     persists across restarts; delete it for a fresh NVRAM.
-#   - The Alpine worker image is attached as a virtio drive
-#     at the same path nginx serves it from, so the local
-#     VM and the PXE rig test the same artifact.
-#   - Boot order: disk first (`-boot c`); the firmware finds
-#     BOOTX64.EFI in the ESP on the attached image.
-#   - `Restart=always` — failed or interrupted runs are safe to
-#     repeat without cleanup, per ARCHITECTURE.md §"Run
-#     lifecycle". ExecStopPost removes the tap on every stop.
+# Network disposition:
+#   - -netdev bridge attaches the VM's NIC directly to the
+#     pxe0 bridge. This is the standard pattern, equivalent
+#     to what `qemu-vm.nix` does for NixOS test VMs.
+#   - QEMU's qemu-bridge-helper must be setuid root to create
+#     the TAP device and attach it to the bridge. We use
+#     NixOS `security.wrappers` to create a setuid wrapper at
+#     /run/wrappers/bin/qemu-bridge-helper that execs the
+#     nixpkgs-provided binary. The helper path is passed
+#     explicitly via the `helper=` option on -netdev.
+#   - /etc/qemu/bridge.conf restricts which bridges the helper
+#     may attach to (just pxe0 here). Without this, the helper
+#     would refuse to run.
+#   - As of 2026-10-14, the `security.wrappers` activation
+#     script in this NixOS version doesn't always apply the
+#     setuid bit (observed: wrapper created with mode 0511
+#     after activation). A `z` tmpfiles rule re-applies 4755
+#     if the file exists, guaranteeing the setuid bit after
+#     every activation. This is a workaround; the proper fix
+#     is upstream in NixOS.
+#
+# bootMode=direct (default): attach the deployed raw image as
+# a virtio drive, boot from disk. Always works (proven E2E
+# 2026-10-13), and is what the rig should run in steady state
+# since the rig is a pipeline validator, not a test of the
+# iPXE chain itself.
+#
+# bootMode=pxe: no virtio drive, -boot n. The firmware does
+# PXE → dnsmasq hands out DHCP and the iPXE binary → iPXE
+# loads boot.ipxe over HTTP → boot.ipxe boots the image via
+# sanboot/kernel+initrd. Since 2026-10-14 (T10 fix:
+# autoexec.ipxe on TFTP root), this path works end-to-end.
+#
+# UEFI firmware via OVMF (UEFI only — B.6), in split CODE+VARS
+# form: OVMF_CODE.fd is mounted read-only, and a writable copy
+# of OVMF_VARS.fd lives at /var/lib/pxe-infra/ovmf-vars.bin.
+# The file is seeded from the nixpkgs OVMF_VARS.fd on the
+# first run and persists across restarts; delete it for a
+# fresh NVRAM.
+#
+# Restart=always — failed or interrupted runs are safe to
+# repeat without cleanup, per ARCHITECTURE.md §"Run lifecycle".
 {
   config,
   lib,
@@ -55,6 +60,38 @@
 {
   config = lib.mkIf (config.pxe-infra.enable && config.pxe-infra.vm.enable) {
     environment.systemPackages = [ pkgs.qemu ];
+
+    # Setuid wrapper for qemu-bridge-helper. QEMU invokes this
+    # binary to create the TAP device and attach it to the
+    # bridge, which requires CAP_NET_ADMIN. The wrapper is a
+    # small C program that execs the nixpkgs-provided binary
+    # as root, and the wrapper itself is setuid root. Placed
+    # in /run/wrappers/bin/ and referenced explicitly via
+    # `helper=` on -netdev below.
+    security.wrappers.qemu-bridge-helper = {
+      source = "${pkgs.qemu}/libexec/qemu-bridge-helper";
+      owner = "root";
+      group = "root";
+      permissions = "u+rx,g+x,o+x";
+    };
+
+    # Restrict qemu-bridge-helper to our private bridge only.
+    # Without an `allow` line, the helper refuses to attach to
+    # any bridge.
+    environment.etc."qemu/bridge.conf".text = ''
+      allow ${config.pxe-infra.bridge.name}
+    '';
+
+    # Force setuid on the qemu-bridge-helper wrapper. The
+    # `security.wrappers` activation script in this NixOS
+    # version doesn't always apply the setuid bit (observed
+    # 2026-10-14: mode 0511 after activation, which makes
+    # qemu-bridge-helper fail to create the TAP). A tmpfiles
+    # `z` rule doesn't help because security.wrappers creates
+    # the wrapper AFTER tmpfiles runs. ExecStartPre in the
+    # service below runs every time the VM starts and
+    # guarantees the setuid bit is set before qemu invokes
+    # the helper. Remove this once upstream NixOS is fixed.
 
     systemd.services.pxe-infra-vm = {
       description = "pxe-infra: PXE-boot QEMU/KVM guest (L4)";
@@ -78,24 +115,27 @@
       path = [
         pkgs.qemu
         pkgs.iproute2
+        # qemu-bridge-helper setuid wrapper, see above.
+        "/run/wrappers/bin"
       ];
 
       serviceConfig = {
         Type = "simple";
         Restart = "always";
         RestartSec = "5s";
-        # The systemd unit runs as root — needed for the tap
-        # creation and bridge attach.
       };
 
+
       script = ''
-        # Bring up the tap and attach it to the bridge.
-        # Idempotent: tear down any previous tap that systemd
-        # may have left around after a crash.
-        ip link del pxe0-tap 2>/dev/null || true
-        ip tuntap add dev pxe0-tap mode tap
-        ip link set pxe0-tap master ${config.pxe-infra.bridge.name}
-        ip link set pxe0-tap up
+        # Ensure the qemu-bridge-helper wrapper is setuid. The
+        # `security.wrappers` activation script in this NixOS
+        # version doesn't always apply the setuid bit, so we
+        # re-apply it here at every VM start. Runs as root
+        # (system service), so chmod 4755 works. Remove once
+        # upstream NixOS is fixed.
+        if [ -f /run/wrappers/bin/qemu-bridge-helper ]; then
+          chmod 4755 /run/wrappers/bin/qemu-bridge-helper
+        fi
 
         # Seed the OVMF VARS file on first run. See the top
         # comment for why a writable VARS is required.
@@ -113,10 +153,9 @@
         # bootMode=pxe: no virtio drive, -boot n. The firmware
         # does PXE → dnsmasq hands out DHCP and the iPXE binary
         # → iPXE loads boot.ipxe over HTTP → boot.ipxe boots
-        # the image via sanboot/kernel+initrd. This is the
-        # path that crashes at iPXE 2.0.0 ExitBootServices
-        # (RIP 0x7EE8A5FC, RAX 0xAF...AF). Used to reproduce
-        # T10 and verify any fix.
+        # the image via sanboot/kernel+initrd. Since 2026-10-14
+        # (T10 fix: autoexec.ipxe on TFTP root), this path works
+        # end-to-end.
         case "${config.pxe-infra.vm.bootMode}" in
           pxe)
             EXTRA_DRIVES=""
@@ -141,18 +180,16 @@
           -drive if=pflash,format=raw,readonly=on,file=${pkgs.OVMF.fd}/FV/OVMF_CODE.fd \
           -drive if=pflash,format=raw,file=$VARS \
           $EXTRA_DRIVES \
-          -netdev tap,id=net0,ifname=pxe0-tap,script=no,downscript=no \
+          -netdev bridge,id=net0,br=${config.pxe-infra.bridge.name},helper=/run/wrappers/bin/qemu-bridge-helper \
           -device virtio-net-pci,netdev=net0,mac=${config.pxe-infra.vm.mac} \
           -boot $BOOT_ORDER \
           -nographic \
           -serial mon:stdio
       '';
 
-      # Remove the tap on every stop, including crashes and
-      # restarts, so the bridge is clean for the next boot.
-      postStop = ''
-        ip link del pxe0-tap 2>/dev/null || true
-      '';
+      # No postStop cleanup needed — qemu-bridge-helper handles
+      # TAP teardown when qemu exits. The systemd Restart=always
+      # + RestartSec=5s loop picks up from the next start.
     };
   };
 }
