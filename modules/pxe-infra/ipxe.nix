@@ -69,8 +69,8 @@
     # than the previously-recorded 0x7EE8A5FC -- iPXE was dying
     # before even reaching boot.ipxe.
     environment.etc."pxe-infra/tftpboot/autoexec.ipxe".source =
-      pkgs.writeText "autoexec.ipxe" '''#!ipxe
+      pkgs.writeText "autoexec.ipxe" ''#!ipxe
 chain http://${config.pxe-infra.bridge.address}/boot.ipxe
-''';
+'';
   };
 }
