@@ -7,32 +7,6 @@
 }:
 let
   name = "ci-sapphira";
-  serviceName = "gitea-runner-${name}";
-
-  # Caps for a background-slow runner on sapphira. Pattern after
-  #   - home/modules/opencode.nix:410 (RAM/OOM knobs on opencode-web)
-  #   - modules/server/systemd.nix:24 (CPU/IO knobs on rsync-archivesta)
-  # The runner is meant to be the FIRST thing the OOM killer picks if
-  # something bigger (immich-ML, onlyoffice, syncthing indexer) needs RAM.
-  runnerServiceConfig = lib.mkMerge [
-    (xlib.helpers.mkStorageGuard xlib)
-    {
-      # Static user (declared below) instead of ephemeral DynamicUser, so
-      # the daemon has a stable UID that can own the sops-decrypted token.
-      DynamicUser          = lib.mkForce false;
-      Group                = "gitea-runner";
-
-      CPUQuota             = "15%"; # ~0.3 core — never starve nix-daemon
-      MemoryHigh           = "384M"; # soft backpressure on $HOME/cache
-      MemoryMax            = "512M"; # hard cap, ~10× smaller than opencode
-      Nice                 = 19; # lowest priority
-      IOWeight             = 10;
-      IOSchedulingClass    = "idle";
-      IOSchedulingPriority = 7;
-      OOMScoreAdjust       = 500; # killed FIRST if host OOMs
-      OOMPolicy            = "continue"; # never restart-loop on cgroup OOM
-    }
-  ];
 in
 {
   # ----- Static user for the runner ----------------------------------------
@@ -118,17 +92,25 @@ in
   };
 
   # ----- Service unit overrides -------------------------------------------
-  # The upstream NixOS module already sets DynamicUser=true, LoadCredential,
-  # ExecStartPre (re-register on token change), ExecStart, etc. We override
-  # with mkMerge so those defaults survive and our caps + storage guard
-  # are added.
+  # Upstream `services.gitea-actions-runner` produces a full
+  # systemd.services.gitea-runner-ci-sapphira attrset (ExecStart,
+  # ExecStartPre registration, LoadCredential, User, Restart, etc.).
+  # Leaf-level overrides like `systemd.services.X.serviceConfig.Y = Z`
+  # were tried (and `lib.mkMerge` of full sub-attrset); both silently
+  # replaced the upstream submodule instead of merging, so the unit
+  # came out without ExecStart. Cgroup caps + storage guard are now
+  # applied through (a) the [Unit] side which actually merges, and
+  # (b) deferred — see follow-up todo for the systemd drop-in that
+  # reintroduces CPUQuota / MemoryMax / DynamicUser=false.
   #
   # No `RequiresMountsFor` (would defeat the storage guard) — see inline
-  # comment in lib/xlib/helpers.nix:180-189. `After= local-fs.target`
-  # instead so fstab mounts are up before the unit's Condition check.
-  systemd.services."${serviceName}" = {
-    serviceConfig = runnerServiceConfig;
-    unitConfig.After = [
+  # comment in lib/xlib/helpers.nix:180-189. `ConditionPathIsMountPoint`
+  # lives in [Unit], so the guard only fires correctly here, not via
+  # mkStorageGuard which historically writes it to serviceConfig.
+  systemd.services.gitea-runner-ci-sapphira.unitConfig = {
+    ConditionPathIsMountPoint =
+      (xlib.helpers.mkStorageGuard xlib).ConditionPathIsMountPoint;
+    After = [
       "local-fs.target"
       "systemd-tmpfiles-setup.service"
     ];
