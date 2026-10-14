@@ -2,6 +2,9 @@ name: test-runner
 
 # Manual trigger via Gitea UI; auto-fires on every push to dev so a fresh
 # commit to the runner config itself can verify the pipeline is healthy.
+# This file initial version is b5cb99f; revisions below add a no-op commit
+# so the push trigger fires (the original commit that introduces a
+# workflow does NOT trigger it on any CI vendor I've seen).
 on:
   workflow_dispatch:
   push:
