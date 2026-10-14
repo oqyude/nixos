@@ -60,19 +60,23 @@ in
       metrics.enabled = true;
       metrics.addr    = "127.0.0.1:9101";
 
-      # eMMC has <64 GB total and no separate data partition — refuse to
-      # start a job when free space drops below 4 GB.
+      # Workspace in /tmp is tmpfs (size = ~50% of RAM ≈ 2.8 GiB
+      # on sapphira), so the default 4 GB threshold would always trip.
+      # 256 MiB is plenty for smoke-test workflows and still trips
+      # meaningfully if tmpfs truly fills.
       health_check.enabled                = true;
-      health_check.min_free_disk_space_mb = 4096;
+      health_check.min_free_disk_space_mb = 256;
       health_check.interval               = "5m";
       health_check.timeout                = "30s";
 
-      # Workspace on rootfs, outside the StateDirectory symlink at
-      # /var/lib/gitea-runner -> private/gitea-runner. The NixOS module
-      # drops /var/lib/private/* at mode 700 (root-only) so the runner
-      # user can't traverse into the symlink target. Use a sibling of
-      # the symlink instead — /var/lib/gitea-runner-work (mode 0755 in tmpfiles).
-      host.workdir_parent = "/var/lib/gitea-runner-work";
+      # Workspace in /tmp (tmpfs). Same approach as GH Actions runners —
+      # ephemeral, always writable by the runner's UID. Avoids racing with
+      # the StateDirectory symlink (private/gitea-runner at mode 700) and
+      # the bind-mount from /mnt/services that gets RO during activations.
+      #
+      # /tmp is tmpfs on NixOS, ~50% of RAM. health_check.min_free_disk_space_mb
+      # below this matches reality (sapphira has only ~2.8 GiB tmpfs total).
+      host.workdir_parent = "/tmp/gitea-runner-work";
 
       # Defence in depth even though host labels never pull images.
       container.docker_host = "";
@@ -91,15 +95,16 @@ in
     ];
   };
 
-  # ----- Workspace directory on rootfs --------------------------------------
-  # `d` creates if missing; `z` resets ownership if missing. Path is
-  # /var/lib/gitea-runner-work (rootfs, sibling of the StateDirectory symlink),
-  # not under /var/lib/private/ which is mode 700 and only traversable by root.
+  # ----- Workspace directory on tmpfs ---------------------------------------
+  # /tmp is by default tmpfs on NixOS, world-writable. The runner's
+  # DynamicUser gitea-runner (uid 973) can mkdir directly without any
+  # tmpfiles setup. We still add a tmpfiles rule for /tmp/gitea-runner-work
+  # so successive deployments don't briefly see an empty target.
   systemd.tmpfiles.rules = xlib.helpers.mkTmpDirs {
-    dir   = "/var/lib/gitea-runner-work";
-    mode  = "0755";
-    user  = "gitea-runner";
-    group = "gitea-runner";
+    dir   = "/tmp/gitea-runner-work";
+    mode  = "1777";          # sticky so different runner invocations don't clobber
+    user  = "root";
+    group = "root";
   };
 
   # ----- Service unit overrides -------------------------------------------
