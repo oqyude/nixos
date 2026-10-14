@@ -1,0 +1,29 @@
+name: test-runner
+
+# Manual trigger via Gitea UI; auto-fires on every push to dev so a fresh
+# commit to the runner config itself can verify the pipeline is healthy.
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+
+jobs:
+  smoke:
+    # `native` matches the label our sapphira runner (modules/server/gitea-runner.nix)
+    # advertises via `labels = [ "native:host" ];` — `native:host` parses as
+    # label "native" with host-executor schema in upstream act_runner.
+    runs-on: native
+    steps:
+      - name: hello
+        run: |
+          echo "Runner reports OK from $(hostname)"
+          echo "uid=$(id -un) gid=$(id -gn)"
+          pwd
+          echo "--- tools probe ---"
+          command -v nix && nix --version
+          command -v git && git --version
+          command -v python3 && python3 --version
+          echo "--- runner self-declared labels ---"
+          # sanity printout, fails the step if anything obvious is missing.
+          test -n "$RUNNER_NAME" && echo "RUNNER_NAME=$RUNNER_NAME"
+          test -n "$RUNNER_TEMP" && echo "RUNNER_TEMP=$RUNNER_TEMP"
