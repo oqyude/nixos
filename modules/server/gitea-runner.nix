@@ -25,10 +25,17 @@ in
   # bind mount would then cover it and silently drop the token on remount.
   # See invariants #2 (external disk mount order) and #7 (sops path).
   sops.secrets.gitea-runner-registration = {
+    # systemd's EnvironmentFile (consumed by the upstream NixOS
+    # services.gitea-actions-runner module) reads KEY=VALUE lines, not
+    # YAML. sops with format = "dotenv" decodes to that — the runner's
+    # ExecStartPre script exports `TOKEN="$TOKEN"` from the file. The
+    # previous key="registration_token" / format="yaml" combination
+    # decoded to a YAML body that EnvironmentFile could not parse, so
+    # the runner received no $TOKEN at all and Gitea replied
+    # "runner registration token not found".
     path     = "/var/lib/gitea-runner/registration-token";
-    format   = "yaml";
-    key      = "registration_token";
-    sopsFile = ../../secrets/gitea-runner-registration.yaml;
+    format   = "dotenv";
+    sopsFile = ../../secrets/gitea-runner-registration.env;
     owner    = "gitea-runner";
     group    = "gitea-runner";
     mode     = "0440";
