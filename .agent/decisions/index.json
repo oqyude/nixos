@@ -1,6 +1,6 @@
 {
   "version": "3.0.0",
-  "updated_at": "2026-10-15T13:30",
+  "updated_at": "2026-10-15T15:00",
   "decisions": [
     {
       "id": "0001",
@@ -45,12 +45,12 @@
       "status": "accepted",
       "date": "2026-10-15",
       "file": ".agent/decisions/0005-herdr-webui-no-authelia.md",
-      "tags": ["herdr", "herdr-webui", "nginx", "authelia", "cors", "sameorigin", "sapphira", "invariant", "R1.15", "csrf"],
+      "tags": ["herdr", "herdr-webui", "nginx", "authelia", "cors", "sameorigin", "sapphira", "rydiwo", "invariant", "R1.15", "csrf", "nix-ld", "runtime-manager"],
       "task": "T27",
-      "resolution": "vhost herdr.zeroq.su обходит authelia forward-auth: (а) POST через authelia → 500, (б) sameOrigin() в upstream devswha/herdr-web-ui не читает X-Forwarded-Host → 403 на каждом cross-origin POST за reverse proxy. Auth model — herdr_web_token (256 бит, rate-limit в server/auth.ts). Maintenance: in-place patch в server/machine-security.ts перезаписывается при herdr plugin update; T29 — PR в upstream с поддержкой X-Forwarded-Host. Восстановление authelia перед vhost'ом станет возможным после T29, тогда ADR пересматривается.",
+      "resolution": "vhost herdr.zeroq.su обходит authelia forward-auth: (а) POST через authelia → 500, (б) sameOrigin() в upstream devswha/herdr-web-ui не читает X-Forwarded-Host → 403 на каждом cross-origin POST за reverse proxy. Auth model — herdr_web_token (256 бит, rate-limit в server/auth.ts). Maintenance процедура in-place патча server/machine-security.ts ЗАФИКСИРОВАНА 2026-10-15: cp active → .patched.bak; git checkout -- file; git pull origin main; cp .patched.bak active; bun install + bun run build; **python-edit ~/.config/herdr/plugins.json source.resolved_commit** (herdr plugin list читает из этого JSON, а не из .git/HEAD — главный gotcha, на котором обожглись); systemctl --user restart herdr. Восстановление authelia перед vhost'ом станет возможным после T29, тогда ADR пересматривается. Дополнительно: на NixOS herdr-web-ui plugin требует 3 runtime prerequisite (см. раздел ADR 'Runtime prerequisites на NixOS'): pkgs.bun и pkgs.nodejs_22 в shell PATH (home/modules/herdr-runtime.nix, импортируется server.nix + secondary.nix) и programs.nix-ld.enable = true глобально (modules/essentials/packages.nix, stdenv.cc.cc.lib) — иначе plugin install падает на трёх разных этапах. Системный bun в PATH НЕ чинит запуск скачанного плагином bun'а (plugin использует свой runtime manager, не fallback на PATH) — отдельный gotcha, отдельная фикса.",
       "moot_unless": "T29 мержится в upstream devswha/herdr-web-ui",
       "related_artifact": "S:\\Git\\metaagent-director\\AGENTS.md (v0.2)",
-      "resolved_at": "2026-10-15T13:30"
+      "resolved_at": "2026-10-15T15:00"
     }
   ],
   "proposals": [

@@ -307,7 +307,7 @@
       "title": "Закоммитить и запушить фикс gitea-runner (фантомный юнит + зависимость от Gitea)",
       "type": "fix",
       "priority": "high",
-      "status": "pending",
+      "status": "completed",
       "origin": "session 2026-10-15",
       "depends_on": [],
       "adr": "ADR-0004",
@@ -324,7 +324,9 @@
         ".agent/checkpoints.json",
         ".agent/handoff-summary.md"
       ],
-      "notes": "Внесено 2026-10-15T01:23 через nixos-rebuild switch, но НЕ закоммичено — лежит только в рабочем дереве. Суть: имя атрибута systemd.services должно байт-в-байт совпадать с escapeSystemdPath-формой upstream, иначе создаётся фантомный юнит без ExecStart и systemd отказывается стартовать (юнит молчал 12 часов, 2026-10-14 16:25 .. 2026-10-15 01:23). Сопутствующе: дисковый гвард заменён на Wants/After nginx+gitea, RestartSec 2s → 30s (Restart=on-failure уже был от upstream). ВНИМАНИЕ: этот же файл правит и T4 в части mkStorageGuard — не смешивать, T4 отдельная задача."
+      "completed_in_commits": ["9bf9407 (herdr nginx chain попутно закрыл gitea-runner fix)", "b62a980 (формальный фикс — escapeSystemdPath-форма unitKey + assertions)", "d021804 (sops(gitea-runner): replace placeholder with real registration token)"],
+      "verified_at": "2026-10-15T01:23 (nixos-rebuild switch на sapphira, юнит active/running, ExecStart на месте, phantom absent)",
+      "notes": "FIX закрыт в 9bf9407 (нёс herdr-nginx chain, попутно приземлился gitea-runner с правильным unitKey) и формализован в b62a980. Acceptance выполнены; phantom-юнит не наблюдается в вычисленном systemd.services sapphira с 2026-10-15T01:23. Задача висела pending из-за того, что формальная отметка в манифесте не делалась до конца сессии — закрыта сейчас (T32 cleanup)."
     },
     {
       "id": "T19",
@@ -490,18 +492,44 @@
       "id": "T32",
       "title": "Cleanup: отметить T18 completed (gitea-runner fix уже в 9bf9407) и согласовать фазы",
       "type": "housekeeping",
-      "status": "pending",
+      "status": "completed",
       "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
       "depends_on": [],
+      "completed_in_session": "session 2026-10-15T14:30 (продолжение metaagent-director-2026-10-15)",
       "acceptance_criteria": [
         "T18 в этом файле → completed (acceptance_criteria выполнены, fix закоммичен в 9bf9407 + 61ad57a)",
         "T19 в этом файле → confirmed completed (R1.14 уже внесён в project-rules.md И AGENTS.md)",
         "T20 в этом файле → оставить pending (CI/pre-commit бит не выставлен — отдельный fix)",
         "phases в checkpoints.json приведены в соответствие: execution=completed, metastate=completed, handoff=in_progress"
       ],
-      "notes": "T19 закрыт в этом проходе (R1.14 внесён). T20 честно pending (см. .ci/checks.sh mode 100644). T18 в манифесте помечен pending из прошлой сессии, но фикс фактически в 9bf9407 — нужна формальная отметка."
+      "notes": "Закрыто 2026-10-15T14:30 в этом проходе: T18 → completed (см. выше), T19 уже completed в этом же файле (формальная проверка пройдена), T20 честно pending (см. .ci/checks.sh mode 100644 — это отдельная задача, не делается попутно). Фазы в checkpoints.json приведены в соответствие в том же проходе (см. handoff-summary.md)."
+    },
+    {
+      "id": "T33",
+      "title": "Saga close-out: herdr multi-host end-to-end + plugin-runtime NixOS fix",
+      "type": "documentation",
+      "status": "completed",
+      "origin": "session 2026-10-15T14:30 (продолжение metaagent-director-2026-10-15)",
+      "depends_on": ["T21", "T22", "T25"],
+      "completed_in_commits": [
+        "034bb5e feat(home): add herdr import to rydiwo config (multi-host bridge)",
+        "7f30176 refactor(home): extract pkgs.bun into herdr-runtime.nix, drop duplication",
+        "dfcd7f5 feat(essentials): enable programs.nix-ld for generic-linux bun runtime",
+        "2ab4851 fix(home): add nodejs_22 to herdr-runtime.nix (herdr-web-ui preflight)",
+        "ffd85dc fix(home): add pkgs.bun to rydiwo home packages (herdr-web-ui runtime) — supersedes, попало в 7f30176"
+      ],
+      "files": [
+        "home/modules/herdr-runtime.nix (новый)",
+        "modules/essentials/packages.nix (programs.nix-ld.enable = true)",
+        "home/secondary.nix (импорт herdr-runtime.nix)",
+        "home/server.nix (импорт herdr-runtime.nix)",
+        "home/modules/opencode.nix (pkgs.bun удалён из home.packages, оставлен в extraPackages)",
+        ".agent/decisions/0005-herdr-webui-no-authelia.md (Maintenance procedure + Runtime prerequisites добавлены)"
+      ],
+      "verified_at_host": "sapphira (192.168.1.20) + rydiwo (192.168.1.102) — оба active, оба с plugins devswha.herdr-web-ui@439ad38d091c02c3e4747956808dbac2305702d3",
+      "notes": "Saga началась с пользовательского репорта «rydiwo — Connection failed / Could not start dynamically linked executable: bun»; закончилась обоими хостами на общем plugin-коммите. Три слоя фиксов, каждый проявлялся после починки предыдущего: (1) bun в shell PATH — нужно для plugin preflight, но НЕ чинит запуск скачанного bun; (2) programs.nix-ld — позволяет glibc-based bun'у из plugin runtime manager стартовать; (3) nodejs_22 — preflight.sh плагина проверяет `node --version`. Дополнительно: herdr plugin list читает `~/.config/herdr/plugins.json:source.resolved_commit`, а не `.git/HEAD` плагина — обновление source/dist без правки manifest оставляет herdr plugin list со stale commit'ом. Все эти нюансы зафиксированы в ADR-0005."
     }
   ],
   "backlog_count": 28,
-  "backlog_note": "Открытые вопросы из roadmap/sources.md (F: 2.2, 2.5, 2.6, 3.2, 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.3, 5.4, 5.5, 5.6, 6.6, 6.7, 6.8, 6.9, 7.4, 8.2, 8.4, 8.5, 8.6) ждут ответа владельца и станут задачами после ответа. Сверх того: 5 новых pending (T28-T32), T4 всё ещё severity:high (гвард мёртв на 13/12)."
+  "backlog_note": "Открытые вопросы из roadmap/sources.md (F: 2.2, 2.5, 2.6, 3.2, 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.3, 5.4, 5.5, 5.6, 6.6, 6.7, 6.8, 6.9, 7.4, 8.2, 8.4, 8.5, 8.6) ждут ответа владельца и станут задачами после ответа. Сверх того: 4 новых pending (T28-T31), T4 всё ещё severity:high (гвард мёртв на 13/12). T18/T32 закрыты в этом проходе (cleanup); T33 saga close-out оформлен как documentation completed."
 }

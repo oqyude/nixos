@@ -33,10 +33,90 @@ Vhost в `modules/server/nginx.nix`:
 
 - **Позитивные:** webui работает; token-only auth прост и достаточен; нет authelia-races.
 - **Негативные:**
-  - **Maintenance:** in-place patch в `server/machine-security.ts` перезаписывается при `herdr plugin update devswha/herdr-web-ui`. Перед каждым update: `cp server/machine-security.ts.orig server/machine-security.ts && herdr plugin update devswha/herdr-web-ui && patch -p0 < patch.diff` (или просто вручную перенести). **До T29** это регулярная ручная работа.
+  - **Maintenance (in-place patch `server/machine-security.ts`):** патч перезаписывается при любом обновлении source. `herdr plugin update devswha/herdr-web-ui` **не существует** как команда (verified 2026-10-15 — `herdr plugin --help` показывает только `enable|disable|action|log|pane|list|install`). Реальный flow — **git pull + bun build + правка `~/.config/herdr/plugins.json`** (см. ниже «Рабочая maintenance-процедура»). **До T29** это ручная работа на ~10 команд.
   - **Нет SSO:** без authelia пользователь вводит токен в браузере вручную (или через `herdr-web-ui` install скрипт, который сразу проставляет cookie).
   - **Rate-limit на token auth только в Bun server:** если vhost когда-нибудь станет публично экспонирован (router port-forward на 443), brute-force защищён только rate-limit'ом Bun (5/адрес, doubling backoff, 1024 LRU). Без дополнительного слоя (fail2ban на nginx, Tailscale ACL) это лучше, чем ничего, но хуже, чем authelia с паролем + 2FA.
   - **Cookie привязан к host'у:** `herdr_web_token` HttpOnly Secure SameSite=Strict, Path=/, Max-Age=1 год. Без domain (по умолчанию host-only). Если пользователь зайдёт через `https://herdr.zeroq.su:8443` (если будет), cookie не отправится — token придётся ввести заново.
+
+### Рабочая maintenance-процедура (отработана 2026-10-15, переход 79beb36 → 439ad38)
+
+**Шаг 1.** Сохранить текущий (пропатченный) файл — НЕ в `.orig` (там хранится upstream-версия от первой установки), а в `.patched.bak`:
+
+```bash
+PLUGIN_DIR=~/.config/herdr/plugins/github/devswha.herdr-web-ui-210f619d6b7b
+cp $PLUGIN_DIR/server/machine-security.ts $PLUGIN_DIR/server/machine-security.ts.patched.bak
+```
+
+**Шаг 2.** Discard unstaged patch, чтобы git pull не упал:
+
+```bash
+git -C $PLUGIN_DIR checkout -- server/machine-security.ts
+```
+
+**Шаг 3.** Pull upstream:
+
+```bash
+git -C $PLUGIN_DIR pull --ff-only origin main
+```
+
+(Если упадёт `cannot pull with rebase: You have unstaged changes` — значит Шаг 2 не сделан.)
+
+**Шаг 4.** Восстановить патч из бэкапа:
+
+```bash
+cp $PLUGIN_DIR/server/machine-security.ts.patched.bak $PLUGIN_DIR/server/machine-security.ts
+grep -c "x-forwarded-host\|X-Forwarded-Host" $PLUGIN_DIR/server/machine-security.ts  # должно быть ≥1
+```
+
+**Шаг 5.** Перебилдить плагин (source обновился, dist — нет):
+
+```bash
+cd $PLUGIN_DIR
+bun install   # 231 installs, без изменений если зависимости не трогались
+bun run build # → новый dist/assets/index-<hash>.js с новым commit'ом в бандле
+```
+
+**Шаг 6.** **КРИТИЧНО: обновить `resolved_commit` в `~/.config/herdr/plugins.json`.** Без этого `herdr plugin list` будет показывать СТАРЫЙ коммит, хотя source/dist уже новые. herdr читает manifest из этого JSON, а не из git HEAD плагина:
+
+```bash
+python3 -c '
+import json, pathlib
+p = pathlib.Path("/home/oqyude/.config/herdr/plugins.json")
+data = json.loads(p.read_text())
+for plugin in data:
+    if plugin.get("plugin_id") == "devswha.herdr-web-ui":
+        plugin["source"]["resolved_commit"] = "NEW_COMMIT"
+        break
+p.write_text(json.dumps(data, indent=2))
+'
+```
+
+**Шаг 7.** Перезапустить herdr:
+
+```bash
+systemctl --user restart herdr
+sleep 3
+herdr plugin list | grep devswha   # → новый коммит
+```
+
+**Gotchas (на чём эта процедура обожглась 2026-10-15):**
+
+1. `herdr plugin list` показывает `source.resolved_commit` из `plugins.json`, **НЕ** из `.git/HEAD` и **НЕ** из dist. git pull + bun build обновляют только source/dist. Без шага 6 — `herdr plugin list` врёт.
+2. `cp $PLUGIN_DIR/server/machine-security.ts.orig $PLUGIN_DIR/server/machine-security.ts` (как было записано в первой версии этого ADR) — **НЕПРАВИЛЬНАЯ** последовательность: `.orig` это upstream-версия от первой установки, его нужно сохранять, а не использовать для восстановления патча. Правильный бэкап — в `.patched.bak`.
+3. `bun install` на свежем pull не делает ничего видимого («no changes»), но `bun run build` обязателен — старый `dist/assets/index-<hash>.js` содержит **захардкоженный** commit SHA от прошлого билда, и без перебилда web UI стартует со старой версией (даже если source новый).
+4. После Шага 7 herdr.service должен быть `active (running)` — если `restart` упал, проверить `journalctl --user -u herdr` на предмет «build failed: plugin».
+
+### Runtime prerequisites на NixOS (обязательно для plugin install/auto-start)
+
+herdr-web-ui plugin устанавливается как git clone в `~/.config/herdr/plugins/github/devswha.herdr-web-ui-<hash>/` и при install **сам скачивает bun в свой runtime manager** (path-pattern `~/.local/share/herdr-web-ui/install.<hash>/runtime/bin/bun`). На сапфире plugin уже стоит и работает; на каждой новой машине, где herdr есть, plugin попытается поставить себя автоматически — и на NixOS без этих prerequisite сломается. Три слоя, каждый проявляется после починки предыдущего:
+
+1. **`pkgs.bun` в shell PATH** — для `preflight.sh` plugin'а и для всего окружения, где запускается herdr. Без этого preflight.sh падает с «bun: command not found». Источник: `home/modules/herdr-runtime.nix` (импортируется в `home/server.nix` и `home/secondary.nix`). Системный bun из `/nix/store/...-bun-*/bin/bun` подхватывается home-manager'ом.
+
+2. **`pkgs.nodejs_22` в shell PATH** — preflight.sh плагина проверяет `node --version` (`herdr web ui needs Node 18 or newer for its terminal sidecar`). Без этого preflight падает после прохождения bun-проверки. Источник: тот же `home/modules/herdr-runtime.nix` (добавлен вместе с bun, единый путь).
+
+3. **`programs.nix-ld.enable = true` глобально** — для запуска **собственного** bun плагина (`~/.local/share/herdr-web-ui/install.<hash>/runtime/bin/bun`), который динамически слинкован для generic linux. **Системный bun из пункта 1 НЕ помогает** — plugin использует свой internal runtime manager, а не fallback на PATH. Без nix-ld stub ld получаем «NixOS cannot run dynamically linked executables intended for generic linux environments out of the box» на старте plugin'а. Источник: `modules/essentials/packages.nix` с `stdenv.cc.cc.lib` (glibc + libstdc++ + libgcc_s) — этого минимума достаточно для glibc-based bun.
+
+**Trap, на которую наступили 2026-10-15:** добавление системного bun в PATH **выглядит как** решение («теперь bun есть»), но плагин продолжает скачивать свой runtime, потому что использует **собственный** install manager, а не fallback. Только nix-ld чинит собственно исполнение скачанного бинаря. Документация nixpkgs по `programs.nix-ld`: `https://nix.dev/permalink/stub-ld`.
 
 **Смежные находки (НЕ часть этого решения, но задокументированы для следующей сессии):**
 

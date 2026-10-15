@@ -2,11 +2,11 @@
 
 ## Session Summary
 
-**Session:** metaagent-director-2026-10-15 (продолжение после 2026-10-15T03:00)
+**Session:** metaagent-director-2026-10-15 (продолжение после 2026-10-15T03:00, **закрыто 2026-10-15T15:00**)
 **Goal:** поднять herdr на sapphira + rydiwo, опубликовать webui на `https://herdr.zeroq.su`, написать черновик `metaagent-director` (директор-агент, управляющий worker-сессиями через herdr).
-**Completed:** 7 задач этого прохода (T21–T27, см. `tasks/manifest.json`)
-**Pending:** 4 прошлых (T3, T4, T10, T18) + 5 новых (T28–T32, см. ниже)
-**Hosts:** sapphira, rydiwo (теперь оба с `home/modules/herdr.nix`)
+**Completed:** 9 задач этого прохода (T21–T27 saga setup + T33 saga close-out + T18, T32 cleanup формализация, см. `tasks/manifest.json`)
+**Pending:** 3 прошлых (T3, T4, T10) + 1 fix (T20 — `.ci/checks.sh` mode bit) + 4 новых (T28–T31), см. ниже
+**Hosts:** sapphira (192.168.1.20) + rydiwo (192.168.1.102) — оба с `home/modules/herdr.nix`, оба с `home/modules/herdr-runtime.nix` (bun + nodejs_22), оба с `herdr-web-ui@439ad38d091c02c3e4747956808dbac2305702d3` в `/home/oqyude/.config/herdr/plugins/github/devswha.herdr-web-ui-210f619d6b7b/`
 
 ---
 
@@ -172,10 +172,39 @@
   - `README.md` (human overview)
 - **Plugins (на sapphira):**
   - `~/.config/herdr/plugins/config/devswha.herdr-web-ui/env` (mode 0600) — `HERDR_WEB_TOKEN`
-  - `~/.config/herdr/plugins/github/devswha.herdr-web-ui-210f619d6b7b/server/machine-security.ts` (PATCHED, .orig сохранён рядом)
+  - `~/.config/herdr/plugins/github/devswha.herdr-web-ui-210f619d6b7b/server/machine-security.ts` (PATCHED, `.orig` сохранён рядом как upstream-версия от первой установки, `.patched.bak` — текущая пропатченная копия для быстрого restore после `git pull`)
 - **Machines:**
   - sapphira herdr-prod session: `7e7a9f99aee73d76562b567b6b0ff84c` (sapphira local)
   - rydiwo machine: `7e7a9f99aee73d76562b567b6b0ff84c` (registered from sapphira)
+
+---
+
+## Saga close-out: 2026-10-15T14:30–15:00 — herdr multi-host end-to-end + plugin-runtime NixOS fix
+
+**Контекст:** после T22 (home/secondary.nix:30 добавлен импорт `./modules/herdr.nix`, закоммичен в `034bb5e`) — пользовательский репорт «rydiwo — Connection failed / Could not start dynamically linked executable: bun». Saga — три слоя фиксов + plugin update + closeout docs.
+
+**Слой 1: bun в shell PATH (FFD85DC, потом SUBSUMED в 7F30176).** Добавил `home.packages = with pkgs; [ bun ];` в `home/secondary.nix`. **Не помогло** — herdr-web-ui plugin использует собственный runtime manager (`install.<hash>/runtime/bin/bun`), не fallback на PATH. Установка bun в PATH нужна для preflight.sh, но не чинит запуск скачанного bun'а.
+
+**Слой 2: programs.nix-ld (DFCD7F5).** В `modules/essentials/packages.nix:114` было закомментировано `# nix-ld.enable = true;` (кто-то рассматривал, не дошёл). Раскомментировал + добавил `stdenv.cc.cc.lib` (glibc + libstdc++ + libgcc_s). Это позволило glibc-based bun'у из plugin runtime manager стартовать.
+
+**Слой 3: nodejs_22 в herdr-runtime.nix (2AB4851).** preflight.sh плагина после прохождения bun-проверки упал на «herdr web ui needs Node 18 or newer for its terminal sidecar». Добавил `pkgs.nodejs_22` в новый `home/modules/herdr-runtime.nix` (вынес из opencode.nix в единый источник, импортируется server.nix + secondary.nix).
+
+**Refactor: herdr-runtime.nix как единый источник (7F30176).** pkgs.bun и pkgs.nodejs_22 теперь в одном месте, импортируются обоими `server.nix` и `secondary.nix`. Из `home/modules/opencode.nix` `pkgs.bun` убран из `home.packages` (оставлен в `programs.opencode.extraPackages` для `--suffix PATH` opencode-wrapped env — это другой PATH, не дубликат).
+
+**Plugin update на sapphira (РУЧНАЯ работа, см. ADR-0005).** sapphira был на `79beb36`, rydiwo на `439ad38`. Привести sapphira к общему — `git pull origin main` + `bun install` + `bun run build` + **главный gotcha: ручная правка `~/.config/herdr/plugins.json:source.resolved_commit`** (herdr plugin list читает из этого JSON, а не из .git/HEAD плагина — git pull + bun build этого поля не обновляют). Без шага с правкой JSON herdr plugin list упорно показывает старый коммит. После правки + `systemctl --user restart herdr` → оба на `439ad38d091c02c3e4747956808dbac2305702d3`. in-place patch (`server/machine-security.ts` с `x-forwarded-host`) сохранён через `cp active → .patched.bak` + `git checkout -- file` + `cp .patched.bak active`.
+
+**Выводы (что зафиксировано в ADR-0005 «Runtime prerequisites на NixOS»):**
+
+1. **`pkgs.bun` в shell PATH** обязателен (для preflight.sh plugin'а и для всего окружения, где запускается herdr). Источник: `home/modules/herdr-runtime.nix`.
+2. **`pkgs.nodejs_22` в shell PATH** обязателен (preflight.sh плагина проверяет `node --version`). Тот же источник.
+3. **`programs.nix-ld.enable = true` глобально** обязателен для запуска **собственного** bun'а плагина (директива `[Unit]` для stub ld). Системный bun из п.1 НЕ помогает.
+4. **`herdr plugin list` читает `source.resolved_commit` из `~/.config/herdr/plugins.json`**, не из `.git/HEAD` плагина. git pull + bun build не обновляют это поле — нужно править JSON руками или `herdr plugin install --force`.
+5. **Maintenance procedure in-place патча `server/machine-security.ts`** — 7-шаговая, отработана 2026-10-15 на переходе `79beb36 → 439ad38`. Полностью записана в ADR-0005 «Рабочая maintenance-процедура». До T29 (PR в upstream) — ручная работа на ~10 команд каждый plugin update.
+
+**Что было обновлено в meta-state (commit T33):**
+- ADR-0005: добавлена «Рабочая maintenance-процедура» + «Runtime prerequisites на NixOS»; старая maintenance procedure помечена как НЕПРАВИЛЬНАЯ.
+- `decisions/index.json`: ADR-0005 — добавлены теги `nix-ld`, `runtime-manager`; resolution поле расширено с описанием процедуры и трёх NixOS prerequisite.
+- `tasks/manifest.json`: T18 → completed (формальная отметка, fix в 9bf9407); T32 → completed (cleanup); T33 добавлен как documentation completed (saga close-out).
 
 ---
 
