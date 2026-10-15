@@ -9,6 +9,7 @@
   imports = [
     ./minimal.nix
     ./modules/herdr.nix
+    ./modules/herdr-runtime.nix
     ./modules/opencode.nix
   ];
   home.file = xlib.helpers.mkSymlinks config {

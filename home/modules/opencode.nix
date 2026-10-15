@@ -331,12 +331,17 @@ in
   xdg.configFile."opencode/oh-my-openagent.json".text = builtins.toJSON ohMyOpenagentConfig;
 
   # Same extras on the user's PATH too, so `omo doctor` and standalone invocations
-  # of `sg`, `gh`, `bun`, `npm`, `npx` work in the user's shell — not only inside
+  # of `sg`, `gh`, `npm`, `npx` work in the user's shell — not only inside
   # the opencode-wrapped binary.
+  #
+  # Note: `pkgs.bun` deliberately NOT included here — it now lives in
+  # `home/modules/herdr-runtime.nix`, which both `home/server.nix` and
+  # `home/secondary.nix` import. Avoids a second copy of bun in the
+  # user's shell PATH (single source of truth) and means the bun-runtime
+  # fix for the herdr-web-ui plugin on NixOS is one place to grep.
   home.packages = [
     pkgs.nodejs_22
     astGrepWithSg
-    pkgs.bun
     pkgs.gh
   ];
 

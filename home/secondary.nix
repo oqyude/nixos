@@ -28,6 +28,7 @@ in
     ./modules/packages.nix
     ./modules/plasma-manager.nix
     ./modules/herdr.nix
+    ./modules/herdr-runtime.nix
     # ./modules/noctalia.nix
   ];
   xdg = {
@@ -56,15 +57,6 @@ in
       name = "Qogir";
       package = pkgs.qogir-icon-theme;
     };
-    # pkgs.bun нужен для herdr-web-ui plugin (`herdr plugin install devswha/herdr-web-ui`):
-    # plugin проверяет PATH и, если bun нет, скачивает generic-linux bun в
-    # ~/.local/share/herdr-web-ui/install.<hash>/runtime/bin/bun — а тот динамически
-    # слинкован и не запускается на NixOS («NixOS cannot run dynamically linked
-    # executables intended for generic linux environments out of the box»).
-    # На sapphira bun приходит через импорт ./modules/opencode.nix (см. opencode.nix:271);
-    # на rydiwo этот модуль не подключали — добавляем bun сюда, чтобы plugin
-    # использовал системный /nix/store/...-bun-*/bin/bun вместо скачивания.
-    packages = with pkgs; [ bun ];
   };
   home.activation = {
     yaziSync = ''
