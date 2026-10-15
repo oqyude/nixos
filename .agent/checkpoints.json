@@ -1,6 +1,6 @@
 {
   "metaagent_version": "3.0.0",
-  "session_id": "metaagent-init-2026-10-09",
+  "session_id": "metaagent-attempt-2026-10-15T20:25Z (herdr→opencode attach, force-reset to 3d4f1f5)",
   "target_repo": "S:/Git/nixos",
   "goal": "Установить metaagent, перенести накопленные данные (AGENTS.md, docs/arch/*) в структуру .agent/.",
   "project_type": "existing",
@@ -34,21 +34,23 @@
     { "id": "T17", "title": "Review 2026-10-10: разобрать B1 (R1.4 врёт), синхронизировать I1–I3", "status": "completed", "origin": "user:direct (post-review)", "priority": "high", "fixes": ["T12", "T1", "T13", "T16"], "report": ".agent/reviews/2026-10-10-review-dev-diff-vs-16644fc.md" },
     { "id": "T18", "title": "Закоммитить и запушить фикс gitea-runner (фантомный юнит + зависимость от Gitea)", "status": "completed", "origin": "session 2026-10-15", "severity": "high", "files": ["modules/server/gitea-runner.nix"], "adr": "ADR-0004", "completed_in_commits": ["9bf9407", "b62a980", "d021804"], "closed_at": "2026-10-15T15:00" },
     { "id": "T19", "title": "R1.14: внести инвариант ADR-0004 (фантомный systemd-юнит) в project-rules.md и AGENTS.md", "status": "completed", "origin": "session 2026-10-15 (metastate refresh)", "type": "documentation", "files": [".agent/rules/project-rules.md", "AGENTS.md"], "adr": "ADR-0004", "note": "ADR-0004 был написан, но его инвариант не попал в project-rules.md — секция R1 обрывалась на R1.13. Расхождение зафиксировано в .agent/handoff-summary.md:90 как следующая задача. Закрыт в этой же сессии." },
-    { "id": "T20", "title": "CI и pre-commit не запускаются: .ci/checks.sh без execute-бита (режим 100644)", "status": "pending", "origin": "session 2026-10-15 (metastate refresh)", "type": "fix", "severity": "high", "files": [".ci/checks.sh", ".pre-commit-config.yaml", ".github/workflows/nix-checks.yml"], "note": "Проверено 2026-10-15: `git ls-files -s .ci/checks.sh` → 100644 (на диске -rw-r--r--, shebang есть, execute-бита нет), при этом .github/workflows/nix-checks.yml:20 зовёт `run: .ci/checks.sh`, а .pre-commit-config.yaml:10 — `entry: .ci/checks.sh --no-build` (language: script, execve напрямую). Оба места требуют execute-бита и падают с permission denied, поэтому все три проверки T15 (:latest, nix flake check, sops path_regex) не выполнились ни разу — её acceptance записан без запуска. Правка тривиальна (mode flip, либо `bash .ci/checks.sh` в обоих вызовах), и это сигнал: CI закоммичен, но не прогнан. T15 сохранена completed (файлы созданы как задано), в её notes ложное «(executable)» исправлено; дефект режима файла отслеживается здесь." }
+    { "id": "T20", "title": "CI и pre-commit не запускаются: .ci/checks.sh без execute-бита (режим 100644)", "status": "pending", "origin": "session 2026-10-15 (metastate refresh)", "type": "fix", "severity": "high", "files": [".ci/checks.sh", ".pre-commit-config.yaml", ".github/workflows/nix-checks.yml"], "note": "Проверено 2026-10-15: `git ls-files -s .ci/checks.sh` → 100644 (на диске -rw-r--r--, shebang есть, execute-бита нет), при этом .github/workflows/nix-checks.yml:20 зовёт `run: .ci/checks.sh`, а .pre-commit-config.yaml:10 — `entry: .ci/checks.sh --no-build` (language: script, execve напрямую). Оба места требуют execute-бита и падают с permission denied, поэтому все три проверки T15 (:latest, nix flake check, sops path_regex) не выполнились ни разу — её acceptance записан без запуска. Правка тривиальна (mode flip, либо `bash .ci/checks.sh` в обоих вызовах), и это сигнал: CI закоммичен, но не прогнан. T15 сохранена completed (файлы созданы как задано), в её notes ложное «(executable)» исправлено; дефект режима файла отслеживается здесь." },
+    { "id": "T35", "title": "herdr-панели → общий opencode serve через PATH-шим (REVERTED — force-reset на 3d4f1f5)", "status": "closed", "origin": "user:direct session metaagent-attempt-2026-10-15T20:25Z", "type": "feature", "files": ["home/modules/herdr.nix", ".agent/decisions/0006-herdr-shared-opencode-serve.md", ".agent/rules/project-rules.md", "AGENTS.md", ".agent/tasks/manifest.json"], "adr": "ADR-0006 (откат — не ревью ADR, см. ниже)", "note": "Попытка (3e85307 + 16a44b9) и два revert-коммита (158f08d + 574ec27) — все стёрты из `dev` через `git reset --hard 3d4f1f5 && git push --force-with-lease gitea dev` 2026-10-15T20:25Z. Сохранено в `~/.cache/t34-attempt-backup/` (9 файлов: herdr.nix.at-3e85307, herdr.nix.at-16a44b9, 0006-herdr-shared-opencode-serve.md, AGENTS.md.at-16a44b9, project-rules.md.at-16a44b9, index.json.at-16a44b9, manifest.json.at-16a44b9, full-attempt.patch — применимый git apply, my-commits.reflog) + `metaagent-director/t34-herdr-attach-attempt.patch`. Коммиты **в reflog** ещё ~30 дней (умолчание 90). Причина отмены: opencode в режиме `attach` ≈ 300 МБ RSS на воркспейс (полный TUI-клиент, не лёгкий JSON-over-HTTP) — шим централизует LLM, но не даёт ожидаемой экономии RAM; 2 воркспейса × 310 МБ attach ≈ столько же, сколько web-вкладки (~0 МБ на нашей RAM). Director-модель (1 процесс + N сессий в БД сервера) не реализована; сторонние плагины либо несовместимы (opencode-sessions@1.0.0 → @opencode-ai/sdk@^0.15.18 pre-v1), либо не проверены (kdcokenny/opencode-workspace). ADR-0006 файл удалён вместе с коммитами, запись в index.json — тоже (index.json сейчас 0001-0005). **Решение: не править.** Закрытая задача без принятого решения." }
   ],
   "uncommitted_work": {
     "state": "ALL_COMMITTED",
-    "last_uncommitted": "modules/server/gitea-runner.nix — закрыто в 9bf9407 + b62a980 + d021804 (см. T18 completed)",
+    "last_uncommitted": "мета-стейт обновление этой сессии (handoff-summary.md + checkpoints.json) — коммитится в этом проходе",
     "branch": "dev",
     "remote": "gitea",
-    "last_verified_clean": "2026-10-15T15:00",
+    "last_verified_clean": "2026-10-15T20:25Z",
     "warning": null
   },
   "host_state": {
     "host": "sapphira",
-    "system_generation": "/nix/store/2nmjr3czlrzwsadj84hp5y9sr55kb5hi-nixos-system-sapphira-default",
-    "opencode_config": "без @bybrawe/opencode-loop (3babee5, применено)",
-    "opencode_web_service": "PID 1645, работает со СТАРЫМ конфигом в памяти; плагин исчезнет только после рестарта сервиса"
+    "system_generation": "/nix/store/3qki65iy73gg6pnnx18fa5c3dgkbjy0f-nixos-system-sapphira-default (vanilla, force-reset 3d4f1f5, активировано 2026-10-15T20:20)",
+    "opencode_config": "vanilla — opencode-loop удалён коммитом 3babee5; кеш @bybrawe/opencode-loop@latest в ~/.cache/opencode/packages/ тоже удалён 2026-10-15T20:08 (dead per config). opencode-sessions НЕ установлен (npm-плагин на @opencode-ai/sdk@^0.15.18, несовместим с opencode 1.19).",
+    "opencode_web_service": "PID 1152, runs on 0.0.0.0:4096 (--cors https://opencode.zeroq.su), uptime 18:18, ~680 МБ RSS — без изменений",
+    "herdr_service": "PID 27752, InvocationID d55aa7d2918249ee80f17c9976771b2c — vanilla, без шима и без симлинка ~/.local/bin/opencode (тот тоже удалён)"
   },
   "resolved_doc_drift": [
     {
@@ -57,6 +59,30 @@
       "resolution": "Владелец принял решение удалить .md, а не перегенерировать его. Файл удалён 2026-10-15 (git rm). Единственный источник истины по задачам — .agent/tasks/manifest.json; дублирующего markdown-зеркала больше нет.",
       "source_of_truth": ".agent/tasks/manifest.json",
       "resolved_at": "2026-10-15T03:00"
+    },
+    {
+      "id": "drift-checkpoints-vs-manifest-tasks",
+      "was": "tasks-массивы в checkpoints.json (T1-T20) и в tasks/manifest.json (T1-T33) расходятся. checkpoints.json писался до saga close-out (15:00) и зафиксирован T18/T20; manifest.json писался во время и после saga close-out и содержит T21-T33. Счётчики (pending 5+3 / completed 25) в manifest.json — полные; в checkpoints.json — неполные. Прямого конфликта нет (T21-T33 не имеют статуса в checkpoints), но `phases` тоже разные: checkpoints говорит execution=completed, manifest — execution=in_progress.",
+      "resolution": "Отложено до следующей сессии по решению владельца («чистка метаданных будет в следующей сессии»). Реальный риск: новая сессия, читающая только checkpoints.json, не увидит T21-T33. Source of truth: tasks/manifest.json. До чистки: НЕ читать checkpoints.json как полный список задач.",
+      "source_of_truth": ".agent/tasks/manifest.json",
+      "resolved_at": null,
+      "deferred_to": "следующая сессия (по решению владельца 2026-10-15T20:25Z)"
+    },
+    {
+      "id": "drift-agentsmd-invariant12-dup-r114",
+      "was": "В AGENTS.md инвариант 12 (herdr.zeroq.su / R1.15) заканчивается дублированным R1.14-блоком про escapeSystemdPath и gitea-runner-ci-sapphira. Дубликат тянется с сессии 2026-10-15T14:30 (T18/T19/T32), не от этой попытки шима. Правильный инвариант 12 заканчивается на «→ R1.15, ADR-0005».",
+      "resolution": "Отложено. Правило «не рефакторить попутно» — оставлено как есть. В этой сессии (T34-attempt, T35 closed) не правила AGENTS.md. Чистка: удалить хвостовик R1.14, оставить R1.15 как end-of-invariant-12.",
+      "source_of_truth": "AGENTS.md (предполагается R1.15 как end-of-invariant-12 после правки)",
+      "resolved_at": null,
+      "deferred_to": "следующая сессия"
+    },
+    {
+      "id": "drift-checkpoints-phases-vs-manifest",
+      "was": "checkpoints.json:phases.execution='completed', handoff='in_progress'; tasks/manifest.json:phases.execution='in_progress', handoff='pending'. Прямого конфликта нет (manifest был откачен к старой записи T32 cleanup, которая не догнала phase), но расхождение фиксируется — checkpoints и manifest не согласованы по phase-машине.",
+      "resolution": "Отложено до следующей сессии (см. drift-checkpoints-vs-manifest-tasks).",
+      "source_of_truth": "внешний источник истины не определён; phases должны быть производными от состояния задач, а не независимыми полями",
+      "resolved_at": null,
+      "deferred_to": "следующая сессия"
     }
   ],
   "protocol_deviations": {
@@ -106,10 +132,10 @@
     "Ложный вывод в проходе metaagent-director-2026-10-15T14:30: «добавлю bun в shell PATH — plugin перестанет скачивать свой runtime». На самом деле herdr-web-ui plugin использует СВОЙ runtime manager (path-pattern ~/.local/share/herdr-web-ui/install.<hash>/runtime/bin/bun), а не fallback на PATH. Системный bun в PATH нужен для preflight.sh, но НЕ чинит запуск скачанного плагином bun'а. Правильный фикс — programs.nix-ld.enable = true (стенд для glibc-based динамически линкованных бинарей).",
     "Ложный вывод в проходе metaagent-director-2026-10-15T14:30: «herdr plugin update devswha/herdr-web-ui — это команда для обновления плагина». На самом деле `herdr plugin --help` показывает только enable/disable/action/log/pane/list/install — команды update нет. Реальный путь — `git pull origin main` в plugin dir + bun install + bun run build + ручная правка ~/.config/herdr/plugins.json:source.resolved_commit (herdr plugin list читает из этого JSON, а не из .git/HEAD плагина)."
   ],
-  "last_updated": "2026-10-15T15:00",
+  "last_updated": "2026-10-15T20:25Z",
   "session_chain": {
-    "previous": "metaagent-init-2026-10-09 (metastate at 2026-10-15T03:00, handoff was for T18/T4/T3/T10/T15/13-units-mount-guard)",
-    "current": "metaagent-director-2026-10-15 (continuation at 2026-10-15T14:30, closed at 2026-10-15T15:00 — saga close-out: herdr multi-host end-to-end + plugin-runtime NixOS fix landed on both hosts)",
-    "next_entry_point": ".agent/handoff-summary.md (closed 2026-10-15T15:00) — saga close-out section описывает 5 коммитов (034bb5e, 7f30176, dfcd7f5, 2ab4851) + ADR-0005 maintenance procedure + Runtime prerequisites. T33 = saga close-out (documentation completed). T4 всё ещё severity:high, см. ниже; следующие pending: T3, T10, T20, T28-T31."
+    "previous": "metaagent-director-2026-10-15 (closed 2026-10-15T15:00 — saga close-out: herdr multi-host end-to-end + plugin-runtime NixOS fix landed on both hosts; handoff для T18/T4/T3/T10/T15/13-units-mount-guard)",
+    "current": "metaagent-attempt-2026-10-15T20:25Z (herdr-attach-shim attempt + force-reset на 3d4f1f5, closed; следующая сессия начинается с чистого vanilla и решает, что делать с director-моделью).",
+    "next_entry_point": ".agent/handoff-summary.md — новая секция «Сессия metaagent-attempt-2026-10-15T20:25Z» (rollback) — попытка шима, доказательства, отмена. Pending как до этой сессии: T3 (nftables, otreca), T4 (dead mount-guard, sapphira, severity:high), T10 (reality443Forwarding), T20 (.ci/checks.sh mode bit), T28-T31 (открытые вопросы metaagent-director v0.2). T35 (закрытая попытка шима) — не повторять без новой мотивации."
   }
 }

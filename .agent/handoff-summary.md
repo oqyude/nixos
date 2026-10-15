@@ -208,4 +208,43 @@
 
 ---
 
+## Сессия metaagent-attempt-2026-10-15T20:25Z — попытка и отмена шима herdr → opencode serve
+
+**Цель сессии:** снизить потребление памяти и LLM-списаний, централизовав opencode-агенты на общем `opencode-web.service` (127.0.0.1:4096). Идея: herdr в каждой панели вместо полного opencode-инстанса запускает `opencode attach http://127.0.0.1:4096 --dir $PWD` — тонкий клиент, N панелей делят один сервер.
+
+**Что делал:**
+- **ADR-0006** (PATH-шим + симлинк `~/.local/bin/opencode`), R1.16 в `project-rules.md`, инвариант 13 в `AGENTS.md`, T34 в `tasks/manifest.json` — зафиксировано в 3e85307.
+- **Боевой тест 1 (после 3e85307):** шим из `Service.Environment` **не сработал** в живом herdr-воркспейсе — `command -v opencode` в интерактивной zsh-панели возвращал home-manager wrap `/etc/profiles/per-user/oqyude/bin/opencode`, herdr стартовал полный TUI с собственным LLM-аккаунтом. Причина: `/etc/static/zshrc` подгружает `oh-my-zsh.sh`, который **пересобирает `$PATH`** из своего plugin list (ripgrep, nodejs-22, bun, gh, ast-grep); наш шим-каталог вытесняется; home-manager wrap выигрывает.
+- **Двухслойная схема (16a44b9):** добавлен `home.file."${home}/.local/bin/opencode".source` симлинк. `~/.local/bin` — первая запись в PATH после `~/.local/bin/env` (Nix-managed) и переживает пересборку oh-my-zsh. **Боевой тест 2 (2026-10-15T19:37):** `argv` процесса = `[…/opencode-1.19.0/bin/opencode, attach, http://127.0.0.1:4096, --dir, /tmp/attach-smoke]`, `ss` показал **только** ESTAB на 127.0.0.1:4096 (без внешних LLM-сокетов). Технически шим работал.
+
+**Главное наблюдение, перевернувшее решение:** `opencode` в режиме `attach` ≈ **300 МБ RSS на воркспейс** (полный TUI-клиент с TUI-движком, LSP/MCP, плагинами; тот же бинарь, что и в обычном режиме). 2 воркспейса × 310 МБ attach ≈ столько же, сколько web-вкладки в браузере (~0 МБ на нашей RAM, рендер в браузере). Шим **централизует LLM** (нет своих LLM-счетов), но **не даёт экономии RAM**. Цель сессии — снизить потребление памяти — не достигнута, а LLM-централизация — побочный эффект, который в нашей текущей модели угроз не является необходимым.
+
+**Сторонние director-альтернативы (рассмотрены, не внедрены):**
+- `opencode-sessions@1.0.0` (npm, `malhashemi`) — `@opencode-ai/sdk@^0.15.18`, **pre-v1**, несовместим с opencode 1.19.
+- `kdcokenny/opencode-workspace` (16 компонентов), `kdcokenny/opencode-background-agents` — активные, но не проверены с opencode v1.
+- `@opencode-ai/sdk` v0.3x + своя обвязка — оставлено на потом (новая задача, не T35).
+
+**Отмена (2026-10-15T20:25Z):**
+- `git reset --hard 3d4f1f5` + `git push --force-with-lease gitea dev` — стёрты 4 коммита (`3e85307`, `16a44b9`, `158f08d`, `574ec27`); `dev` = `3d4f1f5` (nginx-фикс от другого агента).
+- `nix build .#nixosConfigurations.sapphira.config.system.build.toplevel` rc=0, `nixos-rebuild switch` rc=0 (новый toplevel `3qki65iy7…`). `home/modules/herdr.nix` — ванильный, без шима. `~/.local/bin/opencode` — отсутствует.
+- `herdr.service` перезапущен (PID 27752, `InvocationID d55aa7d2…`) — ванильный, `EnvironmentFile=…server.env`, без `Environment=`-override. Тест-воркспейс: `which opencode` в новой панели → home-manager wrap, `agent start opencode` запускает полный TUI (`argv = ["opencode"]`) — **поведение как до 3e85307**.
+
+**Сохранённые данные (на случай будущего возврата):**
+- `~/.cache/t34-attempt-backup/` (9 файлов, 178 КБ): две версии `herdr.nix` (3e85307 и 16a44b9), ADR-0006, изменённые `manifest.json` / `AGENTS.md` / `project-rules.md` / `index.json`, **применимый патч** `full-attempt.patch` (544 строки, `git apply` восстановит всё разом), `my-commits.reflog`.
+- `metaagent-director/t34-herdr-attach-attempt.patch` — копия патча во втором репо.
+- Git reflog: 4 коммита живы ещё ~30 дней (умолчание 90). Принудительно стереть раньше: `git reflog expire --expire=now --all && git gc --prune=now`. **Не делал** — без явной команды.
+
+**Дополнительно в этой же сессии (мелкое, не откат):**
+- Удалён мёртвый кеш `~/.cache/opencode/packages/@bybrawe/opencode-loop@latest/` (loop был удалён из git коммитом 3babee5, но кеш оставался; в `~/.config/opencode/opencode.json` и `tui.json` loop не зарегистрирован — был мёртв).
+- `opencode-sessions` не установлен (несовместим с opencode v1; см. выше).
+
+**Pending в следующую сессию (без изменений):** T3 (nftables, otreca), T4 (dead mount-guard, sapphira, severity:high), T10 (reality443Forwarding), T20 (`.ci/checks.sh` mode bit), T28-T31 (открытые вопросы metaagent-director v0.2). T35 (закрытая попытка шима) — **не повторять** без новой мотивации и/или director-модели.
+
+**Предсуществующие doc-drift, отложенные до чистки метаданных:**
+- `checkpoints.json:tasks` (T1-T20) расходится с `manifest.json:tasks` (T1-T33). `phases` тоже: `execution=completed` vs `execution=in_progress`. `source_of_truth = manifest.json`.
+- `AGENTS.md` инвариант 12 заканчивается дублированным R1.14 (escapeSystemdPath). Правильный end-of-invariant-12 — `R1.15, ADR-0005`. Дубликат не от этой попытки шима, тянется с 2026-10-15T14:30.
+- Оба зафиксированы в `checkpoints.json:resolved_doc_drift` (drift-checkpoints-vs-manifest-tasks, drift-agentsmd-invariant12-dup-r114, drift-checkpoints-phases-vs-manifest), `resolved_at = null`, `deferred_to = следующая сессия` по решению владельца.
+
+---
+
 ## ⚠️ Контекст сессии раздут — этому handoff'у доверять как следующей точке входа
