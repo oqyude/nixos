@@ -71,7 +71,6 @@
 | T3 | Финальная политика nftables на VDS | pending, требует обсуждения с владельцем (откатывалось) |
 | **T4** | Guard на несмонтированный `/mnt/services` | **pending, severity: high** — гвард мёртв на 13 юнитах/12 сервисах (см. `tasks/manifest.json:T4.notes`) |
 | T10 | Судьба `reality443Forwarding` | pending, откатывалось; решение (а) «оставить» уже применено в коде |
-| T18 | Закоммитить `modules/server/gitea-runner.nix` (T18 устарел — фикс уже закоммичен в 9bf9407 + дополнительные правки в `dev`). См. ниже. |
 
 ### Новые (T21–T32)
 | ID | Задача | Статус |
@@ -87,7 +86,7 @@
 | T29 | In-place PATCH в `devswha/herdr-web-ui` upstream — добавить `x-forwarded-host` в `sameOrigin()` | **pending, severity: medium** — `herdr plugin update` затрёт локальный патч |
 | T30 | Open question: какой use case для multi-host (T25)? | **pending, requires owner** — user сказал "чтобы видеть rydiwo в одной панели с sapphira" — но пока непонятно, как часто будет нужно, и нужен ли сценарий "массовый fan-out" |
 | T31 | Quota handling examples в `metaagent-director/AGENTS.md` обновить под v0.2 (сейчас используют `herdr pane read`; в multi-session — opencode API) | **pending** — низкий приоритет, директорские циклы с quota hit — пользователь не сразу до них дойдёт |
-| T32 | `T18` в `tasks/manifest.json` — отметить completed (gitea-runner fix уже в `dev` через `9bf9407` + связанные commits). | **pending** — чистка метаданных |
+| T32 | `T18` в `tasks/manifest.json` — отметить completed (gitea-runner fix уже в `dev` через `9bf9407` + связанные commits). | **completed 2026-10-15T14:30** — T18/T19/T32 cleanup формализован в metaagent-director-2026-10-15T14:30; см. saga close-out ниже |
 
 ---
 
@@ -132,7 +131,7 @@
 - **Открытые контейнеры:** 4 (без изменений)
 - **3x-ui/Xray:** заморожен (R1.10-R1.13, без изменений)
 - **Tailscale:** `100.64.0.0` = sapphira (R1.4, без изменений)
-- **4 нерешённых прошлых** (T3, T4, T10, T18) + **5 новых** (T28-T32)
+- **3 нерешённых прошлых** (T3, T4, T10) + **5 pending этого прохода** (T20, T28–T31) — всего 8 открытых
 
 ---
 
@@ -142,9 +141,8 @@
 2. **`herdr plugin update devswha/herdr-web-ui`** — отложить, пока патч in-place не смержен в upstream. Иначе сразу после `update` все cross-origin POST → 403 (см. ADR-0005).
 3. **T28** — реализовать v0.2: написать `modules/services/opencode-director.nix` (или home-manager `services.opencode`) — systemd user unit `opencode-director.service` на `127.0.0.1:4097`, `EnvironmentFile=opencode-director.env` (sops + `OPENCODE_CONFIG_CONTENT` через file), `MemoryHigh=3G MemoryMax=4G`. После этого директор из `metaagent-director/AGENTS.md` сможет реально стартовать в herdr.
 4. **T29** — PR в `devswha/herdr-web-ui` с патчем `sameOrigin()`. Долгосрочно правильно, но требует форка и поддержки.
-5. **T18 + T32** — почистить метаданные: gitea-runner fix закоммичен (9bf9407), `tasks/manifest.json:T18` отметить completed, добавить запись в T32.
-6. **T4 (severity:high)** — единственный открытый вопрос, требующий кода (не обсуждения). Перенести `ConditionPathIsMountPoint` в `systemd.services.<name>.unitConfig`. Подробности в `tasks/manifest.json:T4.notes`.
-7. **Коммиты в `S:\Git\metaagent-director\`** — `AGENTS.md` + `README.md` (v0.2 draft), `git add AGENTS.md README.md && git commit -m "docs: v0.2 — multi-session opencode model"`.
+5. **T4 (severity:high)** — единственный открытый вопрос, требующий кода (не обсуждения). Перенести `ConditionPathIsMountPoint` в `systemd.services.<name>.unitConfig`. Подробности в `tasks/manifest.json:T4.notes`.
+6. **Коммиты в `S:\Git\metaagent-director\`** — `AGENTS.md` + `README.md` (v0.2 draft), `git add AGENTS.md README.md && git commit -m "docs: v0.2 — multi-session opencode model"`.
 
 ---
 

@@ -2,7 +2,7 @@
 aliases: []
 cssclasses: 
 date-created: 2026-10-09T19:01
-date-modified: 2026-10-15T03:00
+date-modified: 2026-10-15T17:42
 tags: [metaagent, nixos, agents]
 ---
 # AGENTS.md
@@ -84,7 +84,7 @@ flake.nix
 9. **`x-ui.db` не откатывать на `x-ui.db.bak.1787862834`.** Бэкап от 2026-08-27 — другая эпоха (порты 14380/14480/14910/14920, 7 клиентов). Откат убьёт рабочие 443/8443 и все 11 конфигов. → R1.12, ADR-0003.
 10. **TLS терминирует панель 3x-ui, не nginx.** nginx делает только `ssl_preread` и проксирует сырой TCP; сертификат смонтирован в контейнер `ro`. TLS-терминирующий `server {}` для `pubray1.zeroq.su` перекроет stream-SNI и убьёт и панель, и REALITY. → R1.13, ADR-0003.
 11. **Имя `systemd.services.<…>` должно побайтово совпадать с тем, что upstream отдал `nameValuePair`.** `escapeSystemdPath` превращает `-` в литеральную строку `\x2d`, поэтому настоящий ключ — `gitea-runner-ci\x2dsapphira` (обратный слэш, не дефис). Обе формы рендерятся в **один** файл `gitea-runner-ci-sapphira.service`, но это **два разных атрибута**: неэкранированная запись создаёт фантом без `ExecStart`, фантом выигрывает рендер, и systemd отказывается стартовать (`Service has no ExecStart=… Refusing.`). Юнит молчал 12 часов, система при этом собиралась без ошибок. Проверять только чтением файла юнита: `systemctl show gitea-runner-ci-sapphira` отдаёт **дефолты**, а не реальные значения. → R1.14, ADR-0004.
-12. **`herdr.zeroq.su` — за nginx без authelia, только herdr token.** Vhost в `modules/server/nginx.nix` (правки в 4d1426c, 61ad57a, 9bf9407) обходит `authelia` subrequest. Причины: (а) `error_page 401 =302` редирект работает для GET, но POST через authelia → 500; (б) `sameOrigin()` в upstream `server/machine-security.ts:18-46` не читает `X-Forwarded-Host` → 403 `invalid_origin` на каждом cross-origin POST за reverse proxy. Auth model: `herdr_web_token` (256 бит, HttpOnly Secure SameSite=Strict, 1 год), brute-force защищён rate-limit в `server/auth.ts:18-28,53-71` (5/адрес, doubling backoff до 60s, 1024 LRU). **Maintenance:** in-place patch в `server/machine-security.ts` на sapphira (`*.orig` рядом) держится до T29 (PR в upstream с поддержкой `X-Forwarded-Host`); `herdr plugin update devswha/herdr-web-ui` перезаписывает файл. Подробности в ADR-0005 → R1.15. `escapeSystemdPath` превращает `-` в литеральную строку `\x2d`, поэтому настоящий ключ — `gitea-runner-ci\x2dsapphira` (обратный слэш, не дефис). Обе формы рендерятся в **один** файл `gitea-runner-ci-sapphira.service`, но это **два разных атрибута**: неэкранированная запись создаёт фантом без `ExecStart`, фантом выигрывает рендер, и systemd отказывается стартовать (`Service has no ExecStart=… Refusing.`). Юнит молчал 12 часов, система при этом собиралась без ошибок. Проверять только чтением файла юнита: `systemctl show gitea-runner-ci-sapphira` отдаёт **дефолты**, а не реальные значения. → R1.14, ADR-0004.
+12. **`herdr.zeroq.su` — за nginx без authelia, только herdr token.** Vhost в `modules/server/nginx.nix` (правки в 4d1426c, 61ad57a, 9bf9407) обходит `authelia` subrequest. Причины: (а) `error_page 401 =302` редирект работает для GET, но POST через authelia → 500; (б) `sameOrigin()` в upstream `server/machine-security.ts:18-46` не читает `X-Forwarded-Host` → 403 `invalid_origin` на каждом cross-origin POST за reverse proxy. Auth model: `herdr_web_token` (256 бит, HttpOnly Secure SameSite=Strict, 1 год), brute-force защищён rate-limit в `server/auth.ts:18-28,53-71` (5/адрес, doubling backoff до 60s, 1024 LRU). **Maintenance:** in-place patch в `server/machine-security.ts` на sapphira (`*.orig` рядом) держится до T29 (PR в upstream с поддержкой `X-Forwarded-Host`); `herdr plugin update devswha/herdr-web-ui` перезаписывает файл. Подробности в ADR-0005 → R1.15.
 
 ## Ловушки (выглядит сломанным, намеренно)
 
@@ -158,4 +158,8 @@ INIT → ANALYSE → ROADMAP → [DESIGN] → DECOMPOSITION → EXECUTION → ME
 
 Текущее состояние: см. `.agent/checkpoints.json` (`phases.init = completed`,
 `phases.analyse = completed`, `phases.roadmap = completed`,
-`phases.decomposition = completed`, `phases.execution = in_progress`).
+`phases.decomposition = completed`, `phases.execution = in_progress`,
+`phases.metastate = completed`, `phases.handoff = pending`). `execution` остаётся
+`in_progress`, пока открыты high-severity задачи (T4 — мёртвый mount-guard, T20 —
+`.ci/checks.sh` без execute-бита). Список задач — только в
+`.agent/tasks/manifest.json`; `checkpoints.json` — состояние сессии, не задач.
