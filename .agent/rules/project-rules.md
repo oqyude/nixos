@@ -13,15 +13,40 @@
    собирался. Закреплено через `nix flake check`.
 2. **Носитель данных (`/home/oqyude/External`) обязан быть смонтирован** до
    старта `postgresql`, `samba`, `homebox`, `gitea`, `navidrome`, `syncthing`,
-   `uptime-kuma`, `immich`, `nextcloud`, `calibre-web`, `3x-ui`, `tape-rotation`.
-   `mkStorageGuard` (T4) добавляет `RequiresMountsFor` + `ConditionPathIsMountPoint`
-   на `server-home` — без guard'а сервис стартует на пустой БД. → задача T4.
+   `uptime-kuma`, `immich`, `nextcloud`, `calibre-web`, `3x-ui`, `tape-rotation`
+   — **но гвард, который это должен обеспечивать, МЁРТВ.**
+   `mkStorageGuard` (`lib/xlib/helpers.nix:180-189`) возвращает ровно одно
+   поле, `ConditionPathIsMountPoint = [ xlib.dirs.server-home ]`, а это
+   директива секции **`[Unit]`**. Все 12 потребителей передают её через
+   `serviceConfig`, поэтому она рендерится в `[Service]`, где systemd её
+   **не читает**. Проверено на sapphira 2026-10-15 построчным чтением
+   отрендеренных юнитов: у `gitea` секция `[Service]` начинается со строки 5,
+   а `ConditionPathIsMountPoint` лежит на строке 14. Надёжный признак — само
+   наличие директивы в `[Service]`, а не номера строк: они зависят от состава
+   `[Unit]` и меняются при каждом перерендеривании.
+   `RequiresMountsFor` в хелпере **нет намеренно**, это не упущение: он
+   создаёт зависимость, по которой systemd сам монтирует ФС при старте
+   юнита, и это обессмысливает гвард (проверено на sapphira 2026-10-10,
+   комментарий `helpers.nix:181-187`). Порядок должен выражаться через
+   `After=` на `.mount`-юнит в самом потребителе.
+   Гвард мёртв на **13 юнитах / 12 сервисах**: `postgresql`, `samba`,
+   `homebox`, `gitea`, `navidrome`, `syncthing`, `uptime-kuma`, `immich`,
+   `nextcloud`, `calibre-web`, `3x-ui` (`podman-3xui_app`), `tape-rotation`
+   (два юнита: `podman-taperotation-backend` и `podman-taperotation-frontend`).
+   Из `gitea-runner` гвард **убран осознанно**: он охранял пустое множество,
+   у живого раннера ноль дескрипторов на внешнем диске
+   (`modules/server/gitea-runner.nix:143-157`). Цена решения: ничто не
+   разделяет старт Gitea на пустой БД и CI-раннер, который затем погонит
+   джобы по этой БД. Закрывается только через T4. → задача T4, ADR-0004.
+   **Отдельно:** более ранний вывод «`serviceConfig` не мержится с upstream»
+   — **ложный**, с правильным ключом он мержится штатно. Проблема в секции,
+   а не в мерже. Не ссылаться на «`serviceConfig` мержить нельзя».
 3. **Сетевая граница sapphira — роутер.** `firewall.enable = false` намеренно.
    Роутер пробрасывает ровно 5 портов: **443, 80, 22000 (syncthing),
    8443 (xray), 22 (ssh)**. `nginx.nix` (networking.firewall) `allowedTCPPorts`
    мёртв (T13). `openFirewall`/`allowedTCPPorts` на sapphira не имеют эффекта.
 4. **`100.64.0.0` = Tailscale-адрес sapphira**, назначен вручную. Не сеть, не
-   ошибка. Используется в `home/termux.nix:256`, `modules/server/nextcloud.nix:73`
+   ошибка. Используется в `home/termux.nix:256`, `modules/server/nextcloud.nix:80`
    (`trusted_proxies`), `modules/server/nginx.nix:109,253`,
    `modules/vds/systemd.nix:10`. При смене — править 4 файла.
 5. **3x-ui заморожен.** Панель на последней версии (образ `:latest`),
@@ -86,16 +111,59 @@
     `webCertFile=/root/cert/fullchain.pem`, `webKeyFile=/root/cert/key.pem`.
     **Не добавлять** TLS-терминирующий `server {}` для `pubray1.zeroq.su` —
     перекроет stream-SNI карту и убьёт и панель, и REALITY.
+14. **Имя атрибута `systemd.services.<…>` при переопределении upstream-модуля
+    должно совпадать ПОБАЙТОВО.** `services.gitea-actions-runner` (nixpkgs)
+    регистрирует юнит не через `systemd.services.<имя>`, а через
+    `nameValuePair "gitea-runner-${escapeSystemdPath name}"`. `escapeSystemdPath`
+    превращает `-` в **литеральную строку `\x2d`**, поэтому для
+    `name = "ci-sapphira"` настоящий ключ — `gitea-runner-ci\x2dsapphira`, где
+    между `ci` и `dsapphira` стоит обратный слэш, а не дефис. Обе формы
+    рендерятся в **один и тот же файл** `gitea-runner-ci-sapphira.service`, но
+    это **два разных атрибута**. Репозиторий писал неэкранированное
+    `gitea-runner-ci-sapphira` и получал фантомный юнит без `ExecStart`; фантом
+    выигрывал рендер, и systemd отказывался стартовать: `Service has no
+    ExecStart=, ExecStop=, or SuccessAction=. Refusing.` Юнит молчал **12 часов**
+    (2026-10-14 16:25 → 2026-10-15 01:23), система при этом собиралась и
+    переключалась без единой ошибки.
+    **Последствие для диагностики:** `systemctl show gitea-runner-ci-sapphira`
+    возвращает **значения по умолчанию**, а не реальные: looked-up имя не
+    совпадает с реальным. Проверять состояние юнита только **чтением файла
+    юнита**, никогда `systemctl show` с неэкранированным именем. Проверка на
+    фантом (`grep -i` найдёт обе формы, если они одновременно в `attrNames`):
+    ```bash
+    nix eval --raw .#nixosConfigurations.sapphira.config.systemd.services \
+      --apply 'x: builtins.concatStringsSep "\n" (builtins.attrNames x)' \
+      | grep -i gitea-runner
+    ```
+    `escapeSystemdPath` недостижим через `lib.utils` в этом флейке, поэтому
+    ключ записан литералом (`unitKey`, `modules/server/gitea-runner.nix:15`) и
+    разъедется при переименовании. Страховка — `assertions`, падающая на
+    отсутствии `ExecStart` (`gitea-runner.nix:196-213`).
+    Правило из ADR-0004, а вместе с ним и предупреждение о методе: баг
+    пережил **три неверных диагноза подряд** (`a807701`, `e6e82b8`, переход на
+    `unitConfig`), и каждый закреплял его, а не лечил. Теория, повёрстая в
+    документ, перестаёт проверяться. Прежде чем записать в R1 «причина X»,
+    отличить «юнит неполный» от «фантом затеняет юнит»: отсутствие
+    `ExecStart=` при `nix build` без ошибок = второе.
 
 ### R2. home-manager `Service` ≠ `serviceConfig`
 
-`home/modules/opencode.nix:339-350` (`c73a698`): в home-manager нельзя писать
-`serviceConfig = { ... }` — рендерится литеральная секция `[serviceConfig]`,
-которую systemd молча игнорирует («Unknown section 'serviceConfig'. Ignoring.»).
-Правильно: `systemd.user.services.opencode-web.Service = { ... }`. В home-manager
-cgroup-опции (`MemoryHigh`, `OOMScoreAdjust`, …) пишутся в
+Живой код — `home/modules/opencode.nix:403-412`:
+`systemd.user.services.opencode-web.Service = { MemoryHigh = "1G";
+MemoryMax = "2G"; OOMScoreAdjust = -900; OOMPolicy = "continue"; };`.
+В home-manager нельзя писать `serviceConfig = { ... }` — рендерится литеральная
+секция `[serviceConfig]`, которую systemd молча игнорирует
+(«Unknown section 'serviceConfig'. Ignoring.»). Правильно:
+`systemd.user.services.<name>.Service`. В home-manager cgroup-опции
+(`MemoryHigh`, `MemoryMax`, `OOMScoreAdjust`, `OOMPolicy`, …) пишутся в
 `systemd.user.services.<name>.Service`, **не** в `serviceConfig`. Ошибка
 не диагностируется — она просто не применяется.
+**Баг исправлен в `c73a698`**; предупреждение о возврате стоит комментарием в
+`opencode.nix:403-406`. Правило остаётся живым как запрет на регрессию:
+ошибка не диагностируется и повторяется легко.
+Вариант без правильного имени ключа не существует: в системных юнитах тот же
+приём срабатывает, только если атрибут совпадает с тем, что upstream отдал
+`nameValuePair` (см. R1.14).
 
 ### R3. Sops-цикл ключа задокументировать
 
@@ -144,8 +212,8 @@ nix build .#nixosConfigurations.<хост>.config.system.build.toplevel --dry-ru
 | `3x-ui.nix:33-35` | `reality443Forwarding = true` на VDS | **Обязательно, НЕ удалять** (R1.10). nginx stream (`vds/nginx.nix`) маршрутизирует `443 → 127.0.0.1:15380 → container:443`; без маппинга Xray REALITY мёртв. Удаление T10/C5 сломало — восстановлено `07a0437` |
 | `vds/nginx.nix`, `events {}` | Пустой блок → `worker_connections` = **512** (дефолт) | Не баг, но и не запас: при окне недоступности REALITY клиенты дают ретрай-флуд и исчерпывают 512 → «не работает всё» даже после починки первопричины (2026-10-10: 1668 ошибок за ~40 мин). Известный пробел, задача не заведена |
 | Настройки панели, `webBasePath = /pubray/` | `GET https://pubray1.zeroq.su/` → **404, 0 байт** | Панель жива, корень не корень. Реальный URL — `https://pubray1.zeroq.su/pubray/` (HTTP 200). `/subs/` без токена тоже 404 — это норма. Не «чинить» nginx под `/` |
-| `server/default.nix:37-50` | 14 закомментированных модулей (13 архивировано, 1 stirling-pdf удалён в 5dd7a58) | Отключены осознанно, см. задачу T16 |
-| `opencode.nix:339` | `systemd.user.services.opencode-web.Service` | `serviceConfig` рендерится в секцию `[serviceConfig]`, systemd молча игнорирует (`c73a698`); см. R2 |
+| `modules/server/default.nix:7-44` | Комментарий-блок на строках 38-41 выглядит как «список отключённых модулей» | T16 **завершена**, закомментированных импортов **0**. Состав: `archive/server-modules/` — 12 файлов (coturn, mealie, memos, minecraft, n8n, netdata, nfs, rsync, step-ca, transmission, trilium, zerotier); `archive/containers/` — `remnawave.nix`, `kokoro-tts.nix`, `openhands.nix`; `stirling-pdf.nix` удалён в `5dd7a58` (поглощён `bentopdf.nix`); `open-webui.nix` не комментировался никогда, переехал в `modules/containers/` и активен (импорт на строке 9) |
+| `home/modules/opencode.nix:407` | `systemd.user.services.opencode-web.Service` | **Правильный** паттерн, не баг. Файл и ссылка на строку 339 устарели: баг `serviceConfig` был и **исправлен** в `c73a698`, верная строка 407. R2 удерживает от возврата |
 | `vds.nix:73-91` | nftables без финального правила | Известный пробел, см. задачу A3 |
 | `100.64.0.0` | Первый адрес CGNAT `/10` | Tailscale-адрес sapphira, см. R1.4 |
 | `server.nix:61-63` | `z /mnt/services 0777` | World-writable точка монтирования; см. задачу B1 |

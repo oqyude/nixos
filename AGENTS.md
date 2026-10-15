@@ -2,7 +2,7 @@
 aliases: []
 cssclasses: 
 date-created: 2026-10-09T19:01
-date-modified: 2026-10-09T20:30
+date-modified: 2026-10-15T03:00
 tags: [metaagent, nixos, agents]
 ---
 # AGENTS.md
@@ -67,10 +67,15 @@ flake.nix
 1. **Все `outputs` флейка должны вычисляться.** `configurations/mobile.nix:12` импортировал несуществующий `lib/xlib.nix` — был сломан, `epral` не собирался. → задача T1.
 2. **External-диск обязан быть смонтирован** до старта `postgresql`, `samba`, `homebox`,
    `gitea`, `navidrome`, `syncthing`, `uptime-kuma`, `immich`, `nextcloud`,
-   `calibre-web`, `3x-ui`, `tape-rotation`. → задача T4.
+   `calibre-web`, `3x-ui`, `tape-rotation` — **но гвард мёртв.** `mkStorageGuard`
+   отдаёт только `ConditionPathIsMountPoint` (директива `[Unit]`), а все 12 потребителей
+   передают её через `serviceConfig` → рендерится в `[Service]`, где systemd её не читает.
+   `RequiresMountsFor` нет **намеренно**: авто-монтирование systemd обессмыслило бы гвард.
+   Мёртв на **13 юнитах / 12 сервисах**. «`serviceConfig` не мержится» — ложный вывод:
+   мержится, проблема в секции. → задача T4, ADR-0004.
 3. **Сетевая граница sapphira — роутер.** 5 портов: **443, 80, 22000 (syncthing), 8443 (xray), 22 (ssh)**. `firewall.enable = false` намеренно. nginx.nix (networking.firewall) мёртв (T13). → задача T11.
 4. **`100.64.0.0` = Tailscale-адрес sapphira**, назначен вручную. В `home/termux.nix:256`,
-   `modules/server/nextcloud.nix:73`, `modules/server/nginx.nix:109,253`,
+   `modules/server/nextcloud.nix:80`, `modules/server/nginx.nix:109,253`,
    `modules/vds/systemd.nix:10`. → задача T12.
 5. **3x-ui заморожен.** Панель на `:latest`, ядро Xray на 26.7.x. Миграция на 26.9.x провалена. → задачи T6–T10.
 6. **nftables на VDS требует явной финальной политики.** Текущий ruleset — без финального правила → неявный accept. → задача T3.
@@ -78,6 +83,7 @@ flake.nix
 8. **Декларация портов ≠ runtime.** `ports` контейнера `3xui_app` применяются только при пересоздании; правка Nix без `nixos-rebuild` не меняет ничего. Проверка: `podman inspect 3xui_app --format '{{json .NetworkSettings.Ports}}'`. → R1.11, ADR-0003.
 9. **`x-ui.db` не откатывать на `x-ui.db.bak.1787862834`.** Бэкап от 2026-08-27 — другая эпоха (порты 14380/14480/14910/14920, 7 клиентов). Откат убьёт рабочие 443/8443 и все 11 конфигов. → R1.12, ADR-0003.
 10. **TLS терминирует панель 3x-ui, не nginx.** nginx делает только `ssl_preread` и проксирует сырой TCP; сертификат смонтирован в контейнер `ro`. TLS-терминирующий `server {}` для `pubray1.zeroq.su` перекроет stream-SNI и убьёт и панель, и REALITY. → R1.13, ADR-0003.
+11. **Имя `systemd.services.<…>` должно побайтово совпадать с тем, что upstream отдал `nameValuePair`.** `escapeSystemdPath` превращает `-` в литеральную строку `\x2d`, поэтому настоящий ключ — `gitea-runner-ci\x2dsapphira` (обратный слэш, не дефис). Обе формы рендерятся в **один** файл `gitea-runner-ci-sapphira.service`, но это **два разных атрибута**: неэкранированная запись создаёт фантом без `ExecStart`, фантом выигрывает рендер, и systemd отказывается стартовать (`Service has no ExecStart=… Refusing.`). Юнит молчал 12 часов, система при этом собиралась без ошибок. Проверять только чтением файла юнита: `systemctl show gitea-runner-ci-sapphira` отдаёт **дефолты**, а не реальные значения. → R1.14, ADR-0004.
 
 ## Ловушки (выглядит сломанным, намеренно)
 
@@ -90,8 +96,8 @@ flake.nix
 | `3x-ui.nix:33-35` | `reality443Forwarding = true` на VDS | **Обязательно, НЕ удалять.** nginx stream (`vds/nginx.nix`) маршрутизирует `443 → 127.0.0.1:15380 → container:443`; без маппинга Xray REALITY мёртв. Удаление T10/C5 сломало — восстановлено `07a0437` |
 | `vds/nginx.nix`, `events {}` | Пустой блок → `worker_connections` = **512** (дефолт) | Не баг, но и не запас: при окне недоступности REALITY клиенты дают ретрай-флуд и исчерпывают 512 → «не работает всё» даже после починки первопричины (1668 ошибок за ~40 мин). Известный пробел |
 | Настройки панели | `GET https://pubray1.zeroq.su/` → **404** | Панель жива: `webBasePath=/pubray/`, реальный URL `https://pubray1.zeroq.su/pubray/`. Не «чинить» nginx под `/` |
-| `server/default.nix:37-50` | 14 закомментированных модулей (13 архивировано, 1 stirling-pdf удалён в 5dd7a58) | Отключены осознанно, см. задачу T16 |
-| `opencode.nix:339` | `systemd.user.services.opencode-web.Service` | `serviceConfig` рендерится в секцию `[serviceConfig]`, systemd молча игнорирует; см. R2 |
+| `modules/server/default.nix:7-44` | Комментарий-блок на строках 38-41 выглядит как «список отключённых модулей» | T16 завершена: закомментированных импортов 0. `archive/server-modules/` — 12 файлов (coturn, mealie, memos, minecraft, n8n, netdata, nfs, rsync, step-ca, transmission, trilium, zerotier); `archive/containers/` — `remnawave.nix`, `kokoro-tts.nix`, `openhands.nix`; `stirling-pdf.nix` удалён в `5dd7a58` (поглощён `bentopdf.nix`); `open-webui.nix` переехал в `modules/containers/` и активен |
+| `home/modules/opencode.nix:407` | `systemd.user.services.opencode-web.Service` | Правильный паттерн, не баг. Баг `serviceConfig` был и исправлен в `c73a698`, ссылка на строку 339 устарела. R2 удерживает от возврата |
 | `vds.nix:73-91` | nftables без финального правила | Известный пробел, см. задачу T3 |
 | `100.64.0.0` | Первый адрес CGNAT `/10` | Tailscale-адрес sapphira, см. инв. 4 |
 | `server.nix:61-63` | `z /mnt/services 0777` | World-writable точка монтирования; см. задачу T4 |
