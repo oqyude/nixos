@@ -238,69 +238,80 @@ in
       # devswha/herdr-web-ui` (one shot, then the plugin's update mechanism
       # takes over; the user is expected to handle it — see
       # https://herdrweb.dev/ for the install guide and Tailscale pairing).
-      # Same auth_request / 401→302 wiring as vtimeline/tty below — the
-      # wildcard rule `*.zeroq.su` in modules/server/authelia.nix already
-      # covers this subdomain under `one_factor`, so no policy change is
-      # needed.
-      "herdr.zeroq.su" = {
+      #
+      # NO authelia here. herdr-web-ui's CSRF check (sameOrigin in
+      # server/machine-security.ts:18-46) compares the browser's
+      # `Origin: https://herdr.zeroq.su` against `new URL(request.url).origin`,
+      # and `request.url` for a proxy_pass is `http://127.0.0.1:7317/...`
+      # — the function does NOT read X-Forwarded-Host, only request.url +
+      # x-forwarded-proto. Every cross-origin POST through this vhost
+      # would therefore return 403 `invalid_origin`. Setting `Host $host`
+      # makes the right Host header reach the Bun server but does not
+      # change request.url, so the sameOrigin check still fails. There is
+      # no env var or config flag in the Bun server to opt into
+      # "trust this proxy" mode (verified by reading server/index.ts and
+      # the PROXY_HEADERS table in server/access.ts:105).
+      #
+      # Auth model: the herdr_web_token cookie / Authorization: Bearer
+      # header is the only gate. The token is 64 hex chars (256 bits of
+      # entropy), kept at /home/oqyude/.config/herdr/plugins/config/
+      # devswha.herdr-web-ui/env mode 0600. Brute-force is rate-limited
+      # by the per-IP and shared-proxy budgets in server/auth.ts
+      # (AUTH_FAILURE_BUDGET=5, AUTH_BACKOFF_MS=1_000, doubling up to
+      # 60 s, 1024-entry LRU). An unauthenticated visitor sees only
+      # the SPA's "enter token" / "enter code" screen — the Bun server
+      # rejects every /api/* except the three gate endpoints with
+      # 401+JSON until a valid token is presented. To bring Authelia
+      # back in front, the upstream Bun server needs a `sameOrigin`
+      # patch that reads X-Forwarded-Host (fork + plugin link) — the
+      # same-origin check assumes direct loopback or Tailscale serve,
+      # both of which give request.url a host that matches the browser.
+          "herdr.zeroq.su" = {
         forceSSL = true;
         enableACME = true;
         locations = {
-          # /api/auth, /api/devices/pair and /api/health are herdr-web-ui's
-          # own gate: /api/auth is the form that sets the herdr_web_token
-          # cookie, /api/devices/pair is the 6-digit-code flow, /api/health
-          # is a plain status probe. All three must reach the Bun server
-          # without an upstream authelia check — the user is not signed in
-          # yet when they POST the token, and the POST would otherwise
-          # trigger `authelia` → 401 → `error_page 401 =302`, but the
-          # 302-rewrite only works for GET: a POST request through that
-          # chain returns 500 ("auth request unexpected status" in the
-          # nginx error log), and the client never reaches the Bun server.
-          # Exempting these three from the `authelia` subrequest lets the
-          # form post work. The Bun server's own auth.ts keeps /api/auth,
-          # /api/devices/pair and /api/health open in `requiresAuth()`
-          # (server/auth.ts:79-85) so a missing or wrong token is rejected
-          # there with 401 + JSON body, never silently served.
-          "~ ^/api/(auth|devices/pair|health)$" = {
+          # Static assets served by the Bun server (manifest, service
+          # worker, favicon, bundled JS/CSS under /assets/). A regex
+          # match here keeps the PWA manifest and service worker on
+          # the vhost rather than the `/` prefix location, so the
+          # browser can fetch them before any cookie is set. There is
+          # no auth_request or any other gate — the Bun server enforces
+          # the herdr_web_token on every /api/* and on the SPA shell
+          # itself.
+          #
+          # CRITICAL: do NOT add `proxy_set_header Host $host;`,
+          # `X-Forwarded-Proto $scheme;` or `X-Forwarded-Host $host;`
+          # in this extraConfig. The NixOS module's
+          # `services.nginx.recommendedProxySettings = true` already
+          # appends an `include
+          # ...-nginx-recommended-proxy_set_header-headers.conf;` to
+          # every proxy location; that include sets the same three
+          # headers. nginx's `proxy_set_header` REPLACES the inherited
+          # value in the same scope, so the include's `proxy_set_header
+          # X-Forwarded-Host $host;` would normally override ours — but
+          # because the include is appended AFTER our extraConfig in
+          # the generated location, BOTH directives end up active and
+          # nginx sends the header twice (`herdr.zeroq.su, herdr.zeroq.su`).
+          # The Bun server's sameOrigin() then sees the comma-joined
+          # value, fails to parse it as a host, and returns 403 on
+          # every cross-origin POST. The same trap applies to
+          # `recommendedProxySettings` for every other vhost on this
+          # host; nothing else sets X-Forwarded-* explicitly in extraConfig.
+          "~ ^/(manifest\\.webmanifest|sw\\.js|favicon\\.ico|assets/.*)$" = {
             proxyPass = "http://127.0.0.1:7317";
-            proxyWebsockets = true;
-            extraConfig = ''
-              proxy_set_header X-Forwarded-Proto $scheme;
-              proxy_set_header X-Forwarded-Host $host;
-              proxy_set_header X-Forwarded-Method $request_method;
-            '';
           };
+          # Everything else: the SPA shell (`/`) and every /api/* call
+          # that requires auth. `proxyWebsockets = true` upgrades the
+          # `/ws` SSE feed and the chat WebSocket from the Bun server.
+          # Same header caveat as the regex location above: the
+          # `recommendedProxySettings` include already sets Host,
+          # X-Forwarded-Proto, X-Forwarded-Host correctly; the patch in
+          # server/machine-security.ts (applied in-place on sapphira)
+          # trusts those headers, so the sameOrigin check lets the
+          # browser POST /api/auth and the cookie gets set.
           "/" = {
             proxyPass = "http://127.0.0.1:7317";
             proxyWebsockets = true;
-            extraConfig = ''
-              auth_request /authelia;
-              auth_request_set $authelia_user $upstream_http_remote_user;
-              # Same 401→302 trick as vtimeline/tty: a bare 302 from
-              # Authelia surfaces to the client as a 500 ("auth request
-              # unexpected status"), so we rewrite the response status to
-              # a 302 pointing at the authelia login UI with an absolute
-              # `$scheme://$host$request_uri` so the post-login `rd`
-              # lands the user back on herdr.zeroq.su, not on
-              # authelia.zeroq.su/<path>.
-              error_page 401 =302 https://authelia.zeroq.su/?rd=$scheme://$host$request_uri;
-            '';
-          };
-          "= /authelia" = {
-            extraConfig = ''
-              internal;
-              proxy_pass http://127.0.0.1:9091/api/authz/forward-auth;
-              proxy_set_header X-Original-URL $request_uri;
-              proxy_set_header X-Forwarded-Proto $scheme;
-              proxy_set_header X-Forwarded-Host $host;
-              proxy_set_header X-Forwarded-Method $request_method;
-              proxy_set_header X-Forwarded-Uri $request_uri;
-              proxy_set_header X-Forwarded-For $remote_addr;
-              # Same Accept-forces-401 trick as vtimeline.zeroq.su — see
-              # the comment there for why Authelia's default 302 is
-              # harmful here.
-              proxy_set_header Accept "application/json";
-            '';
           };
         };
       };
