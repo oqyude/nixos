@@ -1,7 +1,7 @@
 # Project State
 # Auto-generated — updated by ANALYSE (initial) and METASTATE (on updates)
 
-**Last updated:** 2026-10-09T20:30
+**Last updated:** 2026-10-15T03:00
 **Session:** metaagent-init-2026-10-09
 
 ## Project Type
@@ -43,7 +43,8 @@ secrets/         → sops, один age-ключ
 | `modules/users.nix` | existing | Пользователь + sops + hostKey bootstrap |
 | `modules/essentials/ssh.nix` | existing | openssh + hostKey |
 | `modules/server/{nginx,coredns}.nix` | existing | Reverse proxy + DNS (`zeroq.su`, `home.arpa`) |
-| `modules/server/postgresql.nix` | existing | PostgreSQL + `mkServiceStorage` (нужен B1 guard) |
+| `modules/server/postgresql.nix` | existing | PostgreSQL + `mkStorageGuard` (`lib/xlib/helpers.nix:180-189`; guard сейчас мёртв, см. T4) |
+| `modules/server/gitea-runner.nix` | existing | Gitea Actions host-runner на sapphira. **См. ADR-0004**: имя юнита экранировано `escapeSystemdPath`; переопределять только по байт-в-байт совпадающему ключу |
 | `modules/server/systemd.nix` | existing | rsync oneshots с `requiresMountsFor` |
 | `modules/containers/3x-ui.nix` | frozen | Панель :latest, ядро Xray 26.7.x |
 | `home/<type>.nix` | existing | Per-type home-manager |
@@ -56,7 +57,7 @@ secrets/         → sops, один age-ключ
 |---|---|---|---|---|---|
 | `default` | nixos | minimal | — | — | Шаблон |
 | `atoridu` | atoridu | primary | — (manual) | 26.05 | xanmod, mini-PC, без nixos-hardware |
-| `rydiwo` | rydiwo | secondary | deploy-rs | 26.05 | Chuwi MiniBook, NTFS `lamet-drive` (mask=0000) |
+| `rydiwo` | rydiwo | secondary | deploy-rs | 26.05 | Chuwi MiniBook, NTFS `lamet-drive` (mask=0000); импортирует `nixos-hardware.nixosModules.chuwi-minibook-x` и `../modules/pxe-infra` (`configurations/mini-laptop.nix:14,17`) |
 | `otrecа` | otreca | vds | deploy-rs | 25.05 | VPS, Tailscale-only SSH, nftables (нужен A3) |
 | `sapphira` | sapphira | server | deploy-rs | 25.05 | Домашний сервер, `firewall.enable = false` намеренно |
 | `wsl` | wsl | wsl | — (manual) | 24.11 | WSL на vetymae (Windows 192.168.1.100) |
@@ -64,7 +65,7 @@ secrets/         → sops, один age-ключ
 
 ## Services (sapphira, активные)
 
-20+ системных сервисов + 6 контейнеров. Полный инвентарь в `tasks/manifest.json` (задачи A1-F). Все, использующие `mkServiceStorage`, нуждаются в B1 guard: postgresql, samba, homebox, gitea, navidrome, syncthing, uptime-kuma, immich, nextcloud, calibre-web, 3x-ui, tape-rotation.
+20+ системных сервисов (число не проверялось поштучно, это нижняя оценка) + **4 контейнера**: `3xui_app` (`modules/containers/3x-ui.nix:53`), `taperotation-backend` и `taperotation-frontend` (`modules/containers/tape-rotation.nix:51,76`), `open-webui` (`modules/containers/open-webui.nix:52`). `modules/containers/remnanode.nix` — только `systemd.tmpfiles.rules`, не контейнер; `modules/containers/remnawave-examples/` не импортируется. Полный инвентарь в `tasks/manifest.json`. Все потребители `mkStorageGuard` (13 юнитов / 12 сервисов) нуждаются в починке гварда: postgresql, samba, homebox, gitea, navidrome, syncthing, uptime-kuma, immich, nextcloud, calibre-web, 3x-ui (`podman-3xui_app`), tape-rotation (два юнита).
 
 ## Network
 
@@ -75,12 +76,16 @@ LAN 192.168.1.0/24:
   .100 vetymae (Windows-хост с WSL)
 
 Tailscale CGNAT 100.64.0.0/10:
-  100.64.0.0    = sapphira (назначен вручную, в 4 файлах)
+  100.64.0.0    = sapphira (назначен вручную, 4 файла / 5 строк:
+                   home/termux.nix:256, modules/server/nextcloud.nix:80,
+                   modules/server/nginx.nix:109 и :253, modules/vds/systemd.nix:10)
   100.86.62.4   = opencode на vetymae
   100.106.21.39 = miniflux
 
 Internet:
-  sapphira: пробросы роутера = 22, 80, 443, 8443 (xray), 22000 (syncthing)
+  sapphira: пробросы роутера = 22, 80, 443, 8443 (xray), 22000 (syncthing).
+  Эти пробросы нигде не выражены в Nix: `networking.firewall` на sapphira
+  намеренно не используется (R1.3), список живёт только на роутере.
 ```
 
 ## Decisions in Effect
@@ -88,8 +93,14 @@ Internet:
 | ADR | Decision | Status |
 |-----|----------|--------|
 | ADR-0001 | sops-пути: `config.sops.secrets.<name>.path` (не литерал) | active |
+| ADR-0002 | Бэкапы вне Nix — accepted risk (вопрос 5.6 не отвечен, R1.9) | accepted (2026-10-15) |
+| ADR-0003 | Цепочка 3x-ui REALITY на otreca (R1.10–R1.13) | active |
+| ADR-0004 | Имя systemd-юнита = `escapeSystemdPath`-форма upstream (R1.14) | active |
 
-Подробнее: `.agent/decisions/0001-sops-secrets-paths.md`.
+Подробнее: `.agent/decisions/0001-sops-secrets-paths.md`,
+`.agent/decisions/0002-backups-external.md`,
+`.agent/decisions/0003-3x-ui-reality-chain.md`,
+`.agent/decisions/0004-systemd-unit-attr-name.md`.
 
 ## Testing Status
 
@@ -97,11 +108,45 @@ Internet:
 
 ## Open Concerns
 
-- **B1**: нет guard'а на несмонтированный `/mnt/services` — сервисы стартуют на пустой БД.
-- **A3**: nftables на VDS без явной финальной политики — неявный accept.
+- **B1 / T4 (severity: high):** гвард на несмонтированный `/mnt/services`
+  **не работает ни на одном из 13 юнитов / 12 сервисов**: postgresql, samba,
+  homebox, gitea, navidrome, syncthing, uptime-kuma, immich, nextcloud,
+  calibre-web, 3x-ui (`podman-3xui_app`), tape-rotation (два юнита:
+  `podman-taperotation-backend` и `podman-taperotation-frontend`).
+  `ConditionPathIsMountPoint` — директива `[Unit]`, но `mkStorageGuard`
+  (`lib/xlib/helpers.nix:180-189`) отдаёт её через `serviceConfig` →
+  `[Service]` → systemd игнорирует. Подтверждено построчно в отрендеренных
+  юнитах на sapphira (у `gitea` секция `[Service]` начинается со строки 5,
+  `ConditionPathIsMountPoint` лежит на строке 14; номера строк зависят от
+  состава `[Unit]`, поэтому надёжный признак — само наличие директивы в
+  `[Service]`). Мердж при этом не при чём: `serviceConfig` с
+  правильным ключом мержится штатно, проблема именно в секции.
+  `RequiresMountsFor` в хелпере **нет намеренно** (проверено на sapphira
+  2026-10-10): такая зависимость заставит systemd сам монтировать ФС при
+  старте юнита и обессмыслит гвард; порядок задаётся через `After=` на
+  `.mount`-юнит в самом потребителе.
+  Сервисы стартуют на пустой БД. Гвард с gitea-runner снят осознанно — он
+  охранял пустое множество (у раннера ноль дескрипторов на внешнем диске),
+  но именно поэтому до T4 ничто не разделяет Gitea, стартующий на пустой БД,
+  и CI-раннер, который затем погонит по ней job'ы.
+- **gitea-runner: фикс не закоммичен** (`modules/server/gitea-runner.nix`,
+  задача T18). Применён к хосту 2026-10-15T01:23, но лежит только в рабочем
+  дереве.
+- **A3**: nftables на VDS (`configurations/vds.nix:71-91`, chain `input`, `policy`
+  не объявлен) без явной финальной политики — неявный accept.
 - **C1–C5**: 3x-ui заморожен, но без формального ADR; `podman.autoPrune` + `:latest` = деградация без коммита.
 - **2.2/5.5**: `vetymae` / `lamet` / `therima` / `soptur` в `dirs.nix` — природа неясна.
 - **4.1/4.2**: root-SSH и bootstrap-цикл ключа — не задокументированы.
 - **6.6**: `192.168.1.20` зашит в 30 мест — рефакторинг отложен.
+- **Дрейф доков устранён:** дубликат `.agent/tasks/manifest.md` удалён
+  2026-10-15; единственный источник истины по задачам —
+  `.agent/tasks/manifest.json`.
+- **`nix flake check` в этой сессии локально не доходит до конца:** на
+  `nixosConfigurations.sapphira` (5-й из 7 хостов) процесс не отвечает и
+  завершается без вывода. T2 в `manifest.json` остаётся `completed` — коммит
+  61b3724 фиксирует более ранний прогон владельца; этот завис — локальная
+  проблема прогона, не отзыв T2. Причина не расследована (предположительно
+  интерференция с локальной сборкой sapphira, на котором идёт сессия, либо
+  sops-cycle на `/etc/ssh/id_ed25519`). При следующей ревизии — воспроизвести.
 
 Полный список — в `roadmap/sources.md` (открытые вопросы слоёв 0-11).
