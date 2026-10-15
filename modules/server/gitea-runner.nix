@@ -7,6 +7,12 @@
 }:
 let
   name = "ci-sapphira";
+  # MUST equal upstream's `nameValuePair "gitea-runner-${escapeSystemdPath name}"`
+  # (nixos/modules/services/continuous-integration/gitea-actions-runner.nix:195).
+  # `escapeSystemdPath` is not reachable from this flake's lib surface, so the
+  # escaped form is spelled out literally: a literal backslash before x2d.
+  # The `assertions` entry below fails the build if this ever drifts.
+  unitKey = "gitea-runner-ci\\x2dsapphira";
 in
 {
   # ----- Static user for the runner ----------------------------------------
@@ -108,27 +114,101 @@ in
   };
 
   # ----- Service unit overrides -------------------------------------------
-  # Upstream `services.gitea-actions-runner` produces a full
-  # systemd.services.gitea-runner-ci-sapphira attrset (ExecStart,
-  # ExecStartPre registration, LoadCredential, User, Restart, etc.).
-  # Leaf-level overrides like `systemd.services.X.serviceConfig.Y = Z`
-  # were tried (and `lib.mkMerge` of full sub-attrset); both silently
-  # replaced the upstream submodule instead of merging, so the unit
-  # came out without ExecStart. Cgroup caps + storage guard are now
-  # applied through (a) the [Unit] side which actually merges, and
-  # (b) deferred — see follow-up todo for the systemd drop-in that
-  # reintroduces CPUQuota / MemoryMax / DynamicUser=false.
+  # THE ATTRIBUTE NAME BELOW IS NOT COSMETIC — read before touching it.
   #
-  # No `RequiresMountsFor` (would defeat the storage guard) — see inline
-  # comment in lib/xlib/helpers.nix:180-189. `ConditionPathIsMountPoint`
-  # lives in [Unit], so the guard only fires correctly here, not via
-  # mkStorageGuard which historically writes it to serviceConfig.
-  systemd.services.gitea-runner-ci-sapphira.unitConfig = {
-    ConditionPathIsMountPoint =
-      (xlib.helpers.mkStorageGuard xlib).ConditionPathIsMountPoint;
-    After = [
+  # Upstream registers the unit as
+  #     nameValuePair "gitea-runner-${escapeSystemdPath name}" { ... }
+  # so the systemd.services key is `gitea-runner-ci\x2dsapphira` — with a
+  # LITERAL backslash-x-2-d, not a plain hyphen. Both forms render to the
+  # same file `gitea-runner-ci-sapphira.service`, but they are two
+  # separate attrsets.
+  #
+  # Writing the unescaped key (as e6e82b8 and its predecessors did) creates
+  # a PHANTOM second unit that carries only our overrides and no ExecStart.
+  # The phantom wins the render, and systemd then refuses to start:
+  #     "Service has no ExecStart=, ExecStop=, or SuccessAction=. Refusing."
+  # The real symptom was on sapphira from 2026-10-14 16:25; e6e82b8 did not
+  # fix it.
+  #
+  # The earlier post-mortem blamed the SECTION ([Unit] merges, [Service]
+  # does not). That was wrong and is what kept the bug alive across three
+  # attempts. `unitConfig` and `serviceConfig` are ordinary leaves of the
+  # same submodule; with a correct key either merges fine. Build the key
+  # the same way upstream does so a future rename cannot silently
+  # re-fork the unit.
+  #
+  # Cgroup caps (CPUQuota / MemoryMax / Nice / IO) are deliberately NOT
+  # set here — revisit only after this unit verifiably starts.
+  #
+  # DEPENDENCY MODEL (replaces the storage guard, which never fitted this
+  # unit). Verified on sapphira against the live process:
+  #   cwd  -> /var/lib/private/gitea-runner/ci-sapphira   (rootfs)
+  #   workdir_parent -> /tmp/gitea-runner-work            (tmpfs)
+  #   token -> /var/lib/gitea-runner/registration-token   (rootfs)
+  #   open fds on /mnt/services or ~/External: none
+  # So the runner touches NOTHING on the external disk and the old
+  # ConditionPathIsMountPoint guarded an empty set. Worse, it was an
+  # availability hazard: with Restart=no, a boot where the disk mounted
+  # after systemd evaluated the condition skipped the unit permanently
+  # (observed: down 2026-10-14 16:25 .. 2026-10-15, never retried).
+  #
+  # Its REAL dependency is the Gitea endpoint: ExecStartPre runs
+  #   gitea-runner register --instance https://git.zeroq.su/
+  # which is nginx -> gitea (php-fpm). Hence Wants+After on both.
+  #
+  # `Wants`, not `Requires`: `After=` only means "started", not "serving".
+  # nginx itself is After=acme-git.zeroq.su.service, so TLS may not be
+  # provisioned yet at the moment we would start. Wants lets us try early;
+  # Restart=on-failure below supplies the retry loop that Restart=no lacked.
+  # (Requires would CANCEL our start job on gitea failure, and a cancelled
+  # job never triggers Restart — the opposite of what we want here.)
+  systemd.services.${unitKey} = {
+    # Top-level unit options, exactly how upstream declares them. Putting
+    # these inside `unitConfig` instead silently drops them: unitConfig is a
+    # freeform [Unit] passthrough, and `wants`/`after` are first-class
+    # options that take precedence (ConditionPathIsMountPoint rendered fine
+    # from unitConfig; these two did not — verified against the built unit).
+    wants = lib.mkAfter [
+      "nginx.service"
+      "gitea.service"
+    ];
+    after = lib.mkAfter [
+      "nginx.service"
+      "gitea.service"
       "local-fs.target"
       "systemd-tmpfiles-setup.service"
     ];
+
+    # [Service] side. This merge is only safe because `unitKey` now matches
+    # upstream — the phantom-key bug looked exactly like "serviceConfig cannot
+    # merge" and was the reason e6e82b8 wrongly ruled this mechanism out.
+    #
+    # Upstream ALREADY sets Restart="on-failure" (and RestartSec=2), so only
+    # the retry interval is forced here: 2s is tuned for "gitea restarted
+    # mid-upgrade", but with a soft Wants on nginx/gitea we also now retry
+    # through ordinary boot and TLS-provisioning lag, which would spin the
+    # journal at 2s intervals. Restart itself is left to upstream.
+    serviceConfig = {
+      RestartSec = lib.mkForce "30s";
+    };
   };
+
+  # Tripwire. The phantom-unit failure mode above is silent: it activates
+  # cleanly, the system boots, and only systemd's runtime refusal reveals it
+  # (it already shipped broken across three commits, 2026-10-14..15).
+  # A missing ExecStart on this unit means `unitKey` no longer matches
+  # upstream's escaped name and the unit has forked again.
+  assertions = [
+    {
+      assertion = (config.systemd.services.${unitKey}.serviceConfig.ExecStart or null) != null;
+      message = ''
+        gitea-runner unit "${unitKey}" has no ExecStart.
+        `unitKey` no longer matches upstream's escapeSystemdPath name, so this
+        override is forking a phantom unit that shadows the real one and systemd
+        will refuse to start it ("Service has no ExecStart=... Refusing.").
+        Upstream registers it as nameValuePair
+        "gitea-runner-" + escapeSystemdPath name.
+      '';
+    }
+  ];
 }
