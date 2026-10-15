@@ -246,6 +246,30 @@ in
         forceSSL = true;
         enableACME = true;
         locations = {
+          # /api/auth, /api/devices/pair and /api/health are herdr-web-ui's
+          # own gate: /api/auth is the form that sets the herdr_web_token
+          # cookie, /api/devices/pair is the 6-digit-code flow, /api/health
+          # is a plain status probe. All three must reach the Bun server
+          # without an upstream authelia check — the user is not signed in
+          # yet when they POST the token, and the POST would otherwise
+          # trigger `authelia` → 401 → `error_page 401 =302`, but the
+          # 302-rewrite only works for GET: a POST request through that
+          # chain returns 500 ("auth request unexpected status" in the
+          # nginx error log), and the client never reaches the Bun server.
+          # Exempting these three from the `authelia` subrequest lets the
+          # form post work. The Bun server's own auth.ts keeps /api/auth,
+          # /api/devices/pair and /api/health open in `requiresAuth()`
+          # (server/auth.ts:79-85) so a missing or wrong token is rejected
+          # there with 401 + JSON body, never silently served.
+          "~ ^/api/(auth|devices/pair|health)$" = {
+            proxyPass = "http://127.0.0.1:7317";
+            proxyWebsockets = true;
+            extraConfig = ''
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header X-Forwarded-Host $host;
+              proxy_set_header X-Forwarded-Method $request_method;
+            '';
+          };
           "/" = {
             proxyPass = "http://127.0.0.1:7317";
             proxyWebsockets = true;
