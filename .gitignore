@@ -4,3 +4,8 @@ __pycache__
 scripts
 .temp
 .opencode/
+# H_fix.* regression session debris (helper scripts + in-place edit backups).
+# These are produced by ad-hoc test scripts during a regression cycle
+# and add noise to git status afterwards.
+h-fix-*-helpers/
+*.bak-t*
