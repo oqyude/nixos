@@ -381,7 +381,14 @@
       "depends_on": ["T21"],
       "files": ["home/secondary.nix (import добавлен)"],
       "verified": "herdr 0.9.3 active, --session herdr-prod, socket mode 0600, cgroup 2G/4G (4 cores/11GB RAM хватает)",
-      "warning": "home/secondary.nix НЕ закоммичен; pull rydiwo сделан через scp + autostash. На rydiwo `git status` всё ещё показывает M home/secondary.nix + A home/modules/herdr.nix (intent-to-add)"
+      "fix_landed": "2026-10-15T13:45: home/secondary.nix закоммичен (034bb5e) и запушен в gitea/dev; ранее лежавший на rydiwo scp-копия с autostash теперь subsumed-нется Nix-конфигом при следующем deploy .#rydiwo",
+      "next_action_required": "на sapphira выполнить `deploy .#rydiwo` (или `nixos-rebuild switch --flake .#rydiwo --target-host oqyude@rydiwo --build-host localhost`) — до этого herdr на rydiwo живёт из scp, а не из /nix/store; дальнейшие `herdr --machine rydiwo` вызовы с sapphira могут впечатлять «sapphira пытается установить», потому что бридж не Nix-декларативный",
+      "verify_after_deploy": [
+        "ssh oqyude@rydiwo 'systemctl --user status herdr' → active, ExecStart = .../herdr server --session herdr-prod",
+        "ssh oqyude@rydiwo 'ls -la ~/.config/herdr/sessions/herdr-prod/' → herdr.sock mode 0600",
+        "ssh oqyude@rydiwo 'git -C /etc/nixos status' → clean tree (после deploy scp-копия либо уже слилась с git pull, либо будет subsumed при следующем rebuild)",
+        "на sapphira `herdr --machine rydiwo workspace list` работает без ошибок"
+      ]
     },
     {
       "id": "T23",

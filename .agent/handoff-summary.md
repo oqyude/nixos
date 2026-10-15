@@ -16,8 +16,25 @@
 |---|---|
 | `S:\Git\metaagent-director\AGENTS.md` (297 → 604 строк) | **полностью переписан** под v0.2: multi-session model (1 opencode serve + N sessions вместо N процессов). Директор, цикл, examples, red lines, version. Не закоммичен — отдельный репо, не nixos. |
 | `S:\Git\metaagent-director\README.md` (2 → 64 строки) | Описание репо, архитектура, сценарии использования. |
-| `S:\Git\nixos\` (Windows local) | Дерево clean — все правки этого прохода (4d1426c, 61ad57a, 9bf9407) запушены в `gitea/dev`. На sapphira и rydiwo подтянуты. |
-| `S:\Git\nixos\.agent\` | Этот файл + checkpoints.json + tasks/manifest.json + AGENTS.md + project-rules.md + decisions/0005 + decisions/index.json — модифицированы, **не закоммичены** (правило "commit only when explicitly requested"). |
+
+### Запушено в `gitea/dev` после прохода (2026-10-15T13:45)
+
+| Commit | Что |
+|---|---|
+| `034bb5e` | `feat(home): add herdr import to rydiwo config (multi-host bridge)` — `home/secondary.nix` теперь в git, до этого жил только scp-копией на rydiwo |
+| `4bf8e55` | `docs(agents): sync R1.15, ADR-0005, T21-T32 from metaagent-director-2026-10-15` — meta-agent state (handoff, tasks/manifest.json, checkpoints.json, AGENTS.md, project-rules.md, decisions/0005, decisions/index.json) синхронизирован с реальностью |
+
+### ⏳ Следующее физическое действие (не коммит-исход)
+
+**На sapphira выполнить `deploy .#rydiwo`** — до этого herdr на rydiwo живёт из scp-копии (intent-to-add на rydiwo's git tree), а не из `/nix/store`. Пока этого не сделано:
+- sapphira → `herdr --machine rydiwo …` формально работает (herdr бинарь на rydiwo есть), но при изменениях herdr или system-уровня rydiwo (например, апгрейд nixpkgs) мост может «упасть» с впечатлением «sapphira пытается что-то императивно доставить»;
+- декларативное правило проекта «всё через Nix» для rydiwo's herdr не выполнено до конца;
+- любые правки `home/modules/herdr.nix` не дойдут до rydiwo до тех пор, пока deploy не запустят.
+
+После deploy ожидаемо (verify в `tasks/manifest.json:T22.verify_after_deploy`):
+- `systemctl --user status herdr` на rydiwo → `active`, `ExecStart=…/herdr server --session herdr-prod`
+- `~/.config/herdr/sessions/herdr-prod/herdr.sock` mode 0600
+- `git -C /etc/nixos status` на rydiwo → clean tree (scp-копия слилась с git pull)
 
 ---
 
@@ -60,7 +77,7 @@
 | ID | Задача | Статус |
 |---|---|---|
 | T21 | herdr user service на sapphira | **completed** (commit в `dev`) |
-| T22 | herdr user service на rydiwo | **completed** (только `home/secondary.nix` modified, **не закоммичен**) |
+| T22 | herdr user service на rydiwo | **completed, fix_landed 2026-10-15T13:45** (commit `034bb5e`, в `gitea/dev`); следующий физический шаг — `deploy .#rydiwo` на sapphira, см. ниже «Следующее физическое действие» |
 | T23 | vhost `herdr.zeroq.su` с authelia→drop authelia | **completed** (commits 61ad57a, 9bf9407) |
 | T24 | herdr-webui plugin install + token | **completed** |
 | T25 | multi-host herdr setup (sapphira↔rydiwo machine) | **completed** |
@@ -108,7 +125,7 @@
 
 - **7 outputs** + epral (T2, без изменений)
 - **20+ системных сервисов на sapphira** (без изменений в составе, но T13 завершён)
-- **herdr user service:** sapphira (sapphira session) + rydiwo (в работе, в dev не закоммичен `home/secondary.nix`)
+- **herdr user service:** sapphira + rydiwo (оба через `home/modules/herdr.nix`; на rydiwo **декларативно в git** с 034bb5e, **деплой из /n/Nix-store ждёт `deploy .#rydiwo` на sapphira**)
 - **herdr-webui plugin** на sapphira, listen 127.0.0.1:7317, `OPENCODE_CONFIG_CONTENT` cap на 200 steps (митигация opencode bug #55076)
 - **herdr machines:** 1 (rydiwo), SSH-доступ из sapphira работает
 - **vhosts на `*.zeroq.su`:** 13, из них 1 (herdr.zeroq.su) — без authelia, только herdr token
@@ -121,20 +138,20 @@
 
 ## Next Steps
 
-1. **`herdr plugin update devswha/herdr-web-ui`** — отложить, пока патч in-place не смержен в upstream. Иначе сразу после `update` все cross-origin POST → 403 (см. ADR-0005).
-2. **T28** — реализовать v0.2: написать `modules/services/opencode-director.nix` (или home-manager `services.opencode`) — systemd user unit `opencode-director.service` на `127.0.0.1:4097`, `EnvironmentFile=opencode-director.env` (sops + `OPENCODE_CONFIG_CONTENT` через file), `MemoryHigh=3G MemoryMax=4G`. После этого директор из `metaagent-director/AGENTS.md` сможет реально стартовать в herdr.
-3. **T29** — PR в `devswha/herdr-web-ui` с патчем `sameOrigin()`. Долгосрочно правильно, но требует форка и поддержки.
-4. **T18 + T32** — почистить метаданные: gitea-runner fix закоммичен (9bf9407), `tasks/manifest.json:T18` отметить completed, добавить запись в T32.
-5. **T4 (severity:high)** — единственный открытый вопрос, требующий кода (не обсуждения). Перенести `ConditionPathIsMountPoint` в `systemd.services.<name>.unitConfig`. Подробности в `tasks/manifest.json:T4.notes`.
-6. **Коммиты в `S:\Git\metaagent-director\`** — `AGENTS.md` + `README.md` (v0.2 draft), `git add AGENTS.md README.md && git commit -m "docs: v0.2 — multi-session opencode model"`.
-7. **Коммиты в `S:\Git\nixos\`** — `.agent/` правки (handoff, tasks, checkpoints, AGENTS.md, project-rules.md, ADR-0005).
+1. **`deploy .#rydiwo` на sapphira** — следующее физическое действие. До него herdr на rydiwo живёт из scp-копии (intent-to-add), а не из `/nix/store`; см. раздел «⏳ Следующее физическое действие (не коммит-исход)» в начале этого файла и `tasks/manifest.json:T22.next_action_required`.
+2. **`herdr plugin update devswha/herdr-web-ui`** — отложить, пока патч in-place не смержен в upstream. Иначе сразу после `update` все cross-origin POST → 403 (см. ADR-0005).
+3. **T28** — реализовать v0.2: написать `modules/services/opencode-director.nix` (или home-manager `services.opencode`) — systemd user unit `opencode-director.service` на `127.0.0.1:4097`, `EnvironmentFile=opencode-director.env` (sops + `OPENCODE_CONFIG_CONTENT` через file), `MemoryHigh=3G MemoryMax=4G`. После этого директор из `metaagent-director/AGENTS.md` сможет реально стартовать в herdr.
+4. **T29** — PR в `devswha/herdr-web-ui` с патчем `sameOrigin()`. Долгосрочно правильно, но требует форка и поддержки.
+5. **T18 + T32** — почистить метаданные: gitea-runner fix закоммичен (9bf9407), `tasks/manifest.json:T18` отметить completed, добавить запись в T32.
+6. **T4 (severity:high)** — единственный открытый вопрос, требующий кода (не обсуждения). Перенести `ConditionPathIsMountPoint` в `systemd.services.<name>.unitConfig`. Подробности в `tasks/manifest.json:T4.notes`.
+7. **Коммиты в `S:\Git\metaagent-director\`** — `AGENTS.md` + `README.md` (v0.2 draft), `git add AGENTS.md README.md && git commit -m "docs: v0.2 — multi-session opencode model"`.
 
 ---
 
 ## Key Artifacts
 
 - **State:**
-  - `.agent/checkpoints.json` — phases (execution → completed, metastate → in_progress, handoff → pending)
+  - `.agent/checkpoints.json` — phases (execution → completed, metastate → completed, handoff → in_progress; зафиксировано в коммите `4bf8e55` от 2026-10-15T13:30)
   - `.agent/tasks/manifest.json` — 23+ задач (включая T21-T32)
   - `.agent/context/project-state.md` — обновляется в `S:\Git\nixos\.agent\context\`
   - `.agent/roadmap/sources.md` — без изменений в этом проходе
@@ -147,7 +164,7 @@
 - **Code (в `S:\Git\nixos\`, все в `dev` через gitea):**
   - `home/modules/herdr.nix` (новый)
   - `home/server.nix` (импорт herdr.nix)
-  - `home/secondary.nix` (импорт herdr.nix, **не закоммичен**)
+  - `home/secondary.nix` (импорт herdr.nix, **закоммичен в `034bb5e` и запушен в `gitea/dev`**)
   - `modules/server/nginx.nix` (vhost + 2-evolution commit)
   - `modules/server/coredns.nix` (DNS)
 - **Code (в `S:\Git\metaagent-director\`, не закоммичен):**
