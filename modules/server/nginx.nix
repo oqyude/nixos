@@ -168,6 +168,22 @@ in
             extraConfig = ''
               internal;
               proxy_pass http://127.0.0.1:9091/api/authz/forward-auth;
+              # Never forward the client request body to the auth
+              # subrequest. nginx relays the original Content-Length to
+              # /authelia but does not relay the body itself, so Authelia
+              # blocks waiting for bytes that never arrive and finally
+              # answers 408 — a status `auth_request` cannot classify, so
+              # nginx reports it to the client as 500 + an HTML error
+              # page. Every bodied POST (JSON upload, zip ingest) died
+              # this way while plain GETs worked, which is why the page
+              # loaded fine but uploads failed with "Server returned
+              # non-JSON". Clearing the body and Content-Length makes
+              # Authelia authorise on the forwarded headers alone, which
+              # is all forward-auth needs. Verified on a reproduction
+              # bench: bodied POSTs went 500 (HTML, 6 s timeout) -> 201
+              # (JSON, ~10 ms).
+              proxy_pass_request_body off;
+              proxy_set_header Content-Length "";
               proxy_set_header X-Original-URL $request_uri;
               proxy_set_header X-Forwarded-Proto $scheme;
               proxy_set_header X-Forwarded-Host $host;
@@ -214,6 +230,22 @@ in
             extraConfig = ''
               internal;
               proxy_pass http://127.0.0.1:9091/api/authz/forward-auth;
+              # Never forward the client request body to the auth
+              # subrequest. nginx relays the original Content-Length to
+              # /authelia but does not relay the body itself, so Authelia
+              # blocks waiting for bytes that never arrive and finally
+              # answers 408 — a status `auth_request` cannot classify, so
+              # nginx reports it to the client as 500 + an HTML error
+              # page. Every bodied POST (JSON upload, zip ingest) died
+              # this way while plain GETs worked, which is why the page
+              # loaded fine but uploads failed with "Server returned
+              # non-JSON". Clearing the body and Content-Length makes
+              # Authelia authorise on the forwarded headers alone, which
+              # is all forward-auth needs. Verified on a reproduction
+              # bench: bodied POSTs went 500 (HTML, 6 s timeout) -> 201
+              # (JSON, ~10 ms).
+              proxy_pass_request_body off;
+              proxy_set_header Content-Length "";
               proxy_set_header X-Original-URL $request_uri;
               proxy_set_header X-Forwarded-Proto $scheme;
               proxy_set_header X-Forwarded-Host $host;
