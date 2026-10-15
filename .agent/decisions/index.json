@@ -1,6 +1,6 @@
 {
   "version": "3.0.0",
-  "updated_at": "2026-10-15T03:00",
+  "updated_at": "2026-10-15T13:30",
   "decisions": [
     {
       "id": "0001",
@@ -38,6 +38,19 @@
       "file": ".agent/decisions/0004-systemd-unit-attr-name.md",
       "tags": ["systemd", "gitea-runner", "nix-module-system", "sapphira", "invariant", "R1.14", "trap"],
       "supersedes_wrong_conclusion_of": "e6e82b8"
+    },
+    {
+      "id": "0005",
+      "title": "herdr.zeroq.su — за nginx без authelia, только herdr token",
+      "status": "accepted",
+      "date": "2026-10-15",
+      "file": ".agent/decisions/0005-herdr-webui-no-authelia.md",
+      "tags": ["herdr", "herdr-webui", "nginx", "authelia", "cors", "sameorigin", "sapphira", "invariant", "R1.15", "csrf"],
+      "task": "T27",
+      "resolution": "vhost herdr.zeroq.su обходит authelia forward-auth: (а) POST через authelia → 500, (б) sameOrigin() в upstream devswha/herdr-web-ui не читает X-Forwarded-Host → 403 на каждом cross-origin POST за reverse proxy. Auth model — herdr_web_token (256 бит, rate-limit в server/auth.ts). Maintenance: in-place patch в server/machine-security.ts перезаписывается при herdr plugin update; T29 — PR в upstream с поддержкой X-Forwarded-Host. Восстановление authelia перед vhost'ом станет возможным после T29, тогда ADR пересматривается.",
+      "moot_unless": "T29 мержится в upstream devswha/herdr-web-ui",
+      "related_artifact": "S:\\Git\\metaagent-director\\AGENTS.md (v0.2)",
+      "resolved_at": "2026-10-15T13:30"
     }
   ],
   "proposals": [

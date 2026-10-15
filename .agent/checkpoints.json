@@ -10,9 +10,9 @@
     "roadmap": "completed",
     "design": "skipped",
     "decomposition": "completed",
-    "execution": "in_progress",
+    "execution": "completed",
     "metastate": "completed",
-    "handoff": "pending"
+    "handoff": "in_progress"
   },
   "tasks": [
     { "id": "T1", "title": "A1: mobile.nix импортирует несуществующий lib/xlib.nix", "status": "completed", "origin": "user:direct" },
@@ -113,5 +113,10 @@
     "Ложный вывод в отчёте этой сессии: «Restart=no». На самом деле upstream задаёт Restart=on-failure, RestartSec=2. Ошибка была в systemctl show по неверному имени юнита (обычный дефис вместо литерального \\x2d) — systemd отдал дефолты.",
     "Ложный вывод: «Restart=no объясняет 12-дневный простой». Нет: пропуск юнита по ConditionPathIsMountPoint — это «не запущен», а не «сбой», Restart бы и не сработал."
   ],
-  "last_updated": "2026-10-15T03:00"
+  "last_updated": "2026-10-15T13:30",
+  "session_chain": {
+    "previous": "metaagent-init-2026-10-09 (metastate at 2026-10-15T03:00, handoff was for T18/T4/T3/T10/T15/13-units-mount-guard)",
+    "current": "metaagent-director-2026-10-15 (continuation, herdr + metaagent-director infra + ADR-0005/R1.15 + handoff)",
+    "next_entry_point": ".agent/handoff-summary.md (this session, 2026-10-15T13:30) — describes T21-T32, notes T4 still pending (severity:high), explains opencode API drift, points to v0.2 docs in S:\\Git\\metaagent-director\\"
+  }
 }

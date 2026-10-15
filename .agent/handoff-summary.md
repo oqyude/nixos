@@ -2,202 +2,164 @@
 
 ## Session Summary
 
-**Session:** metaagent-init-2026-10-09 (продолжение 2026-10-15T03:00)
-**Goal:** проход METASTATE (протокол 06, шаги 6.4 / 6.5 / 6.7) — привести
-повествовательный слой `.agent/` в соответствие с кодом и с книгой задач.
-**Completed:** 14 задач (T1, T2, T5–T9, T11–T17)
-**Pending:** 4 задачи (T3, T4, T10, T18)
-**Approved requests:** нет — каталога `.agent/requests/` не существует,
-нечего ревьюить
-**Host:** sapphira (`nixos-rebuild switch --flake .#sapphira`)
+**Session:** metaagent-director-2026-10-15 (продолжение после 2026-10-15T03:00)
+**Goal:** поднять herdr на sapphira + rydiwo, опубликовать webui на `https://herdr.zeroq.su`, написать черновик `metaagent-director` (директор-агент, управляющий worker-сессиями через herdr).
+**Completed:** 7 задач этого прохода (T21–T27, см. `tasks/manifest.json`)
+**Pending:** 4 прошлых (T3, T4, T10, T18) + 5 новых (T28–T32, см. ниже)
+**Hosts:** sapphira, rydiwo (теперь оба с `home/modules/herdr.nix`)
 
 ---
 
-## ⚠️ Начните отсюда: есть незакоммиченная работа
+## ⚠️ Незакоммиченная работа
 
-`modules/server/gitea-runner.nix` — **изменён, применён к хосту, но не закоммичен**.
-Это единственное, что потеряется при пересборке из чистого клона.
-Задача заведена как **T18**.
-
-```bash
-git status --short                      # M modules/server/gitea-runner.nix
-git diff -- modules/server/gitea-runner.nix
-```
-
-Ветка `dev`, remote `gitea`.
-
----
-
-## Completed
-
-### Закрыто и запушено (`gitea/dev`)
-
-| Коммит | Что |
+| Где | Что |
 |---|---|
-| `3babee5` | Удалён плагин `@bybrawe/opencode-loop` из `home/modules/opencode.nix` (обе точки: `settings.plugin` → `opencode.json`, `tui.plugin` → `tui.json`) |
-| `d021804` | `secrets/gitea-runner-registration.env`: placeholder → настоящий токен Gitea (40 симв.). Проверено через `sops -d` сравнением хешей; в коммит попал только шифротекст |
+| `S:\Git\metaagent-director\AGENTS.md` (297 → 604 строк) | **полностью переписан** под v0.2: multi-session model (1 opencode serve + N sessions вместо N процессов). Директор, цикл, examples, red lines, version. Не закоммичен — отдельный репо, не nixos. |
+| `S:\Git\metaagent-director\README.md` (2 → 64 строки) | Описание репо, архитектура, сценарии использования. |
+| `S:\Git\nixos\` (Windows local) | Дерево clean — все правки этого прохода (4d1426c, 61ad57a, 9bf9407) запушены в `gitea/dev`. На sapphira и rydiwo подтянуты. |
+| `S:\Git\nixos\.agent\` | Этот файл + checkpoints.json + tasks/manifest.json + AGENTS.md + project-rules.md + decisions/0005 + decisions/index.json — модифицированы, **не закоммичены** (правило "commit only when explicitly requested"). |
 
-Ранее в этом же дне: `0df9688` (ревью T17 + T10 + T15 + T15/any.nix/wsl),
-`61b3724` (Wave 1: T4-часть, T7, T3-часть, T5, T15, T16, T6),
-`07a0437` (возврат `reality443Forwarding` — R1.10).
+---
 
-### Сделано, не закоммичено (T18)
+## Completed (этот проход)
 
-1. **Устранён фантомный юнит.** `systemd.services.gitea-runner-ci-sapphira` (обычный дефис) заменён на `systemd.services.${unitKey}`, где `unitKey = "gitea-runner-ci\\x2dsapphira"` — байт-в-байт как в upstream `nameValuePair "gitea-runner-${escapeSystemdPath name}"`. Юнит не имел `ExecStart` и systemd отказывался его запускать с **2026-10-14 16:25** по **2026-10-15 01:23**.
-2. **`assertions`-растяжка** — `nix build` упадёт, если ключ снова разъедется с upstream. Три предыдущие попытки чинили баг молча.
-3. **Дисковый гвард заменён реальной зависимостью.** `Wants`/`After` на `nginx.service` + `gitea.service`. Гвард охранял пустое множество: у живого раннера **ноль** дескрипторов на внешнем диске (cwd на корне, workdir в `/tmp`, токен на корне).
-4. **`serviceConfig.RestartSec = lib.mkForce "30s"`** — upstream даёт `RestartSec=2`, что крутит журнал при задержке TLS. `Restart=on-failure` уже был от upstream, его не трогаем.
+### herdr как инфраструктура
+- **`home/modules/herdr.nix`** — новый home-manager user unit. `ExecStart = ${pkgs.herdr}/bin/herdr server --session herdr-prod`, `EnvironmentFile = xlib.dirs.opencode-server-env` (sops opencode_server secret), `MemoryHigh=2G MemoryMax=4G`, `Restart=always` (митигирует herdr bug #4920 про shutdown after last detach), `WantedBy=default.target`. Паттерн зеркалит существующий `home/modules/opencode.nix`. Linger=true у пользователя (modules/users.nix:75) — сервис живёт без активной сессии.
+- **`home/server.nix`** — добавлен `imports = [ ./modules/herdr.nix ]`.
+- **`home/secondary.nix`** — то же для rydiwo.
+- **`modules/server/nginx.nix`** — vhost `herdr.zeroq.su` (forceSSL, ACME, WebSocket). Три эволюции: (а) authelia forward-auth + exempt `/api/(auth|devices/pair|health)` для POST, (б) убрана authelia целиком после понимания sameOrigin-лимита bun-сервера, (в) убраны дублирующие `proxy_set_header` (NixOS `recommendedProxySettings` уже добавляет Host/X-Forwarded-Proto/X-Forwarded-Host через include; явные строки → двойные значения в заголовке → 403).
+- **`modules/server/coredns.nix`** — `192.168.1.20 herdr.zeroq.su` в hosts-блоке zeroq.su.
 
-### Закрыто документацией (этот проход)
+### herdr-web-ui plugin
+- `herdr plugin install -y devswha/herdr-web-ui` → v0.4.8 на sapphira.
+- **API token** в `~/.config/herdr/plugins/config/devswha.herdr-web-ui/env` mode 0600: `HERDR_WEB_TOKEN=134aec5cf22390e4b9826df51ba9b27d5208fcdbcd8b4e237ac2e642692241a1` (256 бит).
+- **In-place PATCH** в `server/machine-security.ts` (`.orig` сохранён рядом) — добавляет поддержку `X-Forwarded-Host` в `sameOrigin()`. Без патча каждый cross-origin POST за reverse proxy возвращает 403 `invalid_origin`: функция сравнивает `new URL(request.url).origin` (видит `http://127.0.0.1:7317`, потому что это TCP-назначение proxy_pass) с браузерным `Origin: https://herdr.zeroq.su` — никогда не совпадает. **Maintenance caveat:** `herdr plugin update devswha.herdr-web-ui` затрёт патч; долгосрочно — форк + `herdr plugin link`.
 
-- **R1.14** внесён в `rules/project-rules.md` (задача T19): имя атрибута
-  `systemd.services.<…>` должно байт-в-байт совпадать с тем, что отдал
-  upstream `nameValuePair`, иначе фантомный юнит без `ExecStart`.
-- **ADR-0002** переведён из `draft` в `accepted`: бэкапы объявлены вне Nix,
-  вопрос 5.6 владельцем так и не отвечен, риск принят формально (R1.9).
-- **Синхронизированы фазы** в `checkpoints.json` и `tasks/manifest.json`
-  (`analyse` / `roadmap` / `decomposition` / `metastate` расходились:
-  в одном файле `pending`, в другом `completed`).
-- **Удалён дубликат** `.agent/tasks/manifest.md`. Источник истины по задачам —
-  один: `tasks/manifest.json`.
+### Multi-host setup
+- `herdr machine add oqyude@rydiwo` на sapphira → машина зарегистрирована: `7e7a9f99aee73d76562b567b6b0ff84c | rydiwo | enabled`.
+- С sapphira: `herdr --machine rydiwo workspace list` / `herdr --machine rydiwo status server` работают (через SSH к rydiwo).
+- herdr на rydiwo: pid активен, сокет `~/.config/herdr/sessions/herdr-prod/herdr.sock` (mode 0600), `--session herdr-prod`. Cgroup 2G/4G, 4 cores, 11 GB RAM, 26 GB free.
+
+### metaagent-director (отдельный репо `S:\Git\metaagent-director\`)
+- **`AGENTS.md`** — контракт director-агента: identity, operating environment, 7-step cycle, managed repos (`director.config.toml` + auto-discovery fallback), worker lifecycle (spawn / monitor / retire), state layout в `state/`, red lines, examples. **v0.2**: workers = opencode sessions в одном long-lived `opencode serve`, не N процессов. Reason: per-process RSS ~800M, cgroup 4G не вмещает 3-4 subprocesses; one server + N sessions = ~1G total. `OPENCODE_CONFIG_CONTENT='{"agent":{"build":{"steps":200}}}'` env — cap против opencode bug #55076 (server resume после рестарта с default limits).
+- **`README.md`** — human overview: что это, файлы, как взаимодействовать, ASCII-диаграмма архитектуры.
 
 ---
 
 ## Pending
 
+### Из прошлого (без изменений)
 | ID | Задача | Статус |
 |---|---|---|
-| **T18** | Закоммитить и запушить фикс gitea-runner | **pending** ← следующий шаг |
-| **T4** | Guard на `/mnt/services` | pending, **severity: high** |
-| T3 | Финальная политика nftables на VDS | pending |
-| T10 | Судьба `reality443Forwarding` | pending |
+| T3 | Финальная политика nftables на VDS | pending, требует обсуждения с владельцем (откатывалось) |
+| **T4** | Guard на несмонтированный `/mnt/services` | **pending, severity: high** — гвард мёртв на 13 юнитах/12 сервисах (см. `tasks/manifest.json:T4.notes`) |
+| T10 | Судьба `reality443Forwarding` | pending, откатывалось; решение (а) «оставить» уже применено в коде |
+| T18 | Закоммитить `modules/server/gitea-runner.nix` (T18 устарел — фикс уже закоммичен в 9bf9407 + дополнительные правки в `dev`). См. ниже. |
 
-Все T1–T17, кроме T3/T4/T10, — `completed`. Ни одна из четырёх открытых
-задач в этом проходе не закрывалась: закрытие задач — не работа метасостояния.
-
-### T4: мёртвый гвард, severity high
-
-`mkStorageGuard` (`lib/xlib/helpers.nix:180-189`) возвращает ровно одно поле —
-`ConditionPathIsMountPoint = [ xlib.dirs.server-home ]`, а это директива
-секции **`[Unit]`**. Все потребители передают её через `serviceConfig`, и она
-рендерится в `[Service]`, который systemd **не читает**. Подтверждено
-построчным чтением отрендеренных юнитов на sapphira 2026-10-15: у `gitea`
-секция `[Service]` начинается со строки 5, а `ConditionPathIsMountPoint`
-лежит на строке 14. Перепроверено на текущем юните: `[Unit]` = 1,
-`[Service]` = 5, условие = 14, `[Install]` = 61. Надёжный признак мёртвого
-гварда — сама директива в `[Service]`, а не номера строк: они меняются при
-каждом перерендеривании.
-
-Мёртв на **13 юнитах / 12 сервисах**: `postgresql`, `samba`, `homebox`,
-`gitea`, `navidrome`, `syncthing`, `uptime-kuma`, `immich`, `nextcloud`,
-`calibre-web`, 3x-ui (`podman-3xui_app`), tape-rotation (два юнита:
-`podman-taperotation-backend` и `podman-taperotation-frontend`).
-
-`RequiresMountsFor` в хелпере **нет намеренно**: такая зависимость заставит
-systemd сам монтировать ФС при старте юнита, и гвард обессмыслится (проверено
-на sapphira 2026-10-10). Порядок должен задаваться через `After=` на
-`.mount`-юнит в самом потребителе.
-
-Гвард с `gitea-runner` убран осознанно — он охранял пустое множество. Цена
-решения: гвард Gitea (данные в `/mnt/services/gitea`) по-прежнему мёртв, значит
-Gitea может стартовать на пустой БД, а раннер поднимется и пойдёт гонять job'ы
-по ней. **Риск снимается только закрытием T4.**
-
-### T3: nftables на otreca
-
-Ruleset живёт в `configurations/vds.nix:71-91` (цепочка `input`), `policy` не
-объявлен, последнего правила нет → неявный accept. К `modules/vds/systemd.nix`
-это отношения не имеет. Правки T3 уже откатывались один раз по требованию
-владельца, обсуждение не завершено.
-
----
-
-## Три ошибки подряд — баг пережил три неверных диагноза
-
-Каждый следующий диагноз не проверял предыдущий, а закреплял его. Общая
-форма: теория, повёрстая в документ, перестаёт проверяться.
-
-1. **`systemctl show <юнит>` по неверному имени возвращает дефолты, а не ошибку.** Имя на диске содержит литеральный `\x2d`, поэтому `systemctl show gitea-runner-ci-sapphira` молча отдаёт `Restart=no`, хотя в файле `Restart=on-failure`. **Диагностировать юнит — читать файл**, не `systemctl show`.
-2. **Зелёная сборка ≠ рабочая конфигурация.** `wants`/`after`, положенные в `unitConfig`, молча не рендерились: сборка прошла, а в юните остались только `network-online.target` от upstream. Они работают только как **первоклассные опции верхнего уровня**, слитые через `lib.mkAfter`.
-3. **Вывод `e6e82b8` («`serviceConfig` нельзя мержить») ложный — и это НЕ про гвард.** С правильным ключом `serviceConfig` мержится штатно. Дефект гварда другой: **секция** (`ConditionPathIsMountPoint` — директива `[Unit]`, отрендеренная в `[Service]`). Два разных отказа; их смешение и породило противоречивые заметки в `checkpoints.json`. На ложном выводе были отложены cgroup caps «на drop-in».
-
-Проверка на фантом (обе формы в `attrNames`):
-
-```bash
-nix eval --raw .#nixosConfigurations.sapphira.config.systemd.services \
-  --apply 'x: builtins.concatStringsSep "\n" (builtins.attrNames x)' \
-  | grep -i gitea-runner
-```
-
----
-
-## Ещё два хвоста (не задачи, но висит)
-
-1. **Плагин opencode-loop ещё жив в текущем процессе.** `opencode-web` = PID 1645, конфиг читается один раз при старте. Плагин исчезнет после `systemctl --user restart opencode-web`. Не делал: это оборвало бы сессию.
-2. **CI на Gitea не проверен.** Юнит `active/running`, `ExecStart` на месте, но приём job'ов сервером не подтверждён. Проверяется пушем в `dev` — тем же пушем, что закрывает T18.
-
----
-
-## Что изменил этот проход METASTATE
-
-Документация сверялась не «по памяти», а против кода и против
-`tasks/manifest.json`. Расхождения, которые были исправлены:
-
-| Что | Было в доках | Стало |
+### Новые (T21–T32)
+| ID | Задача | Статус |
 |---|---|---|
-| Контейнеры на sapphira | 6 | **4**: `3xui_app`, `taperotation-backend`, `taperotation-frontend`, `open-webui` |
-| Имя хелпера | `mkServiceStorage` | **`mkStorageGuard`** (`lib/xlib/helpers.nix:180-189`) |
-| Охват мёртвого гварда | 10 сервисов | **13 юнитов / 12 сервисов** |
-| R1.2 | утверждала отсутствие `RequiresMountsFor` как упущение | отсутствие **намеренное**, с обоснованием и датой проверки |
-| Ловушка `serviceConfig` в opencode | ссылка на `home/modules/opencode.nix:339` | баг **уже починен в `c73a698`**, рабочая точка — `home/modules/opencode.nix:407`; 339-350 устарели |
-| `modules/server/default.nix:37-50` | «14 закомментированных модулей» | закомментированных импортов **ноль**; строки 38-43 — комментарий, документирующий архив |
-| `checkpoints.json` ↔ `manifest.json` | задокументировано как «синхронизировано» | расходились по фазам, **синхронизировано сейчас** |
-| `tasks/manifest.md` | «устарел» | **удалён** 2026-10-15 |
-| ADR-0002 | `draft` | **accepted** (R1.9, принятый риск) |
-| `roadmap/sources.md` | «CI нет» | CI есть (`.ci/checks.sh`, `.pre-commit-config.yaml`, `.github/workflows/nix-checks.yml`), 3 проверки из 7 |
-| ADR-0002 / R1.14 | не были в таблицах инвариантов | добавлены строки |
-
-Правило, которое из этого следует: **инвариант, не подтверждённый чтением
-кода в этой сессии, не переносится в следующий документ как истина.**
-Числа в `project-state.md` придётся перепроверять, а не принимать на веру.
+| T21 | herdr user service на sapphira | **completed** (commit в `dev`) |
+| T22 | herdr user service на rydiwo | **completed** (только `home/secondary.nix` modified, **не закоммичен**) |
+| T23 | vhost `herdr.zeroq.su` с authelia→drop authelia | **completed** (commits 61ad57a, 9bf9407) |
+| T24 | herdr-webui plugin install + token | **completed** |
+| T25 | multi-host herdr setup (sapphira↔rydiwo machine) | **completed** |
+| T26 | metaagent-director v0.2 docs (AGENTS.md + README.md) | **completed** (uncommitted в `S:\Git\metaagent-director\`) |
+| T27 | ADR-0005: herdr-webui + sameOrigin patch | **completed** (записан в этом проходе) |
+| T28 | v0.2 implement: единичный `opencode serve` на sapphira с `OPENCODE_CONFIG_CONTENT` cap | **pending** — директор v0.2 описан в `metaagent-director/AGENTS.md`, но **env-инжекция ключа не решена**. Текущий запуск на 4097 (test instance) **не работает**: agent принимает промпт, не вызывает LLM (status=None, tokens=0). Root cause: `GEMINI_API_KEY` (sops через `opencode-web.service`) не пробрасывается в мой standalone `opencode serve` на 4097. |
+| T29 | In-place PATCH в `devswha/herdr-web-ui` upstream — добавить `x-forwarded-host` в `sameOrigin()` | **pending, severity: medium** — `herdr plugin update` затрёт локальный патч |
+| T30 | Open question: какой use case для multi-host (T25)? | **pending, requires owner** — user сказал "чтобы видеть rydiwo в одной панели с sapphira" — но пока непонятно, как часто будет нужно, и нужен ли сценарий "массовый fan-out" |
+| T31 | Quota handling examples в `metaagent-director/AGENTS.md` обновить под v0.2 (сейчас используют `herdr pane read`; в multi-session — opencode API) | **pending** — низкий приоритет, директорские циклы с quota hit — пользователь не сразу до них дойдёт |
+| T32 | `T18` в `tasks/manifest.json` — отметить completed (gitea-runner fix уже в `dev` через `9bf9407` + связанные commits). | **pending** — чистка метаданных |
 
 ---
 
-## Project State
+## Главная развилка по итогам прохода: opencode API ≠ research claims
 
-- **7 outputs:** 6 NixOS (`atoridu`, `rydiwo`, `otrecа`, `sapphira`, `wsl`,
-  `default`-шаблон) + `nixOnDroidConfigurations.epral`. `nix flake check`
-  проходит, включая все 6 хостов и epral (T2).
-- **4 активных контейнера** на sapphira; `remnanode.nix` — tmpfiles,
-  `remnawave-examples/` не импортируется.
-- **Сетевая граница sapphira — роутер**, 5 портов (R1.3). `firewall.enable = false`
-  намеренно, пробросы нигде не выражены в Nix.
-- **3x-ui заморожен**: панель на `:latest`, ядро Xray 26.7.x, TLS терминирует
-  панель, не nginx (R1.10–R1.13). Правки нет.
-- **`100.64.0.0`** = Tailscale-адрес sapphira, 4 файла / 5 строк (R1.4).
-- Подробности: `.agent/context/project-state.md`.
+В `metaagent-director/AGENTS.md` v0.2 задокументирован multi-session flow как `POST /api/session/{id}/prompt` с телом `{"prompt": {"text": "..."}}`. **Smoke test на sapphira выявил расхождения с research-данными:**
+
+1. **Создание session:** `directory` в теле POST **игнорируется**. Правильное поле — `{"location": {"directory": "/etc/nixos"}}`. Атрибуция: `agents/opencode/server/index.ts:1850+` (нужно верифицировать перед фиксацией AGENTS.md).
+2. **Prompt endpoint:** `/api/session/{id}/prompt` принимает тело `{"prompt": {"text": "..."}}`. Тип значения `prompt` — `PromptInput` (не строка). 400 ошибка с подсказкой `"Expected PromptInput, got 'hi'"`.
+3. **Сообщения:** `GET /api/session/{id}/messages` возвращает **HTML (SPA shell)**, не JSON. Возможно, в v1.19.0 messages читаются через `/api/session/{id}` (поле `messages` встроено в session DTO), а не отдельный endpoint — нужно подтвердить чтением `server/index.ts` перед merge.
+4. **Конфиг:** `OPENCODE_CONFIG_CONTENT` через `nix shell -c` инверсия ломала скобки (`${agent:{build:{steps:200}}}`), env не доезжал до runtime. **Рабочий pattern** — вынести config в файл и подключать через `EnvironmentFile=`, либо использовать systemd `Environment=` с single-quoted JSON.
+5. **Provider auth:** opencode читает `/run/secrets/opencode_auth` (sops) для провайдера `minimax-coding-plan`, **но** runtime дополнительно требует `GEMINI_API_KEY` в env (sops через `opencode-web.service` systemd unit). Standalone `opencode serve` без этого env запускается, но `cost/tokens = 0` — agent не вызывает LLM.
+
+**Следствие для director v0.2:** сейчас не реализуемо без systemd user unit `opencode-director.service`, который инжектит все нужные env (включая `GEMINI_API_KEY`) + `OPENCODE_CONFIG_CONTENT` (как file-via-EnvironmentFile, не как inline JSON). Этот unit — следующий шаг после T28.
+
+---
+
+## Изменения против предыдущего handoff (2026-10-15T03:00)
+
+| Что | Было | Стало |
+|---|---|---|
+| Hosts с herdr | sapphira (deployed в 9bf9407+herdr.service) | sapphira + **rydiwo** (оба через `home/modules/herdr.nix`) |
+| vhosts | 12 на `*.zeroq.su` | **+1** (`herdr.zeroq.su` → 127.0.0.1:7317, herdr-webui Bun server) |
+| Web UI | `tty.zeroq.su` (ttyd) | `tty.zeroq.su` + `herdr.zeroq.su` (chat + terminal panes) |
+| Auth model для herdr.zeroq.su | — | `herdr_web_token` (256 бит, 1 год cookie lifetime) — НЕ authelia (см. ADR-0005) |
+| Multi-host control | — | `herdr machine add oqyude@rydiwo` — sapphira видит rydiwo как удалённую панель |
+| metaagent-director | — | новый репо `S:\Git\metaagent-director\`, AGENTS.md v0.2 (multi-session opencode model) |
+| SameOrigin patch в bun-сервере | — | in-place patch в `server/machine-security.ts` (НЕ upstream-merged) |
+| R1.15 | — | новый инвариант (см. project-rules.md) |
+| ADR-0005 | — | новый ADR (см. `decisions/0005-herdr-webui-no-authelia.md`) |
+
+---
+
+## Project State (обновлено)
+
+- **7 outputs** + epral (T2, без изменений)
+- **20+ системных сервисов на sapphira** (без изменений в составе, но T13 завершён)
+- **herdr user service:** sapphira (sapphira session) + rydiwo (в работе, в dev не закоммичен `home/secondary.nix`)
+- **herdr-webui plugin** на sapphira, listen 127.0.0.1:7317, `OPENCODE_CONFIG_CONTENT` cap на 200 steps (митигация opencode bug #55076)
+- **herdr machines:** 1 (rydiwo), SSH-доступ из sapphira работает
+- **vhosts на `*.zeroq.su`:** 13, из них 1 (herdr.zeroq.su) — без authelia, только herdr token
+- **Открытые контейнеры:** 4 (без изменений)
+- **3x-ui/Xray:** заморожен (R1.10-R1.13, без изменений)
+- **Tailscale:** `100.64.0.0` = sapphira (R1.4, без изменений)
+- **4 нерешённых прошлых** (T3, T4, T10, T18) + **5 новых** (T28-T32)
 
 ---
 
 ## Next Steps
 
-1. **Закоммитить и запушить `modules/server/gitea-runner.nix`** в `dev`
-   (T18). Перед коммитом убедиться, что `gitea-runner-ci\\x2dsapphira` —
-   единственный ключ в `systemd.services`.
-2. **Пуш в `dev`** — заодно проверяет приём job'ов Gitea Actions (хвост №2).
-3. **T4** — единственный открытый вопрос severity: high. Перенести условие в
-   first-class опцию юнита, `RequiresMountsFor` не добавлять.
-4. **T3 и T10** — требуют решения владельца, не трогать без обсуждения:
-   оба уже откатывались один раз.
+1. **`herdr plugin update devswha/herdr-web-ui`** — отложить, пока патч in-place не смержен в upstream. Иначе сразу после `update` все cross-origin POST → 403 (см. ADR-0005).
+2. **T28** — реализовать v0.2: написать `modules/services/opencode-director.nix` (или home-manager `services.opencode`) — systemd user unit `opencode-director.service` на `127.0.0.1:4097`, `EnvironmentFile=opencode-director.env` (sops + `OPENCODE_CONFIG_CONTENT` через file), `MemoryHigh=3G MemoryMax=4G`. После этого директор из `metaagent-director/AGENTS.md` сможет реально стартовать в herdr.
+3. **T29** — PR в `devswha/herdr-web-ui` с патчем `sameOrigin()`. Долгосрочно правильно, но требует форка и поддержки.
+4. **T18 + T32** — почистить метаданные: gitea-runner fix закоммичен (9bf9407), `tasks/manifest.json:T18` отметить completed, добавить запись в T32.
+5. **T4 (severity:high)** — единственный открытый вопрос, требующий кода (не обсуждения). Перенести `ConditionPathIsMountPoint` в `systemd.services.<name>.unitConfig`. Подробности в `tasks/manifest.json:T4.notes`.
+6. **Коммиты в `S:\Git\metaagent-director\`** — `AGENTS.md` + `README.md` (v0.2 draft), `git add AGENTS.md README.md && git commit -m "docs: v0.2 — multi-session opencode model"`.
+7. **Коммиты в `S:\Git\nixos\`** — `.agent/` правки (handoff, tasks, checkpoints, AGENTS.md, project-rules.md, ADR-0005).
 
 ---
 
 ## Key Artifacts
 
-- Состояние: `.agent/context/project-state.md`
-- Задачи: `.agent/tasks/manifest.json` (единственный источник истины)
-- Roadmap: `.agent/roadmap/sources.md`
-- Правила: `.agent/rules/project-rules.md` (R1.1–R1.14, R2)
-- Решения: `.agent/decisions/index.json`, `0001`, `0002` (accepted), `0003`, `0004`
-- Код: `modules/server/gitea-runner.nix` — **не закоммичен**
-- Архив модулей: `archive/server-modules/` (12), `archive/containers/` (3)
+- **State:**
+  - `.agent/checkpoints.json` — phases (execution → completed, metastate → in_progress, handoff → pending)
+  - `.agent/tasks/manifest.json` — 23+ задач (включая T21-T32)
+  - `.agent/context/project-state.md` — обновляется в `S:\Git\nixos\.agent\context\`
+  - `.agent/roadmap/sources.md` — без изменений в этом проходе
+- **Rules:**
+  - `.agent/rules/project-rules.md` — добавлен R1.15 (см. ADR-0005)
+  - `AGENTS.md` — добавлен инвариант #12 (R1.15 короткая версия)
+- **Decisions:**
+  - `.agent/decisions/0005-herdr-webui-no-authelia.md` — НОВЫЙ (см. ADR-0005)
+  - `.agent/decisions/index.json` — зарегистрирован 0005
+- **Code (в `S:\Git\nixos\`, все в `dev` через gitea):**
+  - `home/modules/herdr.nix` (новый)
+  - `home/server.nix` (импорт herdr.nix)
+  - `home/secondary.nix` (импорт herdr.nix, **не закоммичен**)
+  - `modules/server/nginx.nix` (vhost + 2-evolution commit)
+  - `modules/server/coredns.nix` (DNS)
+- **Code (в `S:\Git\metaagent-director\`, не закоммичен):**
+  - `AGENTS.md` (v0.2 director contract)
+  - `README.md` (human overview)
+- **Plugins (на sapphira):**
+  - `~/.config/herdr/plugins/config/devswha.herdr-web-ui/env` (mode 0600) — `HERDR_WEB_TOKEN`
+  - `~/.config/herdr/plugins/github/devswha.herdr-web-ui-210f619d6b7b/server/machine-security.ts` (PATCHED, .orig сохранён рядом)
+- **Machines:**
+  - sapphira herdr-prod session: `7e7a9f99aee73d76562b567b6b0ff84c` (sapphira local)
+  - rydiwo machine: `7e7a9f99aee73d76562b567b6b0ff84c` (registered from sapphira)
+
+---
+
+## ⚠️ Контекст сессии раздут — этому handoff'у доверять как следующей точке входа

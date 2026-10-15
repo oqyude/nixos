@@ -1,10 +1,10 @@
 {
   "metaagent_version": "3.0.0",
-  "session_id": "metaagent-init-2026-10-09",
+  "session_id": "metaagent-init-2026-10-09 (продолжение: metaagent-director-2026-10-15)",
   "target_repo": "S:/Git/nixos",
   "goal": "Установить metaagent, перенести накопленные данные (AGENTS.md, docs/arch/*) в структуру .agent/.",
   "project_type": "existing",
-  "date": "2026-10-15T03:00",
+  "date": "2026-10-15T13:30",
   "phases": {
     "init": "completed",
     "analyse": "completed",
@@ -362,8 +362,139 @@
       ],
       "files": [".ci/checks.sh", ".pre-commit-config.yaml", ".github/workflows/nix-checks.yml"],
       "notes": "Проверено 2026-10-15. МЕХАНИЗМ: git ls-files -s .ci/checks.sh → `100644 fb61a7db…`, на диске -rw-r--r--, shebang есть, execute-бита нет. GitHub Actions сохраняет режим файла из индекса при checkout, поэтому .github/workflows/nix-checks.yml:20 `run: .ci/checks.sh` (прямой запуск как исполняемого файла) падает с permission denied. .pre-commit-config.yaml:10 объявляет `entry: .ci/checks.sh --no-build` с `language: script`, а script-хук делает execve(entry) напрямую — та же потребность в execute-бите, тот же отказ. ПОСЛЕДСТВИЕ: все три проверки, введённые под T15 (гвард :latest, nix flake check, sops path_regex), не выполнились НИ РАЗУ — ни в CI, ни в pre-commit. T15 была принята как закрытие риска через замену «половины инвариантов» автоматическими проверками, но её acceptance_criteria были записаны, не запустив то, что они описывают; инварианты R1.5/R1.8 (образы :latest) и sops-path_regex сейчас не прикрыты ничем. ПОЧЕМУ ЭТО НЕ ЕДИНИЧНЫЙ ПРОПУСК: правка тривиальна (один mode flip), и именно тривиальность — сигнал: CI закоммитили, но ни разу не прогнали, поэтому «проверки зелёные» осталось недоказанным утверждением. Это четвёртый случай одного и того же паттерна в этом прогоне (R1.2 про RequiresMountsFor, ловушка opencode.nix:339, ловушка «14 закомментированных модулей»), но инвертированный: первые три — ложно УТВЕРЖДЕНИЕ об устройстве системы, здесь — ложно УТВЕРЖДЕНИЕ о том, что защита работает. Общий вывод: acceptance_criteria, требующие фактического запуска, нельзя закрывать по факту написания артефакта. T15 остаётся completed (файлы созданы как задано) — правится только режим файла; см. также исправленную запись T15."
+    },
+    {
+      "id": "T21",
+      "title": "herdr user service на sapphira через home/modules/herdr.nix",
+      "type": "deploy",
+      "status": "completed",
+      "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
+      "files": ["home/modules/herdr.nix (new)", "home/server.nix (import)"],
+      "completed_in_commits": ["9bf9407 (nginx fix landed herdr), потом 4d1426c/61ad57a/9bf9407 — herdr.service бежит, сокет в ~/.config/herdr/sessions/herdr-prod/"]
+    },
+    {
+      "id": "T22",
+      "title": "herdr user service на rydiwo (multi-host setup)",
+      "type": "deploy",
+      "status": "completed",
+      "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
+      "depends_on": ["T21"],
+      "files": ["home/secondary.nix (import добавлен)"],
+      "verified": "herdr 0.9.3 active, --session herdr-prod, socket mode 0600, cgroup 2G/4G (4 cores/11GB RAM хватает)",
+      "warning": "home/secondary.nix НЕ закоммичен; pull rydiwo сделан через scp + autostash. На rydiwo `git status` всё ещё показывает M home/secondary.nix + A home/modules/herdr.nix (intent-to-add)"
+    },
+    {
+      "id": "T23",
+      "title": "vhost herdr.zeroq.su с эволюцией authelia→no-authelia",
+      "type": "deploy",
+      "status": "completed",
+      "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
+      "files": ["modules/server/nginx.nix", "modules/server/coredns.nix"],
+      "completed_in_commits": ["4d1426c (начальный с authelia)", "61ad57a (exempt /api/(auth|devices/pair|health) от authelia — fix POST 500)", "9bf9407 (drop authelia целиком + убраны дублирующие proxy_set_header, добавлен R1.15)"],
+      "adr": "ADR-0005"
+    },
+    {
+      "id": "T24",
+      "title": "herdr-webui plugin install + herdr_web_token gate",
+      "type": "deploy",
+      "status": "completed",
+      "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
+      "files": ["~/.config/herdr/plugins/config/devswha.herdr-web-ui/env (mode 0600)"],
+      "token": "134aec5cf22390e4b9826df51ba9b27d5208fcdbcd8b4e237ac2e642692241a1 (256 бит, записан в .env плагина, не в sops — runtime-конфиг)",
+      "adr": "ADR-0005"
+    },
+    {
+      "id": "T25",
+      "title": "herdr machine add oqyude@rydiwo — multi-host control",
+      "type": "deploy",
+      "status": "completed",
+      "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
+      "machine_id": "7e7a9f99aee73d76562b567b6b0ff84c",
+      "verified": "herdr --machine rydiwo workspace list / status server работают с sapphira через SSH"
+    },
+    {
+      "id": "T26",
+      "title": "metaagent-director v0.2 docs (AGENTS.md + README.md)",
+      "type": "documentation",
+      "status": "completed",
+      "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
+      "files": ["S:\\Git\\metaagent-director\\AGENTS.md (новый, 604 строк)", "S:\\Git\\metaagent-director\\README.md (новый, 64 строки)"],
+      "warning": "Файлы НЕ закоммичены — отдельный репо, не nixos. Зафиксированы в handoff-summary.md как uncommitted work."
+    },
+    {
+      "id": "T27",
+      "title": "ADR-0005: herdr-webui без authelia, только herdr token",
+      "type": "documentation",
+      "status": "completed",
+      "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
+      "files": [".agent/decisions/0005-herdr-webui-no-authelia.md (новый)", ".agent/decisions/index.json", ".agent/rules/project-rules.md (R1.15)", "AGENTS.md (инвариант #12)"]
+    },
+    {
+      "id": "T28",
+      "title": "v0.2 реализация: единичный opencode serve с OPENCODE_CONFIG_CONTENT cap и env-инжекцией провайдеров",
+      "type": "implementation",
+      "priority": "high",
+      "status": "pending",
+      "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
+      "depends_on": [],
+      "files": ["новый: home/modules/opencode-director.nix или modules/services/opencode-director.nix"],
+      "acceptance_criteria": [
+        "systemd user unit opencode-director.service на 127.0.0.1:4097, MemoryHigh=3G MemoryMax=4G, Restart=always",
+        "EnvironmentFile=opencode-director.env с sops-расшифрованным GEMINI_API_KEY (или opencode_auth с provider=minimax-coding-plan)",
+        "OPENCODE_CONFIG_CONTENT читается из отдельного файла через .include-директиву (НЕ inline JSON в shell-команде — bash $'...' инверсия ломает скобки)",
+        "herdr --session herdr-prod —machine sapphira workspace new ~/Projects/metaagent-director → workspace 'metaagent-director' создаётся, opencode agent стартует, director читает AGENTS.md и спавнит workers в v0.2 multi-session model",
+        "smoke: curl POST /api/sessions/ses_xxx/messages (для существующей session) возвращает JSON, status переходит в idle после ответа LLM, cost > 0, tokens > 0"
+      ],
+      "notes": "v0.2 документирован в S:\\Git\\metaagent-director\\AGENTS.md (604 строки), но не реализован. Smoke test на sapphira с standalone opencode serve на 4097 показал: status=None, cost=0, tokens=0 — agent НЕ вызывает LLM. Root cause: standalone opencode serve не получает GEMINI_API_KEY в env (sops через opencode-web.service systemd unit) и OPENCODE_CONFIG_CONTENT теряет скобки при nix shell -c. Нужен правильный systemd user unit с EnvironmentFile= для обоих."
+    },
+    {
+      "id": "T29",
+      "title": "PR в devswha/herdr-web-ui: добавить X-Forwarded-Host в sameOrigin()",
+      "type": "upstream",
+      "priority": "medium",
+      "status": "pending",
+      "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
+      "depends_on": [],
+      "files": ["https://github.com/devswha/herdr-web-ui/blob/main/server/machine-security.ts"],
+      "patch_summary": "В блоке try { ... } catch { return false; } после `if (request.headers.get('x-forwarded-proto') === 'https') expected.protocol = 'https:';` добавить чтение x-forwarded-host с override expected.host + reset expected.port (когда forward-port отсутствует). Текущий in-place patch на sapphira (см. ADR-0005) — proof-of-concept.",
+      "moot_after": "T29 merged → можно откатить ADR-0005 и вернуть authelia перед vhost'ом",
+      "notes": "Версия патча: see .agent/decisions/0005-herdr-webui-no-authelia.md (раздел «Связанные находки»). PR должен включать test, что sameOrigin возвращает true для POST с Origin=https://herdr.example.com при proxy_pass на 127.0.0.1:7317 с X-Forwarded-Proto=https и X-Forwarded-Host=herdr.example.com."
+    },
+    {
+      "id": "T30",
+      "title": "Open question: use case для multi-host herdr setup (T25) — стоит ли развивать?",
+      "type": "question",
+      "status": "pending",
+      "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
+      "notes": "User заявил: «чтобы видеть rydiwo в одной панели с sapphira». Пока неясно, как часто нужно и нужен ли сценарий fan-out (director спавнит worker'ов сразу на нескольких машинах). Если use case разовый — T25 можно считать done, не развивать. Если планируется регулярный multi-host fan-out — нужно оформить как v0.3 director (multi-machine spawning через herdr --machine <host> workspace new ...)."
+    },
+    {
+      "id": "T31",
+      "title": "Обновить quota handling в metaagent-director/AGENTS.md под v0.2 (opencode API вместо herdr pane)",
+      "type": "documentation",
+      "priority": "low",
+      "status": "pending",
+      "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
+      "depends_on": ["T28"],
+      "files": ["S:\\Git\\metaagent-director\\AGENTS.md"],
+      "notes": "Текущие примеры «Cycle N: quota hit / quota recovered» используют herdr pane read/send-keys и herdr agent list. После T28 (multi-session) заменить на opencode API: GET /api/sessions/{id}/messages для детекции 429, POST /api/sessions/{id}/interrupt для остановки. В current scope — низкий приоритет, до quota-циклов director не дойдёт пока не упрётся в API rate limit."
+    },
+    {
+      "id": "T32",
+      "title": "Cleanup: отметить T18 completed (gitea-runner fix уже в 9bf9407) и согласовать фазы",
+      "type": "housekeeping",
+      "status": "pending",
+      "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
+      "depends_on": [],
+      "acceptance_criteria": [
+        "T18 в этом файле → completed (acceptance_criteria выполнены, fix закоммичен в 9bf9407 + 61ad57a)",
+        "T19 в этом файле → confirmed completed (R1.14 уже внесён в project-rules.md И AGENTS.md)",
+        "T20 в этом файле → оставить pending (CI/pre-commit бит не выставлен — отдельный fix)",
+        "phases в checkpoints.json приведены в соответствие: execution=completed, metastate=completed, handoff=in_progress"
+      ],
+      "notes": "T19 закрыт в этом проходе (R1.14 внесён). T20 честно pending (см. .ci/checks.sh mode 100644). T18 в манифесте помечен pending из прошлой сессии, но фикс фактически в 9bf9407 — нужна формальная отметка."
     }
   ],
-  "backlog_count": 23,
-  "backlog_note": "Открытые вопросы из roadmap/sources.md (F: 2.2, 2.5, 2.6, 3.2, 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.3, 5.4, 5.5, 5.6, 6.6, 6.7, 6.8, 6.9, 7.4, 8.2, 8.4, 8.5, 8.6) ждут ответа владельца и станут задачами после ответа."
+  "backlog_count": 28,
+  "backlog_note": "Открытые вопросы из roadmap/sources.md (F: 2.2, 2.5, 2.6, 3.2, 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.3, 5.4, 5.5, 5.6, 6.6, 6.7, 6.8, 6.9, 7.4, 8.2, 8.4, 8.5, 8.6) ждут ответа владельца и станут задачами после ответа. Сверх того: 5 новых pending (T28-T32), T4 всё ещё severity:high (гвард мёртв на 13/12)."
 }

@@ -145,6 +145,38 @@
     документ, перестаёт проверяться. Прежде чем записать в R1 «причина X»,
     отличить «юнит неполный» от «фантом затеняет юнит»: отсутствие
     `ExecStart=` при `nix build` без ошибок = второе.
+15. **`herdr.zeroq.su` — за nginx без authelia, только herdr token.** Vhost
+    в `modules/server/nginx.nix` (текущая редакция — 9bf9407) обходит
+    authelia forward-auth. Причины: (а) `authelia` subrequest → `error_page 401
+    =302` редирект работает для GET, но **POST через эту цепочку → 500**; (б)
+    `sameOrigin()` в `server/machine-security.ts:18-46` upstream-версии
+    `devswha/herdr-web-ui` сравнивает `new URL(request.url).origin` (видит
+    `http://127.0.0.1:7317`, TCP-назначение `proxy_pass`) с браузерным
+    `Origin: https://herdr.zeroq.su` — за reverse proxy (кроме Tailscale
+    serve) они не совпадают → 403 `invalid_origin` на **каждом** cross-origin
+    POST. Исключение `~ ^/api/(auth|devices/pair|health)$` из authelia
+    убирает 500, но 403 на `sameOrigin` остаётся. Подробности в ADR-0005.
+    **Maintenance:** до T29 (PR в upstream `devswha/herdr-web-ui` с
+    поддержкой `X-Forwarded-Host` в `sameOrigin()`) в `server/machine-security.ts`
+    sapphira держится **in-place patch**, перезаписывается при
+    `herdr plugin update`. Перед каждым update: `cp
+    $PLUGIN_DIR/server/machine-security.ts.orig $PLUGIN_DIR/server/machine-security.ts`
+    и переустановка патча. **Auth model:** `herdr_web_token` cookie /
+    `Authorization: Bearer`, 256 бит энтропии, rate-limit в
+    `server/auth.ts:18-28,53-71` (5/адрес, doubling backoff до 60s, 1024
+    LRU). Без authelia нет SSO — токен вводится в браузере вручную при
+    первом визите или прописывается через `install.sh` (cookie на 1 год).
+    На LAN/localhost достаточно; на публичном экспозе добавить fail2ban
+    или закрыть через Tailscale ACL.
+    **NixOS gotcha:** `services.nginx.recommendedProxySettings = true`
+    добавляет `include ...-nginx-recommended-proxy_set_header-headers.conf;`
+    в каждый `proxy_pass` location, который ставит `Host $host`,
+    `X-Forwarded-Proto $scheme`, `X-Forwarded-Host $host`. Если в
+    `extraConfig` ещё раз поставить `proxy_set_header X-Forwarded-Host
+    $host;`, nginx шлёт заголовок **дважды** (`herdr.zeroq.su,
+    herdr.zeroq.su`) → `sameOrigin` patch видит comma-joined host → URL
+    parse fail → 403. **Не дублировать** `proxy_set_header` в
+    `extraConfig`; полагаться на include.
 
 ### R2. home-manager `Service` ≠ `serviceConfig`
 
