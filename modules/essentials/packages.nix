@@ -111,7 +111,27 @@
   };
   environment.variables.EDITOR = "fresh";
   programs = {
-    # nix-ld.enable = true;
+    # nix-ld stub для запуска generic-linux бинарей без FHS-обёртки.
+    # Включается в первую очередь ради herdr-web-ui plugin на rydiwo (и
+    # на всякий случай на сапфире): plugin проверяет PATH на bun, и если
+    # не находит, скачивает свой runtime в
+    # ~/.local/share/herdr-web-ui/install.<hash>/runtime/bin/bun. Этот bun
+    # динамически слинкован для generic linux (glibc), и на NixOS stub
+    # `ld` без `nix-ld` отказывается его запускать с ошибкой «NixOS cannot
+    # run dynamically linked executables intended for generic linux
+    # environments out of the box». Системный bun (`pkgs.bun` из
+    # home/modules/herdr-runtime.nix) эту проблему не решает — plugin
+    # использует **свой собственный** runtime manager (path-pattern
+    # `install.<hash>/`), не fallback на PATH.
+    #
+    # `stdenv.cc.cc.lib` даёт glibc + libstdc++ + libgcc_s — минимум,
+    # чтобы glibc-based бинари стартовали. Если конкретный плагин
+    # потребует ещё (zlib, openssl, etc.) — расширять
+    # `programs.nix-ld.libraries` по факту ldd-проверки.
+    nix-ld = {
+      enable = true;
+      libraries = with pkgs; [ stdenv.cc.cc.lib ];
+    };
     justray = {
       enable = false;
     };
