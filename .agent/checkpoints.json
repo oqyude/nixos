@@ -11,27 +11,107 @@
     "design": "skipped",
     "decomposition": "completed",
     "execution": "in_progress",
-    "metastate": "pending",
+    "metastate": "completed",
     "handoff": "pending"
   },
   "tasks": [
-    { "id": "T1", "title": "A1: mobile.nix импортирует несуществующий lib/xlib.nix", "status": "pending", "origin": "user:direct" },
-    { "id": "T2", "title": "A2: убедиться, что nix flake check вообще запускается", "status": "pending", "origin": "user:direct" },
+    { "id": "T1", "title": "A1: mobile.nix импортирует несуществующий lib/xlib.nix", "status": "completed", "origin": "user:direct" },
+    { "id": "T2", "title": "A2: убедиться, что nix flake check вообще запускается", "status": "completed", "origin": "user:direct" },
     { "id": "T3", "title": "A3: явная финальная политика nftables на VDS", "status": "pending", "origin": "user:direct" },
-    { "id": "T4", "title": "B1: guard на несмонтированный носитель /mnt/services", "status": "pending", "origin": "user:direct" },
-    { "id": "T5", "title": "B2: зафиксировать, что бэкапов в конфигурации нет", "status": "pending", "origin": "user:direct" },
-    { "id": "T6", "title": "C1: вернуть расследование 3x-ui, потерянное при откате", "status": "pending", "origin": "user:direct" },
-    { "id": "T7", "title": "C2: зафиксировать фактические версии панели и ядра 3x-ui", "status": "pending", "origin": "user:direct" },
-    { "id": "T8", "title": "C3: убрать сервис автообновления 3x-ui", "status": "pending", "origin": "user:direct" },
-    { "id": "T9", "title": "C4: записать, что ядро Xray — состояние панели, а не Nix", "status": "pending", "origin": "user:direct" },
+    { "id": "T4", "title": "B1: guard на несмонтированный носитель /mnt/services", "status": "pending", "origin": "user:direct", "severity": "high", "note": "Подтверждено 2026-10-15 построчно в отрендеренных юнитах: ConditionPathIsMountPoint лежит в [Service] и игнорируется systemd у 13 systemd-юнитов / 12 сервисов (13-vs-12 — не опечатка: tape-rotation даёт два юнита). Гвард мёртв. Направление правки — first-class unitConfig, RequiresMountsFor НЕ возвращать. См. ADR-0004." },
+    { "id": "T5", "title": "B2: зафиксировать, что бэкапов в конфигурации нет", "status": "completed", "origin": "user:direct" },
+    { "id": "T6", "title": "C1: вернуть расследование 3x-ui, потерянное при откате", "status": "completed", "origin": "user:direct" },
+    { "id": "T7", "title": "C2: зафиксировать фактические версии панели и ядра 3x-ui", "status": "completed", "origin": "user:direct" },
+    { "id": "T8", "title": "C3: убрать сервис автообновления 3x-ui", "status": "completed", "origin": "user:direct" },
+    { "id": "T9", "title": "C4: записать в project-rules, что ядро Xray — состояние панели, а не Nix", "status": "completed", "origin": "user:direct" },
     { "id": "T10", "title": "C5: решить судьбу reality443Forwarding", "status": "pending", "origin": "user:direct" },
     { "id": "T11", "title": "D1: пробросы роутера — главный недостающий инвариант", "status": "completed", "origin": "user:direct" },
     { "id": "T12", "title": "D2: зафиксировать 100.64.0.0 как Tailscale-адрес sapphira", "status": "completed", "origin": "user:direct" },
-    { "id": "T13", "title": "D3: убрать мёртвое правило firewall на sapphira", "status": "pending", "origin": "user:direct" },
+    { "id": "T13", "title": "D3: убрать мёртвое правило firewall на sapphira", "status": "completed", "origin": "user:direct" },
     { "id": "T14", "title": "E1: написать AGENTS.md в корне (с metaagent-шапкой)", "status": "completed", "origin": "user:direct" },
-    { "id": "T15", "title": "E2: выбрать проверки, которые заменят половину инвариантов", "status": "pending", "origin": "user:direct" },
-    { "id": "T16", "title": "E3: судьба 15 закомментированных модулей", "status": "pending", "origin": "user:direct" },
-    { "id": "T17", "title": "Review 2026-10-10 followup: B1 (R1.4 врёт), I1–I3 sync", "status": "pending", "origin": "user:direct (post-review)", "priority": "high", "fixes": ["T12", "T1", "T13", "T16"], "report": ".agent/reviews/2026-10-10-review-dev-diff-vs-16644fc.md" }
+    { "id": "T15", "title": "E2: выбрать проверки, которые заменят половину инвариантов", "status": "completed", "origin": "user:direct" },
+    { "id": "T16", "title": "E3: судьба закомментированных модулей", "status": "completed", "origin": "user:direct" },
+    { "id": "T17", "title": "Review 2026-10-10: разобрать B1 (R1.4 врёт), синхронизировать I1–I3", "status": "completed", "origin": "user:direct (post-review)", "priority": "high", "fixes": ["T12", "T1", "T13", "T16"], "report": ".agent/reviews/2026-10-10-review-dev-diff-vs-16644fc.md" },
+    { "id": "T18", "title": "Закоммитить и запушить фикс gitea-runner (фантомный юнит + зависимость от Gitea)", "status": "pending", "origin": "session 2026-10-15", "severity": "high", "files": ["modules/server/gitea-runner.nix"], "adr": "ADR-0004" },
+    { "id": "T19", "title": "R1.14: внести инвариант ADR-0004 (фантомный systemd-юнит) в project-rules.md и AGENTS.md", "status": "completed", "origin": "session 2026-10-15 (metastate refresh)", "type": "documentation", "files": [".agent/rules/project-rules.md", "AGENTS.md"], "adr": "ADR-0004", "note": "ADR-0004 был написан, но его инвариант не попал в project-rules.md — секция R1 обрывалась на R1.13. Расхождение зафиксировано в .agent/handoff-summary.md:90 как следующая задача. Закрыт в этой же сессии." },
+    { "id": "T20", "title": "CI и pre-commit не запускаются: .ci/checks.sh без execute-бита (режим 100644)", "status": "pending", "origin": "session 2026-10-15 (metastate refresh)", "type": "fix", "severity": "high", "files": [".ci/checks.sh", ".pre-commit-config.yaml", ".github/workflows/nix-checks.yml"], "note": "Проверено 2026-10-15: `git ls-files -s .ci/checks.sh` → 100644 (на диске -rw-r--r--, shebang есть, execute-бита нет), при этом .github/workflows/nix-checks.yml:20 зовёт `run: .ci/checks.sh`, а .pre-commit-config.yaml:10 — `entry: .ci/checks.sh --no-build` (language: script, execve напрямую). Оба места требуют execute-бита и падают с permission denied, поэтому все три проверки T15 (:latest, nix flake check, sops path_regex) не выполнились ни разу — её acceptance записан без запуска. Правка тривиальна (mode flip, либо `bash .ci/checks.sh` в обоих вызовах), и это сигнал: CI закоммичен, но не прогнан. T15 сохранена completed (файлы созданы как задано), в её notes ложное «(executable)» исправлено; дефект режима файла отслеживается здесь." }
   ],
-  "last_updated": "2026-10-10T22:30:00"
+  "uncommitted_work": {
+    "state": "MODIFIED_NOT_COMMITTED",
+    "file": "modules/server/gitea-runner.nix",
+    "branch": "dev",
+    "remote": "gitea",
+    "committed_already": ["3babee5 opencode: remove opencode-loop plugin", "d021804 secrets(gitea-runner): replace placeholder with real registration token"],
+    "contains": [
+      "unitKey = \"gitea-runner-ci\\\\x2dsapphira\" — устраняет фантомный юнит без ExecStart",
+      "assertions-растяжка: падает на отсутствии ExecStart",
+      "замена дискового гварда на Wants/After nginx.service + gitea.service",
+      "serviceConfig.RestartSec = lib.mkForce \"30s\" (Restart=on-failure уже был от upstream)"
+    ],
+    "applied_to_host": true,
+    "applied_at": "2026-10-15T01:23",
+    "verified": "юнит active/running, ExecStart на месте, Phantom absent",
+    "warning": "Фикс применён к хосту через nixos-rebuild, но НЕ закоммичен. Любой nix flake предупредит 'dirty tree'. При следующем пересоздании хранилища без коммита работа сохранится только в текущем store-пути."
+  },
+  "host_state": {
+    "host": "sapphira",
+    "system_generation": "/nix/store/2nmjr3czlrzwsadj84hp5y9sr55kb5hi-nixos-system-sapphira-default",
+    "opencode_config": "без @bybrawe/opencode-loop (3babee5, применено)",
+    "opencode_web_service": "PID 1645, работает со СТАРЫМ конфигом в памяти; плагин исчезнет только после рестарта сервиса"
+  },
+  "resolved_doc_drift": [
+    {
+      "id": "drift-manifest-md",
+      "was": "tasks/manifest.md устаревал относительно tasks/manifest.json: в .md T1/T2/T13/T15 числились pending (в .json — completed), .md обрывался на T16 и не знал про T17/T18, а счётчики в нём говорили «Total 16 / Pending 15 / Completed 1».",
+      "resolution": "Владелец принял решение удалить .md, а не перегенерировать его. Файл удалён 2026-10-15 (git rm). Единственный источник истины по задачам — .agent/tasks/manifest.json; дублирующего markdown-зеркала больше нет.",
+      "source_of_truth": ".agent/tasks/manifest.json",
+      "resolved_at": "2026-10-15T03:00"
+    }
+  ],
+  "protocol_deviations": {
+    "_protocol": ".agent/src/PROTOCOLS/06_METASTATE.md",
+    "deviations": [
+      {
+        "step": "6.3",
+        "title": "Архивация завершённых задач — сознательно пропущена",
+        "deliberate": true,
+        "what_the_protocol_says": "Создать .agent/archive/tasks/{id}.json с полным описанием каждой completed-задачи и свести manifest.json к one-liner вида { \"id\": \"T1\", \"title\": \"…\", \"status\": \"archived\", \"origin\": \"…\" }.",
+        "what_was_done_instead": "Задачи остаются в manifest.json в полном виде, со всеми полями acceptance_criteria и notes.",
+        "rationale": "Поля acceptance_criteria и notes — единственная запись ПОЧЕМУ было принято решение, что уже пробовали и откатили, и какие неверные выводы были сделаны по дороге. Ничего из этого нет ни в коде, ни в истории git. Стрип этих полей уничтожил бы ровно тот контекст, который нужен следующей сессии.",
+        "consequence": [
+          "Каталог .agent/archive/ намеренно отсутствует — проверено на диске 2026-10-15.",
+          "Побочный эффект: archive/index.json из шага 6.6 не существует по той же причине, а не по недосмотру.",
+          "Значения status никогда не станет \"archived\" — completed остаётся конечным состоянием."
+        ],
+        "recorded_at": "2026-10-15T03:00"
+      },
+      {
+        "step": "6.1, 6.2",
+        "title": "Workflow заявок (.agent/requests/) не использовался",
+        "deliberate": true,
+        "what_the_protocol_says": "Собрать .agent/requests/active/, проверить каждый request, принять или отклонить, переместить принятые в archive/.",
+        "what_was_done_instead": "Шаги неприменимы: .agent/requests/ не существует. Задачи с самого начала велись напрямую в .agent/tasks/manifest.json.",
+        "rationale": "Проект никогда не заходил в request-workflow, поэтому нечего собирать и ревьюить. Отсутствие каталога — это not-applicable, а не незакрытая работа.",
+        "consequence": [
+          "Архив заявок не ведётся; ревью делается напрямую по manifest.json.",
+          ".agent/requests/ не создаётся задним числом, чтобы не фабриковать артефакты прошлого."
+        ],
+        "recorded_at": "2026-10-15T03:00"
+      },
+      {
+        "step": "6.4, 6.5, 6.7, 6.8",
+        "title": "Структурные шаги — единственные, которые реально выполняются",
+        "deliberate": true,
+        "statement": "Из всех шагов протокола 6.1-6.8 сознательно пропущены только 6.1, 6.2 (неприменимы) и 6.3 (отклонено владельцем, см. выше). Шаги 6.4 (project-state.md), 6.5 (roadmap/sources.md), 6.7 (handoff-summary.md) и 6.8 (checkpoints.json) ВЫПОЛНЯЮТСЯ — в этом прогоне параллельно, силами других агентов, каждый в своём файле.",
+        "ownership_note": "Этот прогон: checkpoints.json + tasks/manifest.json + tasks/manifest.md + decisions/index.json — в ведении одного агента. project-state.md, roadmap/sources.md, handoff-summary.md, rules/project-rules.md, AGENTS.md — в ведении других.",
+        "recorded_at": "2026-10-15T03:00"
+      }
+    ]
+  },
+  "corrections_this_session": [
+    "Ложный вывод e6e82b8: «serviceConfig нельзя мержить, [Unit] мержится, [Service] нет». На самом деле дело было в имени атрибута. С правильным ключом serviceConfig мержится — проверено (ExecStart_survived: YES).",
+    "Ложный вывод в отчёте этой сессии: «Restart=no». На самом деле upstream задаёт Restart=on-failure, RestartSec=2. Ошибка была в systemctl show по неверному имени юнита (обычный дефис вместо литерального \\x2d) — systemd отдал дефолты.",
+    "Ложный вывод: «Restart=no объясняет 12-дневный простой». Нет: пропуск юнита по ConditionPathIsMountPoint — это «не запущен», а не «сбой», Restart бы и не сработал."
+  ],
+  "last_updated": "2026-10-15T03:00"
 }

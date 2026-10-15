@@ -1,6 +1,6 @@
 {
   "version": "3.0.0",
-  "updated_at": "2026-10-09T22:30",
+  "updated_at": "2026-10-15T03:00",
   "decisions": [
     {
       "id": "0001",
@@ -12,15 +12,15 @@
     },
     {
       "id": "0002",
-      "title": "Backups — external to Nix repo, awaiting 5.6 answer",
-      "status": "draft",
+      "title": "Backups — external to Nix repo, no strategy declared",
+      "status": "accepted",
       "date": "2026-10-09",
       "file": ".agent/decisions/0002-backups-external.md",
-      "tags": ["backups", "documentation", "T5"],
+      "tags": ["backups", "documentation", "T5", "R1.9", "accepted-risk"],
       "task": "T5",
-      "blocked_by": [
-        "user: open question 5.6 (where are backups, how are they verified)"
-      ]
+      "resolution": "Вопрос 5.6 («где бэкапы и как они проверяются?») владелец так и не ответил — и это НЕ блокер, а осознанно принятый риск. Решение принято в форме принятого риска: в .agent/rules/project-rules.md:42-48 закреплено правило R1.9 «Backups: external/unknown — accepted risk», в этом репозитории не декларируется ни одна бэкап-стратегия, а перечень failure modes лежит в .agent/decisions/0002-backups-external.md. Задача T5 закрыта как completed именно в этом смысле: неопределённость не устранена, а зафиксирована как осознанная. Неопределённость по 5.6 остаётся шумной только если владелец вернётся к теме: тогда R1.9 отменяется и заменяется на R1.x с описанием бэкап-стратегии и её верификации, а этот статус меняется на superseded.",
+      "moot_unless": "Владелец отвечает на open question 5.6 или явно просит пересмотреть бэкап-политику.",
+      "resolved_at": "2026-10-15T03:00"
     },
     {
       "id": "0003",
@@ -29,6 +29,15 @@
       "date": "2026-10-10",
       "file": ".agent/decisions/0003-3x-ui-reality-chain.md",
       "tags": ["3x-ui", "xray", "reality", "otreca", "nginx", "invariant", "R1.10", "R1.11", "R1.12", "R1.13", "T10"]
+    },
+    {
+      "id": "0004",
+      "title": "Имя systemd-юнита при переопределении upstream-модуля (escapeSystemdPath)",
+      "status": "accepted",
+      "date": "2026-10-15",
+      "file": ".agent/decisions/0004-systemd-unit-attr-name.md",
+      "tags": ["systemd", "gitea-runner", "nix-module-system", "sapphira", "invariant", "R1.14", "trap"],
+      "supersedes_wrong_conclusion_of": "e6e82b8"
     }
   ],
   "proposals": [

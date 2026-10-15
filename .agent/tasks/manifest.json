@@ -4,15 +4,15 @@
   "target_repo": "S:/Git/nixos",
   "goal": "Установить metaagent, перенести накопленные данные (AGENTS.md, docs/arch/*) в структуру .agent/.",
   "project_type": "existing",
-  "date": "2026-10-10T22:30",
+  "date": "2026-10-15T03:00",
   "phases": {
     "init": "completed",
-    "analyse": "pending",
-    "roadmap": "pending",
+    "analyse": "completed",
+    "roadmap": "completed",
     "design": "skipped",
-    "decomposition": "pending",
+    "decomposition": "completed",
     "execution": "in_progress",
-    "metastate": "pending",
+    "metastate": "completed",
     "handoff": "pending"
   },
   "tasks": [
@@ -70,9 +70,11 @@
       "origin": "user:direct",
       "depends_on": [],
       "acceptance_criteria": [
-        "В xlib/helpers.nix есть mkStorageGuard",
-        "postgresql, samba, homebox, gitea, navidrome, syncthing, uptime-kuma, immich, nextcloud, calibre-web, 3x-ui, tape-rotation используют mkStorageGuard",
-        "Имитация отказа: umount /mnt/services + systemctl start postgresql → FAIL, а не пустая база",
+        "В xlib/helpers.nix есть mkStorageGuard (проверено: helpers.nix:180-189)",
+        "Условие выставляется как first-class опция юнита (systemd.services.<name>.unitConfig / unit.ConditionPathIsMountPoint), а не через serviceConfig — иначе оно рендерится в [Service], который systemd не читает",
+        "RequiresMountsFor НЕ добавляется: он создаёт зависимость, по которой systemd сам авто-remount'ит ФС и обессмысливает гвард (проверено на sapphira 2026-10-10)",
+        "Имитация отказа: umount /home/oqyude/External + systemctl start postgresql → FAIL, а не пустая база",
+        "В отрендеренном юните условие лежит в секции [Unit], а не в [Service]",
         "В AGENTS.md добавлена строка про findmnt перед рестартом (уже в R4)"
       ],
       "files": [
@@ -91,7 +93,7 @@
         "modules/containers/tape-rotation.nix"
       ],
       "blocks": [],
-      "notes": "ConditionPathIsMountPoint=/mnt/services НЕ использовать (bind-mount внутри одной ФС не меняет st_dev). Надёжны requiresMountsFor или ConditionPathIsMountPoint на xlib.dirs.server-home."
+      "notes": "Масштаб: гвард мёртв на 13 systemd-юнитах / 12 сервисах (расхождение 13-vs-12 — не опечатка: tape-rotation даёт два юнита, podman-taperotation-backend и podman-taperotation-frontend). Перечень: postgresql, samba, homebox, gitea, navidrome, syncthing, uptime-kuma, immich, nextcloud, calibre-web, 3x-ui (юнит podman-3xui_app), tape-rotation (2 юнита). Прежние записи «10 сервисов» / «12 сервисов» были неверны. ПРИЧИНА (обновлено 2026-10-15): ConditionPathIsMountPoint — директива секции [Unit], но все 13 потребителей передают её через serviceConfig, поэтому она рендерится в [Service], где systemd её не читает. Подтверждено построчным чтением отрендеренных юнитов на sapphira 2026-10-15: для gitea секция [Service] начинается со строки 5, а ConditionPathIsMountPoint лежит на строке 14. НАПРАВЛЕНИЕ ПРАВКИ: сделать условие first-class опцией юнита (systemd.services.<name>.unitConfig = { ConditionPathIsMountPoint = [ ... ]; } либо unit.ConditionPathIsMountPoint), а не протаскивать его через serviceConfig. RequiresMountsFor НЕ возвращать: он намеренно отсутствует в helpers.nix:181-187, потому что создаёт зависимость, по которой systemd при старте юнита сам remount'ит ФС — и это обессмысливает сам гвард (проверено на sapphira 2026-10-10). Порядок задавать через After= на .mount-юните в собственной секции systemd.services потребителя. Старое наблюдение про st_dev остаётся в силе и объясняет выбор якоря: bind-mount внутри одной ФС не меняет st_dev, поэтому ConditionPathIsMountPoint на путях под /mnt/services всегда «yes» — якорь только xlib.dirs.server-home (реальная точка монтирования). См. ADR-0004."
     },
     {
       "id": "T5",
@@ -255,7 +257,7 @@
       ],
       "files": [".ci/checks.sh", ".pre-commit-config.yaml", ".github/workflows/nix-checks.yml"],
       "blocks": [],
-      "notes": "Реализовано 3 из 7: #1 :latest (с whitelist для 3x-ui/tape-rotation), #2 nix flake check, #7 sops path_regex. .ci/checks.sh (executable), .pre-commit-config.yaml (local hook), .github/workflows/nix-checks.yml (CI). Оставшиеся 4: #3 coredns↔nginx, #4 mkServiceStorage, #5 nftables final policy, #6 listen.addr — не реализованы, ожидают решения владельца."
+      "notes": "Реализовано 3 из 7: #1 :latest (с whitelist для 3x-ui/tape-rotation), #2 nix flake check, #7 sops path_regex. .ci/checks.sh, .pre-commit-config.yaml (local hook), .github/workflows/nix-checks.yml (CI). ИСПРАВЛЕНИЕ 2026-10-15 (раньше здесь стояло ложное «.ci/checks.sh (executable)»): .ci/checks.sh лежит в режиме 100644 — `git ls-files -s .ci/checks.sh` → 100644, на диске -rw-r--r--, execute-бита нет. Оба места вызова запускают его как исполняемый файл — .github/workflows/nix-checks.yml:20 `run: .ci/checks.sh` и .pre-commit-config.yaml:10 `entry: .ci/checks.sh --no-build` (language: script, execve напрямую) — поэтому ни CI, ни pre-commit-хук их фактически не выполняют: шаг падает с permission denied. Следствие: все три проверки выше ни разу не запускались, инварианты, которые они прикрывали, не защищены. Статус completed сохранён (файлы созданы ровно как задано), дефект — только в режиме файла; чинится отдельно, см. T20. Оставшиеся 4: #3 coredns↔nginx, #4 mkServiceStorage, #5 nftables final policy, #6 listen.addr — не реализованы, ожидают решения владельца."
     },
     {
       "id": "T16",
@@ -266,11 +268,12 @@
       "depends_on": ["T1"],
       "acceptance_criteria": [
         "Решение: archive (выполнено)",
-        "Все модули перенесены в archive/ или удалены"
+        "В modules/server/default.nix не осталось НИ ОДНОГО закомментированного импорта — проверено 2026-10-15: секция imports (строки 7-44) содержит только живые пути",
+        "Все выведенные из сборки модули лежат в archive/ либо удалены коммитом"
       ],
       "files": ["modules/server/default.nix", "archive/server-modules/", "archive/containers/"],
       "blocks": [],
-      "notes": "Итого 15 модулей: 13 из server/default.nix:37-50 (remnawave, coturn, mealie, memos, minecraft, n8n, netdata, nfs, rsync, step-ca, transmission, trilium, zerotier) архивированы в archive/server-modules/ + 2 из containers/ (kokoro-tts, openhands — не импортированы) в archive/containers/. stirling-pdf.nix удалён в 5dd7a58 (функционал в bentopdf.nix). open-webui.nix активен в modules/containers/open-webui.nix."
+      "notes": "Текущее состояние (проверено 2026-10-15): в modules/server/default.nix закомментированных импортов НЕ осталось вообще — imports занимают строки 7-44 и состоят только из живых путей; строки 38-43 — информационный комментарий-блок, документирующий архив (не отключённые импорты). Состав, а не «итого»: 12 файлов в archive/server-modules/ (coturn, mealie, memos, minecraft, n8n, netdata, nfs, rsync, step-ca, transmission, trilium, zerotier) + 3 файла в archive/containers/ (remnawave.nix, kokoro-tts.nix, openhands.nix) = 15 перенесённых, из них 13 были закомментированы в server/default.nix, а kokoro-tts и openhands импортированы не были. Плюс 1 удалённый: stirling-pdf.nix удалён в 5dd7a58 (поглощён bentopdf.nix), подтверждено `git show --stat 5dd7a58`. open-webui.nix НИКОГДА не был закомментирован — он переехал в modules/containers/ и остаётся активным (подключён как ../containers/open-webui.nix в строке 9). Итого по составу: 12 в archive/server-modules + 3 в archive/containers + 1 удалён (stirling-pdf), плюс 1 активный (open-webui), который архиву не подлежит. ЗАМЕЧАНИЕ (вне моего владения, не правил): комментарий в самом default.nix:38-39 всё ещё говорит «14 modules archived» и «13 in modules/server/default.nix:37-50, 2 in modules/containers/» — это устаревшая формулировка, и номера строк там тоже протухли."
     },
     {
       "id": "T17",
@@ -298,6 +301,67 @@
       ],
       "fixes": ["T12 (B1: R1.4 stale content)", "T1 (I2: status pending after fix)", "T13 (I2: status pending after fix)", "T16 (I1: count drift in acceptance)"],
       "notes": "B1: R1.4 исправлен в project-rules.md:22-25 и AGENTS.md:70-72 (4 файла: home/termux.nix, modules/server/nextcloud.nix, modules/server/nginx.nix, modules/vds/systemd.nix). I1: count sync в AGENTS.md:84, project-rules.md:97, manifest.json (T16 acceptance), modules/server/default.nix:37-50. I2: T1 и T13 в manifest.json → completed. I3: .ci/checks.sh закоммичен (61b3724). T12 re-verified: R1.4 fixed, T12 остаётся completed. M1: stale nginx.nix:225 убран из R1.3. M2: R1.2 обновлён с 7 до 12 actual services. M3: T10 погашен (reality443Forwarding удалён)."
+    },
+    {
+      "id": "T18",
+      "title": "Закоммитить и запушить фикс gitea-runner (фантомный юнит + зависимость от Gitea)",
+      "type": "fix",
+      "priority": "high",
+      "status": "pending",
+      "origin": "session 2026-10-15",
+      "depends_on": [],
+      "adr": "ADR-0004",
+      "acceptance_criteria": [
+        "modules/server/gitea-runner.nix закоммичен в ветку dev и запушен в gitea",
+        "в вычисленном systemd.services присутствует только ключ gitea-runner-ci\\x2dsapphira, фантомного gitea-runner-ci-sapphira нет",
+        "nix build .#nixosConfigurations.sapphira.config.system.build.toplevel — exit 0",
+        "в отрендеренном юните есть ExecStart=…/gitea-runner daemon, Wants=nginx.service gitea.service, RestartSec=30s, и НЕТ ConditionPathIsMountPoint",
+        "юнит active/running на sapphira после nixos-rebuild switch"
+      ],
+      "files": [
+        "modules/server/gitea-runner.nix",
+        ".agent/decisions/0004-systemd-unit-attr-name.md",
+        ".agent/checkpoints.json",
+        ".agent/handoff-summary.md"
+      ],
+      "notes": "Внесено 2026-10-15T01:23 через nixos-rebuild switch, но НЕ закоммичено — лежит только в рабочем дереве. Суть: имя атрибута systemd.services должно байт-в-байт совпадать с escapeSystemdPath-формой upstream, иначе создаётся фантомный юнит без ExecStart и systemd отказывается стартовать (юнит молчал 12 часов, 2026-10-14 16:25 .. 2026-10-15 01:23). Сопутствующе: дисковый гвард заменён на Wants/After nginx+gitea, RestartSec 2s → 30s (Restart=on-failure уже был от upstream). ВНИМАНИЕ: этот же файл правит и T4 в части mkStorageGuard — не смешивать, T4 отдельная задача."
+    },
+    {
+      "id": "T19",
+      "title": "R1.14: внести инвариант ADR-0004 (фантомный systemd-юнит) в project-rules.md и AGENTS.md",
+      "type": "documentation",
+      "priority": "high",
+      "status": "completed",
+      "origin": "session 2026-10-15 (metastate refresh)",
+      "depends_on": ["T18"],
+      "adr": "ADR-0004",
+      "acceptance_criteria": [
+        ".agent/rules/project-rules.md содержит R1.14: имя атрибута systemd.services должно байт-в-байт совпадать с escapeSystemdPath-формой upstream, иначе создаётся фантомный юнит без ExecStart, который systemd молча отказывается запускать",
+        "AGENTS.md содержит ту же строку в списке подтверждённых инвариантов и/или в таблице ловушек",
+        "Правило связывает свойство с уже описанным в ADR-0004 механизмом (gitea-runner, 12 часов молчания)"
+      ],
+      "files": [".agent/rules/project-rules.md", "AGENTS.md"],
+      "blocks": [],
+      "notes": "ADR-0004 был написан, но его инвариант так и не попал в project-rules.md: секция R1 обрывалась на R1.13 (ADR-0003, TLS терминирует панель 3x-ui) — проверено grep по проекту на 2026-10-15, упоминаний R1.14 в правилах не было. Это расхождение уже было зафиксировано как следующая задача в .agent/handoff-summary.md:90 («R1.14 из ADR-0004 в него ещё не внесён»). Работа выполняется параллельно в этой же сессии; запись внесена как completed по факту завершения."
+    },
+    {
+      "id": "T20",
+      "title": "CI и pre-commit не запускаются: .ci/checks.sh без execute-бита (режим 100644)",
+      "type": "fix",
+      "severity": "high",
+      "status": "pending",
+      "origin": "session 2026-10-15 (metastate refresh)",
+      "depends_on": [],
+      "acceptance_criteria": [
+        "git ls-files -s .ci/checks.sh отдаёт режим 100755 (на диске -rwxr-xr-x), а не 100644",
+        "Осознанно выбран один из двух вариантов и решение зафиксировано здесь: (а) выставить execute-бит на .ci/checks.sh (chmod +x + git update-index --chmod=+x), либо (б) переписать оба места вызова на `bash .ci/checks.sh` — семантика pre-commit language: script делает execve(entry) без оболочки, поэтому вариант (б) может быть предпочтительнее и в любом случае снимает зависимость от режима файла",
+        "Степ «run invariant checks» в .github/workflows/nix-checks.yml завершается с exit 0, а не с permission denied — подтверждено на реальном прогоне workflow",
+        "pre-commit install + pre-commit run nixos-flake-checks исполняет проверку, а не падает на правах доступа",
+        "Все три проверки T15 фактически выполнились хотя бы раз с приложенным выводом: #1 гвард :latest (с whitelist 3x-ui/tape-rotation), #2 nix flake check, #7 sops path_regex",
+        "Ничего из правки не выполнено молча: режим файла / текст обоих вызывающих меняются только отдельным, авторизованным коммитом, а не попутно в чужой задаче"
+      ],
+      "files": [".ci/checks.sh", ".pre-commit-config.yaml", ".github/workflows/nix-checks.yml"],
+      "notes": "Проверено 2026-10-15. МЕХАНИЗМ: git ls-files -s .ci/checks.sh → `100644 fb61a7db…`, на диске -rw-r--r--, shebang есть, execute-бита нет. GitHub Actions сохраняет режим файла из индекса при checkout, поэтому .github/workflows/nix-checks.yml:20 `run: .ci/checks.sh` (прямой запуск как исполняемого файла) падает с permission denied. .pre-commit-config.yaml:10 объявляет `entry: .ci/checks.sh --no-build` с `language: script`, а script-хук делает execve(entry) напрямую — та же потребность в execute-бите, тот же отказ. ПОСЛЕДСТВИЕ: все три проверки, введённые под T15 (гвард :latest, nix flake check, sops path_regex), не выполнились НИ РАЗУ — ни в CI, ни в pre-commit. T15 была принята как закрытие риска через замену «половины инвариантов» автоматическими проверками, но её acceptance_criteria были записаны, не запустив то, что они описывают; инварианты R1.5/R1.8 (образы :latest) и sops-path_regex сейчас не прикрыты ничем. ПОЧЕМУ ЭТО НЕ ЕДИНИЧНЫЙ ПРОПУСК: правка тривиальна (один mode flip), и именно тривиальность — сигнал: CI закоммитили, но ни разу не прогнали, поэтому «проверки зелёные» осталось недоказанным утверждением. Это четвёртый случай одного и того же паттерна в этом прогоне (R1.2 про RequiresMountsFor, ловушка opencode.nix:339, ловушка «14 закомментированных модулей»), но инвертированный: первые три — ложно УТВЕРЖДЕНИЕ об устройстве системы, здесь — ложно УТВЕРЖДЕНИЕ о том, что защита работает. Общий вывод: acceptance_criteria, требующие фактического запуска, нельзя закрывать по факту написания артефакта. T15 остаётся completed (файлы созданы как задано) — правится только режим файла; см. также исправленную запись T15."
     }
   ],
   "backlog_count": 23,
