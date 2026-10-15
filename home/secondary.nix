@@ -27,6 +27,7 @@ in
     ./modules/dconf.nix
     ./modules/packages.nix
     ./modules/plasma-manager.nix
+    ./modules/herdr.nix
     # ./modules/noctalia.nix
   ];
   xdg = {
