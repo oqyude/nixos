@@ -15,6 +15,7 @@
     ./hardware/mini-laptop.nix
     self.nixosModules.default
     ../modules/pxe-infra
+    ../modules/server/engipy-backend.nix
   ];
 
   boot = {
