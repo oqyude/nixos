@@ -35,16 +35,21 @@
   host.ssh.enable = true;
   hardware.intel-gpu-tools.enable = true;
 
-  # engipy webapp backend на rydiwo: uvicorn + FastAPI + SBERT + torch.
-  # Python-окружение через fetchPip — wheels с PyPI, без компиляции
-  # (см. modules/server/engipy-backend.nix). Sapphira проксирует
-  # engipy.zeroq.su/api/* на 192.168.1.102:8000 — это адрес rydiwo
-  # в LAN.
+  # engipy webapp backend на rydiwo: uvicorn + FastAPI + ONNX-SBERT.
+  # Python-окружение через pip-venv на rydiwo (см. modules/server/engipy-backend.nix).
+  # Sapphira проксирует engipy.zeroq.su/api/* на 192.168.1.102:8000.
   #
-  # Сгенерировано в WSL nixos — см. requirements.nix + gen_reqs.py.
+  # model = путь к локальной ONNX-папке (экспорт `cointegrated/rubert-tiny2`
+  # сделан в WSL nixos и разложен на rydiwo в
+  # /var/lib/engipy/model/cointegrated__rubert-tiny2/). HF Hub id
+  # `cointegrated/rubert-tiny2` НЕ должен здесь стоять — это
+  # триггерит optimum через from_pretrained() скачивать с HF и
+  # конвертировать через torch, что падает в
+  # `RuntimeError: could not create a primitive` в GELU activation.
   host.engipy-backend = {
     enable = true;
     bindAddress = "0.0.0.0";
+    model = "/var/lib/engipy/model/cointegrated__rubert-tiny2";
   };
 
   # Не засыпать при закрытии крышки: rydiwo используется как
