@@ -195,7 +195,7 @@ in
       wants = [ "network-online.target" ];
       requires = [ "engipy-install.service" ];
 
-      environment = {
+environment = {
         PYTHONUNBUFFERED = "1";
         PYTHONDONTWRITEBYTECODE = "1";
         VIRTUAL_ENV = "${cfg.dataDir}/venv";
@@ -207,11 +207,23 @@ in
         ENGIPY_EMBEDDINGS_PATH = "${cfg.dataDir}/${cfg.embeddingsStem}.npy";
         ENGIPY_DATA_DIR = cfg.dataDir;
         ENGIPY_MODEL = cfg.model;
-        # LD_LIBRARY_PATH убран: openblas lib от nix конфликтует с
-        # torch internals на SBERT forward ('could not create a
-        # primitive' — RuntimeError из transformers/activations.py:78,
-        # GELU act через BLAS). Без override torch берёт системные
-        # glibc/libgomp из /run/current-system/sw/lib.
+        # LD_LIBRARY_PATH нужен для numpy/scipy/uvloop (wheel-install
+        # не находит системный openblas). Без него numpy выбрасывает
+        # 'Error importing numpy: you should not try to import numpy
+        # from its source directory'.
+        LD_LIBRARY_PATH = lib.makeLibraryPath [
+          pkgs.stdenv.cc.cc.lib
+          pkgs.openblas
+        ];
+        # Однопоточный BLAS/OpenMP/MKL — иначе SBERT forward
+        # падает на 'RuntimeError: could not create a primitive' в
+        # GELU activation под torch CPU (конфликт torch + openblas
+        # threading). Inference на rydiwo 4 cores будет медленнее
+        # (~3-5 сек на запрос), но не упадёт.
+        OMP_NUM_THREADS = "1";
+        MKL_NUM_THREADS = "1";
+        OPENBLAS_NUM_THREADS = "1";
+        TOKENIZERS_PARALLELISM = "false";
       };
 
       serviceConfig = {
