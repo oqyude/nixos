@@ -76,6 +76,14 @@
       torch
     ]);
   };
+  # engipy webapp (uvicorn) тащит python311 + fastapi + pydantic +
+  # sentence-transformers. sphinx-9.1.0 не поддерживается для python3.11
+  # (см. https://nixos.org/manual/nixpkgs/unstable#sec-problems — unsupportedPython).
+  # sphinx не используется в runtime, поэтому глушим evaluation-error до
+  # warning. Альтернатива — переезд на pkgs.python312, но проще держать
+  # python311 в соответствие с тем, как код собирается локально.
+  nixpkgs.config.problems.handlers.sphinx.unsupportedPython = "warn";
+
   systemd.tmpfiles.rules = [
     (xlib.helpers.mkTmpfile "d" "/mnt" "0755" "root" "root")
     (xlib.helpers.mkTmpfile "d" xlib.dirs.services-mnt-folder "0755" "root" "root")
