@@ -220,7 +220,7 @@ in
         User = cfg.user;
         Group = cfg.user;
         WorkingDirectory = cfg.dataDir;
-        ExecStart = "${cfg.dataDir}/venv/bin/uvicorn app.main:app"
+        ExecStart = "${cfg.dataDir}/venv/bin/uvicorn --factory app.main:create_app"
           + " --host ${cfg.bindAddress} --port ${toString cfg.port} --no-access-log";
         Restart = "on-failure";
         RestartSec = "5s";
