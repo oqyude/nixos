@@ -116,6 +116,16 @@ in
           extraConfig = ''
             internal;
             proxy_pass http://127.0.0.1:9091/api/authz/forward-auth;
+            # T-FIX-BADZIP: bodied POSTs (xlsx upload) ломались с 500 —
+            # nginx пересылал Content-Length в auth-sub-request, но не тело;
+            # Authelia ждала байты и отвечала 408 (status auth_request не
+            # классифицирует), клиент видел «padding to disable MSIE…»
+            # default 500. vtimeline.zeroq.su давно починил этот же баг
+            # (см. модуль vtimeline.nix + комментарий в /etc/nginx/nginx.conf).
+            # Различимо только в location /api/ (vtimeline проксирует
+            # один location /, engipy — отдельные /api/ и /).
+            proxy_pass_request_body off;
+            proxy_set_header Content-Length "";
             proxy_set_header X-Original-URL $request_uri;
             proxy_set_header X-Forwarded-Proto $scheme;
             proxy_set_header X-Forwarded-Host $host;
