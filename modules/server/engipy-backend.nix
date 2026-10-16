@@ -169,12 +169,11 @@ in
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
 
-      environment = {
-        PATH = binPath;
-        # LD_LIBRARY_PATH не нужен для venv (system python is shared).
-        # libgomp/openblas подгружаются python'ом из /nix/store и
-        # доступны через $NIX_LIBS.
-      };
+      # environment: PATH не выставляем — системный PATH systemd'а
+      # по умолчанию включает /nix/store/.../*/bin (coreutils и др.),
+      # а venv-скрипт запускается по абсолютному пути
+      # ${installScript}/bin/engipy-install, который всё равно
+      # вызывает pip через ./venv/bin/pip. Так что PATH не критичен.
 
       serviceConfig = {
         Type = "oneshot";
