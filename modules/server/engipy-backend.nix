@@ -33,10 +33,12 @@
 let
   cfg = config.host.engipy-backend;
 
-  # requirements.txt c pinned versions — будет скопирован в dataDir
-  # при первом старте сервиса (через systemd.tmpfiles_copy). Внутри
-  # venv pip install -r requirements.txt отработает все wheels, кроме
-  # torch — для torch отдельный --index-url pytorch.org.
+  # requirements.txt с pinned versions. --extra-index-url ставит
+  # pytorch.org/whl/cpu как дополнительный источник — torch==2.6.0+cpu
+  # находится ТОЛЬКО там (на PyPI лежит только universal-версия,
+  # требующая CUDA ~3 GB). Поэтому sentence-transformers (тянет
+  # torch>=1.11.0) подхватит CPU-wheel автоматически, без отдельного
+  # upgrade-шага.
   requirementsTxt = pkgs.writeText "engipy-requirements.txt" ''
     fastapi==0.115.6
     uvicorn[standard]==0.32.0
@@ -53,18 +55,11 @@ let
     requests==2.32.3
     PyYAML==6.0.2
     packaging==24.2
-  '';
-
-  # Separate torch install (index-url override).
-  torchReqs = pkgs.writeText "engipy-torch-requirements.txt" ''
-    --index-url https://download.pytorch.org/whl/cpu
-    --extra-index-url https://pypi.org/simple/
+    --extra-index-url https://download.pytorch.org/whl/cpu
     torch==2.6.0+cpu
   '';
 
   # Install-script (ExecStartPre). Создаёт venv и ставит wheels.
-  # Каждая команда с || true, чтобы повторный запуск не падал по
-  # уже установленным пакетам.
   installScript = pkgs.writeShellScriptBin "engipy-install" ''
     set -e
     cd ${cfg.dataDir}
@@ -73,11 +68,8 @@ let
       echo "[engipy-install] creating venv…"
       ${pkgs.python311}/bin/python -m venv venv
 
-      echo "[engipy-install] installing PyPI packages (this takes ~2-3 min)…"
+      echo "[engipy-install] installing wheels (this takes ~2-3 min)…"
       ./venv/bin/pip install --no-cache-dir -r ${requirementsTxt}
-
-      echo "[engipy-install] installing torch (CPU only, ~30 sec)…"
-      ./venv/bin/pip install --no-cache-dir -r ${torchReqs}
 
       touch venv/.engipy-venv-installed
       echo "[engipy-install] done."
