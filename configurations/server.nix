@@ -133,6 +133,16 @@
     # ];
   };
 
+  # engipy frontend on sapphira: nginx vhost + Authelia forward-auth +
+  # tmpfiles для /var/lib/engipy/web. Backend крутится на rydiwo
+  # (см. configurations/mini-laptop.nix).
+  host.engipy-frontend = {
+    enable = true;
+    # По умолчанию backendHost = "192.168.1.102" (rydiwo LAN IP).
+    # Если rydiwo переедет на другой адрес — переопределить здесь.
+    backendHost = "192.168.1.102";
+  };
+
   system = {
     stateVersion = "25.05";
   };

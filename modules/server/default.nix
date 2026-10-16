@@ -36,7 +36,8 @@
     ./ttyd.nix
     ./vtimeline.nix
     ./uptime-kuma.nix
-    ./engipy.nix
+    ./engipy-frontend.nix
+    ./engipy-backend.nix
     # T16: 14 modules archived to ../archive/{server-modules,containers}/
     # (13 in modules/server/default.nix:37-50, 2 in modules/containers/).
     # T15: kokoro-tts and openhands (not imported) also archived.
@@ -57,25 +58,14 @@
     enable = true;
     cookieDomain = "zeroq.su";
   };
-  # engipy — FastAPI + SBERT webapp (uvicorn за nginx на
-  # engipy.zeroq.su). python311.withPackages тянет torch + sentence-
-  # transformers; первый nixos-rebuild на sapphira собирает их ~часы
-  # (2 ядра), последующие пересборки берут из кэша. Список
-  # зависимостей — точно из nix/engipy.nix проекта, чтобы backend-стек
-  # на сервере совпадал с dev-окружением.
-  host.engipy = {
-    enable = true;
-    pythonPackage = pkgs.python311.withPackages (ps: with ps; [
-      fastapi
-      uvicorn
-      pydantic
-      pydantic-settings
-      sqlalchemy
-      numpy
-      sentence-transformers
-      torch
-    ]);
-  };
+  # engipy webapp — split architecture:
+  #   - sapphira  : host.engipy-frontend.enable  → nginx vhost (engipy.zeroq.su)
+  #                 с /api/* на rydiwo:8000 и / → /var/lib/engipy/web
+  #   - rydiwo    : host.engipy-backend.enable   → systemd engipy (uvicorn + ML)
+  # Оба модуля импортируются для всех server/deviced хостов, и через
+  # host.*.enable выбирается только то, что нужно на конкретной машине.
+  # Причина — sapphira слабая (2 cores, 5.6 GB RAM) и не вытянет torch;
+  # rydiwo 4 cores / 11 GB держит uvicorn+sentence-transformers без свопа.
   # engipy webapp (uvicorn) тащит python311 + fastapi + pydantic +
   # sentence-transformers. sphinx-9.1.0 не поддерживается для python3.11
   # (см. https://nixos.org/manual/nixpkgs/unstable#sec-problems — unsupportedPython).

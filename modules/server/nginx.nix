@@ -262,67 +262,10 @@ in
       };
       # engipy.zeroq.su — FastAPI + SBERT webapp (подбор ГЭСН по ВОР).
       #
-      # systemd unit `engipy` (модуль modules/server/engipy.nix) слушает
-      # uvicorn на 127.0.0.1:8000. nginx раздаёт собранный Vite-бандл
-      # (index.html + assets/*) напрямую из /var/lib/engipy/web, а
-      # /api/* проксирует на uvicorn. Authelia forward-auth приделан
-      # ровно так же, как на vtimeline.zeroq.su / tty.zeroq.su —
-      # wildcard `*.zeroq.su → one_factor` в modules/server/authelia.nix
-      # покрывает новый vhost без правок там.
-      #
-      # nginx (юзер `nginx`) читает ${root} как член группы `engipy`;
-      # это добавляет modules/server/engipy.nix через
-      # `users.users.nginx.extraGroups = [ cfg.user ]`. Без этого
-      # 0750 engipy:engipy на /var/lib/engipy делает файлы
-      # невидимыми для nginx (нет traverse-bit).
-      #
-      # client_max_body_size 50m — пропустить крупные ВОР-файлы до
-      # uvicorn (default 1m клипал бы их до FastAPI).
-      "engipy.zeroq.su" = {
-        forceSSL = true;
-        enableACME = true;
-        locations = {
-          # API → uvicorn. Websockets включены на будущее
-          # (SSE/streams for long-running ВОР-матчинга).
-          "/api/" = {
-            proxyPass = "http://127.0.0.1:8000";
-            proxyWebsockets = true;
-            extraConfig = ''
-              auth_request /authelia;
-              auth_request_set $authelia_user $upstream_http_remote_user;
-              error_page 401 =302 https://authelia.zeroq.su/?rd=$scheme://$host$request_uri;
-              client_max_body_size 50m;
-              proxy_read_timeout 120s;
-              proxy_send_timeout 120s;
-            '';
-          };
-          # Static frontend (Vite build). tryFiles делает SPA-fallback
-          # на index.html для client-side routing.
-          "/" = {
-            root = "/var/lib/engipy/web";
-            tryFiles = "$uri $uri/ /index.html";
-            index = "index.html";
-            extraConfig = ''
-              auth_request /authelia;
-              auth_request_set $authelia_user $upstream_http_remote_user;
-              error_page 401 =302 https://authelia.zeroq.su/?rd=$scheme://$host$request_uri;
-            '';
-          };
-          "= /authelia" = {
-            extraConfig = ''
-              internal;
-              proxy_pass http://127.0.0.1:9091/api/authz/forward-auth;
-              proxy_set_header X-Original-URL $request_uri;
-              proxy_set_header X-Forwarded-Proto $scheme;
-              proxy_set_header X-Forwarded-Host $host;
-              proxy_set_header X-Forwarded-Method $request_method;
-              proxy_set_header X-Forwarded-Uri $request_uri;
-              proxy_set_header X-Forwarded-For $remote_addr;
-              proxy_set_header Accept "application/json";
-            '';
-          };
-        };
-      };
+      # Vhost был вынесен в modules/server/engipy-frontend.nix
+      # (sapphira-стиль, см. комментарий там). nginx-only изменения,
+      # включая Authelia forward-auth и static SPA-fallback, живут
+      # в том модуле и активируются через host.engipy-frontend.enable.
       # herdr.zeroq.su — web UI for the herdr orchestrator (devswha/herdr-web-ui,
       # MIT, 970★). herdr itself has no HTTP surface (only JSON-RPC over a
       # per-UID Unix socket; see home/modules/herdr.nix for the design

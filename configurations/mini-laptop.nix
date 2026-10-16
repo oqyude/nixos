@@ -34,6 +34,25 @@
   host.ssh.enable = true;
   hardware.intel-gpu-tools.enable = true;
 
+  # engipy webapp backend на rydiwo: uvicorn + FastAPI + SBERT + torch.
+  # Python-окружение через fetchPip — wheels с PyPI, без компиляции
+  # (см. modules/server/engipy-backend.nix). Sapphira проксирует
+  # engipy.zeroq.su/api/* на 192.168.1.102:8000 — это адрес rydiwo
+  # в LAN.
+  #
+  # Сгенерировано в WSL nixos — см. requirements.nix + gen_reqs.py.
+  host.engipy-backend = {
+    enable = true;
+    bindAddress = "0.0.0.0";
+  };
+
+  # Не засыпать при закрытии крышки: rydiwo используется как
+  # headless-сервер для engipy (sapphira проксирует /api/* на него).
+  # Если пользователь берёт ноутбук в руки — пусть остаётся правило
+  # по умолчанию (suspend); но для unattended-режима нужно ignore.
+  services.logind.lidSwitch = "ignore";
+  services.logind.lidSwitchDocked = "ignore";
+
   system.stateVersion = "26.05";
 
   # --------------------------------------------------------------------------
