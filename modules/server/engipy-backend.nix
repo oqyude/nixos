@@ -56,21 +56,18 @@ in
       type = lib.types.package;
       description = ''
         Python-окружение с ML-стеком. По умолчанию собирается через
-        fetchPip из ./requirements.nix (wheels с PyPI, без компиляции).
+        fetchPypi из ./requirements.nix (wheels с PyPI, без компиляции).
         Можно переопределить на любой другой derivation с тем же API.
       '';
       default = let
-        reqs = import ./requirements.nix { inherit pkgs; };
-      in pkgs.python311.buildEnv {
-        extraLibs = builtins.attrValues reqs;
-        ignoreCollisions = true;
-      };
+        reqs = import ./requirements.nix { pkgs = pkgs.python311Packages; };
+      in pkgs.python311.withPackages (ps: builtins.attrValues reqs);
       defaultText = lib.literalExpression ''
-        let reqs = import ./requirements.nix { inherit pkgs; };
-        in pkgs.python311.buildEnv {
-          extraLibs = builtins.attrValues reqs;
-          ignoreCollisions = true;
-        }
+        let reqs = import ./requirements.nix {
+          pkgs = pkgs.python311Packages;
+        };
+        in pkgs.python311.withPackages
+          (ps: builtins.attrValues reqs)
       '';
     };
 
