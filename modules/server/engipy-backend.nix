@@ -7,37 +7,93 @@
 # engipy — backend (uvicorn) для rydiwo.
 #
 # Sapphira (см. engipy-frontend.nix) держит nginx vhost и проксирует
-# /api/* на этот хост. Здесь крутится uvicorn с полным ML-стеком:
-# FastAPI + uvicorn + sentence-transformers + torch. SQLite-БД и SBERT-
-# эмбеддинги лежат в /var/lib/engipy на rydiwo NVMe (62 GB свободно);
-# bind-mount не нужен — rydiwo не имеет External-storage (device: secondary),
-# данные просто в /var/lib/engipy.
+# /api/* на этот хост. Здесь крутится uvicorn с полным ML-стеком.
 #
-# pythonPackage строится через fetchPip из requirements.nix — только wheels
-# с PyPI, никаких часовых компиляций на 4 ядрах rydiwo. requirements.nix
-# сгенерирован локально через WSL nixos (pip download + nix hash path),
-# поэтому hash'и — реальные SRI sha256, а не lib.fakeSha256.
+# Подход к Python-окружению: pip-based venv, не Nix-built.
+# Раньше пробовал `pkgs.fetchPypi { ... }` через `python311.withPackages`
+# и `python311.buildEnv.override { ... }` — оба НЕ раскладывают wheels
+# в site-packages (env оказывается пустой: только базовые файлы python3).
+# Pip-venv тривиально решает эту проблему:
+#   python -m venv /var/lib/engipy/venv
+#   pip install -r requirements.txt + torch from pytorch.org
+#
+# Минусы подхода:
+#   - Окружение reproducible только если requirements.txt зафиксирован
+#     версиями (не ломается ниже).
+# Плюсы:
+#   - Работает с любыми wheels из PyPI / pytorch.org без сложной логики.
+#   - rydiwo сам сделает pip install при первом systemd ExecStartPre.
+#   - Никаких часовых сборок torch на rydiwo (как это было на sapphira).
 #
 # Workflow:
-#   1. cd /etc/nixos && git pull
+#   1. На rydiwo: cd /etc/nixos && git pull
 #   2. sudo nixos-rebuild switch --flake /etc/nixos#rydiwo
-#   3. scp app/ fsnb_sbornik.db gesn_*.npy → rydiwo:/var/lib/engipy/
-#   4. sudo systemctl enable --now engipy
-#   5. sudo journalctl -u engipy -f
-#
-# На sapphira:
-#   1. cd /etc/nixos && git pull
-#   2. sudo nixos-rebuild switch --flake /etc/nixos#sapphira
-#   3. scp dist/ → sapphira:/var/lib/engipy/web/
-#   4. sudo nginx -t && sudo systemctl reload nginx
+#   3. sudo systemctl restart engipy   (ExecStartPre создаст venv ~5 мин)
+#   4. sudo journalctl -u engipy -f      (смотреть прогресс)
 let
   cfg = config.host.engipy-backend;
+
+  # requirements.txt c pinned versions — будет скопирован в dataDir
+  # при первом старте сервиса (через systemd.tmpfiles_copy). Внутри
+  # venv pip install -r requirements.txt отработает все wheels, кроме
+  # torch — для torch отдельный --index-url pytorch.org.
+  requirementsTxt = pkgs.writeText "engipy-requirements.txt" ''
+    fastapi==0.115.6
+    uvicorn[standard]==0.32.0
+    pydantic==2.10.3
+    pydantic-settings==2.7.0
+    sqlalchemy==2.0.36
+    numpy==2.2.1
+    sentence-transformers==3.3.1
+    transformers==4.47.1
+    huggingface-hub==0.27.0
+    tokenizers==0.21.0
+    safetensors==0.4.5
+    filelock==3.16.1
+    requests==2.32.3
+    PyYAML==6.0.2
+    packaging==24.2
+  '';
+
+  # Separate torch install (index-url override).
+  torchReqs = pkgs.writeText "engipy-torch-requirements.txt" ''
+    --index-url https://download.pytorch.org/whl/cpu
+    --extra-index-url https://pypi.org/simple/
+    torch==2.6.0+cpu
+  '';
+
+  # Install-script (ExecStartPre). Создаёт venv и ставит wheels.
+  # Каждая команда с || true, чтобы повторный запуск не падал по
+  # уже установленным пакетам.
+  installScript = pkgs.writeShellScriptBin "engipy-install" ''
+    set -e
+    cd ${cfg.dataDir}
+
+    if [ ! -f venv/.engipy-venv-installed ]; then
+      echo "[engipy-install] creating venv…"
+      ${pkgs.python311}/bin/python -m venv venv
+
+      echo "[engipy-install] installing PyPI packages (this takes ~2-3 min)…"
+      ./venv/bin/pip install --no-cache-dir -r ${requirementsTxt}
+
+      echo "[engipy-install] installing torch (CPU only, ~30 sec)…"
+      ./venv/bin/pip install --no-cache-dir -r ${torchReqs}
+
+      touch venv/.engipy-venv-installed
+      echo "[engipy-install] done."
+    fi
+  '';
+
+  # Python binary, который мы будем использовать для venv (через
+  # lib.makeBinPath). Окружение целиком — venv, $PATH не критичен.
+  python = pkgs.python311;
+  binPath = lib.makeBinPath [ python ];
 in
 {
   options.host.engipy-backend = {
     enable = lib.mkEnableOption ''
       engipy backend: поднять uvicorn под systemd unit `engipy` на этом
-      хосте (rydiwo-стиль: FastAPI + ML + DB).
+      хосте (rydiwo-стиль: FastAPI + ML + DB через pip-venv).
     '';
 
     port = lib.mkOption {
@@ -52,25 +108,6 @@ in
       description = "Системный пользователь, от которого запускается uvicorn.";
     };
 
-    pythonPackage = lib.mkOption {
-      type = lib.types.package;
-      description = ''
-        Python-окружение с ML-стеком. По умолчанию собирается через
-        fetchPypi из ./requirements.nix (wheels с PyPI, без компиляции).
-        Можно переопределить на любой другой derivation с тем же API.
-      '';
-      default = let
-        reqs = import ./requirements.nix { pkgs = pkgs.python311Packages; };
-      in pkgs.python311.withPackages (ps: builtins.attrValues reqs);
-      defaultText = lib.literalExpression ''
-        let reqs = import ./requirements.nix {
-          pkgs = pkgs.python311Packages;
-        };
-        in pkgs.python311.withPackages
-          (ps: builtins.attrValues reqs)
-      '';
-    };
-
     dbFileName = lib.mkOption {
       type = lib.types.str;
       default = "fsnb_sbornik.db";
@@ -80,10 +117,7 @@ in
     embeddingsStem = lib.mkOption {
       type = lib.types.str;
       default = "gesn_cointegrated_rubert_tiny2";
-      description = ''
-        Stem эмбеддингов в dataDir: <stem>.npy + <stem>_codes.npy.
-        Прокидывается как ENGIPY_EMBEDDINGS_PATH.
-      '';
+      description = "Stem эмбеддингов в dataDir.";
     };
 
     model = lib.mkOption {
@@ -96,20 +130,15 @@ in
       type = lib.types.str;
       default = "/var/lib/engipy";
       description = ''
-        Рабочий каталог uvicorn: app/, SQLite-БД, SBERT-эмбеддинги,
-        HuggingFace-кэш моделей. На rydiwo это обычный каталог на NVMe,
-        без bind-mount (R1.2 применим только к device: server / External).
+        Рабочий каталог uvicorn: app/, venv/, SQLite-БД, SBERT-эмбеддинги,
+        HuggingFace-кэш моделей.
       '';
     };
 
     bindAddress = lib.mkOption {
       type = lib.types.str;
       default = "0.0.0.0";
-      description = ''
-        Адрес, на котором uvicorn слушает. По умолчанию 0.0.0.0 — потому
-        что sapphira ходит по LAN (не loopback). Если хочется только
-        loopback — установите "127.0.0.1" и защитите firewall'ом.
-      '';
+      description = "Адрес, на котором uvicorn слушает.";
     };
   };
 
@@ -125,38 +154,68 @@ in
     users.groups.${cfg.user} = { };
 
     systemd.tmpfiles.rules = [
-      # dataDir — корневой каталог, mode 0750 engipy:engipy.
-      # uvicorn пишет в этот каталог (БД, .vite cache, HF cache),
-      # ничего больше в /var/lib/engipy не пишется.
       "Z ${cfg.dataDir} 0750 ${cfg.user} ${cfg.user} - -"
     ];
+
+    systemd.services.engipy-install = {
+      description = "engipy venv bootstrap (pip install wheels)";
+      documentation = [ "https://github.com/oqyude/engipy" ];
+      wantedBy = [ "engipy.service" ];
+      before = [ "engipy.service" ];
+
+      # Запускается один раз (маркер .engipy-venv-installed в скрипте).
+      # Запускать после того, как данные (app/, *.db, *.npy) уже
+      # на месте — но до первого старта uvicorn.
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
+
+      environment = {
+        PATH = binPath;
+        # LD_LIBRARY_PATH не нужен для venv (system python is shared).
+        # libgomp/openblas подгружаются python'ом из /nix/store и
+        # доступны через $NIX_LIBS.
+      };
+
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        User = cfg.user;
+        Group = cfg.user;
+        WorkingDirectory = cfg.dataDir;
+        ExecStart = "${installScript}/bin/engipy-install";
+      };
+    };
 
     systemd.services.engipy = {
       description = "engipy webapp (uvicorn + FastAPI за nginx)";
       documentation = [ "https://github.com/oqyude/engipy" ];
       wantedBy = [ "multi-user.target" ];
 
-      after = [ "network-online.target" ];
+      after = [ "network-online.target" "engipy-install.service" ];
       wants = [ "network-online.target" ];
+      requires = [ "engipy-install.service" ];
 
       environment = {
         PYTHONUNBUFFERED = "1";
         PYTHONDONTWRITEBYTECODE = "1";
-        # PYTHONPATH указывает на site-packages выбранного pythonPackage.
-        # Нужно для uvicorn entry-points (sentence-transformers,
-        # transformers, pydantic-settings) внутри sandbox.
-        PYTHONPATH = "${cfg.pythonPackage}/${cfg.pythonPackage.sitePackages}";
-        # libgomp/openblas нужны torch CPU-wheel'у — пробрасываем через
-        # LD_LIBRARY_PATH. Иначе при первом импорте torch упадёт с
-        # ImportError: libgomp.so.1 / libopenblas.so.0.
-        LD_LIBRARY_PATH = lib.makeLibraryPath [
-          pkgs.stdenv.cc.cc.lib
-          pkgs.openblas
+        # venv уже активирует python из venv/bin, но явный путь
+        # делает ExecStart понятным.
+        VIRTUAL_ENV = "${cfg.dataDir}/venv";
+        PATH = lib.makeBinPath [
+          pkgs.bash
+          pkgs.coreutils
+          "${cfg.dataDir}/venv/bin"
         ];
         ENGIPY_DB_PATH = "${cfg.dataDir}/${cfg.dbFileName}";
         ENGIPY_EMBEDDINGS_PATH = "${cfg.dataDir}/${cfg.embeddingsStem}.npy";
         ENGIPY_DATA_DIR = cfg.dataDir;
         ENGIPY_MODEL = cfg.model;
+        # libgomp/openblas и прочие зависимости torch через
+        # nix-store libPath.
+        LD_LIBRARY_PATH = lib.makeLibraryPath [
+          pkgs.stdenv.cc.cc.lib
+          pkgs.openblas
+        ];
       };
 
       serviceConfig = {
@@ -164,15 +223,12 @@ in
         User = cfg.user;
         Group = cfg.user;
         WorkingDirectory = cfg.dataDir;
-        ExecStart = "${cfg.pythonPackage}/bin/python -m uvicorn app.main:app"
+        ExecStart = "${cfg.dataDir}/venv/bin/uvicorn app.main:app"
           + " --host ${cfg.bindAddress} --port ${toString cfg.port} --no-access-log";
         Restart = "on-failure";
         RestartSec = "5s";
 
-        # Sandbox. uvicorn пишет только в cfg.dataDir (БД, .vite cache,
-        # HF кэш моделей в ~/.cache/huggingface/). ReadWritePaths
-        # разрешает запись только туда — ProtectHome/ProtectSystem
-        # ограничивают остальное read-only.
+        # Sandbox.
         NoNewPrivileges = true;
         PrivateTmp = true;
         ProtectSystem = "strict";
