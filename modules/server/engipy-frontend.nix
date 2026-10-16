@@ -46,7 +46,7 @@ in
       type = lib.types.str;
       default = "/var/lib/engipy";
       description = ''
-        Каталог, в котором лежит собранный фронт (${dataDir}/web).
+        Каталог, в котором лежит собранный фронт (`$dataDir/web`).
         Используется ТОЛЬКО для статической раздачи — bind-mount и
         External здесь не нужны, фронт кладётся прямо через `scp`.
       '';
