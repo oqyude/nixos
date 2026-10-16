@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   xlib,
   ...
 }:
@@ -35,6 +36,7 @@
     ./ttyd.nix
     ./vtimeline.nix
     ./uptime-kuma.nix
+    ./engipy.nix
     # T16: 14 modules archived to ../archive/{server-modules,containers}/
     # (13 in modules/server/default.nix:37-50, 2 in modules/containers/).
     # T15: kokoro-tts and openhands (not imported) also archived.
@@ -54,6 +56,25 @@
   host.authelia = {
     enable = true;
     cookieDomain = "zeroq.su";
+  };
+  # engipy — FastAPI + SBERT webapp (uvicorn за nginx на
+  # engipy.zeroq.su). python311.withPackages тянет torch + sentence-
+  # transformers; первый nixos-rebuild на sapphira собирает их ~часы
+  # (2 ядра), последующие пересборки берут из кэша. Список
+  # зависимостей — точно из nix/engipy.nix проекта, чтобы backend-стек
+  # на сервере совпадал с dev-окружением.
+  host.engipy = {
+    enable = true;
+    pythonPackage = pkgs.python311.withPackages (ps: with ps; [
+      fastapi
+      uvicorn
+      pydantic
+      pydantic-settings
+      sqlalchemy
+      numpy
+      sentence-transformers
+      torch
+    ]);
   };
   systemd.tmpfiles.rules = [
     (xlib.helpers.mkTmpfile "d" "/mnt" "0755" "root" "root")
