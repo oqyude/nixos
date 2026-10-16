@@ -207,12 +207,11 @@ in
         ENGIPY_EMBEDDINGS_PATH = "${cfg.dataDir}/${cfg.embeddingsStem}.npy";
         ENGIPY_DATA_DIR = cfg.dataDir;
         ENGIPY_MODEL = cfg.model;
-        # libgomp/openblas и прочие системные зависимости torch через
-        # nix-store libPath.
-        LD_LIBRARY_PATH = lib.makeLibraryPath [
-          pkgs.stdenv.cc.cc.lib
-          pkgs.openblas
-        ];
+        # LD_LIBRARY_PATH убран: openblas lib от nix конфликтует с
+        # torch internals на SBERT forward ('could not create a
+        # primitive' — RuntimeError из transformers/activations.py:78,
+        # GELU act через BLAS). Без override torch берёт системные
+        # glibc/libgomp из /run/current-system/sw/lib.
       };
 
       serviceConfig = {
