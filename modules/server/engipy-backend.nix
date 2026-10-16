@@ -197,19 +197,14 @@ in
       environment = {
         PYTHONUNBUFFERED = "1";
         PYTHONDONTWRITEBYTECODE = "1";
-        # venv уже активирует python из venv/bin, но явный путь
-        # делает ExecStart понятным.
         VIRTUAL_ENV = "${cfg.dataDir}/venv";
-        PATH = lib.makeBinPath [
-          pkgs.bash
-          pkgs.coreutils
-          "${cfg.dataDir}/venv/bin"
-        ];
+        # PATH не выставляем — venv-скрипт использует ./venv/bin/ напрямую,
+        # абсолютный ExecStart тоже не зависит от PATH.
         ENGIPY_DB_PATH = "${cfg.dataDir}/${cfg.dbFileName}";
         ENGIPY_EMBEDDINGS_PATH = "${cfg.dataDir}/${cfg.embeddingsStem}.npy";
         ENGIPY_DATA_DIR = cfg.dataDir;
         ENGIPY_MODEL = cfg.model;
-        # libgomp/openblas и прочие зависимости torch через
+        # libgomp/openblas и прочие системные зависимости torch через
         # nix-store libPath.
         LD_LIBRARY_PATH = lib.makeLibraryPath [
           pkgs.stdenv.cc.cc.lib
