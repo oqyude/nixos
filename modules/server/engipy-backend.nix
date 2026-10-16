@@ -207,21 +207,23 @@ environment = {
         ENGIPY_EMBEDDINGS_PATH = "${cfg.dataDir}/${cfg.embeddingsStem}.npy";
         ENGIPY_DATA_DIR = cfg.dataDir;
         ENGIPY_MODEL = cfg.model;
-        # LD_LIBRARY_PATH нужен для numpy/scipy/uvloop (wheel-install
-        # не находит системный openblas). Без него numpy выбрасывает
-        # 'Error importing numpy: you should not try to import numpy
-        # from its source directory'.
-        LD_LIBRARY_PATH = lib.makeLibraryPath [
-          pkgs.stdenv.cc.cc.lib
-          pkgs.openblas
-        ];
-        # Однопоточный BLAS/OpenMP/MKL — иначе SBERT forward
-        # падает на 'RuntimeError: could not create a primitive' в
-        # GELU activation под torch CPU (конфликт torch + openblas
-        # threading). Inference на rydiwo 4 cores будет медленнее
-        # (~3-5 сек на запрос), но не упадёт.
+        # LD_LIBRARY_PATH указывает на /run/current-system/sw/share/nix-ld/lib —
+        # это nix-ld "overrides directory" с симлинками на 64-bit системные
+        # lib'ы (libstdc++, libz, libdl, libgcc_s, libpthread, libc, …).
+        # Без этого path numpy._multiarray_umath.so не находит libstdc++/libz
+        # и uvicorn падает на старте с 'Error importing numpy: you should not
+        # try to import numpy from its source directory'. Раньше мы тянули
+        # pkgs.stdenv.cc.cc.lib + openblas, но они:
+        # 1) конфликтовали с torch-internal OpenMP при SBERT forward
+        #    (RuntimeError: could not create a primitive в GELU activation);
+        # 2) при смене на ONNX runtime они не нужны — onnxruntime поставляет
+        #    свои bundled deps.
+        # nix-ld lib-симлинки (это фиксированный путь на NixOS) решает обе
+        # проблемы.
+        LD_LIBRARY_PATH = "/run/current-system/sw/share/nix-ld/lib";
+        # Однопоточный BLAS/OpenMP — для совместимости с onnxruntime
+        # (без этого openblas+onnx могут захлебнуться на 4 cores).
         OMP_NUM_THREADS = "1";
-        MKL_NUM_THREADS = "1";
         OPENBLAS_NUM_THREADS = "1";
         TOKENIZERS_PARALLELISM = "false";
       };
