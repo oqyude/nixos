@@ -106,27 +106,15 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    systemd = storage.systemd;
-
-    users.users.${cfg.user} = {
-      isSystemUser = true;
-      group = cfg.user;
-      # Home = storage target (bind-mount из External). createHome = false,
-      # потому что каталог создаёт tmpfiles + bind-mount, а не NixOS-Users.
-      home = storage.target;
-      createHome = false;
-      shell = lib.mkDefault "${pkgs.bash}/bin/bash";
-      description = "engipy webapp service account";
-    };
-    users.groups.${cfg.user} = { };
-
-    # nginx (в ${storage.target}/web читает статику Vite-бандла) берём
-    # в группу ${cfg.user}, чтобы пройти traverse-bit на 0750 родителе.
-    users.users.nginx.extraGroups = [ cfg.user ];
-
-    environment.systemPackages = [ cfg.pythonPackage ];
-
-    systemd.services.engipy = {
+    # systemd объединяется через mkMerge: storage.systemd даёт
+    # tmpfiles.rules + mounts (от mkServiceStorage), плюс наш
+    # services.engipy. NixOS ругается на «attribute 'systemd' already
+    # defined» если разнести на два отдельных `systemd = ...` блока —
+    # оба видны как присвоение корневому атрибуту.
+    systemd = lib.mkMerge [
+      storage.systemd
+      {
+        services.engipy = {
       description = "engipy webapp (uvicorn)";
       documentation = [ "https://github.com/oqyude/engipy" ];
       wantedBy = [ "multi-user.target" ];
@@ -182,4 +170,6 @@ in
       };
     };
   };
+  ];
+};
 }
