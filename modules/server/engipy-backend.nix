@@ -53,6 +53,7 @@ let
     numpy==2.2.1
     pandas==2.3.3
     openpyxl==3.1.5
+    python-multipart==0.0.20
     sentence-transformers==3.3.1
     transformers==4.47.1
     huggingface-hub==0.27.0
