@@ -39,13 +39,20 @@ let
   # требующая CUDA ~3 GB). Поэтому sentence-transformers (тянет
   # torch>=1.11.0) подхватит CPU-wheel автоматически, без отдельного
   # upgrade-шага.
+  #
+  # Полный список должен покрывать ВСЁ, что import'ит app/ при
+  # uvicorn'овском boot (`import app.main` грузит всю иерархию
+  # app.main → app.routes.match → app.matchers → pandas/numpy/sbert).
   requirementsTxt = pkgs.writeText "engipy-requirements.txt" ''
     fastapi==0.115.6
     uvicorn[standard]==0.32.0
     pydantic==2.10.3
     pydantic-settings==2.7.0
+    structlog==24.4.0
     sqlalchemy==2.0.36
     numpy==2.2.1
+    pandas==2.3.3
+    openpyxl==3.1.5
     sentence-transformers==3.3.1
     transformers==4.47.1
     huggingface-hub==0.27.0
@@ -55,6 +62,7 @@ let
     requests==2.32.3
     PyYAML==6.0.2
     packaging==24.2
+    python-dotenv==1.0.1
     --extra-index-url https://download.pytorch.org/whl/cpu
     torch==2.6.0+cpu
   '';
@@ -190,8 +198,10 @@ in
         PYTHONUNBUFFERED = "1";
         PYTHONDONTWRITEBYTECODE = "1";
         VIRTUAL_ENV = "${cfg.dataDir}/venv";
-        # PATH не выставляем — venv-скрипт использует ./venv/bin/ напрямую,
-        # абсолютный ExecStart тоже не зависит от PATH.
+        # uvicorn не добавляет cwd в sys.path — WorkingDirectory не
+        # достаточно. Без PYTHONPATH=cfg.dataDir получаем
+        # `ModuleNotFoundError: No module named 'app'`.
+        PYTHONPATH = "${cfg.dataDir}";
         ENGIPY_DB_PATH = "${cfg.dataDir}/${cfg.dbFileName}";
         ENGIPY_EMBEDDINGS_PATH = "${cfg.dataDir}/${cfg.embeddingsStem}.npy";
         ENGIPY_DATA_DIR = cfg.dataDir;
