@@ -105,71 +105,92 @@ in
     };
   };
 
+  # systemd объединяется через mkMerge: storage.systemd даёт
+  # tmpfiles.rules + mounts (от mkServiceStorage), плюс наш
+  # services.engipy. NixOS ругается на «attribute 'systemd' already
+  # defined» если разнести на два отдельных `systemd = ...` блока —
+  # оба видны как присвоение корневому атрибуту. Остальные поля
+  # config'а (users / environment) NixOS мержит в deep-merge
+  # штатно, поэтому их можно оставить отдельными атрибутами.
   config = lib.mkIf cfg.enable {
-    # systemd объединяется через mkMerge: storage.systemd даёт
-    # tmpfiles.rules + mounts (от mkServiceStorage), плюс наш
-    # services.engipy. NixOS ругается на «attribute 'systemd' already
-    # defined» если разнести на два отдельных `systemd = ...` блока —
-    # оба видны как присвоение корневому атрибуту.
+    users.users.${cfg.user} = {
+      isSystemUser = true;
+      group = cfg.user;
+      # Home = storage target (bind-mount из External). createHome = false,
+      # потому что каталог создаёт tmpfiles + bind-mount, а не NixOS-Users.
+      home = storage.target;
+      createHome = false;
+      shell = lib.mkDefault "${pkgs.bash}/bin/bash";
+      description = "engipy webapp service account";
+    };
+
+    users.groups.${cfg.user} = { };
+
+    # nginx (в ${storage.target}/web читает статику Vite-бандла) берём
+    # в группу ${cfg.user}, чтобы пройти traverse-bit на 0750 родителе.
+    users.users.nginx.extraGroups = [ cfg.user ];
+
+    environment.systemPackages = [ cfg.pythonPackage ];
+
     systemd = lib.mkMerge [
       storage.systemd
       {
         services.engipy = {
-      description = "engipy webapp (uvicorn)";
-      documentation = [ "https://github.com/oqyude/engipy" ];
-      wantedBy = [ "multi-user.target" ];
+          description = "engipy webapp (uvicorn)";
+          documentation = [ "https://github.com/oqyude/engipy" ];
+          wantedBy = [ "multi-user.target" ];
 
-      after = [
-        "network-online.target"
-        storageMountUnit
-      ];
-      wants = [ "network-online.target" ];
-      # requires гарантирует, что bind-mount поднялся ДО старта uvicorn
-      # (без него uvicorn попытается писать БД в tmpfs под bind-mount).
-      requires = [ storageMountUnit ];
+          after = [
+            "network-online.target"
+            storageMountUnit
+          ];
+          wants = [ "network-online.target" ];
+          # requires гарантирует, что bind-mount поднялся ДО старта uvicorn
+          # (без него uvicorn попытается писать БД в tmpfs под bind-mount).
+          requires = [ storageMountUnit ];
 
-      environment = {
-        PYTHONUNBUFFERED = "1";
-        PYTHONDONTWRITEBYTECODE = "1";
-        # sitePackages-путь выбранного pythonPackage нужен, чтобы
-        # uvicorn находился в PATH внутри sandbox (ExecStart использует
-        # абсолютный путь, но pydantic-settings/sentence-transformers
-        # могут подтягивать другие entry-points из site-packages).
-        PYTHONPATH = "${cfg.pythonPackage}/${cfg.pythonPackage.sitePackages}";
-        ENGIPY_DB_PATH = "${storage.target}/${cfg.dbFileName}";
-        ENGIPY_EMBEDDINGS_PATH = "${storage.target}/${cfg.embeddingsStem}.npy";
-        ENGIPY_DATA_DIR = storage.target;
-        ENGIPY_MODEL = cfg.model;
-      };
+          environment = {
+            PYTHONUNBUFFERED = "1";
+            PYTHONDONTWRITEBYTECODE = "1";
+            # sitePackages-путь выбранного pythonPackage нужен, чтобы
+            # uvicorn находился в PATH внутри sandbox (ExecStart использует
+            # абсолютный путь, но pydantic-settings/sentence-transformers
+            # могут подтягивать другие entry-points из site-packages).
+            PYTHONPATH = "${cfg.pythonPackage}/${cfg.pythonPackage.sitePackages}";
+            ENGIPY_DB_PATH = "${storage.target}/${cfg.dbFileName}";
+            ENGIPY_EMBEDDINGS_PATH = "${storage.target}/${cfg.embeddingsStem}.npy";
+            ENGIPY_DATA_DIR = storage.target;
+            ENGIPY_MODEL = cfg.model;
+          };
 
-      serviceConfig = {
-        Type = "simple";
-        User = cfg.user;
-        Group = cfg.user;
-        WorkingDirectory = storage.target;
-        ExecStart = "${cfg.pythonPackage}/bin/python -m uvicorn app.main:app"
-          + " --host 127.0.0.1 --port ${toString cfg.port} --no-access-log";
-        Restart = "on-failure";
-        RestartSec = "5s";
+          serviceConfig = {
+            Type = "simple";
+            User = cfg.user;
+            Group = cfg.user;
+            WorkingDirectory = storage.target;
+            ExecStart = "${cfg.pythonPackage}/bin/python -m uvicorn app.main:app"
+              + " --host 127.0.0.1 --port ${toString cfg.port} --no-access-log";
+            Restart = "on-failure";
+            RestartSec = "5s";
 
-        # Sandbox. uvicorn пишет только в storage.target (БД, .vite cache,
-        # logs); web/ под ним читается nginx (см. users.users.nginx.extraGroups).
-        NoNewPrivileges = true;
-        PrivateTmp = true;
-        ProtectSystem = "strict";
-        ProtectHome = "read-only";
-        ReadWritePaths = [ storage.target ];
-        LimitNOFILE = 65536;
+            # Sandbox. uvicorn пишет только в storage.target (БД, .vite cache,
+            # logs); web/ под ним читается nginx (см. users.users.nginx.extraGroups).
+            NoNewPrivileges = true;
+            PrivateTmp = true;
+            ProtectSystem = "strict";
+            ProtectHome = "read-only";
+            ReadWritePaths = [ storage.target ];
+            LimitNOFILE = 65536;
 
-        MemoryDenyWriteExecute = true;
-        RestrictNamespaces = true;
-        RestrictRealtime = true;
-        LockPersonality = true;
-        ProtectControlGroups = true;
-        RestrictAddressFamilies = [ "AF_INET" "AF_INET6" "AF_UNIX" ];
-      };
-    };
+            MemoryDenyWriteExecute = true;
+            RestrictNamespaces = true;
+            RestrictRealtime = true;
+            LockPersonality = true;
+            ProtectControlGroups = true;
+            RestrictAddressFamilies = [ "AF_INET" "AF_INET6" "AF_UNIX" ];
+          };
+        };
+      }
+    ];
   };
-  ];
-};
 }
