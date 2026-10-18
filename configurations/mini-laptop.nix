@@ -89,7 +89,25 @@
     enable = true;
     bridge.address = "10.66.0.1";
     bridge.prefixLength = 24;
-    bootloader.ipxeBinary = "snp.efi"; # SNP-only build, 310K, virtio-net-friendly
+    # ipxe.efi (universal, ~600K) instead of snp.efi (SNP-only, 310K).
+    # snp.efi worked on linux-virt 6.18.56 but breaks on 6.18.57
+    # (delivered via aports 2b1f5137, 2026-10-16, kernel commit
+    # c967b365 — `PCI: Make pci_match_one_device() match on ID
+    # instead of device`). The new drivers/pci/search.c
+    # `match_pci_dev_by_id()` (uses pci_match_one_id()+pci_id_from_device())
+    # fails to match the virtio-blk PCI device that snp.efi
+    # presents through its SAN hook (the IDs reported by the SAN
+    # path are not full device IDs). The kernel boots, but rootfs
+    # fails to mount: `UUID=...: Can't lookup blockdev` →
+    # `Mounting root: failed.` The universal `ipxe.efi` presents
+    # the SAN device through a different code path that
+    # successfully matches against the new pci_match machinery.
+    # Verified end-to-end on rydiwo 2026-10-17 with explicit
+    # `bootMode=pxe`: two independent verdict=PASS reports
+    # (20261017T180654Z, 20261017T180730Z). See pxe-infra-automation
+    # T14 in .agent/tasks/manifest.json for full RCA. The ~290K
+    # extra TFTP volume vs snp.efi is negligible.
+    bootloader.ipxeBinary = "ipxe.efi";
     vm = {
       enable = true;
       autostart = false; # start manually when testing
