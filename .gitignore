@@ -9,3 +9,6 @@ scripts
 # and add noise to git status afterwards.
 h-fix-*-helpers/
 *.bak-t*
+
+# metaagent runtime artifacts (per-session, not for commit)
+.metaagent-director/

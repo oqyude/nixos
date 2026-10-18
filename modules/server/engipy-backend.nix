@@ -124,7 +124,24 @@ in
     model = lib.mkOption {
       type = lib.types.str;
       default = "cointegrated/rubert-tiny2";
-      description = "Имя SBERT-модели из HuggingFace.";
+      description = ''
+        Имя SBERT-модели из HuggingFace. В multi-model реестре (commit
+        `cd64a8e`, 2026-10-18, `ENGIPY_MODELS_DIR`) это параметр
+        `fallback_onnx_path` — путь к ONNX-чекпойнту ДЕФОЛТНОЙ модели
+        (rubert-tiny2). На проде — `<modelsDir>/rubert-tiny2`.
+      '';
+    };
+
+    modelsDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/mnt/lamet/engipy-models";
+      description = ''
+        Корень каталога с ONNX-чекпойнтами для multi-model registry
+        (commit `cd64a8e`, 2026-10-18). Внутри — подпапки `bge-m3/`,
+        `multilingual-e5-large/`, `rubert-tiny2/` (имена директорий
+        фиксированы в `app/services/models.py:build_default_registry`).
+        Прокидывается как `ENGIPY_MODELS_DIR` в systemd unit.
+      '';
     };
 
     dataDir = lib.mkOption {
@@ -204,9 +221,20 @@ environment = {
         # `ModuleNotFoundError: No module named 'app'`.
         PYTHONPATH = "${cfg.dataDir}";
         ENGIPY_DB_PATH = "${cfg.dataDir}/${cfg.dbFileName}";
+        # Default model's embeddings (rubert-tiny2 stem). Multi-model
+        # registry дополнительно читает `engipy_baai_bge_m3.npy` и
+        # `engipy_intfloat_multilingual_e5_large.npy` рядом — поэтому
+        # см. ниже `ENGIPY_EMBEDDINGS_DIR` который на проде указывает на
+        # ${dataDir} напрямую (flat layout).
         ENGIPY_EMBEDDINGS_PATH = "${cfg.dataDir}/${cfg.embeddingsStem}.npy";
+        ENGIPY_EMBEDDINGS_DIR = cfg.dataDir;
         ENGIPY_DATA_DIR = cfg.dataDir;
         ENGIPY_MODEL = cfg.model;
+        # T-MULTI-MODEL-REGISTRY (commit cd64a8e, 2026-10-18): 3 SBERT-
+        # чекпойнта (rubert-tiny2 + bge-m3 + multilingual-e5-large) лежат
+        # вне dataDir на отдельном mount с местом (205 GB available на
+        # /mnt/lamet). Иначе — перенести ENGIPY_MODELS_DIR под dataDir.
+        ENGIPY_MODELS_DIR = cfg.modelsDir;
         # LD_LIBRARY_PATH указывает на /run/current-system/sw/share/nix-ld/lib —
         # это nix-ld "overrides directory" с симлинками на 64-bit системные
         # lib'ы (libstdc++, libz, libdl, libgcc_s, libpthread, libc, …).

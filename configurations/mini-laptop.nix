@@ -40,16 +40,27 @@
   # Sapphira проксирует engipy.zeroq.su/api/* на 192.168.1.102:8000.
   #
   # model = путь к локальной ONNX-папке (экспорт `cointegrated/rubert-tiny2`
-  # сделан в WSL nixos и разложен на rydiwo в
-  # /var/lib/engipy/model/cointegrated__rubert-tiny2/). HF Hub id
+  # сделан в WSL nixos и разложен на rydiwo). HF Hub id
   # `cointegrated/rubert-tiny2` НЕ должен здесь стоять — это
   # триггерит optimum через from_pretrained() скачивать с HF и
   # конвертировать через torch, что падает в
   # `RuntimeError: could not create a primitive` в GELU activation.
+  #
+  # T-MULTI-MODEL-REGISTRY (commit cd64a8e, 2026-10-18): 3 модели
+  # (rubert-tiny2 default + BAAI/bge-m3 + intfloat/multilingual-e5-large)
+  # лежат на /mnt/lamet/engipy-models/. `model` указывает на default
+  # (rubert-tiny2), `ENGIPY_MODELS_DIR` (`modelsDir`) — корень для всех
+  # трёх (см. modules/server/engipy-backend.nix). Старая папка
+  # /var/lib/engipy/model/cointegrated__rubert-tiny2/ больше не
+  # используется и может быть удалена вручную после успешного deploy.
   host.engipy-backend = {
     enable = true;
     bindAddress = "0.0.0.0";
-    model = "/var/lib/engipy/model/cointegrated__rubert-tiny2";
+    # Default ONNX-чекпойнт rubert-tiny2 теперь лежит на /mnt/lamet/
+    # (в ENGIPY_MODELS_DIR — см. engipy-backend.nix). Имя подпапки
+    # фиксировано в `app/services/models.py:build_default_registry`.
+    model = "/mnt/lamet/engipy-models/rubert-tiny2";
+    # `modelsDir` остаётся дефолтным (/mnt/lamet/engipy-models).
   };
 
   # Не засыпать при закрытии крышки: rydiwo используется как
