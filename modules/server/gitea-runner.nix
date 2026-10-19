@@ -98,6 +98,9 @@ in
       nix
       python3
       cacert
+      # scripts/update-manifest.sh in oqyude/winos hard-requires jq
+      # ("for dep in curl jq") and the runner's PATH is exactly this list.
+      jq
     ];
   };
 
