@@ -100,22 +100,39 @@
     environment.etc."pxe-infra/http/boot-bypass.ipxe".source = pkgs.writeText "boot-bypass.ipxe" ''
       #!ipxe
       set boot-url http://${config.pxe-infra.bridge.address}/latest
-      # Test path: bypass sanboot entirely. Load the Alpine
-      # kernel and initrd from HTTP and hand off to UEFI. We
-      # expect the kernel to panic on rootfs (no /dev/sda*
-      # in this build), but the journal will show kernel boot
-      # output — enough to confirm iPXE's kernel/initrd/boot
-      # path works and rule out iPXE's HTTP/sanboot code as
-      # the source of the persistent #GP at RIP 0x7EE8A5FC.
-      kernel ''${boot-url}/vmlinuz-virt root=/dev/ram0 console=ttyS0,115200
+      # KERNEL+INITRD PATH (no sanboot). Loads the Alpine kernel and
+      # initramfs over HTTP and hands off to them.
+      #
+      # The guest still needs the image attached as a local block
+      # device: the root filesystem lives on the image's ext4 partition
+      # (vda2), not inside the initramfs. In direct mode the VM gets
+      # it from EXTRA_DRIVES (see vm.nix); in this path it has to be
+      # attached the same way.
+      #
+      # The root filesystem is addressed by UUID, and a kernel booted
+      # over HTTP has no loader entry to supply it, so the UUID is
+      # fetched at runtime from the HTTP root (published next to the
+      # image by the pxe-infra-automation deploy script). The first
+      # attempt at this path used `root=/dev/ram0` and failed with
+      # "mounting /dev/ram0 on /sysroot failed" - the root is the
+      # image's ext4 partition, not a ramdisk.
+      #
+      # This path is what makes the rig usable on firmware without
+      # INT13 SAN extensions, where iPXE's sanboot does not work.
+      isset ''${root-uuid} ''${boot-url}/root-uuid.txt || goto no_uuid
+      kernel ''${boot-url}/vmlinuz-virt root=UUID=''${root-uuid} rootfstype=ext4 modules=kms,scsi,virtio console=ttyS0,115200n8 console=tty0
       initrd ''${boot-url}/initramfs-virt
       boot || goto retry
       :retry
       echo boot failed, retrying in 5s
       sleep 5
-      kernel ''${boot-url}/vmlinuz-virt root=/dev/ram0 console=ttyS0,115200
+      kernel ''${boot-url}/vmlinuz-virt root=UUID=''${root-uuid} rootfstype=ext4 modules=kms,scsi,virtio console=ttyS0,115200n8 console=tty0
       initrd ''${boot-url}/initramfs-virt
-      boot
+      boot || goto shell
+      :no_uuid
+      echo could not fetch ''${boot-url}/root-uuid.txt
+      :shell
+      shell
     '';
 
     # autoexec.ipxe — iPXE on UEFI looks for `autoexec.ipxe` on the
