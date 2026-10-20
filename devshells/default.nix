@@ -18,6 +18,29 @@ let
 in
 {
   devShells.${system} = {
+    # `nix develop .#ci` -> the tool set a Gitea Actions job on sapphira
+    # needs. Same list as the runner's hostPackages (lib/ci-tools.nix), so a
+    # workflow can get the tools it needs without a nixos-rebuild:
+    #
+    #   nix develop /etc/nixos#ci --command bash -c 'echo $PATH'
+    #
+    # The runner's own PATH is fixed in the systemd unit at activation time,
+    # and changing it needs `nixos-rebuild switch` on the host. The workflows
+    # in oqyude/winos therefore take the PATH from this devshell instead --
+    # jq (scripts/update-manifest.sh) and pwsh (scripts/update-kvrt.ps1) are
+    # not in the runner's default set, and `nix-shell -p` is not a fallback
+    # on sapphira (empty nix registry, no channels).
+    ci = pkgs.mkShell {
+      name = "gitea-ci-devshell";
+
+      buildInputs = import ../lib/ci-tools.nix { inherit pkgs; };
+
+      shellHook = ''
+        echo "[ci-devshell] jq:   $(command -v jq || echo MISSING)"
+        echo "[ci-devshell] pwsh: $(command -v pwsh || echo MISSING)"
+      '';
+    };
+
     # `nix develop .#vtimeline` -> shell for testing the VeeamTimelineView
     # project (Playwright + ESLint + Prettier over a vanilla-JS frontend).
     vtimeline = pkgs.mkShell {

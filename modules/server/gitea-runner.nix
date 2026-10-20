@@ -91,17 +91,11 @@ in
       container.options     = "";
     };
 
-    # Default set (bash, coreutils, curl, gawk, gitMinimal, gnused,
-    # nodejs, wget) plus what ZeroQ workflows are most likely to need.
-    hostPackages = with pkgs; [
-      bash coreutils curl gawk gitMinimal gnused nodejs wget
-      nix
-      python3
-      cacert
-      # scripts/update-manifest.sh in oqyude/winos hard-requires jq
-      # ("for dep in curl jq") and the runner's PATH is exactly this list.
-      jq
-    ];
+    # The PATH of every host-mode job. One shared list (lib/ci-tools.nix) with
+    # the `ci` devshell in devshells/default.nix, so the runner and the
+    # devshell cannot drift apart: a workflow can get the same tools through
+    # `nix develop /etc/nixos#ci` without waiting for a rebuild.
+    hostPackages = import ../../lib/ci-tools.nix { inherit pkgs; };
   };
 
   # ----- Workspace directory on tmpfs ---------------------------------------
