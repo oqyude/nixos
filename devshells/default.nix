@@ -36,8 +36,11 @@ in
       buildInputs = import ../lib/ci-tools.nix { inherit pkgs; };
 
       shellHook = ''
-        echo "[ci-devshell] jq:   $(command -v jq || echo MISSING)"
-        echo "[ci-devshell] pwsh: $(command -v pwsh || echo MISSING)"
+        # stderr on purpose: a workflow captures stdout of
+        # `nix develop ... --command bash -c 'printf %s "$PATH"'` to take the
+        # devshell's PATH, and a banner on stdout would end up inside it.
+        echo "[ci-devshell] jq:   $(command -v jq || echo MISSING)" >&2
+        echo "[ci-devshell] pwsh: $(command -v pwsh || echo MISSING)" >&2
       '';
     };
 
