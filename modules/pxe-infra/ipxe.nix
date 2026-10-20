@@ -19,8 +19,9 @@
 #
 # The artifact itself is produced by build/mkosi/ in the
 # pxe-infra-automation repo and rsynced into
-# artifacts.root/http/<rev>/. A `latest/` symlink points at the
-# newest <rev>, which boot.ipxe references.
+# artifacts.root/http/<rev>/. `latest/` is a real directory holding
+# the published artifact (published with a rename(2), so it is
+# atomic), and boot.ipxe references it.
 {
   config,
   lib,
