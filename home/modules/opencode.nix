@@ -200,6 +200,20 @@ in
     # the v1 flat shape and overwrite the v2 `mcp.servers` block.
     settings = {
       plugins = [ pluginSpec ];
+
+      # Default model, used "when no session or agent model is selected"
+      # (v2 config schema). Without it the v2 CLI picks a model from the
+      # registry on its own — `opencode/minimax-m3.1-flash-free`, i.e. the
+      # free tier — and sends it explicitly, which OVERRIDES the model of
+      # the slim plugin's agents: `oc run --agent orchestrator` then ran on
+      # the free model even though `/api/agent` reported
+      # `minimax-coding-plan/MiniMax-M3.1-Flash` for that agent (verified on
+      # sapphira 2026-10-21 by reading the model of the created message).
+      # The workstation has no global `model` key — there the TUI remembers
+      # the last used model, which is the paid one; on a fresh server DB
+      # there is nothing to remember, hence the explicit default here.
+      model = modelFast;
+
       mcp.servers = {
         webpage = {
           type = "local";

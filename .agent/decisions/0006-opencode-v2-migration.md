@@ -298,9 +298,18 @@ herdr **0.9.3** на sapphira активен (`herdr server --session herdr-prod
 - `/api/mcp` → context7/gh_grep/webpage — connected.
 - LLM smoke: `oc run --agent orchestrator "Ответь ровно одним словом: OK"` →
   «OK»; с явной моделью — `minimax-coding-plan/MiniMax-M3.1-Flash` (платный
-  провайдер из sops `auth.json` работает). Без `--model` CLI в заголовке
-  показывает `minimax-m3.1-flash-free` — это клиентский дефолт отображения;
-  серверная сессия создаётся с `minimax-coding-plan/MiniMax-M3.1-Flash`.
+  провайдер из sops `auth.json` работает).
+- **Ранний вывод «без `--model` CLI показывает free-модель только в заголовке»
+  был неверным** (проверено 2026-10-21 по самому сообщению в БД): без явной
+  модели CLI v2 выбирает модель сам — `opencode/minimax-m3.1-flash-free`
+  (бесплатный тариф opencode) — и отправляет её явно, а она **перебивает**
+  модель агента slim-плагина. То есть `oc run --agent orchestrator` реально
+  считал на free-модели, хотя `/api/agent` по этому агенту отдавал
+  `minimax-coding-plan/MiniMax-M3.1-Flash`. На рабочей машине такого не
+  происходит: там TUI помнит последнюю использованную (платную) модель, а на
+  сервере БД была пустая. Фикс — глобальный ключ `model` в `opencode.json`
+  (схема v2: «Default model to use when no session or agent model is
+  selected»).
 - Старые сессии v1 читаются (те же `opencode.db`), но в них
   `MiniMax-M3.1-Flash-Preview` — модели, которой **больше нет в реестре**
   (подтверждение, что реестр менялся; см. п. 7 «Что выяснено»).
