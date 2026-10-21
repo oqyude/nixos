@@ -275,7 +275,16 @@
     `home.activation.warmWebpageMcp` + чистка `~/.npm/_npx/<hash>`.
     **(в)** CLI к работающему серверу: `--server` принимается **после**
     подкоманды (`opencode <cmd> --server <url>`), и нужен пароль (HTTP basic)
-    ⇒ обёртка `oc` читает его из sops `server.env`.
+    ⇒ обёртка `oc` читает его из sops `server.env`. Флаг берут **не все**
+    подкоманды: `run`/`attach`/`tui`/`api`/`models`/`agent` — да;
+    `mcp`/`service`/`auth`/`serve`/`plugin` — **нет** ⇒ `Unrecognized flag:
+    --server in command opencode plugin list` ⇒ `oc` фильтрует по подкоманде
+    и подсказывает, если сервер на 4096 не поднят (иначе connection refused).
+    **Herdr-интеграция opencode не ставится:** herdr пишет V2-регистрацию в
+    `~/.config/opencode/cli.json`, а он read-only симлинк в /nix/store ⇒ herdr
+    отказывается: `config has multiple hard links` (это не EROFS, а осознанная
+    проверка herdr). На sapphira не установлена ни одна agent-интеграция
+    herdr ⇒ оставляем как есть, решение владельца не требуется.
 
 ### R2. home-manager `Service` ≠ `serviceConfig`
 

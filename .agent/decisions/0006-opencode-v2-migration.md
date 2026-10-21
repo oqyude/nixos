@@ -1,7 +1,7 @@
 # ADR-0006: OpenCode на sapphira — миграция 1.19 (v1) → 2.0.32 (v2)
 
-**Статус:** accepted (деплой выполнен 2026-10-21 на sapphira; herdr — см. раздел
-«Herdr и v2»)
+**Статус:** accepted (деплой выполнен 2026-10-21 на sapphira; herdr-вопрос закрыт —
+интеграцию opencode не ставим, см. «Herdr и v2»)
 
 **Дата:** 2026-10-21
 
@@ -186,8 +186,10 @@ https://opencode.zeroq.su`, пароль через sops (`secrets/opencode.env`
   монтирования мёртв (T4/ADR-0004) ⇒ при не смонтированном `/mnt/services`
   opencode молча создаст новую пустую БД.
 - Herdr — проверен, см. «Herdr и v2» ниже.
-- Решить, нужен ли herdr-интеграционный плагин для v2 (конфликт с
-  read-only `cli.json`) — см. «Herdr и v2».
+- ~~Решить, нужен ли herdr-интеграционный плагин для v2 (конфликт с
+  read-only `cli.json`)~~ — **решено 2026-10-21: не ставим** (на хосте нет ни
+  одной agent-интеграции herdr, а регистрация в `cli.json` всё равно упёрлась
+  бы в read-only симлинк) ⇒ владельцу решать нечего.
 
 ---
 
@@ -233,6 +235,15 @@ MCP поднимается как `npx -y -p webpage-mcp@latest webpage-mcp-stdi
   из того же sops-файла `~/.config/opencode/server.env`, что и юнит.
 - Часть подкоманд (`mcp list`, `session list`) с `--server` печатает help —
   фича v2.0.32, не регрессия.
+- **`--server` принимают не все подкоманды** (проверено на живом бинаре
+  2026-10-21, `opencode <cmd> --help`): `run`, `attach`, `tui`, `api`,
+  `models`, `agent` — берут; `mcp`, `service`, `auth`, `serve`, `plugin` —
+  **нет** ⇒ `Error: Unrecognized flag: --server in command opencode plugin
+  list`. Обёртка `oc` добавляла флаг всем подряд ⇒ локальные команды
+  (`plugin list`, `auth`, `service`) падали. Исправлено (коммит `1323982`):
+  `oc` фильтрует по подкоманде, уважает явные `--server`/`--standalone` от
+  вызывающего, а если сервер на 4096 не поднят — печатает подсказку
+  `systemctl --user start opencode-web` вместо connection refused.
 
 ## Herdr и v2 (проверено 2026-10-21)
 
@@ -251,15 +262,28 @@ herdr **0.9.3** на sapphira активен (`herdr server --session herdr-prod
 - **Интеграция opencode НЕ установлена**: `herdr integration status` →
   `opencode: not installed (~/.config/opencode/plugins/herdr-agent-state.js)`.
   То есть ни lifecycle-reporting, ни native restore для v2 — **это не регрессия
-  миграции** (в v1 было так же).
-- **Если её ставить — конфликт с Nix-конфигом.** herdr пишет
-  `~/.config/opencode/plugins/herdr-agent-state.js`, `herdr-tui-session.js`,
-  `herdr-opencode/tui.js` (эти пути Nix не управляет ⇒ ок) и **регистрирует
-  V2-TUI-плагин в `cli.json`**. Наш `cli.json` — **read-only симлинк в
-  /nix/store** ⇒ запись упадёт по EROFS ⇒ регистрация не пройдёт. Варианты:
-  (а) сделать `cli.json` writable (не симлинком) — тогда herdr дописывает
-  регистрацию в наш конфиг; (б) не ставить интеграцию (работает экранный
-  fallback — детект состояния по скриншоту). Решение за владельцем.
+  миграции** (в v1 было так же). Более того, на sapphira не установлена **ни
+  одна** agent-интеграция herdr (pi, omp, claude, codex, copilot, devin,
+  droid, kimi, opencode, kilo, hermes, qoder, qwen, cursor, mastracode,
+  antigravity-cli, grok, letta — все «not installed»), то есть herdr работает
+  без них и работал так же в v1.
+- **Что именно делает установка** (проверено в песочнице `HOME=/tmp/herdr-test`
+  2026-10-21): herdr пишет `~/.config/opencode/plugins/herdr-agent-state.js`,
+  `~/.config/opencode/herdr-tui-session.js`,
+  `~/.config/opencode/herdr-opencode/tui.js`, `~/.config/opencode/tui.jsonc`
+  (эти пути Nix не управляет ⇒ ок) и **регистрирует V2-TUI-плагин в
+  `cli.json`** (`plugins` += `./herdr-opencode`).
+- **Регистрация в `cli.json` невозможна:** наш `cli.json` — read-only симлинк
+  в /nix/store, а herdr отказывается писать в файл с несколькими хардлинками:
+  `cannot update /home/oqyude/.config/opencode/cli.json: config has multiple
+  hard links; use a separate file or a symlink before retrying` (то есть это
+  **не EROFS**, а осознанная проверка herdr). Варианты были: (а) сделать
+  `cli.json` writable-файлом (тогда он перестаёт быть Nix-управляемым, и
+  herdr дописывает свою регистрацию); (б) не ставить интеграцию (работает
+  экранный fallback — детект состояния по скриншоту).
+  **Решено: (б)** — ни одной интеграции на хосте нет, ломать
+  Nix-управляемость `cli.json` ради одной не нужно. Решение владельца не
+  требуется.
 
 ## Что фактически работает на sapphira (проверено 2026-10-21)
 
@@ -289,3 +313,24 @@ herdr **0.9.3** на sapphira активен (`herdr server --session herdr-prod
   проверен «в лоб» — кэш `~/.cache/opencode/npm/oh-my-opencode-slim@3.0.5`
   удалён вручную, `systemctl --user restart home-manager-oqyude.service` →
   пакет вернулся сам, `opencode plugin list` → `3.0.5`.
+- **Legacy `~/.omo/omo.jsonc` валиден по факту, а не по намерению:** на хосте
+  развёрнут Nix-управляемый файл, и в нём реальные id реестра
+  (`minimax-coding-plan/MiniMax-M3` и `minimax-coding-plan/MiniMax-M3.1-Flash`),
+  а не `MiniMax-M3.1-Flash-Preview` (тот остался только в старых сессиях БД).
+  Под v2 файл инертен — активен slim-плагин, openagent не загружен.
+- **Мёртвый кэш v1 вычищен** (2026-10-21): `~/.cache/opencode/packages`
+  (146 M — раскладка v1) и `~/.cache/opencode/npm/oh-my-openagent@latest`
+  (146 M — плагин не включён) удалены; активный кэш —
+  `~/.cache/opencode/npm/oh-my-opencode-slim@3.0.5` (172 M).
+- **`oc` больше не ломает локальные команды** (`plugin list`, `auth`,
+  `service`): `--server` добавляется только тем подкомандам, которые его
+  принимают (см. «Инцидент 3»).
+- **Пароль в `server.env` записан в кавычках** (`OPENCODE_SERVER_PASSWORD="…"`):
+  systemd при разборе EnvironmentFile кавычки снимает, а `set -a; . server.env`
+  в обёртке `oc` — тоже ⇒ сервер и CLI используют одно значение. Но при
+  ручной проверке через `curl -u opencode:$PASS` кавычки надо убрать
+  (`… | tr -d '"'`), иначе 401 `UnauthorizedError` — это артефакт проверки, а
+  не поломка сервера.
+- **`oc models` сразу после рестарта юнита может вернуть
+  `ServiceUnavailableError: Location plugins did not finish activating`** —
+  сервер ещё поднимает плагины. Через несколько секунд проходит.
