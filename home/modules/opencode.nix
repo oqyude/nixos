@@ -1,45 +1,112 @@
-# Declarative OpenCode + oh-my-openagent (oh-my-opencode) plugin setup.
+# Declarative OpenCode v2 + oh-my-opencode-slim setup.
 #
-# Sapphira runs OpenCode 1.18.x (V1 schema, `plugin` singular) via
-# pkgs.opencode. Workstation (vetymae) is on OpenCode 1.19.x — same V1
-# schema, same `plugin` (singular) field. Both hosts use the V1-compatible
-# `plugin` (singular) key. If/when nixpkgs ships OpenCode 2.x (V2 schema,
-# `plugins` plural), switch the `settings` block below accordingly.
+# HISTORY / WHY THIS FILE LOOKS LIKE THIS
 #
-# Mirrors ~/.config/opencode/ on the current workstation.
-# Imported by home/server.nix (sapphira). Auto-enables programs.opencode.
+# 2026-10-20: sapphira migrated from OpenCode 1.19.0 (v1) to OpenCode 2.0.32
+# (v2). See ADR-0006. The v1 -> v2 deltas that matter here:
+#
+#   * package     — v2 is NOT in nixos-unstable yet (that still ships 1.19.0).
+#                   It landed in nixpkgs master (PR #569770, merged 2026-10-19),
+#                   so the binary comes from the `nixpkgs-master` input that was
+#                   already wired into this flake. `nix flake update
+#                   nixpkgs-master` is what moves the pin onto a rev that has
+#                   v2 — the lock must be updated together with this file.
+#   * config keys — v1: `plugin` (singular) + `mcp` (flat map).
+#                   v2: `plugins` (plural) + `mcp.servers` (nested).
+#   * tui.json    — v1 wrote CLI/TUI prefs to `tui.json`; v2 reads them from
+#                   `cli.json` ($schema https://opencode.ai/v2/cli.json) and
+#                   only *migrates* tui.json -> cli.json on first run. On
+#                   sapphira `tui.json` is a symlink into /nix/store (read-only),
+#                   so the migration cannot write: `cli.json` is declared
+#                   explicitly below and `programs.opencode.tui` stays empty.
+#   * port        — v1 `opencode serve` defaulted to 4096; v2 defaults to 4097
+#                   (4096 is reserved for the v2 background service). The nginx
+#                   vhost `opencode.zeroq.su` proxies to 127.0.0.1:4096, so
+#                   `--port 4096` is pinned explicitly in `web.extraArgs`.
+#                   Without it the proxy silently 502s.
+#   * `opencode web` is gone in v2; `opencode serve` serves both the API and
+#                   the web UI (verified locally: GET / -> 200 HTML,
+#                   GET /api/health without creds -> 401 UnauthorizedError).
+#   * auth        — unchanged: OPENCODE_PASSWORD, falling back to
+#                   OPENCODE_SERVER_PASSWORD (sops: secrets/opencode.env ->
+#                   ~/.config/opencode/server.env). HTTP basic, user `opencode`.
+#   * plugins     — v2 installs npm plugin packages itself (in-process
+#                   arborist, no bun/npx needed) into ~/.cache/opencode/npm/.
+#                   Only `oh-my-opencode-slim` is v2-ready: it ships
+#                   dist/tui2.js + dist/v2/tui.d.ts and documents an
+#                   "OpenCode v2 compatibility" matrix. oh-my-openagent
+#                   (5.1.40) still exports only ./tui + ./server and has no
+#                   v2 entry point, so it is NOT enabled under v2.
 #
 # Files this module owns on disk:
-#   ~/.config/opencode/opencode.json         <- programs.opencode.settings
-#   ~/.config/opencode/tui.json              <- programs.opencode.tui
-#   ~/.omo/omo.jsonc                         <- oh-my-openagent plugin's PRIMARY
-#                                              runtime config (>= v5.x reads
-#                                              only this path; the legacy
-#                                              ~/.config/opencode/oh-my-openagent.json
-#                                              is read only by the migration shim).
-#   ~/.config/opencode/oh-my-openagent.json  <- legacy mirror, kept so omo doctor
-#                                              and any downgrade that re-reads
-#                                              the old path see the same content.
+#   ~/.config/opencode/opencode.json           <- programs.opencode.settings
+#   ~/.config/opencode/cli.json                 <- v2 CLI/TUI preferences
+#   ~/.config/opencode/oh-my-opencode-slim.json <- slim plugin config
+#   ~/.config/opencode/service.json             <- v2 background service (off)
+#   ~/.omo/omo.jsonc                            <- LEGACY oh-my-openagent config
+#   ~/.config/opencode/oh-my-openagent.json     <- LEGACY mirror of the above
 #
-# Override any field in the importing module if needed.
+# Imported by home/server.nix (sapphira). Auto-enables programs.opencode.
 {
   config,
+  inputs,
   lib,
   pkgs,
   xlib,
   ...
 }:
 let
-  # Body of ~/.omo/omo.jsonc (and the legacy mirror).
-  # Loaded by the oh-my-openagent opencode plugin on startup.
-  #
-  # Plugins >= 5.x resolve their config from ~/.omo/omo.jsonc, NOT from
-  # ~/.config/opencode/oh-my-openagent.json. Pinning _migrations here prevents
-  # the 2026-07-opencode-config-unification migration from running on every
-  # startup and re-backing-up the file (which would otherwise leave us with
-  # an empty omo.jsonc that drops every agent override — see the journal entry
-  # below).
-  ohMyOpenagentConfig = {
+  # OpenCode v2 only exists in nixpkgs master for now. Import it the same way
+  # modules/server/nextcloud.nix already imports `nixpkgs-master`.
+  masterPkgs = import inputs.nixpkgs-master {
+    system = pkgs.stdenv.hostPlatform.system;
+  };
+
+  # 2.0.32 — same version as the workstation (vetymae) runs.
+  opencodeV2 = masterPkgs.opencode;
+
+  # Plugin spec. Pinned exactly (no @latest): v2 auto-updates only unpinned
+  # specs, and the workstation is pinned to the same version.
+  pluginSpec = "oh-my-opencode-slim@3.0.5";
+
+  # Model ids are validated against the provider registry, not against taste.
+  # `opencode models` on BOTH the workstation and sapphira lists exactly:
+  #   minimax-coding-plan/MiniMax-M3           variants: none, thinking
+  #   minimax-coding-plan/MiniMax-M3.1-Flash   variants: (none)
+  #   opencode/big-pickle                       variants: (none)
+  #   opencode/minimax-m3.1-flash-free         variants: low..max
+  # Anything else (MiniMax-M3.1-Flash-Preview, MiniMax-M2.7-highspeed, ...)
+  # is NOT in the registry -> ProviderModelNotFoundError. The v1 omo.jsonc on
+  # this host referenced MiniMax-M3.1-Flash-Preview everywhere; that is the
+  # same class of bug as the kimi-for-coding incident described in R1.x.
+  modelFast = "minimax-coding-plan/MiniMax-M3.1-Flash";
+  modelStrong = "minimax-coding-plan/MiniMax-M3";
+
+  # nixpkgs ast-grep only ships binary `ast-grep`; omo's ast-grep skill probes
+  # for `sg` (or ast-grep). Provide both via a symlink wrapper.
+  astGrepWithSg = pkgs.runCommandLocal "ast-grep-with-sg" { } ''
+    mkdir -p $out/bin
+    ln -s ${pkgs.ast-grep}/bin/ast-grep $out/bin/ast-grep
+    ln -s ${pkgs.ast-grep}/bin/ast-grep $out/bin/sg
+  '';
+
+  # Slim plugin config — mirror of the workstation (vetymae):
+  # ~/.config/opencode/oh-my-opencode-slim.json
+  slimConfig = {
+    agents = {
+      orchestrator = { model = modelFast; };
+      explorer = { model = modelFast; };
+      oracle = { model = modelFast; };
+      designer = { model = modelFast; };
+      fixer = { model = modelFast; };
+    };
+  };
+
+  # LEGACY oh-my-openagent config. Kept valid (real model ids, no variants the
+  # registry does not expose) so a future switch back to oh-my-openagent does
+  # not resurrect the ProviderModelNotFoundError trap. Under v2 this file is
+  # inert: the enabled plugin is oh-my-opencode-slim (see above).
+  legacyOmoConfig = {
     "$schema" =
       "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/omo.schema.json";
     _migrations = [
@@ -50,239 +117,90 @@ let
 
     agents = {
       sisyphus = {
-        model = "minimax-coding-plan/MiniMax-M3";
-        variant = "max";
+        model = modelStrong;
         models = [
-          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
-          {
-            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
-            variant = "medium";
-          }
-          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
-          { model = "opencode/big-pickle"; }
+          { model = modelFast; }
         ];
       };
-      hephaestus = {
-        model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
-        variant = "medium";
-      };
+      hephaestus = { model = modelFast; };
       oracle = {
-        model = "minimax-coding-plan/MiniMax-M3";
-        variant = "xhigh";
+        model = modelStrong;
         models = [
-          {
-            model = "minimax-coding-plan/MiniMax-M3";
-            variant = "high";
-          }
-          {
-            model = "minimax-coding-plan/MiniMax-M3";
-            variant = "max";
-          }
+          { model = modelFast; }
         ];
       };
-      librarian = {
-        model = "minimax-coding-plan/MiniMax-M3";
-      };
+      librarian = { model = modelStrong; };
       explore = {
-        model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
+        model = modelFast;
         models = [
-          { model = "minimax-coding-plan/MiniMax-M3"; }
+          { model = modelStrong; }
         ];
       };
-      "multimodal-looker" = {
-        model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
-        variant = "low";
-        models = [
-          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
-        ];
-      };
-      prometheus = {
-        model = "minimax-coding-plan/MiniMax-M3";
-        variant = "high";
-        models = [
-          {
-            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
-            variant = "high";
-          }
-        ];
-      };
-      metis = {
-        model = "minimax-coding-plan/MiniMax-M3";
-        variant = "high";
-        models = [
-          {
-            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
-            variant = "low";
-          }
-        ];
-      };
-      momus = {
-        model = "minimax-coding-plan/MiniMax-M3";
-        variant = "xhigh";
-        models = [
-          {
-            model = "minimax-coding-plan/MiniMax-M3";
-            variant = "max";
-          }
-          {
-            model = "minimax-coding-plan/MiniMax-M3";
-            variant = "high";
-          }
-        ];
-      };
+      "multimodal-looker" = { model = modelFast; };
+      prometheus = { model = modelStrong; };
+      metis = { model = modelStrong; };
+      momus = { model = modelStrong; };
       atlas = {
-        model = "minimax-coding-plan/MiniMax-M3";
+        model = modelFast;
         models = [
-          {
-            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
-            variant = "medium";
-          }
-          { model = "minimax-coding-plan/MiniMax-M3"; }
+          { model = modelStrong; }
         ];
       };
       "sisyphus-junior" = {
-        model = "minimax-coding-plan/MiniMax-M3";
+        model = modelStrong;
         models = [
-          {
-            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
-            variant = "medium";
-          }
-          { model = "minimax-coding-plan/MiniMax-M3"; }
-          { model = "opencode/big-pickle"; }
+          { model = modelFast; }
         ];
       };
     };
 
     categories = {
-      "visual-engineering" = {
-        model = "minimax-coding-plan/MiniMax-M3";
-        variant = "high";
-        fallback_models = [
-          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
-          {
-            model = "minimax-coding-plan/MiniMax-M3";
-            variant = "max";
-          }
-        ];
-      };
-      ultrabrain = {
-        model = "minimax-coding-plan/MiniMax-M3";
-        variant = "xhigh";
-        fallback_models = [
-          {
-            model = "minimax-coding-plan/MiniMax-M3";
-            variant = "high";
-          }
-          {
-            model = "minimax-coding-plan/MiniMax-M3";
-            variant = "max";
-          }
-        ];
-      };
-      "deep-low" = {
-        model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
-        variant = "medium";
-        fallback_models = [
-          {
-            model = "minimax-coding-plan/MiniMax-M3";
-            variant = "max";
-          }
-          {
-            model = "minimax-coding-plan/MiniMax-M3";
-            variant = "high";
-          }
-        ];
-      };
-      artistry = {
-        model = "minimax-coding-plan/MiniMax-M3";
-        variant = "high";
-        fallback_models = [
-          {
-            model = "minimax-coding-plan/MiniMax-M3";
-            variant = "max";
-          }
-          {
-            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
-            variant = "high";
-          }
-        ];
-      };
-      quick = {
-        model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
-        fallback_models = [
-          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
-          { model = "minimax-coding-plan/MiniMax-M3"; }
-          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
-        ];
-      };
-      "unspecified-low" = {
-        model = "minimax-coding-plan/MiniMax-M3";
-        fallback_models = [
-          {
-            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
-            variant = "medium";
-          }
-          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
-          { model = "minimax-coding-plan/MiniMax-M3"; }
-        ];
-      };
-      "unspecified-high" = {
-        model = "minimax-coding-plan/MiniMax-M3";
-        fallback_models = [
-          {
-            model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
-            variant = "medium";
-          }
-          { model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview"; }
-          { model = "minimax-coding-plan/MiniMax-M3"; }
-        ];
-      };
-      writing = {
-        model = "minimax-coding-plan/MiniMax-M3.1-Flash-Preview";
-        fallback_models = [
-          { model = "minimax-coding-plan/MiniMax-M3"; }
-          { model = "minimax-coding-plan/MiniMax-M3"; }
-        ];
-      };
+      "visual-engineering" = { model = modelStrong; };
+      ultrabrain = { model = modelStrong; };
+      "deep-low" = { model = modelFast; };
+      artistry = { model = modelFast; };
+      quick = { model = modelFast; };
+      "unspecified-low" = { model = modelFast; };
+      "unspecified-high" = { model = modelStrong; };
+      writing = { model = modelFast; };
     };
   };
 in
 let
-  # nixpkgs ast-grep only ships binary `ast-grep`; omo's ast-grep skill probes
-  # for `sg` (or ast-grep). Provide both via a symlink wrapper.
-  astGrepWithSg = pkgs.runCommandLocal "ast-grep-with-sg" { } ''
-    mkdir -p $out/bin
-    ln -s ${pkgs.ast-grep}/bin/ast-grep $out/bin/ast-grep
-    ln -s ${pkgs.ast-grep}/bin/ast-grep $out/bin/sg
-  '';
+  # Extras that must be on PATH for the server:
+  #   pkgs.nodejs_22  — npx/npm for MCP servers (webpage-mcp) and npm plugins
+  #   pkgs.ast-grep   — `sg` CLI; the plugin's ast-grep skill requires it
+  #   pkgs.bun        — plugin CLI / omo doctor
+  #   pkgs.gh         — GitHub CLI; plugin's GitHub automation requires it
+  extraPackages = [
+    pkgs.nodejs_22
+    astGrepWithSg
+    pkgs.bun
+    pkgs.gh
+  ];
 in
 {
   programs.opencode = {
     enable = true;
 
-    # Extras available to opencode-wrapped (via --suffix PATH on the wrapper):
-    #   pkgs.nodejs_22  — npx/npm for MCP servers (webpage-mcp) and omo's plugin loader
-    #   pkgs.ast-grep   — `sg` CLI; omo's ast-grep skill requires it (omo doctor)
-    #   pkgs.bun        — omo prefers bun; with bun on PATH, `omo doctor` skips node fallback
-    #   pkgs.gh         — GitHub CLI; omo's GitHub automation features require it
-    extraPackages = [
-      pkgs.nodejs_22
-      astGrepWithSg
-      pkgs.bun
-      pkgs.gh
-    ];
+    # OpenCode 2.0.32 from nixpkgs master (nixos-unstable still ships 1.19.0).
+    package = opencodeV2;
+
+    # Extras available to opencode-wrapped (via --suffix PATH on the wrapper).
+    extraPackages = extraPackages;
 
     # ~/.config/opencode/opencode.json
     #
-    # NOTE (2026-10-13): sapphira is on OpenCode 1.18.x (V1 schema) via
-    # pkgs.opencode. V1 only reads `plugin` (singular); V2 introduces
-    # `plugins` (plural). If we ever ship OpenCode 2 via pkgs.opencode-2 or
-    # a custom flake input, switch this key back to `plugins = [...]`.
+    # V2 schema:
+    #   plugins  (plural) — v1 used `plugin` (singular), v2 ignores it
+    #   mcp.servers       — v1 used a flat `mcp` map
+    #
+    # NOTE: HM's MCP integration (programs.mcp.servers -> settings.mcp) is OFF
+    # (enableMcpIntegration defaults to false). If it were on, HM would inject
+    # the v1 flat shape and overwrite the v2 `mcp.servers` block.
     settings = {
-      plugin = [
-        "oh-my-openagent@latest"
-      ];
-      mcp = {
+      plugins = [ pluginSpec ];
+      mcp.servers = {
         webpage = {
           type = "local";
           command = [
@@ -296,62 +214,131 @@ in
       };
     };
 
-    # ~/.config/opencode/tui.json
-    # Mirrors workstation: oh-my-openagent also registered for the TUI.
-    tui = {
-      plugin = [
-        "oh-my-openagent@latest"
-      ];
-    };
+    # ~/.config/opencode/tui.json is a v1 concept. v2 reads CLI/TUI prefs from
+    # cli.json (declared below). Leave `tui` empty so HM writes no tui.json:
+    # a tui.json symlinked into /nix/store is read-only, and v2's automatic
+    # tui.json -> cli.json migration would then fail to write.
+    tui = { };
   };
 
-  # ~/.omo/omo.jsonc — primary file the oh-my-openagent plugin reads at runtime
-  # (>= v5.x). This path lives outside XDG_CONFIG_HOME (~/.config), so use
-  # home.file rather than xdg.configFile.
-  #
-  # ~/.config/opencode/oh-my-openagent.json is kept as a legacy mirror so
-  # `omo doctor`, the migration shim, and any future downgrade that re-reads the
-  # old path see the same content.
+  # ~/.config/opencode/cli.json — v2 CLI/TUI preferences.
+  # $schema: https://opencode.ai/v2/cli.json
+  xdg.configFile."opencode/cli.json".text = builtins.toJSON {
+    "$schema" = "https://opencode.ai/v2/cli.json";
+    plugins = [ pluginSpec ];
+  };
+
+  # ~/.config/opencode/oh-my-opencode-slim.json — config of the enabled plugin
+  # (oh-my-opencode-slim reads its own file, NOT ~/.omo/omo.jsonc).
+  xdg.configFile."opencode/oh-my-opencode-slim.json".text = builtins.toJSON slimConfig;
+
+  # ~/.config/opencode/service.json — v2 background service registration.
+  # The v2 CLI wants a background service; it defaults to port 4096, which is
+  # the port our systemd unit serves the web UI on. Two servers on one host
+  # also means two writers for ~/.local/share/opencode/opencode.db.
+  # => keep the background service off; CLI clients talk to the running unit
+  # via `oc` (see below) or `opencode --server http://127.0.0.1:4096`.
+  xdg.configFile."opencode/service.json".text = builtins.toJSON {
+    disabled = true;
+  };
+
+  # LEGACY ~/.omo/omo.jsonc — primary file the oh-my-openagent plugin reads at
+  # runtime (>= v5.x). Inert under v2 (the enabled plugin is the slim one),
+  # kept valid for a future switch back.
   #
   # MIGRATION TRAP (do not just point back at the legacy path):
-  #   The plugin runs a `2026-07-opencode-config-unification` migration on every
-  #   startup that backs up ~/.omo/omo.jsonc and tries to rewrite it from
-  #   ~/.config/opencode/oh-my-openagent.json. The backup directory name embeds
-  #   the source's content-hashed store path; because HM does not delete the
-  #   previous generation's store path until garbage collection, the same path
-  #   is reused on every retry and omo logs "Migration backup path already
-  #   exists" forever — meanwhile the user's agent overrides disappear and the
-  #   plugin's built-in fallback chain (which references providers like
-  #   kimi-for-coding that opencode's provider registry no longer ships) gets
-  #   picked instead, surfacing as `ProviderModelNotFoundError:
-  #   kimi-for-coding/kimi-for-coding-highspeed` on every subagent spawn.
-  #   Pinning _migrations above makes the migration a no-op; the omo.jsonc
-  #   below is the actual config the plugin sees.
-  home.file."${config.home.homeDirectory}/.omo/omo.jsonc".text = builtins.toJSON ohMyOpenagentConfig;
-  xdg.configFile."opencode/oh-my-openagent.json".text = builtins.toJSON ohMyOpenagentConfig;
+  #   The oh-my-openagent plugin runs a `2026-07-opencode-config-unification`
+  #   migration on every startup that backs up ~/.omo/omo.jsonc and tries to
+  #   rewrite it from ~/.config/opencode/oh-my-openagent.json. The backup
+  #   directory name embeds the source's content-hashed store path; because HM
+  #   does not delete the previous generation's store path until garbage
+  #   collection, the same path is reused on every retry and omo logs
+  #   "Migration backup path already exists" forever — meanwhile the user's
+  #   agent overrides disappear and the plugin's built-in fallback chain
+  #   (which references providers like kimi-for-coding that opencode's
+  #   provider registry no longer ships) gets picked instead, surfacing as
+  #   `ProviderModelNotFoundError: kimi-for-coding/kimi-for-coding-highspeed`
+  #   on every subagent spawn. Pinning _migrations above makes the migration
+  #   a no-op.
+  home.file."${config.home.homeDirectory}/.omo/omo.jsonc".text = builtins.toJSON legacyOmoConfig;
+  xdg.configFile."opencode/oh-my-openagent.json".text = builtins.toJSON legacyOmoConfig;
 
   # Same extras on the user's PATH too, so `omo doctor` and standalone invocations
   # of `sg`, `gh`, `npm`, `npx` work in the user's shell — not only inside
   # the opencode-wrapped binary.
   #
-  # Note: `pkgs.bun` deliberately NOT included here — it now lives in
-  # `home/modules/herdr-runtime.nix`, which both `home/server.nix` and
+  # Note: `pkgs.bun` deliberately NOT included here — it now lives
+  # in `home/modules/herdr-runtime.nix`, which both `home/server.nix` and
   # `home/secondary.nix` import. Avoids a second copy of bun in the
   # user's shell PATH (single source of truth) and means the bun-runtime
   # fix for the herdr-web-ui plugin on NixOS is one place to grep.
+  # `oc` — CLI client that talks to the already running server instead of
+  # spawning a second one (v2 CLI otherwise wants the background service on
+  # 4096, which collides with the systemd unit and the shared opencode.db).
+  #
+  # The server password is needed: the API speaks HTTP basic auth. It is read
+  # from the same sops-managed env file the unit uses (mode 0600, owned by the
+  # user), so the secret never lands in a nix store path.
+  #
+  # `--server` goes AFTER the subcommand: `opencode <cmd> --server <url>`
+  # (`opencode --server <url> <cmd>` is not accepted by the v2 parser).
   home.packages = [
     pkgs.nodejs_22
     astGrepWithSg
     pkgs.gh
+    (pkgs.writeShellScriptBin "oc" ''
+      export PATH="${lib.makeBinPath extraPackages}:$PATH"
+      set -a
+      # shellcheck disable=SC1090
+      . ${xlib.dirs.opencode-server-env}
+      set +a
+      exec ${opencodeV2}/bin/opencode "$@" --server http://127.0.0.1:4096
+    '')
   ];
 
-  # Expose `opencode web` as a systemd user service. nginx on sapphira
+  # Install the plugin package into the v2 npm cache.
+  #
+  # v2.0.32 does NOT install plugin packages on server startup: the server
+  # only loads what is already in ~/.cache/opencode/npm. A fresh host (or a
+  # wiped cache) therefore comes up with the plugin declared in opencode.json
+  # but NOT loaded — `opencode plugin list` shows nothing, the plugin's agents
+  # and its MCP servers (context7, gh_grep) are missing, and nothing in the
+  # logs says why. Verified on sapphira 2026-10-21: the cache was empty after
+  # the first start, and `opencode plugin add` populated it.
+  #
+  # `plugin add` is idempotent here: the plugin is already declared in the
+  # (read-only) Nix-managed opencode.json, so the command reports "already
+  # configured" and only performs the install. Errors are ignored on purpose —
+  # a failed warm-up must not break the activation; the server still works,
+  # only the plugin is missing.
+  home.activation.installOpencodePlugin = lib.hm.dag.entryAfter [ ] ''
+    ${opencodeV2}/bin/opencode plugin add ${pluginSpec} >/dev/null 2>&1 || true
+  '';
+
+  # Warm the npx cache for the `webpage` MCP server.
+  #
+  # The MCP is started as `npx -y -p webpage-mcp@latest webpage-mcp-stdio`.
+  # The FIRST such spawn has to download and unpack the package (~200 MB) and
+  # the MCP handshake times out long before that finishes — the server then
+  # reports the MCP as failed ("Request timed out" / npm ENOTEMPTY on a
+  # half-written cache dir). The cache lives in ~/.npm/_npx, which Nix does
+  # not manage, so the failure comes back after every cache wipe.
+  #
+  # Pre-warming at activation makes the first real spawn instant. Failure is
+  # ignored on purpose: a missing warm-up must not fail the activation.
+  home.activation.warmWebpageMcp = lib.hm.dag.entryAfter [ ] ''
+    ${pkgs.nodejs_22}/bin/npx -y -p webpage-mcp@latest true >/dev/null 2>&1 || true
+  '';
+
+  # Expose `opencode serve` as a systemd user service. nginx on sapphira
   # proxies https://opencode.zeroq.su -> 127.0.0.1:4096.
   #
   # --hostname 0.0.0.0 binds the listener to every interface (matches the
   # "0.0.0.0" intent; nginx then reverse-proxies 127.0.0.1:4096 internally).
   # --cors https://opencode.zeroq.su lets the browser session reach the
   # server from that origin without CORS rejection.
+  # --port 4096 is REQUIRED in v2: the default moved to 4097 (4096 belongs to
+  # the v2 background service), and the nginx vhost above proxies to 4096.
   #
   # SECURITY: with no password, anyone reaching the upstream socket gets full
   # opencode. Bind 0.0.0.0 + listener == bridge == shell. The password is
@@ -364,6 +351,8 @@ in
     extraArgs = [
       "--hostname"
       "0.0.0.0"
+      "--port"
+      "4096"
       "--cors"
       "https://opencode.zeroq.su"
     ];
@@ -391,10 +380,8 @@ in
   #                  OOM-kill. Without this, a spike triggers the same
   #                  restart-loop the host saw today.
   #
-  # Sizes are derived from observed peak (1.4 GiB at 16:36, 1.1 GiB at 16:59).
-  # MemoryHigh = 1G gives headroom for normal runs; MemoryMax = 2G caps
-  # pathological growth. Tweak both together if a workload legitimately
-  # needs more.
+  # v2 is heavier than v1 (bun runtime + web UI in the same process), so these
+  # caps stay.
   #
   # Refs:
   #   https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html
