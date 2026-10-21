@@ -7,13 +7,15 @@
 #     → TFTP:  artifacts.root/tftpboot/<ipxeBinary>
 #     → runs iPXE
 #     → HTTP:  http://<bridge.address>/<chain-target>
-#     → iPXE script sanboots the alpine-worker raw disk image
-#       (production path: boot.ipxe; regression path: boot-bypass.ipxe)
+#     → iPXE script loads the kernel and the initramfs over HTTP; the
+#       initramfs carries the read-only squashfs rootfs inside itself
+#       (production path: boot.ipxe; legacy disk path: boot-bypass.ipxe)
 #
 # Two static scripts are staged under artifacts.root/http/:
-#   - boot.ipxe        — the production sanboot chain
-#   - boot-bypass.ipxe — the H_fix.1b regression baseline
-#                        (kernel+initrd, no sanboot)
+#   - boot.ipxe        — the production chain (kernel + initrd; the
+#                        initramfs carries the read-only rootfs)
+#   - boot-bypass.ipxe — the legacy disk-profile chain (kernel+initrd
+#                        with the image attached as a local disk)
 # Which one autoexec.ipxe chains to is controlled by
 # `pxe-infra.bootloader.bypassFallback.enable` (see default.nix).
 #
@@ -37,39 +39,39 @@
     environment.etc."pxe-infra/tftpboot/${config.pxe-infra.bootloader.ipxeBinary}".source =
       "${pkgs.ipxe}/${config.pxe-infra.bootloader.ipxeBinary}";
 
-    # Static iPXE script — PRODUCTION SANBOOT PATH.
+    # Static iPXE script — PRODUCTION CHAIN (read-only payload).
     #
-    # This is the script autoexec.ipxe chains to by default
-    # (`pxe-infra.bootloader.bypassFallback.enable = false`).
-    # It sanboots the alpine-worker raw disk image and lets
-    # OVMF re-enter boot services so the image's ESP-resident
-    # systemd-boot (`BOOTX64.EFI` + `loader/loader.conf`)
-    # finishes the chain. The image is already sanboot-ready
-    # — verified by H_fix.2-3 against
-    # `build/alpine-worker/build.sh:135-185`.
+    # The worker payload is a read-only squashfs rootfs that travels
+    # INSIDE the initramfs (build/alpine-worker/build-squashfs.sh in the
+    # pxe-infra-automation repo). The guest therefore needs no disk and
+    # no root UUID: the chain loads the kernel and the initramfs over
+    # HTTP, and the initramfs attaches the embedded squashfs through a
+    # loop device, mounts it READ-ONLY, makes /etc and /var writable in
+    # RAM (overlayfs) and switch_root()s into the worker system.
     #
-    # The companion `boot-bypass.ipxe` (staged below) is the
-    # H_fix.1b regression baseline: it bypasses sanboot
-    # entirely and uses the kernel+initrd path, which we know
-    # reaches the Alpine Init shell (T10). It is kept reachable
-    # behind `bypassFallback.enable` so a future regression
-    # in the sanboot chain can be reproduced with a single
-    # config flip + rebuild, without touching this file.
-    # autoexec.ipxe (further down) selects which of the two
-    # scripts to chain to based on that option.
+    # This replaces the previous `sanboot .../alpine-worker.raw` chain,
+    # which depended on iPXE's SAN-boot extensions - the dependency
+    # behind T14 (the 6.18.57 PCI-match regression) and risk R1 (SAN
+    # under ESXi EFI, never verified). The disk profile (build.sh) and
+    # its sanboot chain remain as the legacy/regression path, reachable
+    # through boot-bypass.ipxe.
     #
-    # `''${...}''` is Nix's escape for a literal `${...}` in a
+    # `''${...}` is Nix's escape for a literal `${...}` in a
     # multi-line string; iPXE uses `${boot-url}` as its own
     # variable substitution, which must survive into the output
     # verbatim.
     environment.etc."pxe-infra/http/boot.ipxe".source = pkgs.writeText "boot.ipxe" ''
       #!ipxe
       set boot-url http://${config.pxe-infra.bridge.address}/latest
-      sanboot ''${boot-url}/alpine-worker.raw || goto retry_alpine
-      :retry_alpine
-      echo sanboot failed, retrying in 5s
+      kernel ''${boot-url}/vmlinuz-virt console=ttyS0,115200n8 console=tty0
+      initrd ''${boot-url}/initramfs-virt
+      boot || goto retry
+      :retry
+      echo boot failed, retrying in 5s
       sleep 5
-      sanboot ''${boot-url}/alpine-worker.raw || goto shell
+      kernel ''${boot-url}/vmlinuz-virt console=ttyS0,115200n8 console=tty0
+      initrd ''${boot-url}/initramfs-virt
+      boot || goto shell
       :shell
       shell
     '';
@@ -155,9 +157,11 @@
     # repo): the RIP at 0x7EC9456F was a different crash site
     # than the previously-recorded 0x7EE8A5FC -- iPXE was dying
     # before even reaching boot.ipxe.
-    environment.etc."pxe-infra/tftpboot/autoexec.ipxe".source =
-      pkgs.writeText "autoexec.ipxe" ''#!ipxe
-chain http://${config.pxe-infra.bridge.address}/${if config.pxe-infra.bootloader.bypassFallback.enable then "boot-bypass.ipxe" else "boot.ipxe"}
-'';
+    environment.etc."pxe-infra/tftpboot/autoexec.ipxe".source = pkgs.writeText "autoexec.ipxe" ''
+      #!ipxe
+      chain http://${config.pxe-infra.bridge.address}/${
+        if config.pxe-infra.bootloader.bypassFallback.enable then "boot-bypass.ipxe" else "boot.ipxe"
+      }
+    '';
   };
 }
