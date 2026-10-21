@@ -159,6 +159,13 @@
     # before even reaching boot.ipxe.
     environment.etc."pxe-infra/tftpboot/autoexec.ipxe".source = pkgs.writeText "autoexec.ipxe" ''
       #!ipxe
+      echo === ifstat ===
+      ifstat
+      echo === route ===
+      route
+      echo === ping ===
+      ping --count=2 ${config.pxe-infra.bridge.address} || echo PING_FAILED
+      echo === chain ===
       chain http://${config.pxe-infra.bridge.address}/${
         if config.pxe-infra.bootloader.bypassFallback.enable then "boot-bypass.ipxe" else "boot.ipxe"
       }
