@@ -179,10 +179,12 @@ https://opencode.zeroq.su`, пароль через sops (`secrets/opencode.env`
 - Место сборки v2 (bun) — решено: **на самой sapphira** (5.6 GiB RAM,
   ~1.8–3.1 GiB доступно; пик — `bun --bun ./script/build.ts` ~780 МБ RSS,
   OOM-kill'ов не было, zram заполнялся). Сборка ~25 мин.
-- Перенос `XDG_DATA_HOME` → `/mnt/services` — **не сделан** (БД сейчас
-  `~/.local/share/opencode`, 408 МБ, бэкап pre-v2 снят в
-  `/mnt/services/opencode-backup/pre-v2-2026-10-21`). Актуально: на sapphira
-  `/` (55 G) свободно **9.8 G** (82% занято), на `/mnt/services` — 303 G.
+- Перенос `XDG_DATA_HOME` → `/mnt/services` — **решено владельцем: отдельная
+  задача T37** (БД сейчас `~/.local/share/opencode`, 408 МБ, бэкап pre-v2 снят в
+  `/mnt/services/opencode-backup/pre-v2-2026-10-21`; на sapphira `/` свободно
+  **9.8 G** из 55 G, на `/mnt/services` — 303 G). Главный риск задачи: гвард
+  монтирования мёртв (T4/ADR-0004) ⇒ при не смонтированном `/mnt/services`
+  opencode молча создаст новую пустую БД.
 - Herdr — проверен, см. «Herdr и v2» ниже.
 - Решить, нужен ли herdr-интеграционный плагин для v2 (конфликт с
   read-only `cli.json`) — см. «Herdr и v2».
