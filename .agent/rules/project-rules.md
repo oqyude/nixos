@@ -49,10 +49,18 @@
    ошибка. Используется в `home/termux.nix:256`, `modules/server/nextcloud.nix:80`
    (`trusted_proxies`), `modules/server/nginx.nix:109,253`,
    `modules/vds/systemd.nix:10`. При смене — править 4 файла.
-5. **3x-ui заморожен.** Панель на последней версии (образ `:latest`),
-   ядро Xray на 26.7.x. Миграция на 26.9.x провалена. Обходные скрипты
-   (timer, migrateScript) отключены осознанно. **Не** обновлять ядро через
-   панель без записи в `decisions/` или `notes/`.
+5. **3x-ui: версии панели и ядра зафиксированы, обновление — только с записью.**
+   Панель: образ запинен на `ghcr.io/mhsanaei/3x-ui:v3.10.2`
+   (`modules/containers/3x-ui.nix:54`). До 2026-10-20 был `:latest` — это был
+   вектор **тихого дрейфа**: 2026-10-14 релиз v3.10.x притащил ядро Xray
+   **26.10.10** вместо 26.7.x, минуя все инварианты (R1.8). Ядро ставится
+   через UI панели (Panel Settings → Xray version) и **различается по хостам**:
+   **otreca — 26.7.28** (выбран руками), **sapphira — 26.10.10** (дефолт
+   бандла v3.10.2, никогда не пинился). «Миграция 26.7.x → 26.9.x провалена»
+   держалась на **неверном диагнозе** — см. R1.16 и
+   `.agent/decisions/notes/3x-ui-xray-26.9.md`. Обходные скрипты (timer,
+   migrateScript) отключены осознанно. **Не** обновлять ядро или панель без
+   записи в `decisions/` или `notes/`.
 6. **nftables на VDS требует явной финальной политики.** Текущий ruleset
    (`vds.nix:73-91`) — без явного последнего правила и без `policy` → неявный
    accept. На otreca одновременно `nftables.enable = true` и `firewall.*` —
@@ -63,7 +71,10 @@
 8. **Версия ядра Xray — состояние UI-панели 3x-ui, не Nix.** Ядро
    ставится через UI панели (UI → xray version) и хранится в её
    sqlite-БД. Перед любым деплоем/ребутом 3x-ui — проверить версию
-   ядра в панели. Nix декларирует панель (`:latest`), но не ядро.
+   ядра в панели. Nix декларирует панель (теперь запинен на `v3.10.2`,
+   R1.5), но не ядро. **Проверять на каждом хосте отдельно:** otreca —
+   26.7.28, sapphira — 26.10.10 (2026-10-20). Бандл панели = ядро, которое
+   окажется в контейнере, если ядро не выбрано руками в UI.
 9. **Backups: external/unknown — accepted risk.** На 2026-10-10 open question
    5.6 («где бэкапы, как проверяются?») не отвечен владельцем. В этом
    репозитории **не декларируется** ни одна бэкап-стратегия. Failure modes
@@ -178,9 +189,97 @@
     parse fail → 403. **Не дублировать** `proxy_set_header` в
     `extraConfig`; полагаться на include.
 
+16. **REALITY: fingerprint клиента должен быть `chrome`/`firefox`/`safari`.**
+    Ядро Xray **>= 26.9.8** (`XTLS/reality` commit `8cdf7bf9c7`) требует, чтобы
+    ClientHello содержал key share `X25519MLKEM768` **и** шёл он раньше
+    опционального `X25519`. Отдают его только uTLS-отпечатки **chrome,
+    firefox, safari**. У `qq`, `edge`, `ios`, `randomized` — нет.
+    **Отказ молчаливый:** сервер считает клиента неавторизованным и проксирует
+    TLS в реальный сайт-декoy -> клиент получает настоящий сертификат ->
+    `REALITY: received real certificate (potential MITM or redirection)` ->
+    `REALITY: processed invalid connection`. Итог: **TCP соединяется, TLS
+    «успешен», трафика нет**, в панели без ошибок. Проверено 2026-10-20 на
+    sapphira: `fp=chrome` -> `uConn.Verified: true` + HTTP 204 через прокси;
+    `fp=qq`/`edge`/`ios`/`randomized` -> `verified: false`, трафика нет.
+    Править надо **все** инбаунды и **все** исходящие (`panelOutbound`,
+    `telegram-edge-of-truth`): fingerprint лежит в
+    `realitySettings.settings.fingerprint` (nested-блок, только клиентские
+    поля) и попадает в ссылку/подписку оттуда. Плюс `minClientVer`: на 26.7.x
+    пустое значение = встроенный пол 26.3.27 (отсекает sing-box/Hiddify — они
+    рапортуют 1.8.1 — и Mihomo) -> ставить **`1.0.0` явно**. На >= 26.9.8
+    пустое значение = «любая версия», пол снят.
+17. **WARP на otreca: `domainStrategy: forceipv4` обязателен.** Аутбаунд
+    `warp` (WireGuard/Cloudflare) лежит в `settings.xrayTemplateConfig`
+    (не в Nix) и резолвит пир `engage.cloudflareclient.com:2408` в IPv6
+    первым. В контейнере podman **нет IPv6-маршрута** -> `bind send err >
+    write udp [::]:...->[2606:4700:d0::a29f:c001]:2408: sendto: network is
+    unreachable` -> весь трафик, попадающий под правило роутинга в `warp`
+    (`geosite:google`, `geosite:meta`, `geosite:apple`, `geosite:openai`,
+    `geosite:netflix`, `geosite:spotify`, `geosite:reddit`, `regexp:.*[.]ru$`,
+    `regexp:.*[.]su$`), умирает. Лечится `"domainStrategy": "forceipv4"` в
+    `settings` аутбаунда `warp` (`infra/conf/wireguard.go`: `forceipv4` ->
+    `DeviceConfig_FORCE_IP4`). **Симптом-обманка:** REALITY-хендшейк проходит,
+    `uConn.Verified: true`, но трафика нет — XHTTP-POST уходит в ответ,
+    которого не будет никогда. Проверка: `curl -x socks5h://127.0.0.1:<порт>
+    https://www.google.com/generate_204` через ноду (google = warp-маршрут) vs
+    `https://api.ipify.org` (не warp).
+
+18. **(R1.19) OpenCode на sapphira — v2, порт запинен, плагин только
+    v2-совместимый, model id — только из реестра.** → ADR-0006.
+    **Пакет:** `nixos-unstable` даёт `opencode 1.19.0` (v1). v2 (2.0.32) есть
+    только в **nixpkgs master** (PR #569770, влит 2026-10-19) ⇒
+    `programs.opencode.package = (import inputs.nixpkgs-master { system = …; })
+    .opencode`; `flake.lock` обновлён на `c4f353ac` (2026-10-21). Когда v2
+    попадёт в nixos-unstable — вернуть `pkgs.opencode` и снять master-input.
+    **Порт:** дефолт `opencode serve` в v2 — **4097** (4096 зарезервирован под
+    фоновый сервис v2; проверено на живом бинаре: `server listening on
+    http://127.0.0.1:4097`). nginx-vhost `opencode.zeroq.su` проксирует на
+    `127.0.0.1:4096` ⇒ `--port 4096` обязан быть в `web.extraArgs` **явно**;
+    без него — 502 на проде без единой ошибки в логах opencode. `opencode web`
+    в v2 **удалён**; `opencode serve` отдаёт и API, и web-UI.
+    **Плагин:** v2-совместим только `oh-my-opencode-slim` (в пакете 3.0.5 есть
+    `dist/tui2.js` + `dist/v2/tui.d.ts` + док «OpenCode v2 Compatibility»);
+    `oh-my-openagent` 5.1.40 экспортирует только `.`/`./server`/`./tui` —
+    v2-точки входа нет ⇒ под v2 не включается. Конфиг slim-плагина лежит в
+    `~/.config/opencode/oh-my-opencode-slim.json` (не в `~/.omo/omo.jsonc` —
+    это конфиг openagent).
+    **Model id — только из реестра:** `opencode models` на обоих хостах
+    отдаёт ровно `minimax-coding-plan/MiniMax-M3` (variants none/thinking),
+    `minimax-coding-plan/MiniMax-M3.1-Flash` (без variants),
+    `opencode/big-pickle` (без variants), `opencode/minimax-m3.1-flash-free`
+    (variants low…max). `MiniMax-M3.1-Flash-Preview`, `MiniMax-M2.7-highspeed`,
+    `MiniMax-M2.5-highspeed` в реестре **нет** ⇒ `ProviderModelNotFoundError`
+    (тот же класс, что kimi-for-coding). Сверять через `opencode models`, а не
+    по вкусу.
+    **Фоновый сервис v2 выключен** (`~/.config/opencode/service.json` =
+    `{"disabled": true}`): иначе CLI поднимает второй сервер на 4096
+    (конфликт с юнитом + два писателя в один `opencode.db`). Клиент ходит в
+    работающий юнит через обёртку `oc` (= `opencode --server
+    http://127.0.0.1:4096`).
+    **Данные:** `~/.local/share/opencode/opencode.db` (SQLite) растёт (на
+    рабочей машине 9.5 GB); на sapphira `/` свободно ~14 GB ⇒ держать в
+    голове перенос `XDG_DATA_HOME` на `/mnt/services`.
+    **HM-модуль `programs.opencode` — v1-only:** пишет `opencode.json` +
+    `tui.json`, ключ `plugin` (ед. ч.), MCP плоской картой, а `validateFiles.tui`
+    берёт `passthru.jsonschema.tui`, которого в v2-пакете **нет** ⇒ валидацию
+    tui выключить, конфиг писать руками (`xdg.configFile`).
+    **Три «тихих» ловушки v2, найденные на деплое 2026-10-21 (ADR-0006):**
+    **(а)** v2 **не ставит пакеты плагинов при старте сервера** — грузит только
+    то, что уже в `~/.cache/opencode/npm`. На свежем хосте: `plugin list` пуст,
+    агентов slim-плагина нет, его MCP (context7, gh_grep) не появляются, **в
+    логах ни строки об ошибке**. Отсюда `home.activation.installOpencodePlugin`
+    (`opencode plugin add <spec>` — идемпотентно, ошибки глушатся).
+    **(б)** MCP через `npx -y -p <pkg>`: первый запуск качает ~200 МБ и
+    handshake не дожидается ⇒ `webpage: failed / Request timed out`; плюс
+    остаток кэша от v1 ⇒ `npm ENOTEMPTY`. Отсюда
+    `home.activation.warmWebpageMcp` + чистка `~/.npm/_npx/<hash>`.
+    **(в)** CLI к работающему серверу: `--server` принимается **после**
+    подкоманды (`opencode <cmd> --server <url>`), и нужен пароль (HTTP basic)
+    ⇒ обёртка `oc` читает его из sops `server.env`.
+
 ### R2. home-manager `Service` ≠ `serviceConfig`
 
-Живой код — `home/modules/opencode.nix:403-412`:
+Живой код — `home/modules/opencode.nix:354-359`:
 `systemd.user.services.opencode-web.Service = { MemoryHigh = "1G";
 MemoryMax = "2G"; OOMScoreAdjust = -900; OOMPolicy = "continue"; };`.
 В home-manager нельзя писать `serviceConfig = { ... }` — рендерится литеральная
@@ -230,6 +329,26 @@ nix build .#nixosConfigurations.<хост>.config.system.build.toplevel --dry-ru
 Расшифровка sops-секретов зависит от `/etc/ssh/id_ed25519` (см. R3).
 Циклическая зависимость — см. «Где НЕ лезть без ответа».
 
+18. **Правка инбаунда в UI панели НЕ перегенерирует `config.json` и НЕ
+    перезапускает xray с новым конфигом.** Панель пишет `config.json` только
+    (а) при старте контейнера и (б) по `POST /panel/api/server/restartXrayService`.
+    `POST /inbounds/update/:id` меняет только БД и делает *перезапуск xray со
+    старым файлом*. Отсюда — «панель показывает новое, сервер крутит старое».
+    Особенно опасно для REALITY: UI при сохранении **перегенерирует ключи**
+    (новый `mldsa65Seed` -> новые `shortIds`, новый `publicKey`, `mldsa65Verify`
+    может обнулиться), а сервер продолжает слушать со старым `privateKey` и
+    старыми `shortIds` -> ссылки из подписки не работают, ошибок в панели нет.
+    Порядок после любой правки инбаунда:
+    1) `POST /panel/api/server/restartXrayService` на хосте, где крутится inbound;
+    2) для удалённой ноды — дождаться node-sync и сделать (1) **на ноде**
+       (панель-контроллер её `config.json` не трогает);
+    3) переподписаться на подписку: ссылки генерируются из БД контроллера,
+       а сервер крутит свой `config.json` — они обязаны совпасть;
+    4) проверка — клиентский xray с параметрами из ссылки -> HTTP 204.
+    Проверено 2026-10-20 на otreca: правка «edge of truth» в UI сменила ключи
+    в БД, `config.json` остался от 23:51 -> трафика нет; после
+    `restartXrayService` на ноде -> 5/5 успешных попыток.
+
 ## Ловушки (выглядит сломанным, намеренно)
 
 Прежде чем чинить — проверить этот список. Здесь лежат решения, которые
@@ -240,7 +359,7 @@ nix build .#nixosConfigurations.<хост>.config.system.build.toplevel --dry-ru
 | `server.nix:130` | `firewall.enable = false` при 20 сервисах на `0.0.0.0` | Роутер фильтрует, см. R1.3 |
 | `mobile.nix:95`, `wsl.nix:59` | `stateVersion` 24.05 / 24.11 vs 26.05 | Каждый хост зафиксирован на своей версии |
 | `users.nix:66` | `uid = if hostname == "sapphira" then 1001 else …` | Костыль под 1000 = удалённый `yuyus`; удалять только после миграции ФС |
-| `3x-ui.nix:54` | `image = …:latest` | Панель намеренно latest; ядро Xray — состояние панели, см. R1.8 |
+| `3x-ui.nix:54` | Раньше `image = …:latest` | **Запинено** на `v3.10.2` (R1.5). `:latest` был вектором тихого дрейфа: релиз панели молча притащил ядро 26.10.10 и сломал все REALITY-ссылки (R1.16). Ядро Xray — состояние панели, см. R1.8 |
 | `3x-ui.nix:33-35` | `reality443Forwarding = true` на VDS | **Обязательно, НЕ удалять** (R1.10). nginx stream (`vds/nginx.nix`) маршрутизирует `443 → 127.0.0.1:15380 → container:443`; без маппинга Xray REALITY мёртв. Удаление T10/C5 сломало — восстановлено `07a0437` |
 | `vds/nginx.nix`, `events {}` | Пустой блок → `worker_connections` = **512** (дефолт) | Не баг, но и не запас: при окне недоступности REALITY клиенты дают ретрай-флуд и исчерпывают 512 → «не работает всё» даже после починки первопричины (2026-10-10: 1668 ошибок за ~40 мин). Известный пробел, задача не заведена |
 | Настройки панели, `webBasePath = /pubray/` | `GET https://pubray1.zeroq.su/` → **404, 0 байт** | Панель жива, корень не корень. Реальный URL — `https://pubray1.zeroq.su/pubray/` (HTTP 200). `/subs/` без токена тоже 404 — это норма. Не «чинить» nginx под `/` |
@@ -314,7 +433,19 @@ sudo journalctl -u nginx --since '-10 min' | grep -cE 'worker_connections|Connec
 4. Проба 443 снаружи: TLS с SNI `media.mediavitrina.ru` должен вернуть
    steal-сертификат `*.mediavitrina.ru`; SNI `pubray1.zeroq.su` — валидный
    сертификат панели.
-5. Только если 1–4 зелёные, а пользователь всё ещё видит отказ — проблема
+5. Проверить, что `config.json` **свежее** БД: сравнить mtime файла и
+   время последней правки инбаунда; при расхождении —
+   `POST /panel/api/server/restartXrayService` (R1.18). Правка REALITY в UI
+   перегенерирует ключи и shortIds, сервер до рестарта крутит старые.
+6. Проверить `fingerprint` и `minClientVer` в `x-ui.db` -> `inbounds` ->
+   `stream_settings` -> `realitySettings` (клиентские поля лежат в
+   `realitySettings.settings`, серверные — на верхнем уровне): `fingerprint`
+   должен быть **chrome/firefox/safari**, `minClientVer` — **1.0.0** (R1.16).
+   Значения `qq`/`edge` + ядро >= 26.9.8 = «соединяется, трафика нет».
+7. Проверить, что WARP-аутбаунд не мёртв: `journalctl -u podman-3xui_app |
+   grep -c 'network is unreachable'` -> ожидаем 0. Иначе трафик по warp-правилам
+   роутинга умирает (R1.17).
+8. Только если 1–7 зелёные, а пользователь всё ещё видит отказ — проблема
    клиентская (старый конфиг, клиент без поддержки `xhttp`).
 
 ## Конвенции проекта

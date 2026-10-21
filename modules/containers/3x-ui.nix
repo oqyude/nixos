@@ -51,7 +51,15 @@ in
       oci-containers = {
         backend = "podman";
         containers."3xui_app" = {
-          image = "ghcr.io/mhsanaei/3x-ui:latest";
+          # Тег образа ЗАПИНЕН (2026-10-20, R1.16). До этого был `:latest`,
+          # и это был вектор тихого дрейфа: 2026-10-14 вышел 3x-ui v3.10.x с
+          # ядром Xray **26.10.10** (26.7.x → 26.10.x мимо рук), а ядро ≥ 26.9.8
+          # требует в REALITY ClientHello key share `X25519MLKEM768` (см. R1.16).
+          # Итог: все клиентские ссылки перестали работать молча — TCP есть,
+          # TLS «есть», трафика нет. Пришлось чинить fingerprint и minClientVer
+          # на живых хостах. Панель обновлять — только вместе с записью в
+          # `.agent/decisions/` или `.agent/decisions/notes/` (R1.5).
+          image = "ghcr.io/mhsanaei/3x-ui:v3.10.2";
           environment = {
             "XRAY_VMESS_AEAD_FORCED" = "false";
             "XUI_ENABLE_FAIL2BAN" = "true";
