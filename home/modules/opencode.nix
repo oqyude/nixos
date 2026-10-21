@@ -282,6 +282,14 @@ in
   #
   # `--server` goes AFTER the subcommand: `opencode <cmd> --server <url>`
   # (`opencode --server <url> <cmd>` is not accepted by the v2 parser).
+  #
+  # And it is only accepted by SOME subcommands. v2 parses it per command:
+  # `run`, `attach`, `tui`, `api`, `models`, `agent` take it; `mcp`, `service`,
+  # `auth`, `serve`, `plugin` do NOT and fail with
+  #   "Unrecognized flag: --server in command opencode plugin list".
+  # Those five are local-only commands (they read/write the local config and
+  # cache), so they must be called without the server URL — verified on
+  # sapphira 2026-10-21.
   home.packages = [
     pkgs.nodejs_22
     astGrepWithSg
@@ -292,7 +300,35 @@ in
       # shellcheck disable=SC1090
       . ${xlib.dirs.opencode-server-env}
       set +a
-      exec ${opencodeV2}/bin/opencode "$@" --server http://127.0.0.1:4096
+
+      server_url="http://127.0.0.1:4096"
+
+      # Local-only subcommands: no server involved, no --server flag.
+      case "''${1:-}" in
+        mcp|service|auth|serve|plugin)
+          exec ${opencodeV2}/bin/opencode "$@"
+          ;;
+      esac
+
+      # An explicit --server / --standalone from the caller wins.
+      for arg in "$@"; do
+        case "$arg" in
+          --server|--server=*|--standalone)
+            exec ${opencodeV2}/bin/opencode "$@"
+            ;;
+        esac
+      done
+
+      # The v2 background service is disabled (service.json), so the server
+      # must be the systemd unit. A clear hint beats a connection-refused
+      # stack trace when the unit is down.
+      if ! (exec 3<>/dev/tcp/127.0.0.1/4096) 2>/dev/null; then
+        echo "oc: opencode server on 127.0.0.1:4096 is not reachable." >&2
+        echo "oc: start it with: systemctl --user start opencode-web" >&2
+        exit 1
+      fi
+
+      exec ${opencodeV2}/bin/opencode "$@" --server "$server_url"
     '')
   ];
 
