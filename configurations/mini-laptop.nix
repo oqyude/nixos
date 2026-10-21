@@ -112,6 +112,14 @@
       enable = true;
       autostart = false; # start manually when testing
       memory = "4G"; # iPXE needs 2G+ heap to sanboot a 2G raw image
+      # bootMode=pxe: the guest boots over the network (TFTP → iPXE →
+      # HTTP → kernel+initrd) instead of from the attached raw image.
+      # This is the production path for the READ-ONLY payload (T24):
+      # the initramfs carries the squashfs rootfs inside itself, so
+      # the guest needs no disk at all and the chain does not depend on
+      # iPXE's SAN-boot extensions (T14/R1). `direct` remains the
+      # legacy disk profile (the attached alpine-worker.raw).
+      bootMode = "pxe";
     };
     dhcp.guests = [
       {
