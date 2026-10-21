@@ -125,7 +125,6 @@
         RestartSec = "5s";
       };
 
-
       script = ''
         # Ensure the qemu-bridge-helper wrapper is setuid. The
         # `security.wrappers` activation script in this NixOS
@@ -171,6 +170,25 @@
             ;;
         esac
 
+        # e1000, NOT virtio-net-pci (T24, 2026-10-21).
+        # 
+        # With virtio-net the guest's OVMF claims the device with its
+        # OWN virtio-net driver and does not expose an SNP handle, so
+        # iPXE falls back to ITS OWN virtio-net driver - and cannot
+        # open the device, because the firmware already holds it:
+        # net0: ... using virtio-net on 0000:00:02.0 (Ethernet) [closed]
+        # route: net0: 10.66.0.10/255.255.255.0 gw 10.66.0.1 (inaccessible)
+        # http://10.66.0.1/boot.ipxe... Network unreachable
+        # The interface is closed, so no route is usable and every
+        # HTTP fetch fails - the chain dies before the payload.
+        # 
+        # With e1000 the firmware exposes SNP, iPXE uses the
+        # firmware's path ("using 82540em ... [open]"), the routes are
+        # usable and the chain works end to end.
+        # 
+        # The guest kernel is unaffected: linux-virt ships e1000.ko and
+        # the worker payload loads it from the read-only rootfs.
+
         exec qemu-system-x86_64 \
           -name pxe-infra-vm \
           -machine type=q35,accel=kvm:tcg \
@@ -181,24 +199,6 @@
           -drive if=pflash,format=raw,file=$VARS \
           $EXTRA_DRIVES \
           -netdev bridge,id=net0,br=${config.pxe-infra.bridge.name},helper=/run/wrappers/bin/qemu-bridge-helper \
-          # e1000, NOT virtio-net-pci (T24, 2026-10-21).
-          #
-          # With virtio-net the guest's OVMF claims the device with its
-          # OWN virtio-net driver and does not expose an SNP handle, so
-          # iPXE falls back to ITS OWN virtio-net driver - and cannot
-          # open the device, because the firmware already holds it:
-          #   net0: ... using virtio-net on 0000:00:02.0 (Ethernet) [closed]
-          #   route: net0: 10.66.0.10/255.255.255.0 gw 10.66.0.1 (inaccessible)
-          #   http://10.66.0.1/boot.ipxe... Network unreachable
-          # The interface is closed, so no route is usable and every
-          # HTTP fetch fails - the chain dies before the payload.
-          #
-          # With e1000 the firmware exposes SNP, iPXE uses the
-          # firmware's path ("using 82540em ... [open]"), the routes are
-          # usable and the chain works end to end.
-          #
-          # The guest kernel is unaffected: linux-virt ships e1000.ko and
-          # the worker payload loads it from the read-only rootfs.
           -device e1000,netdev=net0,mac=${config.pxe-infra.vm.mac} \
           -boot $BOOT_ORDER \
           -nographic \
