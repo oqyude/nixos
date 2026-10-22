@@ -7,6 +7,7 @@
 {
   imports = [
     ../containers/3x-ui.nix
+    ../3x-ui
     ../containers/open-webui.nix
     ../containers/tape-rotation.nix
     ../pkgs/beets.nix
@@ -58,6 +59,31 @@
     enable = true;
     cookieDomain = "zeroq.su";
   };
+
+  # ──────────────────────────────────────────────────────────────────────
+  # 3x-ui reconfig (R1.18, 2026-10-21).
+  #
+  # На server (sapphira) контроллер-панель 3x-ui сидит в контейнере, доступна
+  # через nginx → `https://x.zeroq.su`. Юнит ниже ровно эту панель и будит:
+  #   sudo systemctl start 3xui-reconfig.service
+  # POST'ит `/panel/api/server/restartXrayService` через apiToken владельца.
+  # Сценарий, который лечит: «панель показывает новое, сервер крутит старое».
+  # Правка REALITY в UI меняет БД, но `/app/bin/config.json` сам не
+  # переписывается — без этого юнита (или `restartXrayService` руками) ссылки
+  # у клиентов тихо ломаются.
+  #
+  # В otreca аналогичный юнит определён в `modules/vds/default.nix` с
+  # другим `PANEL_URL`/`apiToken`.
+  systemd.services."3xui-reconfig".serviceConfig.Type = "oneshot";
+  systemd.services."3xui-reconfig".serviceConfig.ExecStart =
+    lib.getExe config.modules."3x-ui".reconfig;
+  systemd.services."3xui-reconfig".serviceConfig.Environment = [
+    "PANEL_URL=https://127.0.0.1:2049"
+    "PANEL_BASE=@base"
+    "PANEL_TOKEN=@api_token"
+  ];
+  systemd.services."3xui-reconfig".description =
+    "Перегенерировать config.json 3x-ui из БД и рестартнуть xray (R1.18).";
   # engipy webapp — split architecture:
   #   - sapphira  : host.engipy-frontend.enable  → nginx vhost (engipy.zeroq.su)
   #                 с /api/* на rydiwo:8000 и / → /var/lib/engipy/web

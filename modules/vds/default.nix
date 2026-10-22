@@ -6,6 +6,7 @@
 {
   imports = [
     ../containers/3x-ui.nix
+    ../3x-ui
     ./nginx.nix
     ./samba.nix
     ./systemd.nix
@@ -22,6 +23,27 @@
     certDomain = "pubray1.zeroq.su";
     reality443Forwarding = true;
   };
+
+  # 3xui-reconfig.service (R1.18, 2026-10-21).
+  #
+  # Аналогично server'ному юниту, но будит панель Otreca по её публичному
+  # адресу с apiToken Otreca. Использование:
+  #   sudo systemctl start 3xui-reconfig.service
+  # (оба юнита называются одинаково и путаются через `systemctl status
+  #  3xui-reconfig.service` — без хоста. Это намеренно: владелец стартует
+  # их по очереди; один из них адресует локальную панель, другой — удалённую,
+  # и оба лечат одно и то же «сервер крутит старое».)
+  systemd.services."3xui-reconfig".serviceConfig.Type = "oneshot";
+  systemd.services."3xui-reconfig".serviceConfig.ExecStart =
+    lib.getExe config.modules."3x-ui".reconfig;
+  systemd.services."3xui-reconfig".serviceConfig.Environment = [
+    "PANEL_URL=https://pubray1.zeroq.su"
+    "PANEL_BASE=@base"
+    "PANEL_TOKEN=@api_token"
+  ];
+  systemd.services."3xui-reconfig".description =
+    "Перегенерировать config.json 3x-ui из БД и рестартнуть xray (R1.18) — вариант для Otreca (публичный домен).";
+
   systemd.tmpfiles.rules = [
     (xlib.helpers.mkTmpfile "d" "/mnt" "0755" "root" "root")
     (xlib.helpers.mkTmpfile "d" xlib.dirs.services-mnt-folder "0755" "root" "root")
