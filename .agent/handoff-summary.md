@@ -109,7 +109,15 @@
 
 ### herdr-web-ui plugin
 - `herdr plugin install -y devswha/herdr-web-ui` → v0.4.8 на sapphira.
-- **API token** в `~/.config/herdr/plugins/config/devswha.herdr-web-ui/env` mode 0600: `HERDR_WEB_TOKEN=134aec5cf22390e4b9826df51ba9b27d5208fcdbcd8b4e237ac2e642692241a1` (256 бит).
+- **API token** в `~/.config/herdr/plugins/config/devswha.herdr-web-ui/env` mode 0600: `HERDR_WEB_TOKEN=<REDACTED — 64 hex, значение удалено 2026-10-23, см. T38>` (256 бит).
+
+  > **Значение было закоммичено в этот репозиторий открытым текстом** и осталось
+  > в истории git. Отсюда: (1) литерал удалён из этого файла 2026-10-23,
+  > (2) **тот же литерал всё ещё лежит в `.agent/tasks/manifest.json:412`** —
+  > правка того файла в сессии 2026-10-23 была запрещена ограничением,
+  > (3) **токен нужно ротировать на хосте** — старый считается скомпрометированным,
+  > (4) при желании — чистка истории (`git filter-repo`).
+  > Токен — единственный гейт для `herdr.zeroq.su` (vhost без authelia, R1.15).
 - **In-place PATCH** в `server/machine-security.ts` (`.orig` сохранён рядом) — добавляет поддержку `X-Forwarded-Host` в `sameOrigin()`. Без патча каждый cross-origin POST за reverse proxy возвращает 403 `invalid_origin`: функция сравнивает `new URL(request.url).origin` (видит `http://127.0.0.1:7317`, потому что это TCP-назначение proxy_pass) с браузерным `Origin: https://herdr.zeroq.su` — никогда не совпадает. **Maintenance caveat:** `herdr plugin update devswha.herdr-web-ui` затрёт патч; долгосрочно — форк + `herdr plugin link`.
 
 ### Multi-host setup
