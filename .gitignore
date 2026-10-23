@@ -1,7 +1,10 @@
 .vscode
 .omo
 __pycache__
-scripts
+# Anchored on purpose: the unanchored pattern matched any directory named
+# `scripts` at any depth, so a future modules/*/scripts/ would have been
+# silently ignored. Only the repo-root debris dir is meant here.
+/scripts/
 .temp
 .opencode/
 # H_fix.* regression session debris (helper scripts + in-place edit backups).
