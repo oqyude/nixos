@@ -5,7 +5,7 @@ repos:
         name: nixos flake invariant checks
         description: |
           Runs .ci/checks.sh: sops path_regex compliance, no
-          `:latest` in container images (with R1.5/R1.8 whitelist),
+          `:latest` in container images (whitelist: tape-rotation only),
           and `nix flake check` (skippable via --no-build).
         entry: bash .ci/checks.sh --no-build
         language: script

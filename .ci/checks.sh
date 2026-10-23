@@ -13,12 +13,15 @@
 # Checks implemented:
 #   #2  nix flake check (all outputs evaluate)
 #   #7  secrets/ files match .sops.yaml path_regex
-#   #1  no `:latest` in container images (with R1.5 whitelist: 3x-ui is frozen on :latest)
+#   #1  no `:latest` in container images (whitelist: tape-rotation only;
+#       3x-ui is pinned to v3.10.2 since 2026-10-20, R1.5)
 #   #8  every import reference resolves (no dangling imports) — added 2026-10-24
 #
 # Not yet implemented (candidates from analysis-report.md §5):
 #   #3  coredns domains ↔ nginx vhosts bidirectional match
-#   #4  mkServiceStorage consumers have existing External dir
+#   #4  mkStorageGuard consumers have an existing External dir
+#       (lib/xlib/helpers.nix:180 — note the helper is mkStorageGuard, not
+#       mkServiceStorage; the two names referred to the same idea historically)
 #   #5  last nftables chain rule is explicit (drop/reject/policy)
 #   #6  listen.addr is interface, not network (e.g. 0.0.0.0 is OK, 192.168.0.0/24 is not)
 
@@ -28,9 +31,10 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT"
 
 LATEST_ALLOWLIST=(
-  # R1.5: 3x-ui panel frozen on :latest; Xray version is panel state (R1.8)
-  "ghcr.io/mhsanaei/3x-ui:latest"
-  # tape-rotation: data on External (storage-guarded); manual updates
+  # tape-rotation: data on External (storage-guarded); manual updates.
+  # The 3x-ui panel used to be whitelisted here as "frozen on :latest".
+  # It is pinned to ghcr.io/mhsanaei/3x-ui:v3.10.2 since 2026-10-20 (R1.5),
+  # so a `:latest` for it must now fail this check instead of being allowed.
   "docker.io/elizaroveugene/taperotation-backend:latest"
   "docker.io/elizaroveugene/taperotation-frontend:latest"
 )
