@@ -1,11 +1,71 @@
 # Handoff Summary
 
-## Session Summary
+## ▶ Точка входа — сессия `techdebt-audit-2026-10-23`
+
+**Что это:** read-only аудит техдолга репозитория + поэтапное снятие долга.
+Начато 2026-10-23 в ветке `dev`. Метасостояние зафиксировано отдельным
+коммитом; дальше — работа по пунктам, каждый отдельным откатываемым коммитом.
+
+**Где план:** `.agent/tasks/manifest.md` — реестр серии **T38+**
+(20 пунктов: 11 pending, 9 blocked). Формат: ID · суть · `путь:строка` ·
+тип (реструктуризация / дрейф / мусор / хрупкость) · риск · польза ·
+«можно сразу / нужна страховка».
+
+**Где разбор:** `.agent/context/project-state.md`, секция
+«Session techdebt-audit-2026-10-23».
+
+### Топ-3 находки (полный список — в `manifest.md`)
+
+1. **Живой `herdr_web_token` в git открытым текстом** —
+   `.agent/handoff-summary.md:52` и `.agent/tasks/manifest.json:412`
+   (литерал одинаков, SHA-256 совпадает). Единственный гейт для
+   `herdr.zeroq.su` (vhost без authelia — R1.15/ADR-0005). В живом коде
+   токена нет: `modules/server/nginx.nix` содержит 0 hex-литералов длиной 64.
+   → **T38**
+2. **CI не выполнился ни разу** — три независимых дефекта: `.ci/checks.sh`
+   в git с режимом `100644` (оба вызова делают exec), workflow лежит в
+   `.github/workflows/` при единственном gitea-remote, шаги сборки
+   заканчиваются `|| true` + `--dry-run`. → **T39**
+3. **Guard монтирования мёртв на 13 юнитах / 12 сервисах** — T4:
+   `ConditionPathIsMountPoint` — директива `[Unit]`, но прокидывается через
+   `serviceConfig` → `[Service]`, где systemd её не читает. Сервисы стартуют
+   на пустом bind-mount и создают свежую пустую БД. → **T52 (blocked)**
+
+### Что блокировано и почему
+
+| ID | Почему blocked |
+|---|---|
+| T52 | перенос условия в `[Unit]` **меняет рантайм-поведение** 12 сервисов → нужно явное согласование владельца + staged rollout (сначала VDS) |
+| T50, T51 | требуют `nix flake check` / снимка `nginx -T` — на машине агента **`nix` отсутствует** |
+| T53, T55 | секреты трогать запрещено; `AGENTS.md:104` описывает `archive/` как намеренную часть layout |
+| T54 | требует `nix flake lock` — `nix` отсутствует |
+| T57 | починка артефактов `.agent` требует правки `manifest.json`/`checkpoints.json`, запрещённой в этой сессии |
+
+### Ограничения сессии, которые важно знать следующему агенту
+
+- **`nix` на машине агента отсутствует** → `nix flake check`, `nix build`,
+  `nix eval` невозможны. Функциональные правки выполняются **только** под
+  статическими тестами (без `nix`); всё, что требует `nix`, — blocked.
+- **`.agent/tasks/manifest.json` и `.agent/checkpoints.json` трогать нельзя**
+  (ограничение сессии). Поэтому задачи T38+ в JSON **не внесены**, а
+  `manifest.json:412` с литералом токена **остался** — требует отдельного
+  разрешения.
+- Секреты (`secrets/`, `modules/*/secrets/`, `*.env`) не читались и не
+  менялись — только пути.
+
+### Следующее действие
+
+Выполнить **T38** (удалить литерал токена из `handoff-summary.md`) —
+отдельным коммитом. Затем T39 → T40 → T41/T48 → T42/T43/T44 → T45.
+
+---
+
+## Session Summary (предыдущая сессия — история)
 
 **Session:** metaagent-director-2026-10-15 (продолжение после 2026-10-15T03:00, **закрыто 2026-10-15T15:00**)
 **Goal:** поднять herdr на sapphira + rydiwo, опубликовать webui на `https://herdr.zeroq.su`, написать черновик `metaagent-director` (директор-агент, управляющий worker-сессиями через herdr).
 **Completed:** 9 задач этого прохода (T21–T27 saga setup + T33 saga close-out + T18, T32 cleanup формализация, см. `tasks/manifest.json`)
-**Pending:** 3 прошлых (T3, T4, T10) + 1 fix (T20 — `.ci/checks.sh` mode bit) + 4 новых (T28–T31), см. ниже
+**Pending:** 3 прошлых (T3, T4, T10) + 1 fix (T20 — `.ci/checks.sh` mode bit) + 4 новых (T28–T31) + T37 (перенос БД opencode, решение владельца 2026-10-21) — **9 открытых по `tasks/manifest.json`**, см. ниже
 **Hosts:** sapphira (192.168.1.20) + rydiwo (192.168.1.102) — оба с `home/modules/herdr.nix`, оба с `home/modules/herdr-runtime.nix` (bun + nodejs_22), оба с `herdr-web-ui@439ad38d091c02c3e4747956808dbac2305702d3` в `/home/oqyude/.config/herdr/plugins/github/devswha.herdr-web-ui-210f619d6b7b/`
 
 ---
@@ -131,7 +191,7 @@
 - **Открытые контейнеры:** 4 (без изменений)
 - **3x-ui/Xray:** заморожен (R1.10-R1.13, без изменений)
 - **Tailscale:** `100.64.0.0` = sapphira (R1.4, без изменений)
-- **3 нерешённых прошлых** (T3, T4, T10) + **5 pending этого прохода** (T20, T28–T31) — всего 8 открытых
+- **3 нерешённых прошлых** (T3, T4, T10) + **6 pending этого прохода** (T20, T28–T31, T37) — всего 9 открытых
 
 ---
 
@@ -150,7 +210,8 @@
 
 - **State:**
   - `.agent/checkpoints.json` — phases (execution → completed, metastate → completed, handoff → in_progress; зафиксировано в коммите `4bf8e55` от 2026-10-15T13:30)
-  - `.agent/tasks/manifest.json` — 23+ задач (включая T21-T32)
+  - `.agent/tasks/manifest.json` — 37 задач (T1–T37), **машинный** источник истины
+  - `.agent/tasks/manifest.md` — **новое (2026-10-23)**: человекочитаемый реестр серии T38+ (аудит техдолга). Не дублирует JSON — иначе повторился бы дрейф, из-за которого файл был удалён 2026-10-15
   - `.agent/context/project-state.md` — обновляется в `S:\Git\nixos\.agent\context\`
   - `.agent/roadmap/sources.md` — без изменений в этом проходе
 - **Rules:**
@@ -236,7 +297,7 @@
 - Удалён мёртвый кеш `~/.cache/opencode/packages/@bybrawe/opencode-loop@latest/` (loop был удалён из git коммитом 3babee5, но кеш оставался; в `~/.config/opencode/opencode.json` и `tui.json` loop не зарегистрирован — был мёртв).
 - `opencode-sessions` не установлен (несовместим с opencode v1; см. выше).
 
-**Pending в следующую сессию (без изменений):** T3 (nftables, otreca), T4 (dead mount-guard, sapphira, severity:high), T10 (reality443Forwarding), T20 (`.ci/checks.sh` mode bit), T28-T31 (открытые вопросы metaagent-director v0.2). T35 (закрытая попытка шима) — **не повторять** без новой мотивации и/или director-модели.
+**Pending в следующую сессию (без изменений):** T3 (nftables, otreca), T4 (dead mount-guard, sapphira, severity:high), T10 (reality443Forwarding), T20 (`.ci/checks.sh` mode bit), T28-T31 (открытые вопросы metaagent-director v0.2), **T37 (перенос БД opencode на `/mnt/services`; зависит от T4 — гвард должен быть живым, иначе сессии пропадут молча)**. T35 (закрытая попытка шима) — **не повторять** без новой мотивации и/или director-модели.
 
 **Предсуществующие doc-drift, отложенные до чистки метаданных:**
 - `checkpoints.json:tasks` (T1-T20) расходится с `manifest.json:tasks` (T1-T33). `phases` тоже: `execution=completed` vs `execution=in_progress`. `source_of_truth = manifest.json`.
