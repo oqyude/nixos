@@ -14,6 +14,7 @@
 }:
 {
   imports = [
+    ./options.nix
     ./bridge.nix
     ./dhcp.nix
     ./http.nix
