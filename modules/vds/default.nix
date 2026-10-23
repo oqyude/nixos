@@ -10,7 +10,9 @@
     ./nginx.nix
     ./samba.nix
     ./systemd.nix
-    # ./glances.nix
+    # NetBird is not deployed on the VDS. The module is kept as a scaffold
+    # (every option in it is `enable = false`), so this line stays commented
+    # and will be validated by .ci/tests/import-graph.py.
     # ./netbird.nix
   ];
   # VDS hosts the public-facing Xray REALITY inbound on container:443,
