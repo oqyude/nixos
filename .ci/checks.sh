@@ -72,19 +72,38 @@ check_nix_flake_check() {
 }
 
 check_sops_path_regex() {
-  echo "Check #7: secrets/ files match .sops.yaml path_regex ..."
+  echo "Check #7: sops-encrypted files match .sops.yaml path_regex ..."
   local regex
   regex=$(awk -F'path_regex:[[:space:]]*' '/path_regex:/ {print $2; exit}' .sops.yaml)
   if [ -z "${regex:-}" ]; then
     echo "  SKIP: no path_regex found in .sops.yaml"
     return 0
   fi
-  local mismatches=()
-  while IFS= read -r -d '' f; do
-    if ! printf '%s\n' "$f" | grep -Eqx "${regex}"; then
+  local mismatches=() unanchored=() f
+  # Every file under any `secrets/` directory is a candidate for the sops
+  # creation rule — not only the ones in the top-level `secrets/`. The
+  # repo keeps them in five places: secrets/, modules/server/secrets/,
+  # modules/containers/secrets/, modules/essentials/secrets/ and
+  # modules/wsl/secrets/.
+  #
+  # Matching semantics: sops compares path_regex against the path, and the
+  # comparison is not anchored at the start of the path for a rule like
+  # `secrets/[^/]+...`. A file is therefore counted as protected when it
+  # matches the rule, and files that match only in the unanchored form are
+  # listed separately so the assumption stays visible instead of silent.
+  while IFS= read -r f; do
+    f="${f#./}"
+    if ! printf '%s\n' "$f" | grep -Eq "${regex}"; then
       mismatches+=("$f")
+    elif ! printf '%s\n' "$f" | grep -Eq "^${regex}"; then
+      unanchored+=("$f")
     fi
-  done < <(find secrets -type f -print0 2>/dev/null)
+  done < <(find . -type f -path '*/secrets/*' -not -path './.git/*' 2>/dev/null | sort)
+  if [ "${#unanchored[@]}" -gt 0 ]; then
+    echo "  NOTE: ${#unanchored[@]} file(s) match the rule only when it is not anchored"
+    echo "        at the start of the path (sops behaviour for nested secrets/):"
+    printf '          %s\n' "${unanchored[@]}"
+  fi
   if [ "${#mismatches[@]}" -eq 0 ]; then
     report 0 "sops path_regex ($regex)"
   else
