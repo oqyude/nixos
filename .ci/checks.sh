@@ -14,6 +14,7 @@
 #   #2  nix flake check (all outputs evaluate)
 #   #7  secrets/ files match .sops.yaml path_regex
 #   #1  no `:latest` in container images (with R1.5 whitelist: 3x-ui is frozen on :latest)
+#   #8  every import reference resolves (no dangling imports) — added 2026-10-24
 #
 # Not yet implemented (candidates from analysis-report.md §5):
 #   #3  coredns domains ↔ nginx vhosts bidirectional match
@@ -147,10 +148,24 @@ check_no_latest_images() {
   fi
 }
 
+check_import_graph() {
+  echo "Check #8: every import reference resolves (no dangling imports) ..."
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "  SKIP: python3 not in PATH"
+    return 0
+  fi
+  if python3 .ci/tests/import-graph.py . ; then
+    report 0 "import graph"
+  else
+    report 1 "import graph"
+  fi
+}
+
 echo "=== nixos flake checks ==="
 check_nix_flake_check
 check_sops_path_regex
 check_no_latest_images
+check_import_graph
 echo "==="
 echo "PASS: $PASS    FAIL: $FAIL"
 if [ "$FAIL" -gt 0 ]; then
