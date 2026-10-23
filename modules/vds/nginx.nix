@@ -13,8 +13,10 @@
 # Routing:
 #   pubray1.zeroq.su  → 127.0.0.1:2049  (3x-ui panel; LE cert mounted
 #                       into the container terminates TLS)
-#   pubrayx1.zeroq.su → 127.0.0.1:15380 (Xray REALITY; Xray sees its
-#                       real configured port 443 via DNAT)
+#   anything else     → 127.0.0.1:15380 (Xray REALITY: the `default` branch
+#                       catches every other SNI, including whatever name a
+#                       REALITY client sends. Xray sees its real configured
+#                       port 443 via DNAT)
 #   default           → 127.0.0.1:15380 (REALITY fallback for any
 #                       other SNI / IP-direct)
 #

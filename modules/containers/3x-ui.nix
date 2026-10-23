@@ -51,7 +51,7 @@ in
       oci-containers = {
         backend = "podman";
         containers."3xui_app" = {
-          # Тег образа ЗАПИНЕН (2026-10-20, R1.16). До этого был `:latest`,
+          # Тег образа ЗАПИНЕН (2026-10-20, R1.5). До этого был `:latest`,
           # и это был вектор тихого дрейфа: 2026-10-14 вышел 3x-ui v3.10.x с
           # ядром Xray **26.10.10** (26.7.x → 26.10.x мимо рук), а ядро ≥ 26.9.8
           # требует в REALITY ClientHello key share `X25519MLKEM768` (см. R1.16).
@@ -71,8 +71,11 @@ in
           ]
           ++ certMounts;
           log-driver = "journald";
-          # Adding a new inbound through the 3x-ui panel on a port outside
-          # the 14380-15379 range requires extending basePorts and rebuilding.
+          # Every port an inbound listens on has to be published from the
+          # container, otherwise it is unreachable from outside. Ports 2049,
+          # 2096 and 8443 are published by `basePorts` above; 443 (VDS only)
+          # by `realityPorts`. A new inbound on any other port means
+          # extending one of those lists and rebuilding.
           ports = basePorts ++ realityPorts;
         };
       };

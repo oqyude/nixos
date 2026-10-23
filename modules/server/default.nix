@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   xlib,
@@ -39,8 +40,9 @@
     ./uptime-kuma.nix
     ./engipy-frontend.nix
     ./engipy-backend.nix
-    # T16: 14 modules archived to ../archive/{server-modules,containers}/
-    # (13 in modules/server/default.nix:37-50, 2 in modules/containers/).
+    # T16: 15 modules archived to ../../archive/{server-modules,containers}/
+    # (12 in archive/server-modules/, 3 in archive/containers/).
+    # This import list carries zero commented-out entries.
     # T15: kokoro-tts and openhands (not imported) also archived.
     # stirling-pdf.nix was deleted in 5dd7a58 (absorbed into bentopdf.nix).
     # open-webui.nix was never commented — migrated to containers/,
