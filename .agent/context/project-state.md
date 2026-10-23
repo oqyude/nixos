@@ -30,27 +30,37 @@ Read-only аудит репозитория на техдолг: 233 tracked-ф�
 
 ### Что дальше
 
-**Порядок работ** (каждый пункт — отдельный, откатываемый коммит):
+**Сделано в этой сессии** (каждый пункт — отдельный коммит, кроме отмеченного):
 
-| Шаг | Задачи | Суть |
-|---|---|---|
-| 1 | T38 | убрать литерал `herdr_web_token` из git |
-| 2 | T39, T40 | починить CI (3 дефекта) и расширить check #7 на `modules/*/secrets/` |
-| 3 | T41, T48 | удалить мёртвые модули; спасти скрипты верификации T3/T4 из `.temp/`; заякорить `.gitignore` |
-| 4 | T42, T43, T44 | дрейф в комментариях, в CI-конфиге, в `AGENTS.md` |
-| 5 | T45 | дедупликация `modules/wsl/nix-serve.nix` |
-| 6 | T46, T47, T49, T56 | реструктуризация — **только после страховочного теста** |
+| Задачи | Итог |
+|---|---|
+| T38 | литерал токена убран из `handoff-summary.md` (`d76cbc3`); `manifest.json:412` остался — файл вне мандата |
+| T39 | CI починен в три коммита: бит исполнения (`ca450f1`), вызов через `bash` (`db3cbd0`), workflow в `.gitea/` + падающие шаги (`0297254`) |
+| T40 | check #7 расширен на все `*/secrets/*` — `95a4f92` (**параллельная сессия**) |
+| T41 | 12 мёртвых модулей удалено; страховка — check #8 «граф импортов» (`1b188fb`) |
+| T42 | дрейф комментариев в живом коде — `39e1887` (**параллельная сессия**, вместе с фиксом `config,`) |
+| T43 | мёртвый `3x-ui:latest` убран из whitelist (`3fb1f3c`) |
+| T44 | `AGENTS.md`: 11 битых ссылок исправлено (`8c86466`) |
+| T45 | `modules/wsl/nix-serve.nix` удалён как md5-дубль (`0d52f20`) |
+| T46 | `options.pxe-infra` (351 стр., md5-идентичен) → `modules/pxe-infra/options.nix` (`1adf6dd`) |
+| T48 | `.gitignore` заякорен, verifier сохранён в `.ci/verify/` (`2ed525b`) |
 
-**Заблокировано и ждёт решения владельца:** T50 (реестр хостов — нужен
-`nix flake check` и регресс на хостах), T51 (nginx — нужен снимок
-`nginx -T`), T52 (T4 — меняет рантайм-поведение 12 сервисов), T53
-(секреты и `archive/`), T54 (`nix flake lock`), T55 (секреты), T57
-(починка артефактов `.agent` под свои схемы).
+**Осталось / заблокировано:** T47, T49, T56 (home-manager — нужен `nix`
+для проверки merge-семантики), T50 (реестр хостов — нужен `nix flake check`
+и регресс на хостах), T51 (nginx — нужен снимок `nginx -T`), T52 (T4 —
+меняет рантайм-поведение 12 сервисов), T53 (секреты и `archive/`), T54
+(`nix flake lock`), T55 (секреты), T57 (починка артефактов `.agent`).
 
 **Ограничение этой сессии:** на машине агента **нет `nix`** — сборку и
-`nix eval` выполнить нельзя. Поэтому функциональные правки выполняются
-только под статическими тестами, а всё, что требует `nix`, помечено
-blocked.
+`nix eval` выполнить нельзя. Поэтому функциональные правки выполнялись
+только под статическими тестами (побайтовая идентичность блока, md5,
+граф импортов), а всё, что требует `nix`, помечено blocked.
+
+**Отдельная находка:** `HEAD` содержал невалидный Nix — в
+`modules/server/default.nix:79` и `modules/vds/default.nix:40` вызывался
+`config.modules."3x-ui".reconfig`, а `config` не был объявлен в аргументах
+модуля. Исправлено в `39e1887`. Это доказывает, что `nix flake check` в CI
+не выполнялся ни разу.
 
 ## Project Type
 
@@ -63,7 +73,7 @@ blocked.
 | Language | Nix |
 | Framework | NixOS modules + home-manager |
 | Database | PostgreSQL (sapphira), sqlite (3x-ui) |
-| Test runner | нет юнит-тестов; `.ci/checks.sh` (3 проверки) + 3 CI-файла — но **ни одна проверка ни разу не выполнялась** (см. T39) |
+| Test runner | нет юнит-тестов; `.ci/checks.sh` — 4 проверки (#1 `:latest`, #2 `nix flake check`, #7 sops path_regex, #8 граф импортов). CI починен (T39), но **на удалённом раннере ещё ни разу не выполнялся** |
 | Package manager | Nix (flakes) |
 | Linter/formatter | none |
 
@@ -87,7 +97,8 @@ secrets/         → sops, один age-ключ
 | `configurations/default.nix` | existing | Реестр хостов + `mkXlib` |
 | `lib/xlib/default.nix` | existing | `mkXlib` — единственная точка сборки xlib |
 | `modules/default.nix` | existing | `defaultModule` (NixOS) + `strictModule` (nix-on-droid) |
-| `modules/options.nix` | existing | Кросс-модульные опции `host.builder` / `host."3x-ui"`. **80% файла (347 стр.) — `options.pxe-infra`**, которая по собственному намерению `modules/pxe-infra/default.nix:26-33` должна жить в `modules/pxe-infra/` (см. T46) |
+| `modules/options.nix` | existing | Кросс-модульные опции `host.builder` / `host."3x-ui"` (81 стр. после T46) |
+| `modules/pxe-infra/options.nix` | existing | Вся поверхность `pxe-infra.*` (351 стр.), перенесена из `modules/options.nix` в T46 |
 | `modules/users.nix` | existing | Пользователь + sops + hostKey bootstrap |
 | `modules/essentials/ssh.nix` | existing | openssh + hostKey |
 | `modules/server/{nginx,coredns}.nix` | existing | Reverse proxy + DNS (`zeroq.su`, `home.arpa`) |
@@ -157,13 +168,16 @@ Internet:
 ## Testing Status
 
 Юнит-тестов нет (`grep passthru.tests|runTests|testDerivation` → 0 совпадений).
-Есть `.ci/checks.sh` (140 стр.) с 3 реализованными проверками (#2 `nix flake check`,
-#7 sops path_regex, #1 нет `:latest`) и 3 CI-файла, **но ни одна проверка ни
-разу не выполнялась**: `.ci/checks.sh` в git с режимом `100644` (оба вызова
-делают exec), workflow лежит в `.github/workflows/` при единственном
-gitea-remote, шаги сборки заканчиваются `|| true` + `--dry-run`.
+Есть `.ci/checks.sh` с 4 реализованными проверками (#2 `nix flake check`,
+#7 sops path_regex по всем `*/secrets/*`, #1 нет `:latest`, #8 граф импортов —
+`.ci/tests/import-graph.py`).
+**Историческое состояние (до 2026-10-24):** ни одна проверка не выполнялась
+ни разу — скрипт лежал в git с режимом `100644`, workflow — в
+`.github/workflows/` при единственном gitea-remote, шаги сборки
+заканчивались `|| true` + `--dry-run`. Всё три дефекта исправлены в T39
+(`ca450f1`, `db3cbd0`, `0297254`); первый прогон на раннере ещё предстоит.
 Не реализованы 4 кандидата (#3 coredns↔nginx, #4 потребители guard'а,
-#5 финальная политика nftables, #6 `listen.addr`) — `.ci/checks.sh:18-22`.
+#5 финальная политика nftables, #6 `listen.addr`).
 Реестр задач по этому — `.agent/tasks/manifest.md` (T39, T40, T52).
 
 ## Open Concerns
