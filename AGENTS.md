@@ -75,7 +75,7 @@ flake.nix
    мержится, проблема в секции. → задача T4, ADR-0004.
 3. **Сетевая граница sapphira — роутер.** 5 портов: **443, 80, 22000 (syncthing), 8443 (xray), 22 (ssh)**. `firewall.enable = false` намеренно. nginx.nix (networking.firewall) мёртв (T13). → задача T11.
 4. **`100.64.0.0` = Tailscale-адрес sapphira**, назначен вручную. В `home/termux.nix:256`,
-   `modules/server/nextcloud.nix:80`, `modules/server/nginx.nix:109,253`,
+   `modules/server/nextcloud.nix:80`, `modules/server/nginx.nix:109` и `:378`,
    `modules/vds/systemd.nix:10`. → задача T12.
 5. **3x-ui: панель запинена на `v3.10.2`, ядро — состояние панели и различается по хостам** (otreca 26.7.28, sapphira 26.10.10). `:latest` был вектором тихого дрейфа: релиз панели молча притащил ядро 26.10.10 и сломал все REALITY-ссылки. → R1.5, R1.16, задачи T6–T10.
 6. **nftables на VDS требует явной финальной политики.** Текущий ruleset — без финального правила → неявный accept. → задача T3.
@@ -94,21 +94,21 @@ flake.nix
 
 | Где | Что выглядит ошибкой | На самом деле |
 |---|---|---|
-| `server.nix:130` | `firewall.enable = false` при 20 сервисах на `0.0.0.0` | Роутер фильтрует, см. инв. 3 |
-| `mobile.nix:95`, `wsl.nix:59` | `stateVersion` 24.05 / 24.11 vs 26.05 | Каждый хост зафиксирован на своей версии |
-| `users.nix:66` | `uid = if hostname == "sapphira" then 1001 else …` | Костыль под 1000 = удалённый `yuyus`; удалять только после миграции ФС |
-| `3x-ui.nix:54` | Раньше `image = …:latest` | **Запинено** на `v3.10.2` (инв. 5). `:latest` = тихий дрейф ядра; ядро — состояние панели, см. R1.8 |
-| `3x-ui.nix:33-35` | `reality443Forwarding = true` на VDS | **Обязательно, НЕ удалять.** nginx stream (`vds/nginx.nix`) маршрутизирует `443 → 127.0.0.1:15380 → container:443`; без маппинга Xray REALITY мёртв. Удаление T10/C5 сломало — восстановлено `07a0437` |
+| `configurations/server.nix:129` | `firewall.enable = false` при 20 сервисах на `0.0.0.0` | Роутер фильтрует, см. инв. 3 |
+| `configurations/mobile.nix:95`, `configurations/wsl.nix:59` | `stateVersion` 24.05 / 24.11 vs 26.05 | Каждый хост зафиксирован на своей версии |
+| `modules/users.nix:66` | `uid = if hostname == "sapphira" then 1001 else …` | Костыль под 1000 = удалённый `yuyus`; удалять только после миграции ФС |
+| `modules/containers/3x-ui.nix:62` | Раньше `image = …:latest` | **Запинено** на `v3.10.2` (инв. 5). `:latest` = тихий дрейф ядра; ядро — состояние панели, см. R1.8 |
+| `modules/containers/3x-ui.nix:35` | `reality443Forwarding = true` на VDS | **Обязательно, НЕ удалять.** nginx stream (`vds/nginx.nix`) маршрутизирует `443 → 127.0.0.1:15380 → container:443`; без маппинга Xray REALITY мёртв. Удаление T10/C5 сломало — восстановлено `07a0437` |
 | `vds/nginx.nix`, `events {}` | Пустой блок → `worker_connections` = **512** (дефолт) | Не баг, но и не запас: при окне недоступности REALITY клиенты дают ретрай-флуд и исчерпывают 512 → «не работает всё» даже после починки первопричины (1668 ошибок за ~40 мин). Известный пробел |
 | Настройки панели | `GET https://pubray1.zeroq.su/` → **404** | Панель жива: `webBasePath=/pubray/`, реальный URL `https://pubray1.zeroq.su/pubray/`. Не «чинить» nginx под `/` |
-| `modules/server/default.nix:7-44` | Комментарий-блок на строках 38-41 выглядит как «список отключённых модулей» | T16 завершена: закомментированных импортов 0. `archive/server-modules/` — 12 файлов (coturn, mealie, memos, minecraft, n8n, netdata, nfs, rsync, step-ca, transmission, trilium, zerotier); `archive/containers/` — `remnawave.nix`, `kokoro-tts.nix`, `openhands.nix`; `stirling-pdf.nix` удалён в `5dd7a58` (поглощён `bentopdf.nix`); `open-webui.nix` переехал в `modules/containers/` и активен |
-| `home/modules/opencode.nix:354` | `systemd.user.services.opencode-web.Service` | Правильный паттерн, не баг. Баг `serviceConfig` был и исправлен в `c73a698`, ссылка на строку 339/407 устарела. R2 удерживает от возврата |
+| `modules/server/default.nix:9-50` | Комментарий-блок на строках 43-49 выглядит как «список отключённых модулей» | T16 завершена: закомментированных импортов 0. `archive/server-modules/` — 12 файлов (coturn, mealie, memos, minecraft, n8n, netdata, nfs, rsync, step-ca, transmission, trilium, zerotier); `archive/containers/` — `remnawave.nix`, `kokoro-tts.nix`, `openhands.nix`; `stirling-pdf.nix` удалён в `5dd7a58` (поглощён `bentopdf.nix`); `open-webui.nix` переехал в `modules/containers/` и активен |
+| `home/modules/opencode.nix:449` | `systemd.user.services.opencode-web.Service` | Правильный паттерн, не баг. Баг `serviceConfig` был и исправлен в `c73a698`. Ссылка «339/407» из более ранней редакции протухла дважды; актуальна строка 449. R2 удерживает от возврата |
 | `home/modules/opencode.nix` | Конфиг opencode написан вручную (`xdg.configFile`), мимо `programs.opencode.settings` | HM-модуль `programs.opencode` — v1-only: ключ `plugin` (ед.ч.), `mcp` плоской картой, `tui.json` вместо `cli.json`, а `validateFiles.tui` требует `passthru.jsonschema.tui`, которого в v2-пакете нет. Писать руками — не «костыль», а требование v2 → R1.19 |
 | `~/.omo/omo.jsonc` на sapphira | Лежит рядом с активным конфигом slim-плагина, выглядит как «дубль» | Это legacy-конфиг `oh-my-openagent` (v2-несовместим). Активен `~/.config/opencode/oh-my-opencode-slim.json`. Файл оставлен валидным (реальные model id из реестра — проверено на хосте 2026-10-21) на случай возврата на openagent → R1.19 |
 | `herdr integration install opencode` | Падает: `cannot update ~/.config/opencode/cli.json: config has multiple hard links` | `cli.json` — read-only симлинк в /nix/store, а herdr намеренно не пишет в файлы с несколькими хардлинками. Интеграция **не ставится сознательно**: на sapphira не установлена ни одна agent-интеграция herdr → R1.19 |
-| `vds.nix:73-91` | nftables без финального правила | Известный пробел, см. задачу T3 |
+| `configurations/vds.nix:71-92` | nftables без финального правила | Известный пробел, см. задачу T3 |
 | `100.64.0.0` | Первый адрес CGNAT `/10` | Tailscale-адрес sapphira, см. инв. 4 |
-| `server.nix:61-63` | `z /mnt/services 0777` | World-writable точка монтирования; см. задачу T4 |
+| `configurations/server.nix:61-63` | `z /mnt/services 0777` | World-writable точка монтирования; см. задачу T4 |
 
 ## Куда лезть по задаче
 
@@ -120,7 +120,7 @@ flake.nix
 | Добавить кросс-модульную опцию | `modules/options.nix` |
 | Изменить mount/имя пользователя | `lib/xlib/dirs.nix`, `lib/xlib/device.nix` |
 | Изменить домен / сертификат | `modules/server/coredns.nix` + `modules/server/nginx.nix` (или `vds/`) |
-| Sops-секрет | `secrets/<name>.<yaml\|json\|env\|ini>`; `users.nix:99` подключает `secrets/default.yaml`; dotenv/json — через `mkUserSecret` |
+| Sops-секрет | `secrets/<name>.<yaml\|json\|env\|ini>`; `modules/users.nix:99` подключает `secrets/default.yaml`; dotenv/json — через `mkUserSecret` |
 
 ## Проверки
 
