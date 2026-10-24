@@ -141,7 +141,7 @@ nix flake check
 nix build .#nixosConfigurations.<host>.config.system.build.toplevel
 
 # CI (Gitea Actions) исполняется на самой sapphira, поэтому облегчён:
-# `bash .ci/checks.sh --no-build` + сборка только sapphira. Прочие хосты
+# `bash .ci/checks.sh --no-build` + eval `drvPath` только для sapphira. Прочие хосты
 # проверяются вручную командой `nix build --dry-run` выше.
 
 # nixOnDroid

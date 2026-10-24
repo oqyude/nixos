@@ -731,7 +731,7 @@
         "db3cbd0",
         "0297254"
       ],
-      "notes": "2026-10-25: CI облегчён — единственный раннер живёт на самой sapphira (2 ядра / 5.6 GiB). Workflow вызывает `bash .ci/checks.sh --no-build` (check #2 `nix flake check` пропущен) и собирает только `sapphira`; добавлены `workflow_dispatch` и `concurrency.cancel-in-progress`, timeout 45→20 мин. Полный обход 7 хостов убран из push-пайплайна: на этой машине он уходил в swap на 40+ минут."
+      "notes": "2026-10-25: CI облегчён — единственный раннер живёт на самой sapphira (2 ядра / 5.6 GiB). Workflow (runs-on: native) вызывает `bash .ci/checks.sh --no-build` (check #2 `nix flake check` пропущен) и вычисляет `drvPath` только для `sapphira`; добавлены `workflow_dispatch` и `concurrency.cancel-in-progress`, timeout 45→15 мин. Полный обход 7 хостов убран из push-пайплайна: на этой машине он уходил в swap на 40+ минут.\n\n2026-10-25 (настоящая причина, почему workflow не запускался): job требовал `runs-on: ubuntu-latest`, а единственный раннер (gitea-runner-ci-sapphira в host-режиме) объявляет ровно один label — `native` (`labels = [ \"native:host\" ]`). Рабочий `test-runner.yml` использует `native`, поэтому он и был единственным, что запускался. После `runs-on: native` Gitea создал run nix-checks.yml (run 141) на коммите 1c11079. Сборка заменена на `nix eval --raw ...toplevel.drvPath`: пользователь раннера не trusted-user для Nix, `nix build --dry-run` потребовал бы записи в store."
     },
     {
       "id": "T40",
