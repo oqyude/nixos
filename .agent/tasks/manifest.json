@@ -730,7 +730,8 @@
         "ca450f1",
         "db3cbd0",
         "0297254"
-      ]
+      ],
+      "notes": "2026-10-25: CI облегчён — единственный раннер живёт на самой sapphira (2 ядра / 5.6 GiB). Workflow вызывает `bash .ci/checks.sh --no-build` (check #2 `nix flake check` пропущен) и собирает только `sapphira`; добавлены `workflow_dispatch` и `concurrency.cancel-in-progress`, timeout 45→20 мин. Полный обход 7 хостов убран из push-пайплайна: на этой машине он уходил в swap на 40+ минут."
     },
     {
       "id": "T40",

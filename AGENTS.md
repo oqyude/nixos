@@ -134,11 +134,15 @@ flake.nix
 ## Проверки
 
 ```bash
-# все outputs вычисляются
+# все outputs вычисляются (тяжело: 7 хостов; на sapphira уходит в swap)
 nix flake check
 
 # правки применились на целевой хост
 nix build .#nixosConfigurations.<host>.config.system.build.toplevel
+
+# CI (Gitea Actions) исполняется на самой sapphira, поэтому облегчён:
+# `bash .ci/checks.sh --no-build` + сборка только sapphira. Прочие хосты
+# проверяются вручную командой `nix build --dry-run` выше.
 
 # nixOnDroid
 nix build .#nixOnDroidConfigurations.epral.config.system.build.toplevel

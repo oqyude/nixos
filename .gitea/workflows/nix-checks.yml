@@ -11,13 +11,22 @@ on:
     branches: [main, dev, master]
   pull_request:
     branches: [main, dev, master]
+  workflow_dispatch:
+
+# The only runner is the host itself: gitea-runner-ci-sapphira on a 2-core /
+# 5.6 GiB machine that also runs ~20 production services. Evaluating all seven
+# configurations costs 40+ minutes and pushes the host into swap, so queueing
+# superseded runs is actively harmful — cancel them.
+concurrency:
+  group: nix-checks-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   invariant-checks:
     runs-on: ubuntu-latest
-    # The evaluation steps below walk every host configuration; a hung
-    # evaluation must not hold the runner forever.
-    timeout-minutes: 45
+    # sapphira evaluation is a few minutes on an idle host. This is a
+    # hung-evaluation guard, not a budget; the job used to allow 45.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v27
@@ -25,19 +34,15 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: install sops
         run: nix profile install nixpkgs#sops
-      - name: run invariant checks
-        run: bash .ci/checks.sh
-      # Every step below must be able to fail the job. The previous
-      # revision ended each line with `|| true` and used `--dry-run`,
-      # so the job could never go red. `--dry-run` is kept because the
-      # point of this step is evaluation, not building; `--no-link` keeps
-      # the workspace clean of `result` symlinks.
-      - name: evaluate every host configuration
-        run: |
-          nix build --no-link --dry-run .#nixosConfigurations.default.config.system.build.toplevel
-          nix build --no-link --dry-run .#nixosConfigurations.atoridu.config.system.build.toplevel
-          nix build --no-link --dry-run .#nixosConfigurations.rydiwo.config.system.build.toplevel
-          nix build --no-link --dry-run .#nixosConfigurations.otreca.config.system.build.toplevel
-          nix build --no-link --dry-run .#nixosConfigurations.sapphira.config.system.build.toplevel
-          nix build --no-link --dry-run .#nixosConfigurations.wsl.config.system.build.toplevel
-          nix eval --raw .#nixOnDroidConfigurations.epral.config.system.stateVersion
+      - name: run invariant checks (no full flake check)
+        # `--no-build` skips check #2 (`nix flake check`), which evaluates
+        # every host output. The runner *is* sapphira, so that sweep is both
+        # slow and self-harming here. It can still be run deliberately on a
+        # beefier machine, or locally with `bash .ci/checks.sh`.
+        run: bash .ci/checks.sh --no-build
+      # Only sapphira is evaluated on CI: it is the host this runner lives on,
+      # so a broken sapphira is an immediate CI-runner outage. Changes that
+      # touch another host must be verified explicitly for that host:
+      #   nix build --no-link --dry-run .#nixosConfigurations.<host>.config.system.build.toplevel
+      - name: evaluate the sapphira configuration
+        run: nix build --no-link --dry-run .#nixosConfigurations.sapphira.config.system.build.toplevel
