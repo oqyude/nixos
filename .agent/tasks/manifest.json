@@ -1,5 +1,6 @@
 {
   "metaagent_version": "3.0.0",
+  "version": "3.0",
   "session_id": "metaagent-init-2026-10-09 → metaagent-director-2026-10-15 → metaagent-attempt-2026-10-15T20:25Z (rollback шима, T35 в closed_attempts чекпоинтов) → metaagent-cleanup-2026-10-15T17:42Z (текущая сессия: metastate reconcile)",
   "target_repo": "S:/Git/nixos",
   "goal": "Установить metaagent, перенести накопленные данные (AGENTS.md, docs/arch/*) в структуру .agent/.",
@@ -27,8 +28,13 @@
         "nix flake check проходит на .#nixOnDroidConfigurations.epral",
         "configurations/mobile.nix:12 использует import ../lib/xlib"
       ],
-      "files": ["configurations/mobile.nix"],
-      "blocks": ["T15", "T16"],
+      "files": [
+        "configurations/mobile.nix"
+      ],
+      "blocks": [
+        "T15",
+        "T16"
+      ],
       "notes": "Правка в 61b3724: `import ../lib/xlib.nix` → `import ../lib/xlib`. epral вычисляется (config.system.stateVersion = \"24.05\"). Все 5 NixOS-хостов вычисляются."
     },
     {
@@ -37,20 +43,27 @@
       "type": "verify",
       "status": "completed",
       "origin": "user:direct",
-      "depends_on": ["T1"],
+      "depends_on": [
+        "T1"
+      ],
       "acceptance_criteria": [
         "nix flake check зелёный (после T1)",
         "checks в deploy покрывают всё дерево outputs"
       ],
-      "files": ["deploy/default.nix", "configurations/any.nix"],
-      "blocks": ["T15"],
+      "files": [
+        "deploy/default.nix",
+        "configurations/any.nix"
+      ],
+      "blocks": [
+        "T15"
+      ],
       "notes": "После T1 + any.nix stubs (fileSystems + boot.loader.grub для template default): nix flake check проходит на .#atoridu, .#rydiwo, .#otreca, .#sapphira, .#wsl, .#nixOnDroidConfigurations.epral. configurations/any.nix:17-26 добавлены stub-ы (placeholder /dev/sda1 ext4 + grub device /dev/sda) — реальные хосты имеют свои disko/grub; default никогда не деплоится."
     },
     {
       "id": "T3",
       "title": "A3: явная финальная политика nftables на VDS",
       "type": "fix",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": [],
       "acceptance_criteria": [
@@ -58,15 +71,22 @@
         "firewall.* либо выключен, либо синхронизирован с nftables (не оба сразу)",
         "ssh с внешнего адреса работает"
       ],
-      "files": ["configurations/vds.nix"],
-      "blocks": ["T11", "T12"],
-      "notes": "REVERTED 2026-10-10: owner requested revert of all T3 firewall changes. 'по прежнему ничего не работает, сайт не открывается, reality не работает. это требует обсуждения.' Original vds.nix restored (commit 61b3724 baseline). 5 T3 commits reverted: 5796786, 3deaa75, 4dc4849, 2649e2f, 51ea19a + docs 677d39e, fafd3e2. Requires discussion before re-applying."
+      "files": [
+        "configurations/vds.nix"
+      ],
+      "blocks": [
+        "T11",
+        "T12"
+      ],
+      "notes": "REVERTED 2026-10-10: owner requested revert of all T3 firewall changes. 'по прежнему ничего не работает, сайт не открывается, reality не работает. это требует обсуждения.' Original vds.nix restored (commit 61b3724 baseline). 5 T3 commits reverted: 5796786, 3deaa75, 4dc4849, 2649e2f, 51ea19a + docs 677d39e, fafd3e2. Requires discussion before re-applying.\n\nЗАКРЫТО 2026-10-25 (runtime-проверка на otreca, `sudo nft list ruleset`): посылка задачи неверна. Пакетный путь уже имеет явную политику: `table inet nixos-fw` → `chain input` `policy drop` с перечисленными accept'ами (80/443, 41641/udp, 22 только на tailscale0, ping, podman DNS, temp-ports). Собственный `table inet filter` — вторая base chain с `policy accept`, она лишь режет SYN-флуд на 80/443 и ничего не разрешает. Добавлять туда `policy drop` НЕЛЬЗЯ: drop в любой base chain финален, и тогда хост потеряет весь трафик, включая 80/443 и tailscale-SSH. Код не менялся; исправлена только документация (AGENTS.md, project-state).",
+      "verified_at_host": "otreca",
+      "verified_at": "2026-10-25"
     },
     {
       "id": "T4",
       "title": "B1: guard на несмонтированный носитель /mnt/services",
       "type": "security",
-      "status": "pending",
+      "status": "completed",
       "origin": "user:direct",
       "depends_on": [],
       "acceptance_criteria": [
@@ -90,10 +110,13 @@
         "modules/server/nextcloud.nix",
         "modules/server/calibre-web.nix",
         "modules/containers/3x-ui.nix",
-        "modules/containers/tape-rotation.nix"
+        "modules/containers/tape-rotation.nix",
+        "lib/xlib/helpers.nix"
       ],
       "blocks": [],
-      "notes": "Масштаб: гвард мёртв на 13 systemd-юнитах / 12 сервисах (расхождение 13-vs-12 — не опечатка: tape-rotation даёт два юнита, podman-taperotation-backend и podman-taperotation-frontend). Перечень: postgresql, samba, homebox, gitea, navidrome, syncthing, uptime-kuma, immich, nextcloud, calibre-web, 3x-ui (юнит podman-3xui_app), tape-rotation (2 юнита). Прежние записи «10 сервисов» / «12 сервисов» были неверны. ПРИЧИНА (обновлено 2026-10-15): ConditionPathIsMountPoint — директива секции [Unit], но все 13 потребителей передают её через serviceConfig, поэтому она рендерится в [Service], где systemd её не читает. Подтверждено построчным чтением отрендеренных юнитов на sapphira 2026-10-15: для gitea секция [Service] начинается со строки 5, а ConditionPathIsMountPoint лежит на строке 14. НАПРАВЛЕНИЕ ПРАВКИ: сделать условие first-class опцией юнита (systemd.services.<name>.unitConfig = { ConditionPathIsMountPoint = [ ... ]; } либо unit.ConditionPathIsMountPoint), а не протаскивать его через serviceConfig. RequiresMountsFor НЕ возвращать: он намеренно отсутствует в helpers.nix:181-187, потому что создаёт зависимость, по которой systemd при старте юнита сам remount'ит ФС — и это обессмысливает сам гвард (проверено на sapphira 2026-10-10). Порядок задавать через After= на .mount-юните в собственной секции systemd.services потребителя. Старое наблюдение про st_dev остаётся в силе и объясняет выбор якоря: bind-mount внутри одной ФС не меняет st_dev, поэтому ConditionPathIsMountPoint на путях под /mnt/services всегда «yes» — якорь только xlib.dirs.server-home (реальная точка монтирования). См. ADR-0004."
+      "notes": "Масштаб: гвард мёртв на 13 systemd-юнитах / 12 сервисах (расхождение 13-vs-12 — не опечатка: tape-rotation даёт два юнита, podman-taperotation-backend и podman-taperotation-frontend). Перечень: postgresql, samba, homebox, gitea, navidrome, syncthing, uptime-kuma, immich, nextcloud, calibre-web, 3x-ui (юнит podman-3xui_app), tape-rotation (2 юнита). Прежние записи «10 сервисов» / «12 сервисов» были неверны. ПРИЧИНА (обновлено 2026-10-15): ConditionPathIsMountPoint — директива секции [Unit], но все 13 потребителей передают её через serviceConfig, поэтому она рендерится в [Service], где systemd её не читает. Подтверждено построчным чтением отрендеренных юнитов на sapphira 2026-10-15: для gitea секция [Service] начинается со строки 5, а ConditionPathIsMountPoint лежит на строке 14. НАПРАВЛЕНИЕ ПРАВКИ: сделать условие first-class опцией юнита (systemd.services.<name>.unitConfig = { ConditionPathIsMountPoint = [ ... ]; } либо unit.ConditionPathIsMountPoint), а не протаскивать его через serviceConfig. RequiresMountsFor НЕ возвращать: он намеренно отсутствует в helpers.nix:181-187, потому что создаёт зависимость, по которой systemd при старте юнита сам remount'ит ФС — и это обессмысливает сам гвард (проверено на sapphira 2026-10-10). Порядок задавать через After= на .mount-юните в собственной секции systemd.services потребителя. Старое наблюдение про st_dev остаётся в силе и объясняет выбор якоря: bind-mount внутри одной ФС не меняет st_dev, поэтому ConditionPathIsMountPoint на путях под /mnt/services всегда «yes» — якорь только xlib.dirs.server-home (реальная точка монтирования). См. ADR-0004.\n\nЗАКРЫТО 2026-10-25 (T4): `mkStorageGuard` возвращает фрагмент `unitConfig`; все 13 юнитов проверены в собранном дереве — `ConditionPathIsMountPoint=/home/oqyude/External` строкой 3 под `[Unit]`, ни одного вхождения в `[Service]`, `RequiresMountsFor` отсутствует. Реальные имена юнитов: `samba-smbd`, `phpfpm-nextcloud`, `immich-server`, `podman-3xui_app`, `podman-taperotation-backend/-frontend`; фантомы `samba.service`/`nextcloud.service`/`immich.service` (пустые, без ExecStart) исчезли из сборки. На `vds` гвард отключён (`lib.optionalAttrs (xlib.device.type != \"vds\")`): у otreca нет `/home/oqyude/External`, живое условие пропустило бы `podman-3xui_app` и погасило панель pubray1.zeroq.su (проверено SSH+findmnt 2026-10-25). Сборки: sapphira 7h6860ji… (exit 0, hash не изменился после vds-гейта), otreca 4r0apcls… (exit 0, 0 вхождений условия). НЕ задеплоено (`switch` не выполнялся).",
+      "severity": "high",
+      "completed_in_session": "cleanup-2026-10-25"
     },
     {
       "id": "T5",
@@ -106,7 +129,11 @@
         "В project-rules.md (R1.x) явно сказано, что бэкапов в конфигурации нет",
         "В project-state.md Open Concerns указано, что бэкапы — внешние"
       ],
-      "files": [".agent/rules/project-rules.md", ".agent/context/project-state.md", ".agent/decisions/0002-backups-external.md"],
+      "files": [
+        ".agent/rules/project-rules.md",
+        ".agent/context/project-state.md",
+        ".agent/decisions/0002-backups-external.md"
+      ],
       "blocks": [],
       "notes": "Open question 5.6 (where are backups) не отвечен владельцем. Принят accepted risk: R1.9 formalized in project-rules.md: «Backups: external/unknown — accepted risk». Risk table + decision в .agent/decisions/0002-backups-external.md. Если владелец в будущем ответит на 5.6 — R1.9 отменяется и заменяется на R1.x с описанием бэкап-стратегии."
     },
@@ -121,7 +148,9 @@
         "git show 9974784:modules/containers/3x-ui-migration-notes.md > .agent/decisions/notes/3x-ui-xray-26.9.md (или аналогичный путь)",
         "Файл дополнен вердиктом: миграция 26.7 → 26.9 провалена, откат осознанный, причина — X25519MLKEM768"
       ],
-      "files": [".agent/decisions/notes/3x-ui-xray-26.9.md"],
+      "files": [
+        ".agent/decisions/notes/3x-ui-xray-26.9.md"
+      ],
       "blocks": [],
       "notes": "200 строк удалены в 22a19be. git show 9974784:... — восстановить. Выполнено в 61b3724."
     },
@@ -138,8 +167,12 @@
         "podman exec 3xui_app /app/bin/xray-linux-amd64 version — записано",
         "В modules/containers/3x-ui.nix:54 :latest заменён на конкретный тег/digest"
       ],
-      "files": ["modules/containers/3x-ui.nix"],
-      "blocks": ["T8"],
+      "files": [
+        "modules/containers/3x-ui.nix"
+      ],
+      "blocks": [
+        "T8"
+      ],
       "notes": "Активный Xray: 26.7.28 (go1.26.5). Stale binary: 26.9.30. Decision: Option A — оставить :latest, R1.5/R1.8 уже фиксируют. Panel binary не извлекается через /var/lib/containers (вероятно вне /app/bin/), версия доступна через UI x.zeroq.su:2049/pubray/."
     },
     {
@@ -154,7 +187,9 @@
         "Закомментированный таймер (строки 97-103) удалён",
         "Оставлен комментарий-предупреждение"
       ],
-      "files": ["modules/containers/3x-ui.nix"],
+      "files": [
+        "modules/containers/3x-ui.nix"
+      ],
       "blocks": [],
       "notes": "Выполнено в 61b3724. Обновление панели через pull = путь, по которому в 2026-10-04 декларация разошлась с рантаймом. Автоматизировать нельзя."
     },
@@ -169,7 +204,9 @@
         "В project-rules.md (R1.x) явно сказано: версия ядра Xray выбирается в UI панели и лежит в её sqlite-БД, то есть вне Nix",
         "Перед деплоем/рестартом 3x-ui проверять версию ядра в панели"
       ],
-      "files": [".agent/rules/project-rules.md"],
+      "files": [
+        ".agent/rules/project-rules.md"
+      ],
       "blocks": [],
       "notes": "R1.8 добавлен в 61b3724. Trap entry обновлена."
     },
@@ -184,7 +221,11 @@
         "Решение: (а) оставить + описать в инвариантах, или (б) погасить опцию в vds/default.nix + убрать из options.nix, или (в) довести до рабочего состояния",
         "Решение зафиксировано в .agent/decisions/"
       ],
-      "files": ["modules/vds/default.nix", "modules/options.nix", "modules/containers/3x-ui.nix"],
+      "files": [
+        "modules/vds/default.nix",
+        "modules/options.nix",
+        "modules/containers/3x-ui.nix"
+      ],
       "blocks": [],
       "notes": "REVERTED 2026-10-10. Решение (б) оказалось ОШИБОЧНЫМ: modules/vds/nginx.nix (не тронут) всё ещё маршрутизирует pubrayx1.zeroq.su/default → 127.0.0.1:15380, поэтому после удаления маппинга 127.0.0.1:15380:443/tcp nginx stream смотрит в мёртвый порт и Xray REALITY недоступен (владелец: 'xray по прежнему не работает'). Восстановлено: reality443Forwarding в options.nix, reality443Forwarding=true в vds/default.nix, realityPorts в 3x-ui.nix + ports = basePorts ++ realityPorts. Проверено: nix eval показывает [..., \"127.0.0.1:15380:443/tcp\"]. Решение вернуться к (а): опция нужна, её роль — публикация 15380→443 для nginx stream SNI-routing."
     },
@@ -194,12 +235,17 @@
       "type": "documentation",
       "status": "completed",
       "origin": "user:direct",
-      "depends_on": ["T3"],
+      "depends_on": [
+        "T3"
+      ],
       "acceptance_criteria": [
         "В project-rules.md (R1.3) формулировка: «Экспозиция наружу определяется пробросами на роутере, не openFirewall. На sapphira networking.firewall.enable = false намеренно. Список пробросов: 22, 80, 443, 8443 (3x-ui/Xray REALITY), 22000 (syncthing). Новый сервис не становится доступен из интернета, пока не добавлен проброс.» (уже сделано)",
         "В project-state.md Network секция содержит список пробросов"
       ],
-      "files": [".agent/rules/project-rules.md", ".agent/context/project-state.md"],
+      "files": [
+        ".agent/rules/project-rules.md",
+        ".agent/context/project-state.md"
+      ],
       "blocks": []
     },
     {
@@ -213,7 +259,9 @@
         "В project-rules.md (R1.4) инвариант сформулирован (уже сделано)",
         "Список из 4 мест, которые придётся править при смене: modules/server/nginx.nix, modules/server/nextcloud.nix, modules/vds/systemd.nix, modules/vds/nginx.nix"
       ],
-      "files": [".agent/rules/project-rules.md"],
+      "files": [
+        ".agent/rules/project-rules.md"
+      ],
       "blocks": []
     },
     {
@@ -222,11 +270,15 @@
       "type": "fix",
       "status": "completed",
       "origin": "user:direct",
-      "depends_on": ["T11"],
+      "depends_on": [
+        "T11"
+      ],
       "acceptance_criteria": [
         "modules/server/nginx.nix:225-228 (allowedTCPPorts = [80 443]) удалено или помечено комментарием «депенит от D1»"
       ],
-      "files": ["modules/server/nginx.nix"],
+      "files": [
+        "modules/server/nginx.nix"
+      ],
       "blocks": [],
       "notes": "Выполнено в 61b3724: `networking.firewall.allowedTCPPorts = [80 443]` удалён (4 строки), заменён 2-строчным R1.3-комментарием. R1.3 формулировка в project-rules.md/AGENTS.md обновлена (M1: stale `nginx.nix:225` убран)."
     },
@@ -240,7 +292,9 @@
       "acceptance_criteria": [
         "AGENTS.md содержит: yaml frontmatter (для Obsidian dataview), metaagent-указатель, краткую выжимку nixos (хосты, инварианты, ловушки, куда лезть, проверки, где не лезть)"
       ],
-      "files": ["AGENTS.md"],
+      "files": [
+        "AGENTS.md"
+      ],
       "blocks": [],
       "notes": "Сделано в этой инициализации (см. объединённый AGENTS.md)."
     },
@@ -250,12 +304,18 @@
       "type": "decision",
       "status": "completed",
       "origin": "user:direct",
-      "depends_on": ["T2"],
+      "depends_on": [
+        "T2"
+      ],
       "acceptance_criteria": [
         "Список из 7 кандидатов (см. analysis-report.md §5) отфильтрован владельцем",
         "Выбранные проверки превращены в CI или git pre-commit hook"
       ],
-      "files": [".ci/checks.sh", ".pre-commit-config.yaml", ".github/workflows/nix-checks.yml"],
+      "files": [
+        ".ci/checks.sh",
+        ".pre-commit-config.yaml",
+        ".github/workflows/nix-checks.yml"
+      ],
       "blocks": [],
       "notes": "Реализовано 3 из 7: #1 :latest (с whitelist для 3x-ui/tape-rotation), #2 nix flake check, #7 sops path_regex. .ci/checks.sh, .pre-commit-config.yaml (local hook), .github/workflows/nix-checks.yml (CI). ИСПРАВЛЕНИЕ 2026-10-15 (раньше здесь стояло ложное «.ci/checks.sh (executable)»): .ci/checks.sh лежит в режиме 100644 — `git ls-files -s .ci/checks.sh` → 100644, на диске -rw-r--r--, execute-бита нет. Оба места вызова запускают его как исполняемый файл — .github/workflows/nix-checks.yml:20 `run: .ci/checks.sh` и .pre-commit-config.yaml:10 `entry: .ci/checks.sh --no-build` (language: script, execve напрямую) — поэтому ни CI, ни pre-commit-хук их фактически не выполняют: шаг падает с permission denied. Следствие: все три проверки выше ни разу не запускались, инварианты, которые они прикрывали, не защищены. Статус completed сохранён (файлы созданы ровно как задано), дефект — только в режиме файла; чинится отдельно, см. T20. Оставшиеся 4: #3 coredns↔nginx, #4 mkServiceStorage, #5 nftables final policy, #6 listen.addr — не реализованы, ожидают решения владельца."
     },
@@ -265,13 +325,19 @@
       "type": "refactor",
       "status": "completed",
       "origin": "user:direct",
-      "depends_on": ["T1"],
+      "depends_on": [
+        "T1"
+      ],
       "acceptance_criteria": [
         "Решение: archive (выполнено)",
         "В modules/server/default.nix не осталось НИ ОДНОГО закомментированного импорта — проверено 2026-10-15: секция imports (строки 7-44) содержит только живые пути",
         "Все выведенные из сборки модули лежат в archive/ либо удалены коммитом"
       ],
-      "files": ["modules/server/default.nix", "archive/server-modules/", "archive/containers/"],
+      "files": [
+        "modules/server/default.nix",
+        "archive/server-modules/",
+        "archive/containers/"
+      ],
       "blocks": [],
       "notes": "Текущее состояние (проверено 2026-10-15): в modules/server/default.nix закомментированных импортов НЕ осталось вообще — imports занимают строки 7-44 и состоят только из живых путей; строки 38-43 — информационный комментарий-блок, документирующий архив (не отключённые импорты). Состав, а не «итого»: 12 файлов в archive/server-modules/ (coturn, mealie, memos, minecraft, n8n, netdata, nfs, rsync, step-ca, transmission, trilium, zerotier) + 3 файла в archive/containers/ (remnawave.nix, kokoro-tts.nix, openhands.nix) = 15 перенесённых, из них 13 были закомментированы в server/default.nix, а kokoro-tts и openhands импортированы не были. Плюс 1 удалённый: stirling-pdf.nix удалён в 5dd7a58 (поглощён bentopdf.nix), подтверждено `git show --stat 5dd7a58`. open-webui.nix НИКОГДА не был закомментирован — он переехал в modules/containers/ и остаётся активным (подключён как ../containers/open-webui.nix в строке 9). Итого по составу: 12 в archive/server-modules + 3 в archive/containers + 1 удалён (stirling-pdf), плюс 1 активный (open-webui), который архиву не подлежит. ЗАМЕЧАНИЕ (вне моего владения, не правил): комментарий в самом default.nix:38-39 всё ещё говорит «14 modules archived» и «13 in modules/server/default.nix:37-50, 2 in modules/containers/» — это устаревшая формулировка, и номера строк там тоже протухли."
     },
@@ -299,7 +365,12 @@
         ".agent/checkpoints.json",
         "modules/server/default.nix"
       ],
-      "fixes": ["T12 (B1: R1.4 stale content)", "T1 (I2: status pending after fix)", "T13 (I2: status pending after fix)", "T16 (I1: count drift in acceptance)"],
+      "fixes": [
+        "T12 (B1: R1.4 stale content)",
+        "T1 (I2: status pending after fix)",
+        "T13 (I2: status pending after fix)",
+        "T16 (I1: count drift in acceptance)"
+      ],
       "notes": "B1: R1.4 исправлен в project-rules.md:22-25 и AGENTS.md:70-72 (4 файла: home/termux.nix, modules/server/nextcloud.nix, modules/server/nginx.nix, modules/vds/systemd.nix). I1: count sync в AGENTS.md:84, project-rules.md:97, manifest.json (T16 acceptance), modules/server/default.nix:37-50. I2: T1 и T13 в manifest.json → completed. I3: .ci/checks.sh закоммичен (61b3724). T12 re-verified: R1.4 fixed, T12 остаётся completed. M1: stale nginx.nix:225 убран из R1.3. M2: R1.2 обновлён с 7 до 12 actual services. M3: T10 погашен (reality443Forwarding удалён)."
     },
     {
@@ -324,7 +395,11 @@
         ".agent/checkpoints.json",
         ".agent/handoff-summary.md"
       ],
-      "completed_in_commits": ["9bf9407 (herdr nginx chain попутно закрыл gitea-runner fix)", "b62a980 (формальный фикс — escapeSystemdPath-форма unitKey + assertions)", "d021804 (sops(gitea-runner): replace placeholder with real registration token)"],
+      "completed_in_commits": [
+        "9bf9407 (herdr nginx chain попутно закрыл gitea-runner fix)",
+        "b62a980 (формальный фикс — escapeSystemdPath-форма unitKey + assertions)",
+        "d021804 (sops(gitea-runner): replace placeholder with real registration token)"
+      ],
       "verified_at": "2026-10-15T01:23 (nixos-rebuild switch на sapphira, юнит active/running, ExecStart на месте, phantom absent)",
       "notes": "FIX закрыт в 9bf9407 (нёс herdr-nginx chain, попутно приземлился gitea-runner с правильным unitKey) и формализован в b62a980. Acceptance выполнены; phantom-юнит не наблюдается в вычисленном systemd.services sapphira с 2026-10-15T01:23. Задача висела pending из-за того, что формальная отметка в манифесте не делалась до конца сессии — закрыта сейчас (T32 cleanup)."
     },
@@ -335,14 +410,19 @@
       "priority": "high",
       "status": "completed",
       "origin": "session 2026-10-15 (metastate refresh)",
-      "depends_on": ["T18"],
+      "depends_on": [
+        "T18"
+      ],
       "adr": "ADR-0004",
       "acceptance_criteria": [
         ".agent/rules/project-rules.md содержит R1.14: имя атрибута systemd.services должно байт-в-байт совпадать с escapeSystemdPath-формой upstream, иначе создаётся фантомный юнит без ExecStart, который systemd молча отказывается запускать",
         "AGENTS.md содержит ту же строку в списке подтверждённых инвариантов и/или в таблице ловушек",
         "Правило связывает свойство с уже описанным в ADR-0004 механизмом (gitea-runner, 12 часов молчания)"
       ],
-      "files": [".agent/rules/project-rules.md", "AGENTS.md"],
+      "files": [
+        ".agent/rules/project-rules.md",
+        "AGENTS.md"
+      ],
       "blocks": [],
       "notes": "ADR-0004 был написан, но его инвариант так и не попал в project-rules.md: секция R1 обрывалась на R1.13 (ADR-0003, TLS терминирует панель 3x-ui) — проверено grep по проекту на 2026-10-15, упоминаний R1.14 в правилах не было. Это расхождение уже было зафиксировано как следующая задача в .agent/handoff-summary.md:90 («R1.14 из ADR-0004 в него ещё не внесён»). Работа выполняется параллельно в этой же сессии; запись внесена как completed по факту завершения."
     },
@@ -351,7 +431,7 @@
       "title": "CI и pre-commit не запускаются: .ci/checks.sh без execute-бита (режим 100644)",
       "type": "fix",
       "severity": "high",
-      "status": "pending",
+      "status": "completed",
       "origin": "session 2026-10-15 (metastate refresh)",
       "depends_on": [],
       "acceptance_criteria": [
@@ -362,8 +442,17 @@
         "Все три проверки T15 фактически выполнились хотя бы раз с приложенным выводом: #1 гвард :latest (с whitelist 3x-ui/tape-rotation), #2 nix flake check, #7 sops path_regex",
         "Ничего из правки не выполнено молча: режим файла / текст обоих вызывающих меняются только отдельным, авторизованным коммитом, а не попутно в чужой задаче"
       ],
-      "files": [".ci/checks.sh", ".pre-commit-config.yaml", ".github/workflows/nix-checks.yml"],
-      "notes": "Проверено 2026-10-15. МЕХАНИЗМ: git ls-files -s .ci/checks.sh → `100644 fb61a7db…`, на диске -rw-r--r--, shebang есть, execute-бита нет. GitHub Actions сохраняет режим файла из индекса при checkout, поэтому .github/workflows/nix-checks.yml:20 `run: .ci/checks.sh` (прямой запуск как исполняемого файла) падает с permission denied. .pre-commit-config.yaml:10 объявляет `entry: .ci/checks.sh --no-build` с `language: script`, а script-хук делает execve(entry) напрямую — та же потребность в execute-бите, тот же отказ. ПОСЛЕДСТВИЕ: все три проверки, введённые под T15 (гвард :latest, nix flake check, sops path_regex), не выполнились НИ РАЗУ — ни в CI, ни в pre-commit. T15 была принята как закрытие риска через замену «половины инвариантов» автоматическими проверками, но её acceptance_criteria были записаны, не запустив то, что они описывают; инварианты R1.5/R1.8 (образы :latest) и sops-path_regex сейчас не прикрыты ничем. ПОЧЕМУ ЭТО НЕ ЕДИНИЧНЫЙ ПРОПУСК: правка тривиальна (один mode flip), и именно тривиальность — сигнал: CI закоммитили, но ни разу не прогнали, поэтому «проверки зелёные» осталось недоказанным утверждением. Это четвёртый случай одного и того же паттерна в этом прогоне (R1.2 про RequiresMountsFor, ловушка opencode.nix:339, ловушка «14 закомментированных модулей»), но инвертированный: первые три — ложно УТВЕРЖДЕНИЕ об устройстве системы, здесь — ложно УТВЕРЖДЕНИЕ о том, что защита работает. Общий вывод: acceptance_criteria, требующие фактического запуска, нельзя закрывать по факту написания артефакта. T15 остаётся completed (файлы созданы как задано) — правится только режим файла; см. также исправленную запись T15."
+      "files": [
+        ".ci/checks.sh",
+        ".pre-commit-config.yaml",
+        ".gitea/workflows/nix-checks.yml"
+      ],
+      "notes": "Проверено 2026-10-15. МЕХАНИЗМ: git ls-files -s .ci/checks.sh → `100644 fb61a7db…`, на диске -rw-r--r--, shebang есть, execute-бита нет. GitHub Actions сохраняет режим файла из индекса при checkout, поэтому .github/workflows/nix-checks.yml:20 `run: .ci/checks.sh` (прямой запуск как исполняемого файла) падает с permission denied. .pre-commit-config.yaml:10 объявляет `entry: .ci/checks.sh --no-build` с `language: script`, а script-хук делает execve(entry) напрямую — та же потребность в execute-бите, тот же отказ. ПОСЛЕДСТВИЕ: все три проверки, введённые под T15 (гвард :latest, nix flake check, sops path_regex), не выполнились НИ РАЗУ — ни в CI, ни в pre-commit. T15 была принята как закрытие риска через замену «половины инвариантов» автоматическими проверками, но её acceptance_criteria были записаны, не запустив то, что они описывают; инварианты R1.5/R1.8 (образы :latest) и sops-path_regex сейчас не прикрыты ничем. ПОЧЕМУ ЭТО НЕ ЕДИНИЧНЫЙ ПРОПУСК: правка тривиальна (один mode flip), и именно тривиальность — сигнал: CI закоммитили, но ни разу не прогнали, поэтому «проверки зелёные» осталось недоказанным утверждением. Это четвёртый случай одного и того же паттерна в этом прогоне (R1.2 про RequiresMountsFor, ловушка opencode.nix:339, ловушка «14 закомментированных модулей»), но инвертированный: первые три — ложно УТВЕРЖДЕНИЕ об устройстве системы, здесь — ложно УТВЕРЖДЕНИЕ о том, что защита работает. Общий вывод: acceptance_criteria, требующие фактического запуска, нельзя закрывать по факту написания артефакта. T15 остаётся completed (файлы созданы как задано) — правится только режим файла; см. также исправленную запись T15.\n\nЗАКРЫТО 2026-10-25: `git ls-files -s .ci/checks.sh` → 100755; оба вызова идут через `bash`; workflow живёт в `.gitea/workflows/` (единственный remote — gitea).",
+      "completed_in_commits": [
+        "ca450f1 (.ci/checks.sh → 100755)",
+        "db3cbd0 (pre-commit зовёт bash .ci/checks.sh)",
+        "0297254 (workflow → .gitea/workflows/, убран || true)"
+      ]
     },
     {
       "id": "T21",
@@ -371,8 +460,13 @@
       "type": "deploy",
       "status": "completed",
       "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
-      "files": ["home/modules/herdr.nix (new)", "home/server.nix (import)"],
-      "completed_in_commits": ["9bf9407 (nginx fix landed herdr), потом 4d1426c/61ad57a/9bf9407 — herdr.service бежит, сокет в ~/.config/herdr/sessions/herdr-prod/"]
+      "files": [
+        "home/modules/herdr.nix (new)",
+        "home/server.nix (import)"
+      ],
+      "completed_in_commits": [
+        "9bf9407 (nginx fix landed herdr), потом 4d1426c/61ad57a/9bf9407 — herdr.service бежит, сокет в ~/.config/herdr/sessions/herdr-prod/"
+      ]
     },
     {
       "id": "T22",
@@ -380,8 +474,12 @@
       "type": "deploy",
       "status": "completed",
       "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
-      "depends_on": ["T21"],
-      "files": ["home/secondary.nix (import добавлен)"],
+      "depends_on": [
+        "T21"
+      ],
+      "files": [
+        "home/secondary.nix (import добавлен)"
+      ],
       "verified": "herdr 0.9.3 active, --session herdr-prod, socket mode 0600, cgroup 2G/4G (4 cores/11GB RAM хватает)",
       "fix_landed": "2026-10-15T13:45: home/secondary.nix закоммичен (034bb5e) и запушен в gitea/dev; ранее лежавший на rydiwo scp-копия с autostash теперь subsumed-нется Nix-конфигом при следующем deploy .#rydiwo",
       "next_action_required": "на sapphira выполнить `deploy .#rydiwo` (или `nixos-rebuild switch --flake .#rydiwo --target-host oqyude@rydiwo --build-host localhost`) — до этого herdr на rydiwo живёт из scp, а не из /nix/store; дальнейшие `herdr --machine rydiwo` вызовы с sapphira могут впечатлять «sapphira пытается установить», потому что бридж не Nix-декларативный",
@@ -398,8 +496,15 @@
       "type": "deploy",
       "status": "completed",
       "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
-      "files": ["modules/server/nginx.nix", "modules/server/coredns.nix"],
-      "completed_in_commits": ["4d1426c (начальный с authelia)", "61ad57a (exempt /api/(auth|devices/pair|health) от authelia — fix POST 500)", "9bf9407 (drop authelia целиком + убраны дублирующие proxy_set_header, добавлен R1.15)"],
+      "files": [
+        "modules/server/nginx.nix",
+        "modules/server/coredns.nix"
+      ],
+      "completed_in_commits": [
+        "4d1426c (начальный с authelia)",
+        "61ad57a (exempt /api/(auth|devices/pair|health) от authelia — fix POST 500)",
+        "9bf9407 (drop authelia целиком + убраны дублирующие proxy_set_header, добавлен R1.15)"
+      ],
       "adr": "ADR-0005"
     },
     {
@@ -408,9 +513,12 @@
       "type": "deploy",
       "status": "completed",
       "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
-      "files": ["~/.config/herdr/plugins/config/devswha.herdr-web-ui/env (mode 0600)"],
-      "token": "134aec5cf22390e4b9826df51ba9b27d5208fcdbcd8b4e237ac2e642692241a1 (256 бит, записан в .env плагина, не в sops — runtime-конфиг)",
-      "adr": "ADR-0005"
+      "files": [
+        "~/.config/herdr/plugins/config/devswha.herdr-web-ui/env (mode 0600)"
+      ],
+      "adr": "ADR-0005",
+      "secret_ref": "~/.config/herdr/plugins/config/devswha.herdr-web-ui/env (mode 0600, runtime, не в sops)",
+      "notes": "Значение токена вычищено из манифеста и ротировано 2026-10-25 (T38). Старый токен из git-истории считается утёкшим и больше не принимается плагином."
     },
     {
       "id": "T25",
@@ -427,7 +535,10 @@
       "type": "documentation",
       "status": "completed",
       "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
-      "files": ["S:\\Git\\metaagent-director\\AGENTS.md (новый, 604 строк)", "S:\\Git\\metaagent-director\\README.md (новый, 64 строки)"],
+      "files": [
+        "S:\\Git\\metaagent-director\\AGENTS.md (новый, 604 строк)",
+        "S:\\Git\\metaagent-director\\README.md (новый, 64 строки)"
+      ],
       "warning": "Файлы НЕ закоммичены — отдельный репо, не nixos. Зафиксированы в handoff-summary.md как uncommitted work."
     },
     {
@@ -436,7 +547,12 @@
       "type": "documentation",
       "status": "completed",
       "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
-      "files": [".agent/decisions/0005-herdr-webui-no-authelia.md (новый)", ".agent/decisions/index.json", ".agent/rules/project-rules.md (R1.15)", "AGENTS.md (инвариант #12)"]
+      "files": [
+        ".agent/decisions/0005-herdr-webui-no-authelia.md (новый)",
+        ".agent/decisions/index.json",
+        ".agent/rules/project-rules.md (R1.15)",
+        "AGENTS.md (инвариант #12)"
+      ]
     },
     {
       "id": "T28",
@@ -446,7 +562,9 @@
       "status": "pending",
       "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
       "depends_on": [],
-      "files": ["новый: home/modules/opencode-director.nix или modules/services/opencode-director.nix"],
+      "files": [
+        "новый: home/modules/opencode-director.nix или modules/services/opencode-director.nix"
+      ],
       "acceptance_criteria": [
         "systemd user unit opencode-director.service на 127.0.0.1:4097, MemoryHigh=3G MemoryMax=4G, Restart=always",
         "EnvironmentFile=opencode-director.env с sops-расшифрованным GEMINI_API_KEY (или opencode_auth с provider=minimax-coding-plan)",
@@ -464,7 +582,9 @@
       "status": "pending",
       "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
       "depends_on": [],
-      "files": ["https://github.com/devswha/herdr-web-ui/blob/main/server/machine-security.ts"],
+      "files": [
+        "https://github.com/devswha/herdr-web-ui/blob/main/server/machine-security.ts"
+      ],
       "patch_summary": "В блоке try { ... } catch { return false; } после `if (request.headers.get('x-forwarded-proto') === 'https') expected.protocol = 'https:';` добавить чтение x-forwarded-host с override expected.host + reset expected.port (когда forward-port отсутствует). Текущий in-place patch на sapphira (см. ADR-0005) — proof-of-concept.",
       "moot_after": "T29 merged → можно откатить ADR-0005 и вернуть authelia перед vhost'ом",
       "notes": "Версия патча: see .agent/decisions/0005-herdr-webui-no-authelia.md (раздел «Связанные находки»). PR должен включать test, что sameOrigin возвращает true для POST с Origin=https://herdr.example.com при proxy_pass на 127.0.0.1:7317 с X-Forwarded-Proto=https и X-Forwarded-Host=herdr.example.com."
@@ -484,8 +604,12 @@
       "priority": "low",
       "status": "pending",
       "origin": "session 2026-10-15 (metaagent-director-2026-10-15)",
-      "depends_on": ["T28"],
-      "files": ["S:\\Git\\metaagent-director\\AGENTS.md"],
+      "depends_on": [
+        "T28"
+      ],
+      "files": [
+        "S:\\Git\\metaagent-director\\AGENTS.md"
+      ],
       "notes": "Текущие примеры «Cycle N: quota hit / quota recovered» используют herdr pane read/send-keys и herdr agent list. После T28 (multi-session) заменить на opencode API: GET /api/sessions/{id}/messages для детекции 429, POST /api/sessions/{id}/interrupt для остановки. В current scope — низкий приоритет, до quota-циклов director не дойдёт пока не упрётся в API rate limit."
     },
     {
@@ -510,7 +634,11 @@
       "type": "documentation",
       "status": "completed",
       "origin": "session 2026-10-15T14:30 (продолжение metaagent-director-2026-10-15)",
-      "depends_on": ["T21", "T22", "T25"],
+      "depends_on": [
+        "T21",
+        "T22",
+        "T25"
+      ],
       "completed_in_commits": [
         "034bb5e feat(home): add herdr import to rydiwo config (multi-host bridge)",
         "7f30176 refactor(home): extract pkgs.bun into herdr-runtime.nix, drop duplication",
@@ -577,12 +705,255 @@
       ],
       "verified_at_host": "",
       "notes": "ГЛАВНЫЙ РИСК: /mnt/services может быть не смонтирован в момент старта юнита ⇒ opencode создаст новую пустую БД в ~/.local/share/opencode, и в UI все сессии «пропадут» (молча). Обязательно: findmnt перед рестартом + проверка в activation-скрипте (если целевой каталога отсутствует/не на нужном разделе — перенос не выполнять и юнит не поднимать). Бэкап pre-v2 БД уже снят: /mnt/services/opencode-backup/pre-v2-2026-10-21."
+    },
+    {
+      "id": "T38",
+      "title": "Живой herdr_web_token закоммичен в git открытым текстом",
+      "type": "docs",
+      "status": "completed",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "Токен убран из .agent/handoff-summary.md (d76cbc3) и .agent/tasks/manifest.json; значение ротировано 2026-10-25, старый токен отдаёт 401. Git-история по-прежнему содержит старый литерал — он недействителен, перезапись истории не выполнялась.",
+      "completed_in_commits": [
+        "d76cbc3"
+      ]
+    },
+    {
+      "id": "T39",
+      "title": "CI не выполняется ни разу: 3 независимых дефекта",
+      "type": "fix",
+      "status": "completed",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "Режим .ci/checks.sh, вызов через bash, workflow в .gitea/workflows/ без || true.",
+      "completed_in_commits": [
+        "ca450f1",
+        "db3cbd0",
+        "0297254"
+      ]
+    },
+    {
+      "id": "T40",
+      "title": "Check #7 (sops path_regex) не покрывает modules/*/secrets/",
+      "type": "fix",
+      "status": "completed",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "Check #7 расширен на modules/*/secrets/ (параллельная сессия).",
+      "completed_in_commits": [
+        "95a4f92"
+      ]
+    },
+    {
+      "id": "T41",
+      "title": "Мёртвый код: мёртвые/неиспользуемые модули",
+      "type": "refactor",
+      "status": "completed",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "Удалено 12 мёртвых модулей + дубли; добавлен check графа импортов.",
+      "completed_in_commits": [
+        "1b188fb",
+        "13e90d0",
+        "2991164"
+      ]
+    },
+    {
+      "id": "T42",
+      "title": "Комментарии в живом коде противоречат коду",
+      "type": "docs",
+      "status": "completed",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "Дрейф комментариев (6 мест) + отсутствующий аргумент `config` (HEAD не вычислялся).",
+      "completed_in_commits": [
+        "39e1887"
+      ]
+    },
+    {
+      "id": "T43",
+      "title": ".ci/checks.sh + .pre-commit-config.yaml: протухший whitelist, неверное имя хелпера",
+      "type": "fix",
+      "status": "completed",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "Убран мёртвый 3x-ui:latest из whitelist, mkServiceStorage→mkStorageGuard.",
+      "completed_in_commits": [
+        "3fb1f3c"
+      ]
+    },
+    {
+      "id": "T44",
+      "title": "AGENTS.md: битые пути и протухшие номера строк",
+      "type": "docs",
+      "status": "completed",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "11 битых ссылок `путь:строка` исправлены; все 16 резолвятся.",
+      "completed_in_commits": [
+        "8c86466"
+      ]
+    },
+    {
+      "id": "T45",
+      "title": "modules/wsl/nix-serve.nix — байт-в-байт копия серверного модуля",
+      "type": "refactor",
+      "status": "completed",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "Дубль удалён, импорт → ../server/nix-serve.nix.",
+      "completed_in_commits": [
+        "0d52f20"
+      ]
+    },
+    {
+      "id": "T46",
+      "title": "options.pxe-infra (351 стр.) живёт в modules/options.nix вместо modules/pxe-infra/",
+      "type": "refactor",
+      "status": "completed",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "Опция перенесена в modules/pxe-infra/options.nix.",
+      "completed_in_commits": [
+        "1adf6dd"
+      ]
+    },
+    {
+      "id": "T47",
+      "title": "home/termux.nix вставляет тело home/minimal.nix вместо импорта (78/146 строк)",
+      "type": "refactor",
+      "status": "pending",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "Заблокировано: нужна проверка merge-семантики home-manager (повторное определение programs.* может конкатенировать списки)."
+    },
+    {
+      "id": "T48",
+      "title": "Скрипты верификации T3/T4 существуют только в .temp/; .gitignore:4 без якорей",
+      "type": "refactor",
+      "status": "completed",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "`.gitignore` заякорен, verifier сохранён в .ci/verify/.",
+      "completed_in_commits": [
+        "2ed525b"
+      ]
+    },
+    {
+      "id": "T49",
+      "title": "home/primary.nix:35-69 и home/secondary.nix:32-66 — идентичный хвост (0 отличий)",
+      "type": "refactor",
+      "status": "pending",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "Заблокировано: та же причина, что T47 (merge-семантика HM)."
+    },
+    {
+      "id": "T50",
+      "title": "Реестр хостов и адресов отсутствует: 42+5+2 хардкода IP",
+      "type": "refactor",
+      "status": "pending",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [
+        "T46"
+      ],
+      "description": "Заблокировано: нужен полный `nix flake check` после выноса реестра."
+    },
+    {
+      "id": "T51",
+      "title": "modules/server/nginx.nix (515 стр.): данные, дубли и магические порты",
+      "type": "refactor",
+      "status": "pending",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [
+        "T41"
+      ],
+      "description": "Заблокировано: нужен снимок `nginx -T` для проверки эквивалентности."
+    },
+    {
+      "id": "T52",
+      "title": "T4: guard монтирования мёртв на 13 юнитах / 12 сервисах",
+      "type": "fix",
+      "status": "completed",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [
+        "T4"
+      ],
+      "description": "Дубль T4 из серии T38+; закрывается вместе с T4 (ConditionPathIsMountPoint → [Unit]).",
+      "notes": "Дубль T4; закрыт вместе с T4 2026-10-25 (guard → `[Unit].unitConfig`, vds исключён, фантомные юниты удалены)."
+    },
+    {
+      "id": "T53",
+      "title": "Осиротевшие sops-файлы и судьба archive/",
+      "type": "refactor",
+      "status": "pending",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "Заблокировано: секреты + решение владельца."
+    },
+    {
+      "id": "T54",
+      "title": "Мёртвый flake-инпут proxy-suite (+ nix-minecraft только для архива)",
+      "type": "refactor",
+      "status": "pending",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [
+        "T41"
+      ],
+      "description": "Заблокировано: нужен `nix flake lock` и проверка сборок."
+    },
+    {
+      "id": "T55",
+      "title": "Секреты в 5 корнях (18 файлов) вместо одного",
+      "type": "refactor",
+      "status": "pending",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "Заблокировано: секреты, нужно решение владельца."
+    },
+    {
+      "id": "T56",
+      "title": "home/modules/opencode.nix (475 стр., 7 концернов) — монолит",
+      "type": "refactor",
+      "status": "pending",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "Заблокировано: общий let-блок, нужен nix для проверки эквивалентности."
+    },
+    {
+      "id": "T57",
+      "title": "Метаданные .agent не соответствуют своим же JSON-схемам; T38+ не внесены в JSON",
+      "type": "docs",
+      "status": "completed",
+      "origin": "session techdebt-audit-2026-10-23",
+      "depends_on": [],
+      "description": "Схемы приведены к фактическому формату, T38–T57 внесены в manifest.json, checkpoints обновлён (2026-10-25)."
+    },
+    {
+      "id": "T58",
+      "title": "Тройной дубль networking.firewall.interfaces.\"${matchAll}\".allowedUDPPorts = [ 53 ]",
+      "type": "refactor",
+      "status": "pending",
+      "origin": "audit 2026-10-25 (attr-path fragmentation)",
+      "depends_on": [
+        "T4"
+      ],
+      "files": [
+        "modules/containers/3x-ui.nix",
+        "modules/containers/open-webui.nix",
+        "modules/containers/tape-rotation.nix"
+      ],
+      "description": "Один и тот же лист пишут три модуля (3x-ui:136, open-webui:120, tape-rotation:99) с одинаковым вычисленным ключом. Рантайм корректен: listOf конкатенирует, но apply=canonicalizePortList дедуплицирует до [53]. Это не баг, а ловушка сопровождения. Оставить одного владельца (естественный — 3x-ui: он импортируется и на server, и на vds), проверив, что ключ существует на всех хостах, где живёт хотя бы один из контейнеров.",
+      "acceptance_criteria": [
+        "nix eval ...networking.firewall.interfaces на sapphira и otreca → allowedUDPPorts = [53]",
+        "в репозитории осталось одно присваивание этого листа"
+      ]
     }
   ],
-  "backlog_count": 31,
+  "backlog_count": 37,
   "backlog_count_breakdown": {
     "f_questions_waiting_owner": 22,
-    "pending_tasks": 9
+    "pending_tasks": 15
   },
-  "backlog_note": "F-вопросы ждут ответа владельца (22, было 23 — закрыт 5.6 через T5): 2.2, 2.5, 2.6, 3.2, 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.3, 5.4, 5.5, 6.6, 6.7, 6.8, 6.9, 7.4, 8.2, 8.4, 8.5, 8.6 — после ответа станут задачами. Сверх того 9 pending задач: 3 нерешённых прошлого (T3 nftables на otreca, T4 mount-guard severity:high на sapphira, T10 reality443Forwarding — код уже применён, вопрос только «считать ли это фичей или долгом») + 6 pending текущего прохода (T20 .ci/checks.sh mode bit, T28 v0.2 opencode-director, T29 sameOrigin PR в upstream, T30 use case для multi-host, T31 quota handling examples, T37 перенос данных opencode с / на /mnt/services). T36 (деплой opencode v2 на sapphira) — completed (деплой 2026-10-21, код+ADR+манифест+документы в gitea/dev: d98636e, 0f372b4, 1323982). T18/T32 закрыты в этом проходе (cleanup); T33 saga close-out оформлен как documentation completed; T35 записан в checkpoints.json:closed_attempts (не в tasks[] manifest.json, потому что относится к метасостоянию шима, а не к продуктовым задачам)."
+  "backlog_note": "Обновлено 2026-10-25: 22 F-вопроса владельцу + 14 pending задач. Pending: T10, T28, T29, T30, T31, T37, T47, T49, T50, T51, T53, T54, T55, T56. Закрыты: T3 (посылка опровергнута runtime-проверкой nftables), T4/T52 (guard → [Unit], vds исключён), T20 (CI execute-bit), T38 (ротация токена), T57 (синхронизация метаданных)."
 }

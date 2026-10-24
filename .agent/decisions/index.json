@@ -8,7 +8,12 @@
       "status": "accepted",
       "date": "2026-10-09",
       "file": ".agent/decisions/0001-sops-secrets-paths.md",
-      "tags": ["sops", "secrets", "security", "invariant"]
+      "tags": [
+        "sops",
+        "secrets",
+        "security",
+        "invariant"
+      ]
     },
     {
       "id": "0002",
@@ -16,7 +21,13 @@
       "status": "accepted",
       "date": "2026-10-09",
       "file": ".agent/decisions/0002-backups-external.md",
-      "tags": ["backups", "documentation", "T5", "R1.9", "accepted-risk"],
+      "tags": [
+        "backups",
+        "documentation",
+        "T5",
+        "R1.9",
+        "accepted-risk"
+      ],
       "task": "T5",
       "resolution": "Вопрос 5.6 («где бэкапы и как они проверяются?») владелец так и не ответил — и это НЕ блокер, а осознанно принятый риск. Решение принято в форме принятого риска: в .agent/rules/project-rules.md:42-48 закреплено правило R1.9 «Backups: external/unknown — accepted risk», в этом репозитории не декларируется ни одна бэкап-стратегия, а перечень failure modes лежит в .agent/decisions/0002-backups-external.md. Задача T5 закрыта как completed именно в этом смысле: неопределённость не устранена, а зафиксирована как осознанная. Неопределённость по 5.6 остаётся шумной только если владелец вернётся к теме: тогда R1.9 отменяется и заменяется на R1.x с описанием бэкап-стратегии и её верификации, а этот статус меняется на superseded.",
       "moot_unless": "Владелец отвечает на open question 5.6 или явно просит пересмотреть бэкап-политику.",
@@ -28,7 +39,19 @@
       "status": "accepted",
       "date": "2026-10-10",
       "file": ".agent/decisions/0003-3x-ui-reality-chain.md",
-      "tags": ["3x-ui", "xray", "reality", "otreca", "nginx", "invariant", "R1.10", "R1.11", "R1.12", "R1.13", "T10"]
+      "tags": [
+        "3x-ui",
+        "xray",
+        "reality",
+        "otreca",
+        "nginx",
+        "invariant",
+        "R1.10",
+        "R1.11",
+        "R1.12",
+        "R1.13",
+        "T10"
+      ]
     },
     {
       "id": "0004",
@@ -36,7 +59,15 @@
       "status": "accepted",
       "date": "2026-10-15",
       "file": ".agent/decisions/0004-systemd-unit-attr-name.md",
-      "tags": ["systemd", "gitea-runner", "nix-module-system", "sapphira", "invariant", "R1.14", "trap"],
+      "tags": [
+        "systemd",
+        "gitea-runner",
+        "nix-module-system",
+        "sapphira",
+        "invariant",
+        "R1.14",
+        "trap"
+      ],
       "supersedes_wrong_conclusion_of": "e6e82b8"
     },
     {
@@ -45,7 +76,21 @@
       "status": "accepted",
       "date": "2026-10-15",
       "file": ".agent/decisions/0005-herdr-webui-no-authelia.md",
-      "tags": ["herdr", "herdr-webui", "nginx", "authelia", "cors", "sameorigin", "sapphira", "rydiwo", "invariant", "R1.15", "csrf", "nix-ld", "runtime-manager"],
+      "tags": [
+        "herdr",
+        "herdr-webui",
+        "nginx",
+        "authelia",
+        "cors",
+        "sameorigin",
+        "sapphira",
+        "rydiwo",
+        "invariant",
+        "R1.15",
+        "csrf",
+        "nix-ld",
+        "runtime-manager"
+      ],
       "task": "T27",
       "resolution": "vhost herdr.zeroq.su обходит authelia forward-auth: (а) POST через authelia → 500, (б) sameOrigin() в upstream devswha/herdr-web-ui не читает X-Forwarded-Host → 403 на каждом cross-origin POST за reverse proxy. Auth model — herdr_web_token (256 бит, rate-limit в server/auth.ts). Maintenance процедура in-place патча server/machine-security.ts ЗАФИКСИРОВАНА 2026-10-15: cp active → .patched.bak; git checkout -- file; git pull origin main; cp .patched.bak active; bun install + bun run build; **python-edit ~/.config/herdr/plugins.json source.resolved_commit** (herdr plugin list читает из этого JSON, а не из .git/HEAD — главный gotcha, на котором обожглись); systemctl --user restart herdr. Восстановление authelia перед vhost'ом станет возможным после T29, тогда ADR пересматривается. Дополнительно: на NixOS herdr-web-ui plugin требует 3 runtime prerequisite (см. раздел ADR 'Runtime prerequisites на NixOS'): pkgs.bun и pkgs.nodejs_22 в shell PATH (home/modules/herdr-runtime.nix, импортируется server.nix + secondary.nix) и programs.nix-ld.enable = true глобально (modules/essentials/packages.nix, stdenv.cc.cc.lib) — иначе plugin install падает на трёх разных этапах. Системный bun в PATH НЕ чинит запуск скачанного плагином bun'а (plugin использует свой runtime manager, не fallback на PATH) — отдельный gotcha, отдельная фикса.",
       "moot_unless": "T29 мержится в upstream devswha/herdr-web-ui",
@@ -58,7 +103,18 @@
       "status": "accepted",
       "date": "2026-10-21",
       "file": ".agent/decisions/0006-opencode-v2-migration.md",
-      "tags": ["opencode", "v2", "sapphira", "nixpkgs-master", "home-manager", "plugin", "port", "invariant", "R1.19", "model-registry"],
+      "tags": [
+        "opencode",
+        "v2",
+        "sapphira",
+        "nixpkgs-master",
+        "home-manager",
+        "plugin",
+        "port",
+        "invariant",
+        "R1.19",
+        "model-registry"
+      ],
       "task": "T36",
       "resolution": "Пакет берётся из nixpkgs master (nixos-unstable = 1.19.0, v2 влит в master 2026-10-19 через PR #569770), flake.lock обновлён на c4f353ac. Конфиг пишется вручную (xdg.configFile), потому что HM-модуль programs.opencode остаётся v1-only: v2-ключи plugins (мн.ч.) + mcp.servers, отдельный cli.json вместо tui.json (tui.json на HM-хосте — read-only симлинк в /nix/store, авто-миграция tui.json→cli.json не сможет записать). Плагин сменён на oh-my-opencode-slim@3.0.5 — единственный v2-совместимый (есть dist/tui2.js + v2-типы + compatibility-док); oh-my-openagent 5.1.40 v2-точки входа не имеет. Порт запинен --port 4096: дефолт v2 — 4097, nginx проксирует на 4096, без флага был бы 502. Фоновый сервис v2 выключен (service.json disabled), CLI ходит в юнит через обёртку oc (opencode --server http://127.0.0.1:4096) — иначе второй сервер на 4096 и два писателя в одну opencode.db. Модельные id приведены к реально существующим в реестре (MiniMax-M3 / MiniMax-M3.1-Flash; MiniMax-M3.1-Flash-Preview в реестре НЕТ — тот же класс грабли, что kimi-for-coding).",
       "moot_unless": "OpenCode 2.x попадает в nixos-unstable (тогда пакет возвращается в pkgs.opencode и master-input снимается) либо выходит v2-совместимый oh-my-openagent (тогда возвращается полный набор агентов и категорий)",
@@ -69,16 +125,24 @@
     {
       "id": "T3-A",
       "title": "nftables fix для otreca (R1.6: явная policy drop, убрать firewall/nftables конфликт, SSH только на tailscale0)",
-      "status": "proposed",
+      "status": "withdrawn",
       "date": "2026-10-09",
       "files": [
         ".agent/decisions/proposals/vds-nftables-fix.md"
       ],
-      "tags": ["nftables", "vds", "otrecа", "security", "R1.6", "T3"],
+      "tags": [
+        "nftables",
+        "vds",
+        "otrecа",
+        "security",
+        "R1.6",
+        "T3"
+      ],
       "task": "T3",
       "blocked_by": [
         "user: SSH-доступ на otreca должен быть восстановлен до apply"
-      ]
+      ],
+      "resolution": "2026-10-25: посылка опровергнута runtime-дампом nftables на otreca — `inet nixos-fw` уже имеет `policy drop`; добавление `policy drop` в `inet filter` заблокировало бы весь трафик VDS. Код не менялся."
     }
   ]
 }

@@ -1,6 +1,38 @@
 # Handoff Summary
 
-## ▶ Точка входа — сессия `techdebt-audit-2026-10-23`
+## ▶ Точка входа — сессия `cleanup-2026-10-25`
+
+**Цель:** закрыть всё, что осталось открытым после `techdebt-audit-2026-10-23`:
+T3, T4/T52, T20, T38, T57 и дрейф `checkpoints.json`.
+
+**Сделано:**
+- **T38** — `herdr_web_token` ротирован (`herdr plugin action stop/start`):
+  старый → 401, новый → 200 на `/api/bridge`. Литерал удалён из
+  `manifest.json` (T24: `token` → `secret_ref`), `handoff-summary.md` был
+  вычищен раньше (`d76cbc3`). Git-история содержит **недействительный**
+  старый токен; перезапись истории не делалась.
+- **T3** — закрыта без изменения кода: runtime-дамп `nft list ruleset` на
+  otreca показал `inet nixos-fw` с `policy drop`; рукописный `inet filter` —
+  вторая base chain (только SYN rate-limit). `policy drop` туда добавлять
+  **нельзя** — заблокирует весь VDS. `AGENTS.md` инвариант 6 + «Ловушки»
+  исправлены, proposal T3-A → `withdrawn`.
+- **T20** — completed: `100755` (`ca450f1`), вызов через `bash` (`db3cbd0`),
+  workflow в `.gitea/` (`0297254`).
+- **T57** — T38–T57 внесены в `manifest.json` (55 задач), схемы расширены
+  под фактический формат, добавлен `.ci/tests/validate-metadata.py` (check #9).
+  `bash .ci/checks.sh --no-build` → PASS 4 / FAIL 0.
+- **T4/T52** — guard теперь в `[Unit]` через `unitConfig`; 13/13 юнитов
+  проверены в собранном дереве, в `[Service]` — 0, фантомы `samba.service`/
+  `nextcloud.service`/`immich.service` удалены. На `vds` гвард отключён:
+  у otreca нет External, живое условие погасило бы `podman-3xui_app`.
+  Сборки sapphira/otreca — exit 0; `switch` не делался.
+
+**Проверки:** `python3 .ci/tests/validate-metadata.py .` → 4/4 ok.
+`nix flake check` — см. результат ниже (исторически зависал на `sapphira`).
+
+---
+
+## ▶ Предыдущая точка входа — сессия `techdebt-audit-2026-10-23`
 
 **Что это:** read-only аудит техдолга репозитория + поэтапное снятие долга.
 Начато 2026-10-23 в ветке `dev`. Метасостояние зафиксировано отдельным

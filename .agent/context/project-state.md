@@ -1,8 +1,56 @@
 # Project State
 # Auto-generated — updated by ANALYSE (initial) and METASTATE (on updates)
 
-**Last updated:** 2026-10-23
-**Session:** techdebt-audit-2026-10-23
+**Last updated:** 2026-10-25
+**Session:** cleanup-2026-10-25 (закрытие T3/T20/T38/T57 + T4)
+
+## Session cleanup-2026-10-25 — закрытие открытых high-severity и дрейфа метаданных
+
+### Что было
+
+`execution` висел в `in_progress` из-за двух high-severity задач: T4 (мёртвый
+mount-guard) и T20 (CI без execute-бита). При этом T20 уже была исправлена в
+дереве, но числилась pending; серия T38–T57 существовала только в
+`manifest.md`; живой `herdr_web_token` лежал открытым текстом в
+`manifest.json`; `checkpoints.json` датировался 2026-10-15.
+
+### Что сделано
+
+1. **T38 — токен ротирован 2026-10-25.** Старое значение удалено из
+   `manifest.json` (поле `token` → `secret_ref`), `handoff-summary.md` был
+   вычищен раньше (`d76cbc3`). Ротация выполнена через
+   `herdr plugin action stop/start`: старый токен → 401, новый → 200 на
+   `/api/bridge`. Git-история содержит старый литерал — он недействителен,
+   перезапись истории не выполнялась.
+2. **T3 — посылка опровергнута runtime-проверкой.** `nft list ruleset` на
+   otreca: `inet nixos-fw` уже имеет `policy drop` и явные accept'ы; рукописный
+   `inet filter` — вторая base chain, которая только режет SYN. Добавление
+   `policy drop` в неё заблокировало бы весь трафик VDS. Код не менялся;
+   исправлены инвариант 6 и строка «Ловушек» в `AGENTS.md`, proposal T3-A
+   помечен `withdrawn`.
+3. **T20 — закрыта:** `100755` (`ca450f1`), вызов через `bash` (`db3cbd0`),
+   workflow в `.gitea/workflows/`, падающие шаги (`0297254`).
+4. **T57 — метаданные синхронизированы:** T38–T57 внесены в `manifest.json`
+   (55 задач), схемы расширены под фактический формат, добавлен
+   `.ci/tests/validate-metadata.py` (check #9). `bash .ci/checks.sh --no-build`
+   → PASS 4 / FAIL 0 (check #2 пропущен флагом).
+5. **T4/T52 — guard переведён в `[Unit]`.** `mkStorageGuard` отдаёт фрагмент
+   `unitConfig`; 13/13 юнитов проверены в собранном дереве — условие строкой 3
+   под `[Unit]`, в `[Service]` ноль вхождений, `RequiresMountsFor` нет.
+   Ключи переписаны на реальные юниты (`samba-smbd`, `phpfpm-nextcloud`,
+   `immich-server`), три фантомных пустых юнита исчезли. На `vds` гвард
+   отключён: у otreca нет External, иначе `podman-3xui_app` был бы пропущен и
+   панель погасла. Сборки sapphira и otreca — exit 0; `switch` не выполнялся.
+6. **Консолидация раздробленных attr-path записей** (по итогам read-only
+   аудита): `3xui-reconfig` в `modules/server/default.nix` и
+   `modules/vds/default.nix`, `authelia.after/wants`, `gitea-actions-runner`
+   settings (14 записей → 4 блока), `boot.loader.grub`, `services.logind`,
+   `pxe-infra.bridge`, `pipewire.alsa`, `nix.{distributedBuilds,buildMachines}`,
+   `nix.settings` на WSL, `build.activation` на termux. Найдена и заведена
+   **T58**: тройной дубль
+   `networking.firewall.interfaces."${matchAll}".allowedUDPPorts = [ 53 ]`
+   (`3x-ui`, `open-webui`, `tape-rotation`) — рантайм корректен за счёт
+   `canonicalizePortList`, но владельца надо оставить одного.
 
 ## Session techdebt-audit-2026-10-23 — аудит техдолга
 
@@ -34,7 +82,7 @@ Read-only аудит репозитория на техдолг: 233 tracked-ф�
 
 | Задачи | Итог |
 |---|---|
-| T38 | литерал токена убран из `handoff-summary.md` (`d76cbc3`); `manifest.json:412` остался — файл вне мандата |
+| T38 | литерал убран из `handoff-summary.md` (`d76cbc3`); 2026-10-25 токен ротирован, вычищен из `manifest.json` (`token` → `secret_ref`) |
 | T39 | CI починен в три коммита: бит исполнения (`ca450f1`), вызов через `bash` (`db3cbd0`), workflow в `.gitea/` + падающие шаги (`0297254`) |
 | T40 | check #7 расширен на все `*/secrets/*` — `95a4f92` (**параллельная сессия**) |
 | T41 | 12 мёртвых модулей удалено; страховка — check #8 «граф импортов» (`1b188fb`) |
@@ -47,9 +95,9 @@ Read-only аудит репозитория на техдолг: 233 tracked-ф�
 
 **Осталось / заблокировано:** T47, T49, T56 (home-manager — нужен `nix`
 для проверки merge-семантики), T50 (реестр хостов — нужен `nix flake check`
-и регресс на хостах), T51 (nginx — нужен снимок `nginx -T`), T52 (T4 —
-меняет рантайм-поведение 12 сервисов), T53 (секреты и `archive/`), T54
-(`nix flake lock`), T55 (секреты), T57 (починка артефактов `.agent`).
+и регресс на хостах), T51 (nginx — нужен снимок `nginx -T`), T53 (секреты и
+`archive/`), T54 (`nix flake lock`), T55 (секреты). T52 и T57 закрыты
+2026-10-25; T37 разблокирована T4, но остаётся отдельной runtime-операцией.
 
 **Ограничение этой сессии:** на машине агента **нет `nix`** — сборку и
 `nix eval` выполнить нельзя. Поэтому функциональные правки выполнялись
@@ -73,7 +121,7 @@ Read-only аудит репозитория на техдолг: 233 tracked-ф�
 | Language | Nix |
 | Framework | NixOS modules + home-manager |
 | Database | PostgreSQL (sapphira), sqlite (3x-ui) |
-| Test runner | нет юнит-тестов; `.ci/checks.sh` — 4 проверки (#1 `:latest`, #2 `nix flake check`, #7 sops path_regex, #8 граф импортов). CI починен (T39), но **на удалённом раннере ещё ни разу не выполнялся** |
+| Test runner | нет юнит-тестов; `.ci/checks.sh` — 5 проверок (#1 `:latest`, #2 `nix flake check`, #7 sops path_regex, #8 граф импортов, #9 схемы `.agent`). CI починен (T39), но **на удалённом раннере ещё ни разу не выполнялся** |
 | Package manager | Nix (flakes) |
 | Linter/formatter | none |
 
@@ -102,7 +150,7 @@ secrets/         → sops, один age-ключ
 | `modules/users.nix` | existing | Пользователь + sops + hostKey bootstrap |
 | `modules/essentials/ssh.nix` | existing | openssh + hostKey |
 | `modules/server/{nginx,coredns}.nix` | existing | Reverse proxy + DNS (`zeroq.su`, `home.arpa`) |
-| `modules/server/postgresql.nix` | existing | PostgreSQL + `mkStorageGuard` (`lib/xlib/helpers.nix:180-189`; guard сейчас мёртв, см. T4) |
+| `modules/server/postgresql.nix` | existing | PostgreSQL + `mkStorageGuard` (`lib/xlib/helpers.nix`, фрагмент `unitConfig`; гвард жив с 2026-10-25) |
 | `modules/server/gitea-runner.nix` | existing | Gitea Actions host-runner на sapphira. **См. ADR-0004**: имя юнита экранировано `escapeSystemdPath`; переопределять только по байт-в-байт совпадающему ключу |
 | `modules/server/systemd.nix` | existing | rsync oneshots с `requiresMountsFor` |
 | `modules/containers/3x-ui.nix` | pinned | Панель запинена на `v3.10.2` (`modules/containers/3x-ui.nix:62`). Ядро Xray — состояние панели, различается по хостам (R1.5, R1.8) |
@@ -124,7 +172,7 @@ secrets/         → sops, один age-ключ
 
 ## Services (sapphira, активные)
 
-20+ системных сервисов (число не проверялось поштучно, это нижняя оценка) + **4 контейнера**: `3xui_app` (`modules/containers/3x-ui.nix:53`), `taperotation-backend` и `taperotation-frontend` (`modules/containers/tape-rotation.nix:51,76`), `open-webui` (`modules/containers/open-webui.nix:52`). `modules/containers/remnanode.nix` и `modules/containers/remnawave-examples/` **не импортируются** — вне графа импортов (см. T41). Полный инвентарь в `tasks/manifest.json`. Все потребители `mkStorageGuard` (13 юнитов / 12 сервисов) нуждаются в починке гварда: postgresql, samba, homebox, gitea, navidrome, syncthing, uptime-kuma, immich, nextcloud, calibre-web, 3x-ui (`podman-3xui_app`), tape-rotation (два юнита).
+20+ системных сервисов (число не проверялось поштучно, это нижняя оценка) + **4 контейнера**: `3xui_app` (`modules/containers/3x-ui.nix:53`), `taperotation-backend` и `taperotation-frontend` (`modules/containers/tape-rotation.nix:51,76`), `open-webui` (`modules/containers/open-webui.nix:52`). `modules/containers/remnanode.nix` и `modules/containers/remnawave-examples/` **не импортируются** — вне графа импортов (см. T41). Полный инвентарь в `tasks/manifest.json`. Все потребители `mkStorageGuard` (13 юнитов / 12 сервисов) несут живой guard в `[Unit]`: postgresql, `samba-smbd`, homebox, gitea, navidrome, syncthing, uptime-kuma, `immich-server`, `phpfpm-nextcloud`, calibre-web, `podman-3xui_app`, tape-rotation (два юнита). На vds guard отключён — External там нет.
 
 ## Network
 
@@ -178,36 +226,34 @@ Internet:
 (`ca450f1`, `db3cbd0`, `0297254`); первый прогон на раннере ещё предстоит.
 Не реализованы 4 кандидата (#3 coredns↔nginx, #4 потребители guard'а,
 #5 финальная политика nftables, #6 `listen.addr`).
-Реестр задач по этому — `.agent/tasks/manifest.md` (T39, T40, T52).
+Реестр задач по этому — `.agent/tasks/manifest.md` (T39, T40).
 
 ## Open Concerns
 
-- **B1 / T4 (severity: high):** гвард на несмонтированный `/mnt/services`
-  **не работает ни на одном из 13 юнитов / 12 сервисов**: postgresql, samba,
-  homebox, gitea, navidrome, syncthing, uptime-kuma, immich, nextcloud,
-  calibre-web, 3x-ui (`podman-3xui_app`), tape-rotation (два юнита:
-  `podman-taperotation-backend` и `podman-taperotation-frontend`).
-  `ConditionPathIsMountPoint` — директива `[Unit]`, но `mkStorageGuard`
-  (`lib/xlib/helpers.nix:180-189`) отдаёт её через `serviceConfig` →
-  `[Service]` → systemd игнорирует. Подтверждено построчно в отрендеренных
-  юнитах на sapphira (у `gitea` секция `[Service]` начинается со строки 5,
-  `ConditionPathIsMountPoint` лежит на строке 14; номера строк зависят от
-  состава `[Unit]`, поэтому надёжный признак — само наличие директивы в
-  `[Service]`). Мердж при этом не при чём: `serviceConfig` с
-  правильным ключом мержится штатно, проблема именно в секции.
-  `RequiresMountsFor` в хелпере **нет намеренно** (проверено на sapphira
-  2026-10-10): такая зависимость заставит systemd сам монтировать ФС при
-  старте юнита и обессмыслит гвард; порядок задаётся через `After=` на
-  `.mount`-юнит в самом потребителе.
-  Сервисы стартуют на пустой БД. Гвард с gitea-runner снят осознанно — он
-  охранял пустое множество (у раннера ноль дескрипторов на внешнем диске),
-  но именно поэтому до T4 ничто не разделяет Gitea, стартующий на пустой БД,
-  и CI-раннер, который затем погонит по ней job'ы.
+- **B1 / T4 (закрыта 2026-10-25):** гвард на несмонтированный External
+  **работает на всех 13 юнитах / 12 сервисах**: postgresql, `samba-smbd`,
+  homebox, gitea, navidrome, syncthing, uptime-kuma, `immich-server`,
+  `phpfpm-nextcloud`, calibre-web, `podman-3xui_app`, два юнита tape-rotation.
+  `mkStorageGuard` отдаёт фрагмент `unitConfig` → `[Unit]`, где
+  `ConditionPathIsMountPoint` действительно читается; в `[Service]` — 0
+  вхождений. `RequiresMountsFor` по-прежнему **нет намеренно** (авто-монтаж
+  обессмыслил бы гвард). Побочно удалены три фантомных пустых юнита
+  (`samba.service`, `nextcloud.service`, `immich.service`).
+  На `vds` гвард отключён: у otreca нет `/home/oqyude/External`, живое условие
+  пропустило бы `podman-3xui_app` и погасило панель. Гвард с gitea-runner
+  снят осознанно — он охранял пустое множество (у раннера ноль дескрипторов
+  на внешнем диске), но это значит, что ничто не разделяет Gitea, стартующий
+  на пустой БД, и CI-раннер, который затем погонит по ней job'ы.
 - **gitea-runner: фикс закоммичен** (T18 → completed, `tasks/manifest.json`,
   коммиты `9bf9407`/`b62a980`/`d021804`); ADR-0004 принят. Прежняя запись
   «лежит только в рабочем дереве» была протухшей — снята 2026-10-23.
-- **A3**: nftables на VDS (`configurations/vds.nix:71-91`, chain `input`, `policy`
-  не объявлен) без явной финальной политики — неявный accept.
+- **A3 / T3 (закрыта 2026-10-25):** посылка «нет финальной политики → неявный
+  accept» **неверна**. `inet nixos-fw` (генерируется `firewall.enable = true`)
+  имеет `chain input policy drop` с accept'ами 80/443, 41641/udp, 22 на
+  `tailscale0`, ping, podman DNS. Рукописный `inet filter`
+  (`configurations/vds.nix:71-92`, `policy accept`) — вторая base chain и лишь
+  режет SYN; `policy drop` в неё добавлять нельзя (финальный drop заблокирует
+  VDS). Проверено `sudo nft list ruleset` на otreca.
 - **C1–C5**: 3x-ui заморожен; формальный ADR **есть** — ADR-0003 (`accepted`,
   `decisions/index.json:26-31`). Прежняя запись «без формального ADR» была
   протухшей — снята 2026-10-23.

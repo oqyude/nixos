@@ -67,18 +67,27 @@ flake.nix
 1. **Все `outputs` флейка должны вычисляться.** `configurations/mobile.nix:12` импортировал несуществующий `lib/xlib.nix` — был сломан, `epral` не собирался. → задача T1.
 2. **External-диск обязан быть смонтирован** до старта `postgresql`, `samba`, `homebox`,
    `gitea`, `navidrome`, `syncthing`, `uptime-kuma`, `immich`, `nextcloud`,
-   `calibre-web`, `3x-ui`, `tape-rotation` — **но гвард мёртв.** `mkStorageGuard`
-   отдаёт только `ConditionPathIsMountPoint` (директива `[Unit]`), а все 12 потребителей
-   передают её через `serviceConfig` → рендерится в `[Service]`, где systemd её не читает.
-   `RequiresMountsFor` нет **намеренно**: авто-монтирование systemd обессмыслило бы гвард.
-   Мёртв на **13 юнитах / 12 сервисах**. «`serviceConfig` не мержится» — ложный вывод:
-   мержится, проблема в секции. → задача T4, ADR-0004.
+   `calibre-web`, `3x-ui`, `tape-rotation`. Гвард **жив** с 2026-10-25: `mkStorageGuard`
+   отдаёт фрагмент `unitConfig` (секция `[Unit]`), а не `serviceConfig` (секция `[Service]`,
+   где systemd директиву не читает). **13 юнитов / 12 сервисов**; ключ — реальное имя юнита:
+   `samba-smbd`, `phpfpm-nextcloud`, `immich-server`, `podman-3xui_app`,
+   `podman-taperotation-backend/-frontend` (не атрибутный путь сервиса, иначе рендерится
+   фантом без `ExecStart` — инв. 11/ADR-0004). На `vds` гвард **не применяется**: у otreca нет
+   `/home/oqyude/External`, данные 3x-ui лежат на корневой ФС, и живое условие пропустило бы
+   `podman-3xui_app`, погасив панель. `RequiresMountsFor` нет **намеренно**: авто-монтирование
+   systemd обессмыслило бы гвард. «`serviceConfig` не мержится» — ложный вывод: мержится,
+   проблема была в секции. → T4/T52, ADR-0004.
 3. **Сетевая граница sapphira — роутер.** 5 портов: **443, 80, 22000 (syncthing), 8443 (xray), 22 (ssh)**. `firewall.enable = false` намеренно. nginx.nix (networking.firewall) мёртв (T13). → задача T11.
 4. **`100.64.0.0` = Tailscale-адрес sapphira**, назначен вручную. В `home/termux.nix:256`,
    `modules/server/nextcloud.nix:80`, `modules/server/nginx.nix:109` и `:378`,
    `modules/vds/systemd.nix:10`. → задача T12.
 5. **3x-ui: панель запинена на `v3.10.2`, ядро — состояние панели и различается по хостам** (otreca 26.7.28, sapphira 26.10.10). `:latest` был вектором тихого дрейфа: релиз панели молча притащил ядро 26.10.10 и сломал все REALITY-ссылки. → R1.5, R1.16, задачи T6–T10.
-6. **nftables на VDS требует явной финальной политики.** Текущий ruleset — без финального правила → неявный accept. → задача T3.
+6. **Политику nftables на VDS задаёт `inet nixos-fw`, а не рукописная таблица.** `firewall.enable = true` генерирует
+   `table inet nixos-fw` с `chain input policy drop` и явными accept'ами (80/443, 41641/udp, 22 только на `tailscale0`,
+   ping, podman DNS, temp-ports). Рукописный `table inet filter` (`configurations/vds.nix:71-92`) — **вторая** base chain
+   с `policy accept`: она лишь режет SYN-флуд на 80/443 и ничего не разрешает. **`policy drop` в неё добавлять нельзя:**
+   drop в любой base chain финален и отрежет весь трафик VDS, включая 80/443 и tailscale-SSH. Проверено runtime-дампом
+   `nft list ruleset` на otreca 2026-10-25 → задача T3 закрыта без изменения кода.
 7. **sops-пути — через `config.sops.secrets.<name>.path`.** Любой `path =` override на sops-блоке делает хардкод-потребителя молча сломанным. → ADR-0001.
 8. **Декларация портов ≠ runtime.** `ports` контейнера `3xui_app` применяются только при пересоздании; правка Nix без `nixos-rebuild` не меняет ничего. Проверка: `podman inspect 3xui_app --format '{{json .NetworkSettings.Ports}}'`. → R1.11, ADR-0003.
 9. **`x-ui.db` не откатывать на `x-ui.db.bak.1787862834`.** Бэкап от 2026-08-27 — другая эпоха (порты 14380/14480/14910/14920, 7 клиентов). Откат убьёт рабочие 443/8443 и все 11 конфигов. → R1.12, ADR-0003.
@@ -104,9 +113,9 @@ flake.nix
 | `modules/server/default.nix:9-50` | Комментарий-блок на строках 43-49 выглядит как «список отключённых модулей» | T16 завершена: закомментированных импортов 0. `archive/server-modules/` — 12 файлов (coturn, mealie, memos, minecraft, n8n, netdata, nfs, rsync, step-ca, transmission, trilium, zerotier); `archive/containers/` — `remnawave.nix`, `kokoro-tts.nix`, `openhands.nix`; `stirling-pdf.nix` удалён в `5dd7a58` (поглощён `bentopdf.nix`); `open-webui.nix` переехал в `modules/containers/` и активен |
 | `home/modules/opencode.nix:449` | `systemd.user.services.opencode-web.Service` | Правильный паттерн, не баг. Баг `serviceConfig` был и исправлен в `c73a698`. Ссылка «339/407» из более ранней редакции протухла дважды; актуальна строка 449. R2 удерживает от возврата |
 | `home/modules/opencode.nix` | Конфиг opencode написан вручную (`xdg.configFile`), мимо `programs.opencode.settings` | HM-модуль `programs.opencode` — v1-only: ключ `plugin` (ед.ч.), `mcp` плоской картой, `tui.json` вместо `cli.json`, а `validateFiles.tui` требует `passthru.jsonschema.tui`, которого в v2-пакете нет. Писать руками — не «костыль», а требование v2 → R1.19 |
-| `~/.omo/omo.jsonc` на sapphira | Лежит рядом с активным конфигом slim-плагина, выглядит как «дубль» | Это legacy-конфиг `oh-my-openagent` (v2-несовместим). Активен `~/.config/opencode/oh-my-opencode-slim.json`. Файл оставлен валидным (реальные model id из реестра — проверено на хосте 2026-10-21) на случай возврата на openagent → R1.19 |
+| `~/.omo/omo.jsonc` на sapphira | После удаления legacy-конфига из Nix на диске остаётся старый симлинк (dangling) | Legacy-конфиг `oh-my-openagent` (v2-несовместим) удалён из `home/modules/opencode.nix` 2026-10-25. Активен только `~/.config/opencode/oh-my-opencode-slim.json`. Остатки (`~/.omo/omo.jsonc`, `~/.config/opencode/oh-my-openagent.json`) снести вручную: `rm -f` → R1.19, ADR-0006 |
 | `herdr integration install opencode` | Падает: `cannot update ~/.config/opencode/cli.json: config has multiple hard links` | `cli.json` — read-only симлинк в /nix/store, а herdr намеренно не пишет в файлы с несколькими хардлинками. Интеграция **не ставится сознательно**: на sapphira не установлена ни одна agent-интеграция herdr → R1.19 |
-| `configurations/vds.nix:71-92` | nftables без финального правила | Известный пробел, см. задачу T3 |
+| `configurations/vds.nix:71-92` | `table inet filter` без финального правила/policy | Намеренно: политику задаёт `inet nixos-fw` (`policy drop`). `policy drop` в эту таблицу добавит второй финальный drop и заблокирует VDS целиком — см. инв. 6 |
 | `100.64.0.0` | Первый адрес CGNAT `/10` | Tailscale-адрес sapphira, см. инв. 4 |
 | `configurations/server.nix:61-63` | `z /mnt/services 0777` | World-writable точка монтирования; см. задачу T4 |
 
@@ -165,8 +174,9 @@ INIT → ANALYSE → ROADMAP → [DESIGN] → DECOMPOSITION → EXECUTION → ME
 
 Текущее состояние: см. `.agent/checkpoints.json` (`phases.init = completed`,
 `phases.analyse = completed`, `phases.roadmap = completed`,
-`phases.decomposition = completed`, `phases.execution = in_progress`,
-`phases.metastate = completed`, `phases.handoff = pending`). `execution` остаётся
-`in_progress`, пока открыты high-severity задачи (T4 — мёртвый mount-guard, T20 —
-`.ci/checks.sh` без execute-бита). Список задач — только в
-`.agent/tasks/manifest.json`; `checkpoints.json` — состояние сессии, не задач.
+`phases.decomposition = completed`, `phases.execution = completed`,
+`phases.metastate = completed`, `phases.handoff = in_progress`). High-severity
+задач больше нет: T4 (mount-guard) и T20 (CI execute-bit) закрыты 2026-10-25.
+Открытые задачи — non-high (T10, T28–T31, T37) и заблокированные T47, T49–T56.
+Список задач — только в `.agent/tasks/manifest.json`; `checkpoints.json` —
+состояние сессии, не задач.

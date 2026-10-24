@@ -16,13 +16,19 @@
 #   #1  no `:latest` in container images (whitelist: tape-rotation only;
 #       3x-ui is pinned to v3.10.2 since 2026-10-20, R1.5)
 #   #8  every import reference resolves (no dangling imports) — added 2026-10-24
+#   #9  .agent JSON artefacts validate against their schemas — added 2026-10-25
 #
 # Not yet implemented (candidates from analysis-report.md §5):
 #   #3  coredns domains ↔ nginx vhosts bidirectional match
 #   #4  mkStorageGuard consumers have an existing External dir
-#       (lib/xlib/helpers.nix:180 — note the helper is mkStorageGuard, not
-#       mkServiceStorage; the two names referred to the same idea historically)
-#   #5  last nftables chain rule is explicit (drop/reject/policy)
+#       (lib/xlib/helpers.nix — note the helper is mkStorageGuard, not
+#       mkServiceStorage; the two names referred to the same idea historically.
+#       The helper now returns a `unitConfig` fragment, and vds hosts are
+#       excluded: otreca has no External, its 3x-ui data lives on the root fs)
+#   #5  nftables policy (T3 CLOSED 2026-10-25: no check needed — the generated
+#       `inet nixos-fw` chain already has `policy drop`; the hand-written
+#       `inet filter` chain is policy accept on purpose and must NOT get a drop,
+#       because a drop in any base chain is final and would blackhole the VDS)
 #   #6  listen.addr is interface, not network (e.g. 0.0.0.0 is OK, 192.168.0.0/24 is not)
 
 set -euo pipefail
@@ -165,11 +171,25 @@ check_import_graph() {
   fi
 }
 
+check_metadata_schemas() {
+  echo "Check #9: .agent JSON artefacts validate against their schemas ..."
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "  SKIP: python3 not in PATH"
+    return 0
+  fi
+  if python3 .ci/tests/validate-metadata.py . ; then
+    report 0 "metadata schemas"
+  else
+    report 1 "metadata schemas"
+  fi
+}
+
 echo "=== nixos flake checks ==="
 check_nix_flake_check
 check_sops_path_regex
 check_no_latest_images
 check_import_graph
+check_metadata_schemas
 echo "==="
 echo "PASS: $PASS    FAIL: $FAIL"
 if [ "$FAIL" -gt 0 ]; then

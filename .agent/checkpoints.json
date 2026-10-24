@@ -1,6 +1,6 @@
 {
   "metaagent_version": "3.0.0",
-  "session_id": "metaagent-cleanup-2026-10-15T17:42Z (metastate reconcile B+C+A: AGENTS.md dup R1.14, handoff T18/T32 stale, checkpoints↔manifest drift, manifest backlog_count)",
+  "session_id": "metaagent-cleanup-2026-10-15T17:42Z (metastate reconcile B+C+A: AGENTS.md dup R1.14, handoff T18/T32 stale, checkpoints↔manifest drift, manifest backlog_count) → cleanup-2026-10-25 (T3/T4/T20/T38/T57: runtime-проверка nftables, синхронизация метаданных, ротация herdr-токена)",
   "target_repo": "S:/Git/nixos",
   "goal": "Установить metaagent, перенести накопленные данные (AGENTS.md, docs/arch/*) в структуру .agent/.",
   "project_type": "existing",
@@ -10,9 +10,9 @@
     "roadmap": "completed",
     "design": "skipped",
     "decomposition": "completed",
-    "execution": "in_progress",
+    "execution": "completed",
     "metastate": "completed",
-    "handoff": "pending"
+    "handoff": "in_progress"
   },
   "source_of_truth": {
     "tasks": ".agent/tasks/manifest.json",
@@ -21,18 +21,18 @@
   },
   "uncommitted_work": {
     "state": "ALL_COMMITTED",
-    "last_uncommitted": "мета-стейт обновление этой сессии (AGENTS.md + handoff-summary.md + checkpoints.json + manifest.json) — коммитится в этом проходе одной фиксацией",
+    "last_uncommitted": "сессия cleanup-2026-10-25 закоммичена: 69691f9 (T4 guard), 066b3ac (консолидация + nginx lamet 4096), d0c69f2 (метаданные/CI)",
     "branch": "dev",
     "remote": "gitea",
-    "last_verified_clean": "2026-10-15T17:42Z",
+    "last_verified_clean": "2026-10-25T02:20+03:00",
     "warning": null
   },
   "host_state": {
     "host": "sapphira",
-    "system_generation": "/nix/store/3qki65iy73gg6pnnx18fa5c3dgkbjy0f-nixos-system-sapphira-default (vanilla, force-reset 3d4f1f5, активировано 2026-10-15T20:20)",
-    "opencode_config": "vanilla — opencode-loop удалён коммитом 3babee5; кеш @bybrawe/opencode-loop@latest в ~/.cache/opencode/packages/ тоже удалён 2026-10-15T20:08 (dead per config). opencode-sessions НЕ установлен (npm-плагин на @opencode-ai/sdk@^0.15.18, несовместим с opencode 1.19).",
+    "system_generation": "/nix/store/l7yq5lk452z1id6p09rjvz2lyirmqnrw-nixos-system-sapphira-default (generation 858, до фикса T4)",
+    "opencode_config": "opencode v2.0.32 (PID 592261, opencode-web.service, 0.0.0.0:4096) — без изменений",
     "opencode_web_service": "PID 1152, runs on 0.0.0.0:4096 (--cors https://opencode.zeroq.su), uptime ~21h, ~680 МБ RSS — без изменений",
-    "herdr_service": "PID 27752, InvocationID d55aa7d2918249ee80f17c9976771b2c — vanilla, без шима и без симлинка ~/.local/bin/opencode (тот тоже удалён)"
+    "herdr_service": "herdr 0.9.3, PID 110779, session herdr-prod; web-ui plugin на 127.0.0.1:7317, токен ротирован 2026-10-25 (старый → 401)"
   },
   "closed_attempts": [
     {
@@ -41,7 +41,13 @@
       "status": "closed",
       "closed_at": "2026-10-15T20:25Z",
       "rationale": "Попытка (3e85307 + 16a44b9) и два revert-коммита (158f08d + 574ec27) — все стёрты из dev через `git reset --hard 3d4f1f5 && git push --force-with-lease gitea dev` 2026-10-15T20:25Z. Сохранено в ~/.cache/t34-attempt-backup/ (9 файлов, 178 КБ) + metaagent-director/t34-herdr-attach-attempt.patch. Шим работал технически, но не давал экономии RAM (300 МБ на воркспейс × N ≈ столько же, сколько web-вкладки). Не повторять без новой мотивации и/или director-модели.",
-      "files_touched_before_revert": ["home/modules/herdr.nix", ".agent/decisions/0006-herdr-shared-opencode-serve.md", ".agent/rules/project-rules.md", "AGENTS.md", ".agent/tasks/manifest.json"]
+      "files_touched_before_revert": [
+        "home/modules/herdr.nix",
+        ".agent/decisions/0006-herdr-shared-opencode-serve.md",
+        ".agent/rules/project-rules.md",
+        "AGENTS.md",
+        ".agent/tasks/manifest.json"
+      ]
     }
   ],
   "resolved_doc_drift": [
@@ -72,6 +78,34 @@
       "resolution": "Закрыто 2026-10-15T17:42Z: phases в checkpoints.json синхронизированы с manifest.json (execution=in_progress, metastate=completed, handoff=pending). AGENTS.md:159-163 обновлён до того же набора + добавлен комментарий, что source of truth по задачам — manifest.json, а phases производны от состояния задач.",
       "source_of_truth": "manifest.json (фазы должны быть производными от состояния задач, а не независимыми полями; checkpoints.json зеркалит manifest.json по phases)",
       "resolved_at": "2026-10-15T17:42Z"
+    },
+    {
+      "id": "drift-t20-pending-after-fix",
+      "was": "T20 в manifest.json и AGENTS.md числилась pending/high, хотя .ci/checks.sh уже 100755 (ca450f1), pre-commit зовёт bash (db3cbd0), workflow в .gitea/workflows/ (0297254).",
+      "resolution": "T20 → completed; ссылка на T20 убрана из условия завершения execution в AGENTS.md.",
+      "source_of_truth": ".agent/tasks/manifest.json",
+      "resolved_at": "2026-10-25T00:10+03:00"
+    },
+    {
+      "id": "drift-t3-wrong-premise",
+      "was": "T3 утверждала, что nftables на VDS не имеет финальной политики → неявный accept. Runtime-дамп `nft list ruleset` на otreca показал `inet nixos-fw` с `policy drop` и явными accept'ами; собственный `inet filter` — вторая base chain, которая только режет SYN.",
+      "resolution": "T3 закрыта без изменения кода: добавление `policy drop` в `inet filter` заблокировало бы весь трафик VDS, включая 80/443 и tailscale-SSH. Исправлена документация.",
+      "source_of_truth": "runtime: otreca `nft list ruleset` 2026-10-25",
+      "resolved_at": "2026-10-25T00:10+03:00"
+    },
+    {
+      "id": "drift-t38-plus-not-in-json",
+      "was": "Серия T38–T57 существовала только в .agent/tasks/manifest.md; manifest.json заканчивался на T37, счётчики backlog не учитывали серию.",
+      "resolution": "20 задач внесены в manifest.json (T57); схемы task-manifest/checkpoints расширены под фактический формат; backlog_count пересчитан.",
+      "source_of_truth": ".agent/tasks/manifest.json",
+      "resolved_at": "2026-10-25T00:10+03:00"
+    },
+    {
+      "id": "drift-token-in-manifest",
+      "was": "Живой herdr_web_token лежал открытым текстом в .agent/tasks/manifest.json:412 (и ранее в handoff-summary).",
+      "resolution": "Литерал удалён, токен ротирован на 0600-файл плагина; старый токен отвечает 401. Git-история содержит старый (недействительный) токен.",
+      "source_of_truth": "~/.config/herdr/plugins/config/devswha.herdr-web-ui/env",
+      "resolved_at": "2026-10-25T00:10+03:00"
     }
   ],
   "protocol_deviations": {
@@ -120,9 +154,13 @@
     "Ложный вывод: «Restart=no объясняет 12-дневный простой». Нет: пропуск юнита по ConditionPathIsMountPoint — это «не запущен», а не «сбой», Restart бы и не сработал.",
     "Ложный вывод в проходе metaagent-director-2026-10-15T14:30: «добавлю bun в shell PATH — plugin перестанет скачивать свой runtime». На самом деле herdr-web-ui plugin использует СВОЙ runtime manager (path-pattern ~/.local/share/herdr-web-ui/install.<hash>/runtime/bin/bun), а не fallback на PATH. Системный bun в PATH нужен для preflight.sh, но НЕ чинит запуск скачанного плагином bun'а. Правильный фикс — programs.nix-ld.enable = true (стенд для glibc-based динамически линкованных бинарей).",
     "Ложный вывод в проходе metaagent-director-2026-10-15T14:30: «herdr plugin update devswha/herdr-web-ui — это команда для обновления плагина». На самом деле `herdr plugin --help` показывает только enable/disable/action/log/pane/list/install — команды update нет. Реальный путь — `git pull origin main` в plugin dir + bun install + bun run build + ручная правка ~/.config/herdr/plugins.json:source.resolved_commit (herdr plugin list читает из этого JSON, а не из .git/HEAD плагина).",
-    "Ложный вывод сессии metaagent-cleanup-2026-10-15T17:42Z: «checkpoints.json:tasks имеет 21 запись (T1–T20 + T35), отстаёт от manifest.json всего на 12». На самом деле checkpoints.json:tasks[] — schema violation (additionalProperties: false, статус closed не входит в enum), и само поле tasks[] в checkpoints.json не несёт функции, которую manifest.json не покрывает. Удаление tasks[] из checkpoints.json — правильное решение, а не синхронизация."
+    "Ложный вывод сессии metaagent-cleanup-2026-10-15T17:42Z: «checkpoints.json:tasks имеет 21 запись (T1–T20 + T35), отстаёт от manifest.json всего на 12». На самом деле checkpoints.json:tasks[] — schema violation (additionalProperties: false, статус closed не входит в enum), и само поле tasks[] в checkpoints.json не несёт функции, которую manifest.json не покрывает. Удаление tasks[] из checkpoints.json — правильное решение, а не синхронизация.",
+    "2026-10-25T00:10+03:00: T38: ротация herdr_web_token (старый → 401, новый → 200 на /api/bridge); секрет вычищен из manifest.json.",
+    "2026-10-25T00:10+03:00: T3: посылка опровергнута runtime-дампом nftables на otreca; изменений кода нет.",
+    "2026-10-25T00:10+03:00: T20/T57: manifest.json синхронизирован (T20 completed, T38–T57 внесены), схемы расширены.",
+    "2026-10-25: консолидированы раздробленные attr-path записи в 10 файлах (3xui-reconfig, authelia, gitea-runner settings, grub, logind, pxe-infra.bridge, pipewire.alsa, nix.*, nix.settings, build.activation); найден тройной дубль allowedUDPPorts → T58."
   ],
-  "last_updated": "2026-10-15T17:42Z",
+  "last_updated": "2026-10-25T02:20:00+03:00",
   "session_chain": {
     "previous": "metaagent-attempt-2026-10-15T20:25Z (herdr-attach-shim attempt + force-reset на 3d4f1f5, closed; T35 записан в closed_attempts[])",
     "current": "metaagent-cleanup-2026-10-15T17:42Z (metastate reconcile B+C+A: AGENTS.md dup R1.14, handoff T18/T32 stale, checkpoints↔manifest drift, manifest backlog_count)",

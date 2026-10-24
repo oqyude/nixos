@@ -14,30 +14,35 @@
 2. **Носитель данных (`/home/oqyude/External`) обязан быть смонтирован** до
    старта `postgresql`, `samba`, `homebox`, `gitea`, `navidrome`, `syncthing`,
    `uptime-kuma`, `immich`, `nextcloud`, `calibre-web`, `3x-ui`, `tape-rotation`
-   — **но гвард, который это должен обеспечивать, МЁРТВ.**
-   `mkStorageGuard` (`lib/xlib/helpers.nix:180-189`) возвращает ровно одно
-   поле, `ConditionPathIsMountPoint = [ xlib.dirs.server-home ]`, а это
-   директива секции **`[Unit]`**. Все 12 потребителей передают её через
-   `serviceConfig`, поэтому она рендерится в `[Service]`, где systemd её
-   **не читает**. Проверено на sapphira 2026-10-15 построчным чтением
-   отрендеренных юнитов: у `gitea` секция `[Service]` начинается со строки 5,
-   а `ConditionPathIsMountPoint` лежит на строке 14. Надёжный признак — само
-   наличие директивы в `[Service]`, а не номера строк: они зависят от состава
-   `[Unit]` и меняются при каждом перерендеривании.
+   — и гвард, который это обеспечивает, **жив** с 2026-10-25.
+   `mkStorageGuard` (`lib/xlib/helpers.nix`) возвращает фрагмент
+   `unitConfig`, то есть `ConditionPathIsMountPoint = [ xlib.dirs.server-home ]`
+   попадает в секцию **`[Unit]`**, где systemd её действительно читает.
+   Историческая ошибка (2026-10-15): все 12 потребителей передавали условие
+   через `serviceConfig` → оно рендерилось в `[Service]` и было мёртвым.
+   Проверять гвард следует по наличию директивы в `[Unit]` собранного юнита,
+   а не по номерам строк: они зависят от состава секции.
+   Ключ — **реальное имя юнита**, а не атрибутный путь сервиса:
+   `samba-smbd`, `phpfpm-nextcloud`, `immich-server`, `podman-3xui_app`,
+   `podman-taperotation-backend`, `podman-taperotation-frontend` (иначе
+   рендерится фантом без `ExecStart` — ADR-0004).
+   На **vds гвард не применяется**: у otreca нет `/home/oqyude/External`, его
+   3x-ui данные лежат на корневой ФС, а живое условие пропустило бы
+   `podman-3xui_app` и погасило панель `pubray1.zeroq.su` (проверено 2026-10-25).
    `RequiresMountsFor` в хелпере **нет намеренно**, это не упущение: он
    создаёт зависимость, по которой systemd сам монтирует ФС при старте
    юнита, и это обессмысливает гвард (проверено на sapphira 2026-10-10,
    комментарий `helpers.nix:181-187`). Порядок должен выражаться через
    `After=` на `.mount`-юнит в самом потребителе.
-   Гвард мёртв на **13 юнитах / 12 сервисах**: `postgresql`, `samba`,
-   `homebox`, `gitea`, `navidrome`, `syncthing`, `uptime-kuma`, `immich`,
-   `nextcloud`, `calibre-web`, `3x-ui` (`podman-3xui_app`), `tape-rotation`
-   (два юнита: `podman-taperotation-backend` и `podman-taperotation-frontend`).
+   Гвард стоит на **13 юнитах / 12 сервисах**: `postgresql`, `samba-smbd`,
+   `homebox`, `gitea`, `navidrome`, `syncthing`, `uptime-kuma`,
+   `immich-server`, `phpfpm-nextcloud`, `calibre-web`, `podman-3xui_app`,
+   `podman-taperotation-backend`, `podman-taperotation-frontend`.
    Из `gitea-runner` гвард **убран осознанно**: он охранял пустое множество,
    у живого раннера ноль дескрипторов на внешнем диске
-   (`modules/server/gitea-runner.nix:143-157`). Цена решения: ничто не
-   разделяет старт Gitea на пустой БД и CI-раннер, который затем погонит
-   джобы по этой БД. Закрывается только через T4. → задача T4, ADR-0004.
+   (`modules/server/gitea-runner.nix`). Цена решения: ничто не разделяет
+   старт Gitea на пустой БД и CI-раннер, который затем погонит джобы по этой
+   БД. → T4/T52 закрыты 2026-10-25, ADR-0004.
    **Отдельно:** более ранний вывод «`serviceConfig` не мержится с upstream»
    — **ложный**, с правильным ключом он мержится штатно. Проблема в секции,
    а не в мерже. Не ссылаться на «`serviceConfig` мержить нельзя».

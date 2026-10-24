@@ -96,6 +96,18 @@ sapphira это подтверждено построчно в отрендер�
 лежит на строке 14. Гвард мёртв на **13 systemd-юнитах / 12 сервисах**.
 Это и есть задача **T4** (оставлена `pending`).
 
+**Закрыто 2026-10-25 (T4/T52).** `mkStorageGuard` теперь возвращает фрагмент
+`unitConfig`; все 13 юнитов проверены в собранном дереве — условие лежит
+строкой 3 под `[Unit]`, ни одного `ConditionPathIsMountPoint` в `[Service]`
+не осталось. Побочно выяснилось, что три прежних ключа были фантомами:
+`services.samba.serviceConfig`, `services.nextcloud.serviceConfig`,
+`services.immich.serviceConfig` создавали пустые `samba.service`,
+`nextcloud.service`, `immich.service` без `ExecStart` — именно тот failure
+mode, ради которого написан этот ADR. Новые ключи: `services."samba-smbd"`,
+`services."phpfpm-nextcloud"`, `services."immich-server"`. На vds гвард
+отключён: у otreca нет `/home/oqyude/External`, живое условие погасило бы
+`podman-3xui_app` и панель `pubray1.zeroq.su`.
+
 Номера строк и масштаб перепроверены 2026-10-15T03:00 на текущем
 `/etc/systemd/system/gitea.service`: `[Unit]` = 1, `[Service]` = 5,
 `ConditionPathIsMountPoint` = 14, `[Install]` = 61. Прежние «6 и 15» и «10

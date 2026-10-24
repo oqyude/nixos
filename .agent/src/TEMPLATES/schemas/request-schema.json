@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "metaagent/request/1.0",
+  "title": "MetaAgent Handoff Request",
+  "type": "object",
+  "properties": {
+    "template_version": {
+      "type": "string"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ready_for_review",
+        "approved",
+        "changes_requested",
+        "rejected"
+      ]
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "goal": {
+      "type": "string"
+    },
+    "changes": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "type": "string"
+        },
+        "commits": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "files_changed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "summary"
+      ],
+      "additionalProperties": false
+    },
+    "verification": {
+      "type": "object",
+      "properties": {
+        "tests_passed": {
+          "type": [
+            "string",
+            "boolean"
+          ]
+        },
+        "lsp_clean": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "fulfills_ac": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "template_version",
+    "request_id",
+    "task_id",
+    "title",
+    "status"
+  ],
+  "additionalProperties": false
+}
