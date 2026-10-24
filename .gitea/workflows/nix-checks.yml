@@ -5,6 +5,12 @@ name: nixos flake checks
 # .gitea/workflows/ in preference to .github/workflows/. The copy that used
 # to sit under .github/workflows/ therefore never ran a single step.
 # See .agent/tasks/manifest.md T39.
+#
+# The only runner is gitea-runner-ci-sapphira, a *host-mode* executor on the
+# machine this repo configures. It advertises exactly one label: `native`
+# (`labels = [ "native:host" ]` in modules/server/gitea-runner.nix).
+# Therefore `runs-on: ubuntu-latest` can never be scheduled — the job stays
+# unassigned forever. Do not change this label unless the runner does.
 
 on:
   push:
@@ -13,36 +19,41 @@ on:
     branches: [main, dev, master]
   workflow_dispatch:
 
-# The only runner is the host itself: gitea-runner-ci-sapphira on a 2-core /
-# 5.6 GiB machine that also runs ~20 production services. Evaluating all seven
-# configurations costs 40+ minutes and pushes the host into swap, so queueing
-# superseded runs is actively harmful — cancel them.
+# The runner is the host itself (2 cores / 5.6 GiB, ~20 production services).
+# Evaluating all seven configurations cost 40+ minutes and pushed the host
+# into swap, so superseded runs are cancelled instead of queued.
 concurrency:
   group: nix-checks-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   invariant-checks:
-    runs-on: ubuntu-latest
-    # sapphira evaluation is a few minutes on an idle host. This is a
-    # hung-evaluation guard, not a budget; the job used to allow 45.
-    timeout-minutes: 20
+    runs-on: native
+    # sapphira evaluation is a few minutes on an idle host. Hung-evaluation
+    # guard, not a budget (this used to allow 45).
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v27
-        with:
-          nix_path: nixpkgs=channel:nixos-unstable
-      - name: install sops
-        run: nix profile install nixpkgs#sops
+      # nix, git, sops and python3 are already provided by the host profile;
+      # installing nix again inside the runner is wasted network + time.
+      - name: toolchain probe
+        run: |
+          nix --version
+          python3 --version
+          git --version
       - name: run invariant checks (no full flake check)
         # `--no-build` skips check #2 (`nix flake check`), which evaluates
         # every host output. The runner *is* sapphira, so that sweep is both
         # slow and self-harming here. It can still be run deliberately on a
         # beefier machine, or locally with `bash .ci/checks.sh`.
         run: bash .ci/checks.sh --no-build
-      # Only sapphira is evaluated on CI: it is the host this runner lives on,
-      # so a broken sapphira is an immediate CI-runner outage. Changes that
-      # touch another host must be verified explicitly for that host:
+      # Only sapphira is evaluated on CI: it is the host the runner lives on,
+      # so a broken sapphira is an immediate CI-runner outage. Evaluation only
+      # (`drvPath`), not a build - the runner user is not a Nix trusted user
+      # and `nix build --dry-run` would still want store write access.
+      # Changes touching another host must be verified explicitly:
       #   nix build --no-link --dry-run .#nixosConfigurations.<host>.config.system.build.toplevel
       - name: evaluate the sapphira configuration
-        run: nix build --no-link --dry-run .#nixosConfigurations.sapphira.config.system.build.toplevel
+        run: |
+          nix --extra-experimental-features "nix-command flakes" eval --raw \
+            '.#nixosConfigurations.sapphira.config.system.build.toplevel.drvPath'
