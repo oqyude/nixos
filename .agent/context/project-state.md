@@ -121,7 +121,7 @@ Read-only аудит репозитория на техдолг: 233 tracked-ф�
 | Language | Nix |
 | Framework | NixOS modules + home-manager |
 | Database | PostgreSQL (sapphira), sqlite (3x-ui) |
-| Test runner | нет юнит-тестов; `.ci/checks.sh` — 5 проверок (#1 `:latest`, #2 `nix flake check`, #7 sops path_regex, #8 граф импортов, #9 схемы `.agent`). CI (Gitea Actions) исполняется **на самой sapphira** (2 ядра / 5.6 GiB) и с 2026-10-25 вызывает `bash .ci/checks.sh --no-build` (check #2 пропущен) + вычисляет `drvPath` **только** для `sapphira`; полный обход 7 хостов уходил в swap на 40+ минут. Другие хосты — вручную: `nix build --no-link --dry-run .#nixosConfigurations.<host>.config.system.build.toplevel` |
+| Test runner | нет юнит-тестов; `.ci/checks.sh` — 5 проверок (#1 `:latest`, #2 `nix flake check`, #7 sops path_regex, #8 граф импортов, #9 схемы `.agent`). CI (Gitea Actions) исполняется **на самой sapphira** (2 ядра / 5.6 GiB) и с 2026-10-25 вызывает `bash .ci/checks.sh --no-build` (check #2 пропущен) + вычисляет `drvPath` **только** для `sapphira`; полный обход 7 хостов уходил в swap на 40+ минут. Другие хосты — вручную: `nix build --no-link --dry-run .#nixosConfigurations.<host>.config.system.build.toplevel`. Первый реальный прогон: run 144 (3c1269b) — **success**, ~97 с |
 | Package manager | Nix (flakes) |
 | Linter/formatter | none |
 
