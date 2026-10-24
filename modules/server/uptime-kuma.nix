@@ -23,7 +23,9 @@ in
     tmpfiles.rules = [
       (xlib.helpers.mkTmpfile "z" sourceDir "0755" "nobody" "nogroup")
     ];
-    services.uptime-kuma.serviceConfig = xlib.helpers.mkStorageGuard xlib;
+    # `unitConfig` → `[Unit]`: `ConditionPathIsMountPoint` is a unit-level
+    # directive and is ignored by systemd in `[Service]` (T4/R1.2).
+    services."uptime-kuma".unitConfig = xlib.helpers.mkStorageGuard xlib;
   };
 
   fileSystems = xlib.helpers.mkBindMount {

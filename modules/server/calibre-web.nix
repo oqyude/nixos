@@ -64,7 +64,9 @@ in
           "Z"
         ];
       };
-    services.calibre-web.serviceConfig = xlib.helpers.mkStorageGuard xlib;
+    # `unitConfig` → `[Unit]`: `ConditionPathIsMountPoint` is a unit-level
+    # directive and is ignored by systemd in `[Service]` (T4/R1.2).
+    services."calibre-web".unitConfig = xlib.helpers.mkStorageGuard xlib;
   };
 
   fileSystems = xlib.helpers.mkBindMount {

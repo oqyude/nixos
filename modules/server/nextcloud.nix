@@ -211,7 +211,14 @@ in
     tmpfiles.rules = [
       (xlib.helpers.mkTmpfile "z" config.services.nextcloud.home "0750" "nextcloud" "nextcloud")
     ];
-    services.nextcloud.serviceConfig = xlib.helpers.mkStorageGuard xlib;
+    # nixpkgs serves nextcloud through the PHP-FPM unit `phpfpm-nextcloud`;
+    # there is NO unit called `nextcloud`. `systemd.services.nextcloud` would
+    # render a phantom unit with no ExecStart → systemd refuses to start it
+    # (ADR-0004).
+    #
+    # `unitConfig` → `[Unit]`: `ConditionPathIsMountPoint` is a unit-level
+    # directive and is ignored by systemd in `[Service]` (T4/R1.2).
+    services."phpfpm-nextcloud".unitConfig = xlib.helpers.mkStorageGuard xlib;
   };
 
   environment.systemPackages = [

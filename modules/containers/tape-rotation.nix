@@ -102,7 +102,11 @@ in
   systemd = {
     services = {
       "podman-taperotation-backend" = {
-        serviceConfig = xlib.helpers.mkStorageGuard xlib // {
+        # Guard goes to `unitConfig` → `[Unit]`: `ConditionPathIsMountPoint`
+        # is a unit-level directive and is ignored by systemd in `[Service]`
+        # (T4/R1.2).
+        unitConfig = xlib.helpers.mkStorageGuard xlib;
+        serviceConfig = {
           Restart = lib.mkOverride 90 "always";
         };
         after = [ "podman-network-taperotation_default.service" ];
@@ -111,7 +115,11 @@ in
         wantedBy = [ "podman-compose-tape-rotation-root.target" ];
       };
       "podman-taperotation-frontend" = {
-        serviceConfig = xlib.helpers.mkStorageGuard xlib // {
+        # Guard goes to `unitConfig` → `[Unit]`: `ConditionPathIsMountPoint`
+        # is a unit-level directive and is ignored by systemd in `[Service]`
+        # (T4/R1.2).
+        unitConfig = xlib.helpers.mkStorageGuard xlib;
+        serviceConfig = {
           Restart = lib.mkOverride 90 "always";
         };
         after = [

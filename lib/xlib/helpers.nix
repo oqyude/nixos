@@ -159,12 +159,12 @@ in
     mkSymlinks
     ;
 
-  # Storage guard. Returns a systemd serviceConfig fragment that prevents
-  # a service from starting when the external storage filesystem
-  # (`xlib.dirs.server-home` = `/home/$user/External`) is not actually
-  # mounted. Without this guard, services whose `stateDir` / `dataDir` /
-  # bind mount source is a subdir of `/mnt/services` would happily start
-  # on an empty bind mount and create a fresh empty database — silent
+  # Storage guard. Returns a systemd **unitConfig** fragment (the `[Unit]`
+  # section) that prevents a service from starting when the external storage
+  # filesystem (`xlib.dirs.server-home` = `/home/$user/External`) is not
+  # actually mounted. Without this guard, services whose `stateDir` /
+  # `dataDir` / bind mount source is a subdir of `/mnt/services` would happily
+  # start on an empty bind mount and create a fresh empty database — silent
   # data loss. See T4 (B1) in `.agent/tasks/manifest.json` and R1.2 in
   # `.agent/rules/project-rules.md`.
   #
@@ -173,18 +173,42 @@ in
   # paths always reports "yes" (st_dev matches) — useless. We anchor on
   # `server-home` (the real mount) instead.
   #
+  # (a) Why `unitConfig` and NOT `serviceConfig`: `ConditionPathIsMountPoint`
+  #     is a `[Unit]` directive. Injected through `serviceConfig` it is
+  #     rendered into `[Service]`, where systemd does not read it — the guard
+  #     is silently dead (T4: 13 units / 12 services on sapphira).
+  #     `unitConfig` is the only injection point that lands in `[Unit]`.
+  #
+  # (b) Why `RequiresMountsFor` is deliberately absent: it would make systemd
+  #     auto-mount the filesystem when the unit is started, which defeats the
+  #     guard — the unit would start because systemd mounted the disk, not
+  #     because the disk was already there (tested and confirmed: v8 test on
+  #     sapphira, 2026-10-10). Ordering belongs into `After=` on the .mount
+  #     unit in the consumer's `systemd.services` block, not into a
+  #     guard-creating dependency here.
+  #
+  # (c) Why the `vds` device type is excluded: a VDS has no External disk at
+  #     all. On otreca `/home/oqyude/External` does not even exist
+  #     (`ls` → "No such file or directory", `findmnt` → not a mount point;
+  #     verified 2026-10-25) and every service keeps its data on the root
+  #     filesystem (`/mnt/services` is a plain directory there, not a bind
+  #     mount of the External disk as on sapphira). A *live* condition on such
+  #     a host is not just useless, it is destructive: systemd would skip the
+  #     unit, and the 3x-ui panel (`podman-3xui_app`, the only guarded unit
+  #     reachable from `modules/vds`) would never start — killing the panel
+  #     at `pubray1.zeroq.su`. Hence: guard only where the disk exists.
+  #
   # Usage in a service module:
-  #   systemd.services.<name>.serviceConfig = xlib.helpers.mkStorageGuard xlib;
-  # or merge with an existing serviceConfig:
-  #   serviceConfig = xlib.helpers.mkStorageGuard xlib // { ...other fields... };
-  mkStorageGuard = xlib: {
-    # Guard via ConditionPathIsMountPoint ONLY. We intentionally do
-    # NOT add RequiresMountsFor: that creates a dependency that causes
-    # systemd to auto-remount the filesystem when starting the unit,
-    # which defeats the guard (tested and confirmed: v8 test on
-    # sapphira, 2026-10-10). Ordering should be expressed via After=
-    # on the .mount unit in the consumer's systemd.services block,
-    # not via a guard-creating dependency here.
-    ConditionPathIsMountPoint = [ xlib.dirs.server-home ];
-  };
+  #   systemd.services.<name>.unitConfig = xlib.helpers.mkStorageGuard xlib;
+  # On a `vds` host this evaluates to `{}` — an empty `unitConfig`, which is
+  # a valid value (`unitConfig` is `attrsOf`) and simply adds no condition.
+  # The unit name must be the REAL unit of the service (e.g. `samba-smbd`,
+  # `phpfpm-nextcloud`, `immich-server`) — see ADR-0004: a wrong key renders a
+  # phantom unit with no ExecStart, and systemd refuses to start it.
+  mkStorageGuard = xlib:
+    lib.optionalAttrs (xlib.device.type != "vds") {
+      # Guard via ConditionPathIsMountPoint ONLY — see (b) above for why
+      # RequiresMountsFor must NOT be added.
+      ConditionPathIsMountPoint = [ xlib.dirs.server-home ];
+    };
 }

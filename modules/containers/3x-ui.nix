@@ -84,7 +84,11 @@ in
     systemd = {
       services = {
         "podman-3xui_app" = {
-          serviceConfig = xlib.helpers.mkStorageGuard xlib // {
+          # Guard goes to `unitConfig` → `[Unit]`: `ConditionPathIsMountPoint`
+          # is a unit-level directive and is ignored by systemd in `[Service]`
+          # (T4/R1.2).
+          unitConfig = xlib.helpers.mkStorageGuard xlib;
+          serviceConfig = {
             Restart = lib.mkOverride 90 "always";
           };
           partOf = [ "podman-compose-3x-ui-root.target" ];

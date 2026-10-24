@@ -73,6 +73,13 @@ in
   };
 
   systemd = storage.systemd // {
-    services.samba.serviceConfig = xlib.helpers.mkStorageGuard xlib;
+    # The samba file server is the unit `samba-smbd` (nixpkgs names it that
+    # way; there is NO unit called `samba`). `systemd.services.samba` would
+    # render a phantom unit with no ExecStart → systemd refuses to start it
+    # (ADR-0004).
+    #
+    # `unitConfig` → `[Unit]`: `ConditionPathIsMountPoint` is a unit-level
+    # directive and is ignored by systemd in `[Service]` (T4/R1.2).
+    services."samba-smbd".unitConfig = xlib.helpers.mkStorageGuard xlib;
   };
 }
