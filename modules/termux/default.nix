@@ -39,7 +39,8 @@ in
   '';
 
   # Generate the host key on first activation (idempotent).
-  build.activation.sshd = ''
+  build.activation = {
+    sshd = ''
     if [[ ! -d "${sshdDir}" ]]; then
       $DRY_RUN_CMD rm -rf "${sshdTmpDir}"
       $DRY_RUN_CMD mkdir -p "${sshdTmpDir}"
@@ -56,7 +57,7 @@ in
   # ~/.local/state/nix/profiles/channels (dangling until it exists), which
   # home-manager cannot link into. mkdir -p refuses to traverse a dangling
   # symlink, so create the real target dir instead.
-  build.activation.nixdefexpr = ''
+    nixdefexpr = ''
     $DRY_RUN_CMD mkdir -p "${config.user.home}/.local/state/nix/profiles/channels/nixpkgs"
     $DRY_RUN_CMD touch "${config.user.home}/.local/state/nix/profiles/channels/nixpkgs/.keep"
   '';
@@ -67,13 +68,14 @@ in
   # NOTE: tailscaled was removed — nixpkgs' linux build cannot run inside
   # proot (SELinux blocks netlink; needs GOOS=android or root). Re-add only
   # if that gets solved.
-  build.activation.services = ''
+    services = ''
     $DRY_RUN_CMD rm -rf ${serviceDir}/tailscaled
     $DRY_RUN_CMD mkdir -p ${serviceDir}/sshd/log
     $DRY_RUN_CMD ln -sfn ${sshdRun}/bin/sshd-run ${serviceDir}/sshd/run
     $DRY_RUN_CMD ln -sfn ${svLogRun}/bin/sv-log-run ${serviceDir}/sshd/log/run
     $DRY_RUN_CMD ln -sfn ${serviceDir} /etc/service
-  '';
+    '';
+  };
 
   environment.packages = [
     pkgs.runit

@@ -58,8 +58,10 @@
   services.pipewire = {
     enable = lib.mkDefault true;
     systemWide = true;
-    alsa.enable = false;
-    alsa.support32Bit = true;
+    alsa = {
+      enable = false;
+      support32Bit = true;
+    };
     pulse.enable = true;
     jack.enable = true;
     extraConfig.pipewire = {

@@ -102,8 +102,10 @@ in
     # populated. (The build-machine list still lands in /etc/nix/machines
     # but nix-daemon reads `builders`, not /etc/nix/machines, when
     # distributedBuilds is false.)
-    nix.distributedBuilds = true;
-    nix.buildMachines = map forNix config.host.builder.clients;
+    nix = {
+      distributedBuilds = true;
+      buildMachines = map forNix config.host.builder.clients;
+    };
     # Nix 2.34's daemon does not act on `@/etc/nix/machines` (the file
     # format NixOS's nix-remote-build writes to): the `builders` config
     # key is parsed for display but `external-builders` stays empty and

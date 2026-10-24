@@ -192,8 +192,10 @@ in
     # creates to deploy credentials; depending on its name avoids the
     # "race between tmpfiles-setup and the sops materialiser" that the
     # previous tmpfiles-symlink design implicitly relied on.
-    systemd.services.authelia.after = [ "sops-nix.service" ];
-    systemd.services.authelia.wants = [ "sops-nix.service" ];
+    systemd.services.authelia = {
+      after = [ "sops-nix.service" ];
+      wants = [ "sops-nix.service" ];
+    };
 
     # sops wiring. Guarded by builtins.pathExists so the flake still
     # evaluates when ./secrets/authelia.yaml hasn't been created yet —

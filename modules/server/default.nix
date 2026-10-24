@@ -76,16 +76,19 @@
   #
   # В otreca аналогичный юнит определён в `modules/vds/default.nix` с
   # другим `PANEL_URL`/`apiToken`.
-  systemd.services."3xui-reconfig".serviceConfig.Type = "oneshot";
-  systemd.services."3xui-reconfig".serviceConfig.ExecStart =
-    lib.getExe config.modules."3x-ui".reconfig;
-  systemd.services."3xui-reconfig".serviceConfig.Environment = [
-    "PANEL_URL=https://127.0.0.1:2049"
-    "PANEL_BASE=@base"
-    "PANEL_TOKEN=@api_token"
-  ];
-  systemd.services."3xui-reconfig".description =
-    "Перегенерировать config.json 3x-ui из БД и рестартнуть xray (R1.18).";
+  systemd.services."3xui-reconfig" = {
+    description =
+      "Перегенерировать config.json 3x-ui из БД и рестартнуть xray (R1.18).";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = lib.getExe config.modules."3x-ui".reconfig;
+      Environment = [
+        "PANEL_URL=https://127.0.0.1:2049"
+        "PANEL_BASE=@base"
+        "PANEL_TOKEN=@api_token"
+      ];
+    };
+  };
   # engipy webapp — split architecture:
   #   - sapphira  : host.engipy-frontend.enable  → nginx vhost (engipy.zeroq.su)
   #                 с /api/* на rydiwo:8000 и / → /var/lib/engipy/web

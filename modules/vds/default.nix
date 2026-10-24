@@ -37,16 +37,19 @@
   #  3xui-reconfig.service` — без хоста. Это намеренно: владелец стартует
   # их по очереди; один из них адресует локальную панель, другой — удалённую,
   # и оба лечат одно и то же «сервер крутит старое».)
-  systemd.services."3xui-reconfig".serviceConfig.Type = "oneshot";
-  systemd.services."3xui-reconfig".serviceConfig.ExecStart =
-    lib.getExe config.modules."3x-ui".reconfig;
-  systemd.services."3xui-reconfig".serviceConfig.Environment = [
-    "PANEL_URL=https://pubray1.zeroq.su"
-    "PANEL_BASE=@base"
-    "PANEL_TOKEN=@api_token"
-  ];
-  systemd.services."3xui-reconfig".description =
-    "Перегенерировать config.json 3x-ui из БД и рестартнуть xray (R1.18) — вариант для Otreca (публичный домен).";
+  systemd.services."3xui-reconfig" = {
+    description =
+      "Перегенерировать config.json 3x-ui из БД и рестартнуть xray (R1.18) — вариант для Otreca (публичный домен).";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = lib.getExe config.modules."3x-ui".reconfig;
+      Environment = [
+        "PANEL_URL=https://pubray1.zeroq.su"
+        "PANEL_BASE=@base"
+        "PANEL_TOKEN=@api_token"
+      ];
+    };
+  };
 
   systemd.tmpfiles.rules = [
     (xlib.helpers.mkTmpfile "d" "/mnt" "0755" "root" "root")

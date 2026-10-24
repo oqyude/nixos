@@ -67,8 +67,10 @@
   # headless-сервер для engipy (sapphira проксирует /api/* на него).
   # Если пользователь берёт ноутбук в руки — пусть остаётся правило
   # по умолчанию (suspend); но для unattended-режима нужно ignore.
-  services.logind.lidSwitch = "ignore";
-  services.logind.lidSwitchDocked = "ignore";
+  services.logind = {
+    lidSwitch = "ignore";
+    lidSwitchDocked = "ignore";
+  };
 
   system.stateVersion = "26.05";
 
@@ -87,8 +89,10 @@
   # `modules/pxe-infra/` for the implementation.
   pxe-infra = {
     enable = true;
-    bridge.address = "10.66.0.1";
-    bridge.prefixLength = 24;
+    bridge = {
+      address = "10.66.0.1";
+      prefixLength = 24;
+    };
     # ipxe.efi (universal, ~600K) instead of snp.efi (SNP-only, 310K).
     # snp.efi worked on linux-virt 6.18.56 but breaks on 6.18.57
     # (delivered via aports 2b1f5137, 2026-10-16, kernel commit

@@ -26,24 +26,25 @@
     # actually deliver. `nixos-test` is dropped for the same reason — it
     # wants kvm anyway.
     #
-    # `mkForce` because the NixOS module base-config sets a non-empty
-    # default; without force the lists would concatenate and the WSL would
-    # *still* advertise kvm.
-    nix.settings.system-features = lib.mkForce [
-      "benchmark"
-      "big-parallel"
-    ];
-
     # Builds arrive over SSH as the user `oqyude` (see
     # modules/server/builder.nix). On the default trusted-users = ["root"]
     # only root can call nix-store, so the SSH session would fail to realise
     # any .drv. Adding the SSH user to trusted-users lets the remote nix-build
-    # driver drive nix-store on the builder side. `mkForce` for the same
-    # concatenation reason as above.
-    nix.settings.trusted-users = lib.mkForce [
-      "root"
-      "oqyude"
-    ];
+    # driver drive nix-store on the builder side.
+    #
+    # `mkForce` on both lists because the NixOS module base-config sets a
+    # non-empty default; without force the lists would concatenate, and the
+    # WSL would *still* advertise kvm.
+    nix.settings = {
+      system-features = lib.mkForce [
+        "benchmark"
+        "big-parallel"
+      ];
+      trusted-users = lib.mkForce [
+        "root"
+        "oqyude"
+      ];
+    };
 
     # The local daemon already parallelises across all 24 logical cores
     # (max-jobs = 24 is what we measured). When acting as a builder, we

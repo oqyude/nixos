@@ -56,24 +56,30 @@ in
     labels    = [ "native:host" ]; # only host-executor; no docker required
 
     settings = {
-      runner.capacity              = 1; # sequential on 2-core host
-      runner.timeout               = "2h";
-      runner.workdir_cleanup_age   = "48h";
-      runner.idle_cleanup_interval = "20m";
+      runner = {
+        capacity = 1; # sequential on 2-core host
+        timeout = "2h";
+        workdir_cleanup_age = "48h";
+        idle_cleanup_interval = "20m";
+      };
 
       # Localhost-only. Co-resident processes can still reach it; scrape
       # via ssh+localhost if ever needed.
-      metrics.enabled = true;
-      metrics.addr    = "127.0.0.1:9101";
+      metrics = {
+        enabled = true;
+        addr = "127.0.0.1:9101";
+      };
 
       # Workspace in /tmp is tmpfs (size = ~50% of RAM ≈ 2.8 GiB
       # on sapphira), so the default 4 GB threshold would always trip.
       # 256 MiB is plenty for smoke-test workflows and still trips
       # meaningfully if tmpfs truly fills.
-      health_check.enabled                = true;
-      health_check.min_free_disk_space_mb = 256;
-      health_check.interval               = "5m";
-      health_check.timeout                = "30s";
+      health_check = {
+        enabled = true;
+        min_free_disk_space_mb = 256;
+        interval = "5m";
+        timeout = "30s";
+      };
 
       # Workspace in /tmp (tmpfs). Same approach as GH Actions runners —
       # ephemeral, always writable by the runner's UID. Avoids racing with
@@ -85,10 +91,12 @@ in
       host.workdir_parent = "/tmp/gitea-runner-work";
 
       # Defence in depth even though host labels never pull images.
-      container.docker_host = "";
-      container.network     = "";
-      container.privileged  = false;
-      container.options     = "";
+      container = {
+        docker_host = "";
+        network = "";
+        privileged = false;
+        options = "";
+      };
     };
 
     # The PATH of every host-mode job. One shared list (lib/ci-tools.nix) with

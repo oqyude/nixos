@@ -25,7 +25,9 @@
     device = "/dev/sda1";
     fsType = "ext4";
   };
-  boot.loader.grub.enable = true;
-  boot.loader.grub.devices = [ "/dev/sda" ];
-  boot.loader.grub.configurationLimit = 50;
+  boot.loader.grub = {
+    enable = true;
+    devices = [ "/dev/sda" ];
+    configurationLimit = 50;
+  };
 }
