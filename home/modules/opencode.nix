@@ -34,21 +34,25 @@
 #                   arborist, no bun/npx needed) into ~/.cache/opencode/npm/.
 #                   Only `oh-my-opencode-slim` is v2-ready: it ships
 #                   dist/tui2.js + dist/v2/tui.d.ts and documents an
-#                   "OpenCode v2 compatibility" matrix. oh-my-openagent
-#                   (5.1.40) still exports only ./tui + ./server and has no
-#                   v2 entry point, so it is NOT enabled under v2.
+#                   "OpenCode v2 compatibility" matrix. The pre-v2 plugin
+#                   (5.1.40) exports only ./tui + ./server and has no v2
+#                   entry point, so it is NOT installed and NOT enabled
+#                   under v2 (see ADR-0006).
 #
 # Files this module owns on disk:
 #   ~/.config/opencode/opencode.json           <- programs.opencode.settings
 #   ~/.config/opencode/cli.json                 <- v2 CLI/TUI preferences
-#   ~/.config/opencode/oh-my-opencode-slim.json <- slim plugin config
+#   ~/.config/opencode/oh-my-opencode-slim.json <- slim plugin config; the
+#                                                   ONLY plugin config
 #   ~/.config/opencode/service.json             <- v2 background service (off)
-#   ~/.omo/omo.jsonc                            <- LEGACY oh-my-openagent config
-#   ~/.config/opencode/oh-my-openagent.json     <- LEGACY mirror of the above
+#
+# The legacy v1 plugin config (its home-dir config + the mirror under
+# ~/.config/opencode/) was REMOVED 2026-10-25: it was inert under v2 and
+# only kept alive a "switch back to openagent" path that does not exist.
+# History and reasoning: ADR-0006.
 #
 # Imported by home/server.nix (sapphira). Auto-enables programs.opencode.
 {
-  config,
   inputs,
   lib,
   pkgs,
@@ -76,11 +80,11 @@ let
   #   opencode/big-pickle                       variants: (none)
   #   opencode/minimax-m3.1-flash-free         variants: low..max
   # Anything else (MiniMax-M3.1-Flash-Preview, MiniMax-M2.7-highspeed, ...)
-  # is NOT in the registry -> ProviderModelNotFoundError. The v1 omo.jsonc on
-  # this host referenced MiniMax-M3.1-Flash-Preview everywhere; that is the
-  # same class of bug as the kimi-for-coding incident described in R1.x.
+  # is NOT in the registry -> ProviderModelNotFoundError. The retired v1
+  # plugin config on this host referenced MiniMax-M3.1-Flash-Preview
+  # everywhere; that is the same class of bug as the kimi-for-coding
+  # incident described in R1.x.
   modelFast = "minimax-coding-plan/MiniMax-M3.1-Flash";
-  modelStrong = "minimax-coding-plan/MiniMax-M3";
 
   # nixpkgs ast-grep only ships binary `ast-grep`; omo's ast-grep skill probes
   # for `sg` (or ast-grep). Provide both via a symlink wrapper.
@@ -99,70 +103,6 @@ let
       oracle = { model = modelFast; };
       designer = { model = modelFast; };
       fixer = { model = modelFast; };
-    };
-  };
-
-  # LEGACY oh-my-openagent config. Kept valid (real model ids, no variants the
-  # registry does not expose) so a future switch back to oh-my-openagent does
-  # not resurrect the ProviderModelNotFoundError trap. Under v2 this file is
-  # inert: the enabled plugin is oh-my-opencode-slim (see above).
-  legacyOmoConfig = {
-    "$schema" =
-      "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/omo.schema.json";
-    _migrations = [
-      "2026-07-opencode-config-unification"
-      "2026-08-reasoning-unification"
-      "2026-09-category-deep-split"
-    ];
-
-    agents = {
-      sisyphus = {
-        model = modelStrong;
-        models = [
-          { model = modelFast; }
-        ];
-      };
-      hephaestus = { model = modelFast; };
-      oracle = {
-        model = modelStrong;
-        models = [
-          { model = modelFast; }
-        ];
-      };
-      librarian = { model = modelStrong; };
-      explore = {
-        model = modelFast;
-        models = [
-          { model = modelStrong; }
-        ];
-      };
-      "multimodal-looker" = { model = modelFast; };
-      prometheus = { model = modelStrong; };
-      metis = { model = modelStrong; };
-      momus = { model = modelStrong; };
-      atlas = {
-        model = modelFast;
-        models = [
-          { model = modelStrong; }
-        ];
-      };
-      "sisyphus-junior" = {
-        model = modelStrong;
-        models = [
-          { model = modelFast; }
-        ];
-      };
-    };
-
-    categories = {
-      "visual-engineering" = { model = modelStrong; };
-      ultrabrain = { model = modelStrong; };
-      "deep-low" = { model = modelFast; };
-      artistry = { model = modelFast; };
-      quick = { model = modelFast; };
-      "unspecified-low" = { model = modelFast; };
-      "unspecified-high" = { model = modelStrong; };
-      writing = { model = modelFast; };
     };
   };
 in
@@ -243,7 +183,7 @@ in
   };
 
   # ~/.config/opencode/oh-my-opencode-slim.json — config of the enabled plugin
-  # (oh-my-opencode-slim reads its own file, NOT ~/.omo/omo.jsonc).
+  # (oh-my-opencode-slim reads its own file, nothing else).
   xdg.configFile."opencode/oh-my-opencode-slim.json".text = builtins.toJSON slimConfig;
 
   # ~/.config/opencode/service.json — v2 background service registration.
@@ -255,27 +195,6 @@ in
   xdg.configFile."opencode/service.json".text = builtins.toJSON {
     disabled = true;
   };
-
-  # LEGACY ~/.omo/omo.jsonc — primary file the oh-my-openagent plugin reads at
-  # runtime (>= v5.x). Inert under v2 (the enabled plugin is the slim one),
-  # kept valid for a future switch back.
-  #
-  # MIGRATION TRAP (do not just point back at the legacy path):
-  #   The oh-my-openagent plugin runs a `2026-07-opencode-config-unification`
-  #   migration on every startup that backs up ~/.omo/omo.jsonc and tries to
-  #   rewrite it from ~/.config/opencode/oh-my-openagent.json. The backup
-  #   directory name embeds the source's content-hashed store path; because HM
-  #   does not delete the previous generation's store path until garbage
-  #   collection, the same path is reused on every retry and omo logs
-  #   "Migration backup path already exists" forever — meanwhile the user's
-  #   agent overrides disappear and the plugin's built-in fallback chain
-  #   (which references providers like kimi-for-coding that opencode's
-  #   provider registry no longer ships) gets picked instead, surfacing as
-  #   `ProviderModelNotFoundError: kimi-for-coding/kimi-for-coding-highspeed`
-  #   on every subagent spawn. Pinning _migrations above makes the migration
-  #   a no-op.
-  home.file."${config.home.homeDirectory}/.omo/omo.jsonc".text = builtins.toJSON legacyOmoConfig;
-  xdg.configFile."opencode/oh-my-openagent.json".text = builtins.toJSON legacyOmoConfig;
 
   # Same extras on the user's PATH too, so `omo doctor` and standalone invocations
   # of `sg`, `gh`, `npm`, `npx` work in the user's shell — not only inside

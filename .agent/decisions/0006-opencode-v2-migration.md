@@ -343,3 +343,19 @@ herdr **0.9.3** на sapphira активен (`herdr server --session herdr-prod
 - **`oc models` сразу после рестарта юнита может вернуть
   `ServiceUnavailableError: Location plugins did not finish activating`** —
   сервер ещё поднимает плагины. Через несколько секунд проходит.
+
+## Обновление 2026-10-25
+
+Legacy-конфиг oh-my-openagent удалён из `home/modules/opencode.nix`:
+`~/.omo/omo.jsonc` и `~/.config/opencode/oh-my-openagent.json` больше не
+объявляются (вместе с блоком `legacyOmoConfig` и ставшим неиспользуемым
+`modelStrong`). Единственный конфиг плагина —
+`~/.config/opencode/oh-my-opencode-slim.json`.
+
+Плагин oh-my-openagent не ставится и не совместим с v2 — путь возврата на
+openagent закрыт: держать его конфиг «на всякий случай» было смысла только
+до появления v2-совместимого slim-плагина.
+
+Симлинки/файлы, оставшиеся на диске от прошлой генерации home-manager,
+после ближайшей активации надо снести вручную:
+`~/.omo/omo.jsonc`, `~/.config/opencode/oh-my-openagent.json`.
