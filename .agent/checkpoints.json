@@ -29,10 +29,11 @@
   },
   "host_state": {
     "host": "sapphira",
-    "system_generation": "/nix/store/l7yq5lk452z1id6p09rjvz2lyirmqnrw-nixos-system-sapphira-default (generation 858, до фикса T4)",
+    "system_generation": "/nix/store/7h6860ji79j73fq40nancav9yv40pz3b-nixos-system-sapphira-default (generation 859, активировано 2026-10-25; guard live на 13/13 юнитов, phantoms samba/nextcloud/immich удалены)",
     "opencode_config": "opencode v2.0.32 (PID 592261, opencode-web.service, 0.0.0.0:4096) — без изменений",
     "opencode_web_service": "PID 1152, runs on 0.0.0.0:4096 (--cors https://opencode.zeroq.su), uptime ~21h, ~680 МБ RSS — без изменений",
-    "herdr_service": "herdr 0.9.3, PID 110779, session herdr-prod; web-ui plugin на 127.0.0.1:7317, токен ротирован 2026-10-25 (старый → 401)"
+    "herdr_service": "herdr 0.9.3, PID 110779, session herdr-prod; web-ui plugin на 127.0.0.1:7317, токен ротирован 2026-10-25 (старый → 401)",
+    "nginx_lamet": "lamet.opencodes.zeroq.su → http://100.106.21.39:4096 (live-конфиг nginx; 6061 больше не слушает)"
   },
   "closed_attempts": [
     {
@@ -158,9 +159,10 @@
     "2026-10-25T00:10+03:00: T38: ротация herdr_web_token (старый → 401, новый → 200 на /api/bridge); секрет вычищен из manifest.json.",
     "2026-10-25T00:10+03:00: T3: посылка опровергнута runtime-дампом nftables на otreca; изменений кода нет.",
     "2026-10-25T00:10+03:00: T20/T57: manifest.json синхронизирован (T20 completed, T38–T57 внесены), схемы расширены.",
-    "2026-10-25: консолидированы раздробленные attr-path записи в 10 файлах (3xui-reconfig, authelia, gitea-runner settings, grub, logind, pxe-infra.bridge, pipewire.alsa, nix.*, nix.settings, build.activation); найден тройной дубль allowedUDPPorts → T58."
+    "2026-10-25: консолидированы раздробленные attr-path записи в 10 файлах (3xui-reconfig, authelia, gitea-runner settings, grub, logind, pxe-infra.bridge, pipewire.alsa, nix.*, nix.settings, build.activation); найден тройной дубль allowedUDPPorts → T58.",
+    "2026-10-25: sapphira переключена на generation 859 (7h6860ji) — guard в [Unit] на 13/13 юнитов, фантомы удалены, nginx отдаёт lamet→4096; systemctl --failed пуст."
   ],
-  "last_updated": "2026-10-25T02:20:00+03:00",
+  "last_updated": "2026-10-25T02:30:00+03:00",
   "session_chain": {
     "previous": "metaagent-attempt-2026-10-15T20:25Z (herdr-attach-shim attempt + force-reset на 3d4f1f5, closed; T35 записан в closed_attempts[])",
     "current": "metaagent-cleanup-2026-10-15T17:42Z (metastate reconcile B+C+A: AGENTS.md dup R1.14, handoff T18/T32 stale, checkpoints↔manifest drift, manifest backlog_count)",
