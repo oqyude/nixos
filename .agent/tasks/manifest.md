@@ -200,7 +200,8 @@ false positive на `modules/server/secrets/authelia.yaml`.
 **Type:** дрейф
 **Где:** `.ci/checks.sh:16` (комментарий), `:20` (имя хелпера), `:30-31` (whitelist); `.pre-commit-config.yaml:8`
 
-**Суть:** панель запинена на `v3.10.2` (`modules/containers/3x-ui.nix:62`), но
+**Суть:** панель запинена на `v3.11.0` (`modules/containers/3x-ui.nix:71`, с
+2026-10-25, ADR-0007; до этого `v3.10.2`), но
 whitelist всё ещё содержит `ghcr.io/mhsanaei/3x-ui:latest`, а комментарий
 утверждает «панель frozen on :latest». Запись мёртвая; комментарий вводит в
 заблуждение. Отдельно: описание check #4 называет `mkServiceStorage`, тогда как
@@ -221,7 +222,7 @@ whitelist всё ещё содержит `ghcr.io/mhsanaei/3x-ui:latest`, а к�
 
 **Type:** дрейф
 **Где:**
-- `:100` — `3x-ui.nix:54` → файл `modules/3x-ui.nix` **не существует**; реально `modules/containers/3x-ui.nix:62`
+- `:100` — `3x-ui.nix:54` → файл `modules/3x-ui.nix` **не существует**; реально `modules/containers/3x-ui.nix:71` (было `:62` до 2026-10-25, ADR-0007)
 - `:101` — `3x-ui.nix:33-35` → `modules/containers/3x-ui.nix:35`
 - `:105` — `opencode.nix:354` → `home/modules/opencode.nix:449`
 - `:97` — `server.nix:130` → `configurations/server.nix:129`

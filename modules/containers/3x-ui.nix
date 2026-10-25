@@ -59,7 +59,16 @@ in
           # TLS «есть», трафика нет. Пришлось чинить fingerprint и minClientVer
           # на живых хостах. Панель обновлять — только вместе с записью в
           # `.agent/decisions/` или `.agent/decisions/notes/` (R1.5).
-          image = "ghcr.io/mhsanaei/3x-ui:v3.10.2";
+          #
+          # 2026-10-25: `v3.10.2` → `v3.11.0` (ADR-0007). Причины: (1) апстрим
+          # отозвал бандл 26.10.10 — release notes v3.11.0 прямо говорят, что
+          # «the pulled v26.10.10 binary pins are replaced», то есть старый пин
+          # тянул отозванное ядро; (2) владелец хочет быть на свежем стабильном
+          # релизе. Новый бандл — Xray-core **26.10.21** (≥ 26.9.8 ⇒ REALITY
+          # по-прежнему требует `fp` ∈ {chrome,firefox,safari} и
+          # `minClientVer = 1.0.0`, R1.16). `:latest` запрещён так же, как и
+          # раньше: только явный тег, иначе снова тихий дрейф ядра.
+          image = "ghcr.io/mhsanaei/3x-ui:v3.11.0";
           environment = {
             "XRAY_VMESS_AEAD_FORCED" = "false";
             "XUI_ENABLE_FAIL2BAN" = "true";
