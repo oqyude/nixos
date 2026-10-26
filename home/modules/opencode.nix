@@ -74,17 +74,26 @@ let
   pluginSpec = "oh-my-opencode-slim@3.0.5";
 
   # Model ids are validated against the provider registry, not against taste.
-  # `opencode models` on BOTH the workstation and sapphira lists exactly:
-  #   minimax-coding-plan/MiniMax-M3           variants: none, thinking
-  #   minimax-coding-plan/MiniMax-M3.1-Flash   variants: (none)
-  #   opencode/big-pickle                       variants: (none)
-  #   opencode/minimax-m3.1-flash-free         variants: low..max
-  # Anything else (MiniMax-M3.1-Flash-Preview, MiniMax-M2.7-highspeed, ...)
-  # is NOT in the registry -> ProviderModelNotFoundError. The retired v1
-  # plugin config on this host referenced MiniMax-M3.1-Flash-Preview
-  # everywhere; that is the same class of bug as the kimi-for-coding
-  # incident described in R1.x.
-  modelFast = "minimax-coding-plan/MiniMax-M3.1-Flash";
+  # `opencode models` on this host lists the opencode-go registry, which is the
+  # account the director already spends from: state/quota.json
+  # `provider_selection.model` = opencode-go/deepseek-v4.1-flash, and every
+  # worker session the director mints is created with exactly that pair. Using
+  # the same provider for the agents makes the director's quota gate guard the
+  # model the agents actually run, instead of a second, invisible budget.
+  #
+  # 2026-10-26: default model moved
+  #   minimax-coding-plan/MiniMax-M3.1-Flash -> opencode-go/deepseek-v4.1-flash
+  # Reason: the MINIMAX *Token Plan* keeps its own limit, separate from the
+  # director's quota probe, and it was exhausted mid-run — every sub-agent
+  # (explorer/oracle/fixer/designer) died within a second of being spawned with
+  # "Token Plan usage limit reached (2056)" while the director's probe reported
+  # decision=ok for the same provider. One provider = one budget = one gate.
+  #
+  # Anything absent from the registry is a ProviderModelNotFoundError
+  # (MiniMax-M3.1-Flash-Preview, MiniMax-M2.7-highspeed, ... — the retired v1
+  # plugin config referenced the -Preview id everywhere; same class of bug as
+  # the kimi-for-coding incident described in R1.x).
+  modelFast = "opencode-go/deepseek-v4.1-flash";
 
   # nixpkgs ast-grep only ships binary `ast-grep`; omo's ast-grep skill probes
   # for `sg` (or ast-grep). Provide both via a symlink wrapper.
