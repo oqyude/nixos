@@ -949,6 +949,29 @@
         "nix eval ...networking.firewall.interfaces на sapphira и otreca → allowedUDPPorts = [53]",
         "в репозитории осталось одно присваивание этого листа"
       ]
+    },
+    {
+      "id": "T59",
+      "title": "pwsh нет на sapphira → ps1-набор директора проверяется только чтением",
+      "type": "config",
+      "status": "completed",
+      "origin": "user:direct 2026-10-27",
+      "files": [
+        "configurations/server.nix"
+      ],
+      "description": "На sapphira живёт metaagent-director: две реализации одной контрактной поверхности (director.sh + lib/*.sh и director.ps1) плюс общий набор python/*.py, который вызывают обе. pwsh в системе не было, поэтому ps1-тесты на этом хосте всегда уходили в skip, а сама ps1-ветка проверялась только чтением — расхождения sh/ps1 (класс дефектов, найденных в T30 стороннего репозитория: хардкод S:/Git/..., replace(\"`n\", ' '), lowercase пути, свой regex VERDICT:) ловились глазами. powershell в этом репозитории уже был, но только в lib/ci-tools.nix — это PATH host-mode джоб gitea-runner и devshell ci, а не системный PATH хоста: интерактивная сессия, воркер директора и ручной прогон .ps1-тестов его не видели.",
+      "acceptance_criteria": [
+        "environment.systemPackages на sapphira содержит powershell-7.6.6; у otreca, atoridu, rydiwo, wsl — 0 совпадений (nix eval по всем nixosConfigurations)",
+        "nixos-rebuild build --flake .#sapphira — успешная сборка",
+        "pwsh из собранной системы исполняется: ./result/sw/bin/pwsh → 7.6.6",
+        "bash .ci/checks.sh --no-build → PASS 4 / FAIL 0",
+        "ADR-0008 фиксирует выбор места (configurations/server.nix, а не modules/essentials/packages.nix) и цену — замыкание 300.2 МиБ"
+      ],
+      "adr": "ADR-0008",
+      "completed_in_commits": [
+        "24c282b"
+      ],
+      "notes": "НЕ развёрнуто: pwsh попадает в /run/current-system/sw/bin только после nixos-rebuild switch|boot, то есть после активации владельцем/директором (merge_allowed = false у этого репозитория). powershell в lib/ci-tools.nix оставлен намеренно: PATH джобы раннера и системный PATH — разные контракты, джоба не должна зависеть от активации системного пакета. Второй эффект правки — возможность, а не сам набор: прогон ps1-тестов остаётся задачей репозитория metaagent-director."
     }
   ],
   "backlog_count": 37,
