@@ -81,7 +81,7 @@ flake.nix
 4. **`100.64.0.0` = Tailscale-адрес sapphira**, назначен вручную. В `home/termux.nix:256`,
    `modules/server/nextcloud.nix:80`, `modules/server/nginx.nix:109` и `:378`,
    `modules/vds/systemd.nix:10`. → задача T12.
-5. **3x-ui: панель запинена на `v3.10.2`, ядро — состояние панели и различается по хостам** (otreca 26.7.28, sapphira 26.10.10). `:latest` был вектором тихого дрейфа: релиз панели молча притащил ядро 26.10.10 и сломал все REALITY-ссылки. → R1.5, R1.16, задачи T6–T10.
+5. **3x-ui: панель запинена на `v3.11.0` (бандл ядра 26.10.21), ядро — состояние панели и различается по хостам** (на 2026-10-25: otreca 26.7.28, sapphira 26.10.10 — до первого старта v3.11.0; предыдущий пин `v3.10.2` тянул отозванный апстримом бандл 26.10.10). `:latest` был вектором тихого дрейфа: релиз панели молча притащил ядро 26.10.10 и сломал все REALITY-ссылки. → R1.5, R1.16, ADR-0007, задачи T6–T10.
 6. **Политику nftables на VDS задаёт `inet nixos-fw`, а не рукописная таблица.** `firewall.enable = true` генерирует
    `table inet nixos-fw` с `chain input policy drop` и явными accept'ами (80/443, 41641/udp, 22 только на `tailscale0`,
    ping, podman DNS, temp-ports). Рукописный `table inet filter` (`configurations/vds.nix:71-92`) — **вторая** base chain
@@ -106,7 +106,7 @@ flake.nix
 | `configurations/server.nix:129` | `firewall.enable = false` при 20 сервисах на `0.0.0.0` | Роутер фильтрует, см. инв. 3 |
 | `configurations/mobile.nix:95`, `configurations/wsl.nix:59` | `stateVersion` 24.05 / 24.11 vs 26.05 | Каждый хост зафиксирован на своей версии |
 | `modules/users.nix:66` | `uid = if hostname == "sapphira" then 1001 else …` | Костыль под 1000 = удалённый `yuyus`; удалять только после миграции ФС |
-| `modules/containers/3x-ui.nix:62` | Раньше `image = …:latest` | **Запинено** на `v3.10.2` (инв. 5). `:latest` = тихий дрейф ядра; ядро — состояние панели, см. R1.8 |
+| `modules/containers/3x-ui.nix:71` | Раньше `image = …:latest` | **Запинено** на `v3.11.0` (инв. 5, ADR-0007; с 2026-10-25, до этого `v3.10.2`). `:latest` = тихий дрейф ядра; ядро — состояние панели, см. R1.8 |
 | `modules/containers/3x-ui.nix:35` | `reality443Forwarding = true` на VDS | **Обязательно, НЕ удалять.** nginx stream (`vds/nginx.nix`) маршрутизирует `443 → 127.0.0.1:15380 → container:443`; без маппинга Xray REALITY мёртв. Удаление T10/C5 сломало — восстановлено `07a0437` |
 | `vds/nginx.nix`, `events {}` | Пустой блок → `worker_connections` = **512** (дефолт) | Не баг, но и не запас: при окне недоступности REALITY клиенты дают ретрай-флуд и исчерпывают 512 → «не работает всё» даже после починки первопричины (1668 ошибок за ~40 мин). Известный пробел |
 | Настройки панели | `GET https://pubray1.zeroq.su/` → **404** | Панель жива: `webBasePath=/pubray/`, реальный URL `https://pubray1.zeroq.su/pubray/`. Не «чинить» nginx под `/` |

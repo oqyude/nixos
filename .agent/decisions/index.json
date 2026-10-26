@@ -1,6 +1,6 @@
 {
   "version": "3.0.0",
-  "updated_at": "2026-10-15T15:00",
+  "updated_at": "2026-10-25T20:00",
   "decisions": [
     {
       "id": "0001",
@@ -119,6 +119,28 @@
       "resolution": "Пакет берётся из nixpkgs master (nixos-unstable = 1.19.0, v2 влит в master 2026-10-19 через PR #569770), flake.lock обновлён на c4f353ac. Конфиг пишется вручную (xdg.configFile), потому что HM-модуль programs.opencode остаётся v1-only: v2-ключи plugins (мн.ч.) + mcp.servers, отдельный cli.json вместо tui.json (tui.json на HM-хосте — read-only симлинк в /nix/store, авто-миграция tui.json→cli.json не сможет записать). Плагин сменён на oh-my-opencode-slim@3.0.5 — единственный v2-совместимый (есть dist/tui2.js + v2-типы + compatibility-док); oh-my-openagent 5.1.40 v2-точки входа не имеет. Порт запинен --port 4096: дефолт v2 — 4097, nginx проксирует на 4096, без флага был бы 502. Фоновый сервис v2 выключен (service.json disabled), CLI ходит в юнит через обёртку oc (opencode --server http://127.0.0.1:4096) — иначе второй сервер на 4096 и два писателя в одну opencode.db. Модельные id приведены к реально существующим в реестре (MiniMax-M3 / MiniMax-M3.1-Flash; MiniMax-M3.1-Flash-Preview в реестре НЕТ — тот же класс грабли, что kimi-for-coding).",
       "moot_unless": "OpenCode 2.x попадает в nixos-unstable (тогда пакет возвращается в pkgs.opencode и master-input снимается) либо выходит v2-совместимый oh-my-openagent (тогда возвращается полный набор агентов и категорий)",
       "resolved_at": "2026-10-21T11:00"
+    },
+    {
+      "id": "0007",
+      "title": "3x-ui — пин v3.10.2 → v3.11.0 (ядро 26.10.10 → 26.10.21)",
+      "status": "accepted",
+      "date": "2026-10-25",
+      "file": ".agent/decisions/0007-3x-ui-3.11.0.md",
+      "tags": [
+        "3x-ui",
+        "xray",
+        "reality",
+        "image-pin",
+        "db-migration",
+        "invariant",
+        "R1.5",
+        "R1.8",
+        "R1.16",
+        "R1.18"
+      ],
+      "resolution": "image = ghcr.io/mhsanaei/3x-ui:v3.11.0 (явный тег; :latest остаётся запрещён, R1.5). Причина: апстрим отозвал бандл ядра 26.10.10 (release notes v3.11.0: «the pulled v26.10.10 binary pins are replaced»), новый бандл — Xray-core 26.10.21 (≥ 26.9.8 ⇒ REALITY по-прежнему требует fp ∈ {chrome,firefox,safari} и minClientVer = 1.0.0, R1.16). Версия ядра остаётся состоянием БД панели (R1.8): если после старта панель держит 26.10.10 — выбрать 26.10.21 + restartXrayService (R1.18). v3.11.0 несёт миграции БД панели ⇒ откат = строка обратно + восстановление бэкапа тома db/, снятого до первого старта (sapphira: /home/oqyude/External/Services/nodes/sapphira/3x-ui/db/; otreca: /mnt/services/nodes/otreca/3x-ui/db/).",
+      "moot_unless": "Апстрим перевыпускает 26.10.10 как поддерживаемый (маловероятно) либо меняется модель поставки ядра (ядро перестаёт жить в БД панели).",
+      "resolved_at": "2026-10-25T20:00"
     }
   ],
   "proposals": [

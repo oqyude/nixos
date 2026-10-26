@@ -14,7 +14,8 @@
 #   #2  nix flake check (all outputs evaluate)
 #   #7  secrets/ files match .sops.yaml path_regex
 #   #1  no `:latest` in container images (whitelist: tape-rotation only;
-#       3x-ui is pinned to v3.10.2 since 2026-10-20, R1.5)
+#       3x-ui is pinned to v3.11.0 since 2026-10-25, was v3.10.2 since
+#       2026-10-20, R1.5/ADR-0007)
 #   #8  every import reference resolves (no dangling imports) — added 2026-10-24
 #   #9  .agent JSON artefacts validate against their schemas — added 2026-10-25
 #
@@ -39,7 +40,8 @@ cd "$REPO_ROOT"
 LATEST_ALLOWLIST=(
   # tape-rotation: data on External (storage-guarded); manual updates.
   # The 3x-ui panel used to be whitelisted here as "frozen on :latest".
-  # It is pinned to ghcr.io/mhsanaei/3x-ui:v3.10.2 since 2026-10-20 (R1.5),
+  # It is pinned to ghcr.io/mhsanaei/3x-ui:v3.11.0 since 2026-10-25 (R1.5,
+  # ADR-0007; was v3.10.2 from 2026-10-20),
   # so a `:latest` for it must now fail this check instead of being allowed.
   "docker.io/elizaroveugene/taperotation-backend:latest"
   "docker.io/elizaroveugene/taperotation-frontend:latest"

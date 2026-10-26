@@ -71,8 +71,8 @@ Read-only аудит репозитория на техдолг: 233 tracked-ф�
    `.agent/tasks/manifest.md`: для каждого ID, суть, `путь:строка`, тип
    (реструктуризация / дрейф / мусор / хрупкость), риск, польза, «можно
    сразу или нужна страховка».
-3. **Сняты протухшие утверждения** в этом файле: `3x-ui` запинена на
-   `v3.10.2` (не `:latest`), T18/gitea-runner закоммичен, ADR-0003 и
+3. **Сняты протухшие утверждения** в этом файле: `3x-ui` запинена (тогда
+   `v3.10.2`, с 2026-10-25 — `v3.11.0`, ADR-0007; не `:latest`), T18/gitea-runner закоммичен, ADR-0003 и
    ADR-0005/0006 в таблице решений, тестовый статус, счётчик
    `192.168.1.20` = 42, ссылка `nginx.nix:253` → `:378`.
 
@@ -153,7 +153,7 @@ secrets/         → sops, один age-ключ
 | `modules/server/postgresql.nix` | existing | PostgreSQL + `mkStorageGuard` (`lib/xlib/helpers.nix`, фрагмент `unitConfig`; гвард жив с 2026-10-25) |
 | `modules/server/gitea-runner.nix` | existing | Gitea Actions host-runner на sapphira. **См. ADR-0004**: имя юнита экранировано `escapeSystemdPath`; переопределять только по байт-в-байт совпадающему ключу |
 | `modules/server/systemd.nix` | existing | rsync oneshots с `requiresMountsFor` |
-| `modules/containers/3x-ui.nix` | pinned | Панель запинена на `v3.10.2` (`modules/containers/3x-ui.nix:62`). Ядро Xray — состояние панели, различается по хостам (R1.5, R1.8) |
+| `modules/containers/3x-ui.nix` | pinned | Панель запинена на `v3.11.0` (`modules/containers/3x-ui.nix:71`, ADR-0007; бандл ядра 26.10.21). Ядро Xray — состояние панели, различается по хостам (R1.5, R1.8) |
 | `home/<type>.nix` | existing | Per-type home-manager |
 | `home/modules/opencode.nix` | existing | OpenCode CLI + systemd user (см. R2) |
 | `deploy/default.nix` | existing | deploy-rs: sapphira, otreca, rydiwo |
