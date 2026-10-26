@@ -1,6 +1,6 @@
 {
   "version": "3.0.0",
-  "updated_at": "2026-10-25T20:00",
+  "updated_at": "2026-10-27T01:55",
   "decisions": [
     {
       "id": "0001",
@@ -141,6 +141,26 @@
       "resolution": "image = ghcr.io/mhsanaei/3x-ui:v3.11.0 (явный тег; :latest остаётся запрещён, R1.5). Причина: апстрим отозвал бандл ядра 26.10.10 (release notes v3.11.0: «the pulled v26.10.10 binary pins are replaced»), новый бандл — Xray-core 26.10.21 (≥ 26.9.8 ⇒ REALITY по-прежнему требует fp ∈ {chrome,firefox,safari} и minClientVer = 1.0.0, R1.16). Версия ядра остаётся состоянием БД панели (R1.8): если после старта панель держит 26.10.10 — выбрать 26.10.21 + restartXrayService (R1.18). v3.11.0 несёт миграции БД панели ⇒ откат = строка обратно + восстановление бэкапа тома db/, снятого до первого старта (sapphira: /home/oqyude/External/Services/nodes/sapphira/3x-ui/db/; otreca: /mnt/services/nodes/otreca/3x-ui/db/).",
       "moot_unless": "Апстрим перевыпускает 26.10.10 как поддерживаемый (маловероятно) либо меняется модель поставки ядра (ядро перестаёт жить в БД панели).",
       "resolved_at": "2026-10-25T20:00"
+    },
+    {
+      "id": "0008",
+      "title": "PowerShell в системные пакеты sapphira — ps1-реализация директора становится исполняемой на хосте",
+      "status": "accepted",
+      "date": "2026-10-27",
+      "file": ".agent/decisions/0008-powershell-on-sapphira.md",
+      "tags": [
+        "powershell",
+        "pwsh",
+        "sapphira",
+        "systemPackages",
+        "ci",
+        "metaagent-director",
+        "T59"
+      ],
+      "task": "T59",
+      "resolution": "environment.systemPackages = [ pkgs.powershell ] в configurations/server.nix (тело модуля только sapphira, configurations/default.nix:31-34). Причина: без pwsh в системном PATH ps1-ветка metaagent-director (director.ps1 + её тесты) на хосте всегда уходит в skip и проверяется только чтением. Не в modules/essentials/packages.nix — тот список общий для всех NixOS-хостов флейка, включая 1-vCPU vds otreca; замыкание powershell — 300.2 MiB. powershell в lib/ci-tools.nix остаётся: это PATH джобы раннера и devshell, а не системный PATH. Проверено: сборка nixos-rebuild build --flake .#sapphira успешна, pwsh 7.6.6 в собранной системе, у otreca/atoridu/rydiwo/wsl PowerShell отсутствует.",
+      "moot_unless": "ps1-твин директора перестаёт поддерживаться (остаётся одна реализация) или ps1-тесты переезжают в CI-джобу, где PATH раннера уже содержит powershell.",
+      "resolved_at": "2026-10-27"
     }
   ],
   "proposals": [
