@@ -29,6 +29,12 @@ let
     "127.0.0.1:2049:2049/tcp"
     "127.0.0.1:2096:2096/tcp"
     "0.0.0.0:8443:8443/tcp"
+    # Local proxy (socks5 + http) into the node outbound
+    # `telegram-edge-of-truth`: the panel's inbound `host-egress` listens on
+    # this port inside the container. Published on the host loopback only, so
+    # ordinary host processes can use it (`curl -x socks5h://127.0.0.1:10808`)
+    # without exposing it to the LAN.
+    "127.0.0.1:10808:10808/tcp"
   ];
   # VDS-only: nginx stream forwards host:443 → 127.0.0.1:15380 →
   # container:443, so Xray sees its REALITY inbound on port 443.
