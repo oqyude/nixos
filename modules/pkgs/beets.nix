@@ -68,9 +68,21 @@ in
     };
   };
   systemd.mounts = [
-    (xlib.helpers.mkSystemdBind {
-      what = "/home/${xlib.device.username}/Music";
-      where = "/home/${xlib.device.username}/.config/beets";
-    })
+    (
+      (xlib.helpers.mkSystemdBind {
+        what = "/home/${xlib.device.username}/Music";
+        where = "/home/${xlib.device.username}/.config/beets";
+      })
+      // {
+        # `what` — симлинк, который создаёт home-manager при СВОЕЙ активации
+        # (`~/Music -> /nix/store/…-home-manager-files/Music -> External/Music`).
+        # Без этой строки монтирование идёт параллельно с активацией и проигрывает
+        # гонку: 2026-10-30 17:33:17 mount сказал «special device
+        # /home/oqyude/Music does not exist», юнит упал в failed. Порядок, а не
+        # Requires: на хостах без home-manager для этого пользователя зависимость
+        # от несуществующего юнита уронила бы монтирование целиком.
+        after = [ "home-manager-${xlib.device.username}.service" ];
+      }
+    )
   ];
 }
