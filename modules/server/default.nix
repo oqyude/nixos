@@ -23,12 +23,14 @@
     ./coredns.nix
     ./gitea.nix
     ./gitea-runner.nix
-    ./glances.nix
+    # 2026-10-30: glances выключен — владельцу не нужен (порт 61208 слушал, openFirewall
+    # открывал его наружу). Записи в coredns (glances.zeroq.su/home.arpa) оставлены:
+    # указывают в закрытый порт, вреда нет.
+    # ./glances.nix
     ./homebox.nix
-    # 2026-10-30: immich выключен — все юниты inactive dead (server, machine-learning,
-    # redis), но держал 2.9 ГБ кэша ML-моделей в /var/cache/immich.
-    # Вернуть: раскомментировать (модели скачаются заново).
-    # ./immich.nix
+    # immich — НУЖЕН (владелец, 2026-10-30). Был выключен директором на полчаса
+    # и сразу возвращён. Держит ~1.3 ГБ RAM в пике и 2.9 ГБ кэша ML-моделей.
+    ./immich.nix
     ./miniflux.nix
     ./navidrome.nix
     ./nextcloud.nix
@@ -53,8 +55,7 @@
     # This import list carries zero commented-out entries.
     # T15: kokoro-tts and openhands (not imported) also archived.
     # stirling-pdf.nix was deleted in 5dd7a58 (absorbed into bentopdf.nix).
-    # open-webui.nix was never commented — migrated to containers/,
-    # still active via ../containers/open-webui.nix above.
+    # open-webui: 2026-10-30 выключен выше (сомнительно: контейнер падал).
   ];
   # Server's 3x-ui is the controller panel at x.zeroq.su (nginx HTTP
   # terminates TLS upstream, no SNI-routing on 443 needed here because

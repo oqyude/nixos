@@ -35,14 +35,14 @@ let
   bigUploads = "client_max_body_size 5G;";
 
   sites = [
-    # 2026-10-30: immich.zeroq.su и kuma.zeroq.su убраны вместе со своими модулями
-    # (modules/server/default.nix). Иначе vhost проксирует в мёртвый upstream и отдаёт 502.
-    # {
-    #   domain = "immich.zeroq.su";
-    #   port = 2283;
-    #   addSSL = true;
-    #   extraConfig = bigUploads;
-    # }
+    {
+      domain = "immich.zeroq.su";
+      port = 2283;
+      addSSL = true;
+      extraConfig = bigUploads;
+    }
+    # 2026-10-30: kuma.zeroq.su убран вместе с модулем uptime-kuma
+    # (падал по таймауту). Иначе vhost проксирует в мёртвый upstream и отдаёт 502.
     # {
     #   domain = "kuma.zeroq.su";
     #   port = 4001;
