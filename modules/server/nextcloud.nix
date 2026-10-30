@@ -71,8 +71,9 @@ in
         dbtype = "pgsql";
         dbuser = "nextcloud";
         dbname = "nextcloud";
-        adminuser = xlib.device.username;
-        adminpassFile = config.sops.secrets.nextcloud-adminpass.path;
+        # adminuser/adminpassFile удалены из nixpkgs (mkRemovedOptionModule):
+        # начального админа теперь создают вручную — `nextcloud-occ user:add`.
+        # На существующей установке админ уже есть, эти строки ничего не делали.
       };
       settings = {
         log_type = "file";
