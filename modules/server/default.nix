@@ -9,7 +9,9 @@
   imports = [
     ../containers/3x-ui.nix
     ../3x-ui
-    ../containers/open-webui.nix
+    # 2026-10-30: open-webui выключен — контейнер падал (podman-open-webui.service
+    # failed), образ 4.69 ГБ тянулся с ghcr.io и авто-обновлялся. Вернуть: раскомментировать.
+    # ../containers/open-webui.nix
     ../containers/tape-rotation.nix
     ../pkgs/beets.nix
     ./acme.nix
@@ -23,7 +25,10 @@
     ./gitea-runner.nix
     ./glances.nix
     ./homebox.nix
-    ./immich.nix
+    # 2026-10-30: immich выключен — все юниты inactive dead (server, machine-learning,
+    # redis), но держал 2.9 ГБ кэша ML-моделей в /var/cache/immich.
+    # Вернуть: раскомментировать (модели скачаются заново).
+    # ./immich.nix
     ./miniflux.nix
     ./navidrome.nix
     ./nextcloud.nix
@@ -37,7 +42,10 @@
     ./systemd.nix
     ./ttyd.nix
     ./vtimeline.nix
-    ./uptime-kuma.nix
+    # 2026-10-30: uptime-kuma выключен — юнит падал по таймауту (failed since 15:09),
+    # то есть мониторинг не работал, а рестарты крутились.
+    # Вернуть: раскомментировать.
+    # ./uptime-kuma.nix
     ./engipy-frontend.nix
     ./engipy-backend.nix
     # T16: 15 modules archived to ../../archive/{server-modules,containers}/

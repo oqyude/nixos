@@ -35,16 +35,18 @@ let
   bigUploads = "client_max_body_size 5G;";
 
   sites = [
-    {
-      domain = "immich.zeroq.su";
-      port = 2283;
-      addSSL = true;
-      extraConfig = bigUploads;
-    }
-    {
-      domain = "kuma.zeroq.su";
-      port = 4001;
-    }
+    # 2026-10-30: immich.zeroq.su и kuma.zeroq.su убраны вместе со своими модулями
+    # (modules/server/default.nix). Иначе vhost проксирует в мёртвый upstream и отдаёт 502.
+    # {
+    #   domain = "immich.zeroq.su";
+    #   port = 2283;
+    #   addSSL = true;
+    #   extraConfig = bigUploads;
+    # }
+    # {
+    #   domain = "kuma.zeroq.su";
+    #   port = 4001;
+    # }
     {
       domain = "health.zeroq.su";
       port = 19999;
@@ -418,18 +420,21 @@ in
       # proxy_buffering off for SSE streaming (markdown in chat breaks
       # under the default `proxy_buffering on` from recommendedProxySettings),
       # and a 300 s read timeout for long LLM completions.
-      "open.zeroq.su" = {
-        forceSSL = true;
-        enableACME = true;
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:8080";
-          proxyWebsockets = true;
-        };
-        extraConfig = ''
-          proxy_buffering off;
-          proxy_read_timeout 300s;
-        '';
-      };
+      # 2026-10-30: open.zeroq.su убран вместе с контейнером open-webui
+      # (образ 4.69 ГБ, контейнер падал). Вернуть вместе с импортом
+      # ../containers/open-webui.nix в modules/server/default.nix.
+      # "open.zeroq.su" = {
+      #   forceSSL = true;
+      #   enableACME = true;
+      #   locations."/" = {
+      #     proxyPass = "http://127.0.0.1:8080";
+      #     proxyWebsockets = true;
+      #   };
+      #   extraConfig = ''
+      #     proxy_buffering off;
+      #     proxy_read_timeout 300s;
+      #   '';
+      # };
       "zeroq.su" = {
         forceSSL = true;
         enableACME = true;
