@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  lib,
   pkgs,
   xlib,
   ...
@@ -80,6 +81,17 @@ in
     #
     # `unitConfig` → `[Unit]`: `ConditionPathIsMountPoint` is a unit-level
     # directive and is ignored by systemd in `[Service]` (T4/R1.2).
-    services."samba-smbd".unitConfig = xlib.helpers.mkStorageGuard xlib;
+    #
+    # mkIf guard (2026-10-30): without it, turning the file server off
+    # (services.samba.enable = false) left the unit defined with ONLY
+    # `unitConfig` and no ExecStart — the very phantom ADR-0004 describes.
+    # systemd then refuses to start it ("Service has no ExecStart=… Refusing.").
+    # It bit us for real while proving modules/server/samba-ad.nix: the AD DC
+    # and the file server cannot both hold TCP/445, so the file server has to
+    # be switchable off. With services.samba.enable = true (every host today)
+    # this guard changes nothing.
+    services."samba-smbd" = lib.mkIf config.services.samba.enable {
+      unitConfig = xlib.helpers.mkStorageGuard xlib;
+    };
   };
 }
