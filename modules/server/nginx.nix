@@ -47,10 +47,15 @@ let
     #   domain = "kuma.zeroq.su";
     #   port = 4001;
     # }
-    {
-      domain = "health.zeroq.su";
-      port = 19999;
-    }
+    # 2026-10-30: health.zeroq.su убран — проксировал на 127.0.0.1:19999 (netdata),
+    # а netdata в этой системе не установлен вообще: ни юнита, ни процесса,
+    # только 1.5 ГБ мусора в /var/cache/netdata. Живой проверкой: из 19 локальных
+    # портов, на которые ссылается nginx, этот единственный не отвечает.
+    # Вернуть вместе с модулем netdata.
+    # {
+    #   domain = "health.zeroq.su";
+    #   port = 19999;
+    # }
     {
       domain = "git.zeroq.su";
       port = 3000;
