@@ -374,11 +374,51 @@ in
   # as a literal `[serviceConfig]` section, which systemd silently ignores
   # (`Unknown section 'serviceConfig'. Ignoring.`). The cgroup protection
   # above would never take effect (verified on sapphira, c73a698).
+  #
+  # Egress proxy for the user service.
+  #
+  # sapphira has no direct route to opencode.ai (verified 2026-10-30 on the
+  # live host: TCP connect times out, `curl https://opencode.ai` -> 000; via
+  # http://127.0.0.1:10808 -> 200 in 0.5 s). `opencode serve` fetches
+  # GET https://opencode.ai/console/api/v2/config on startup; without a proxy
+  # that request hangs and the server dies with "failed to load OpenCode
+  # provider config". Consequences: the provider registry stays empty
+  # (GET /api/provider -> google, minimax-coding-plan, opencode only), so
+  # `opencode-go` is missing and every oh-my-opencode-slim agent that asks
+  # for opencode-go/deepseek-v4.1-flash fails, and the context7 / gh_grep
+  # MCP servers hang until TimeoutError.
+  #
+  # 127.0.0.1:10808 is the 3x-ui panel inbound `host-egress` (mixed socks5 +
+  # http) published on the host loopback by modules/containers/3x-ui.nix
+  # ("127.0.0.1:10808:10808/tcp"). Loopback-only, so the proxy is not
+  # reachable from the LAN.
+  #
+  # NO_PROXY is mandatory, not cosmetic: without it the service's own local
+  # traffic (localhost/127.0.0.1, the podman networks 10.88.0.0/16 and
+  # 10.89.0.0/24, tailscale 100.64.0.0/10, the LAN 192.168.1.0/24 and the
+  # internal *.zeroq.su zone) would be pushed through the proxy and break
+  # (container/registry/Tailscale endpoints are not reachable from the
+  # outbound node). Both the uppercase and the lowercase spelling of every
+  # variable are set: the Bun runtime serving opencode and the Node/npx
+  # processes spawned for the MCP servers do not agree on which casing they
+  # read, so the proxy must be visible under both names.
+  #
+  # This replaces the hand-written drop-in
+  # ~/.config/systemd/user/opencode-web.service.d/10-proxy.conf; the owner
+  # removes that file after the home-manager activation lands the unit.
   systemd.user.services.opencode-web.Service = {
     MemoryHigh = "1G";
     MemoryMax = "2G";
     OOMScoreAdjust = -900;
     OOMPolicy = "continue";
+    Environment = [
+      "HTTP_PROXY=http://127.0.0.1:10808"
+      "HTTPS_PROXY=http://127.0.0.1:10808"
+      "http_proxy=http://127.0.0.1:10808"
+      "https_proxy=http://127.0.0.1:10808"
+      "NO_PROXY=localhost,127.0.0.1,::1,10.88.0.0/16,10.89.0.0/24,192.168.1.0/24,100.64.0.0/10,.local,.zeroq.su"
+      "no_proxy=localhost,127.0.0.1,::1,10.88.0.0/16,10.89.0.0/24,192.168.1.0/24,100.64.0.0/10,.local,.zeroq.su"
+    ];
   };
 
   # Workaround: home-manager activation updates the GC root `current-home`
