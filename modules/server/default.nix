@@ -40,6 +40,11 @@
     ./postgresql.nix
     ./power.nix
     ./samba.nix
+    # 2026-10-30: Samba AD DS (domain controller) — OPTION, disabled by
+    # default. `host.samba-ad.enable = false` adds no unit, no port and no
+    # package. Enabling it asserts the two real port conflicts (53 = coredns,
+    # 445 = the file server) instead of silently overwriting them.
+    ./samba-ad.nix
     ./syncthing.nix
     ./systemd.nix
     ./ttyd.nix
