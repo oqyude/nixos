@@ -66,7 +66,10 @@
       theme = "bgrt";
     };
     consoleLogLevel = 3; # Enable "Silent boot"
-    initrd.verbose = false;
+    # `boot.initrd.verbose` was REMOVED upstream (nixpkgs 26.05+): the
+    # scripted stage 1 is gone, and the systemd stage 1 has no such option.
+    # Its verbosity is governed by `rd.systemd.show_status` (kernelParams
+    # below) instead — set that to 0 there for a fully silent initrd.
     kernelParams = [
       "quiet"
       "splash"
