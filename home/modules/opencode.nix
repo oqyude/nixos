@@ -74,12 +74,18 @@ let
   pluginSpec = "oh-my-opencode-slim@3.0.5";
 
   # Model ids are validated against the provider registry, not against taste.
-  # `opencode models` on this host lists the opencode-go registry, which is the
-  # account the director already spends from: state/quota.json
-  # `provider_selection.model` = opencode-go/deepseek-v4.1-flash, and every
-  # worker session the director mints is created with exactly that pair. Using
-  # the same provider for the agents makes the director's quota gate guard the
-  # model the agents actually run, instead of a second, invisible budget.
+  # `opencode models` on this host lists the console providers of the
+  # OpenCode console accounts (console-oqyude, console-gobin) next to the
+  # opencode-go and minimax-coding-plan registries. An id that is NOT in that
+  # list is a ProviderModelNotFoundError at spawn time — the kimi-for-coding
+  # class of bug (see R1.x).
+  #
+  # 2026-11-01: default model moved
+  #   opencode-go/deepseek-v4.1-flash -> console-oqyude/MiniMax-M3.1-Flash
+  # Reason: the owner moved the agent models to minimax through the opencode
+  # console: oqyude is the primary console account, gobin the fallback one
+  # (both are MiniMax token plans behind the console). Both ids are in the
+  # registry — verified with `oc models` on sapphira, 2026-11-01.
   #
   # 2026-10-26: default model moved
   #   minimax-coding-plan/MiniMax-M3.1-Flash -> opencode-go/deepseek-v4.1-flash
@@ -93,7 +99,7 @@ let
   # (MiniMax-M3.1-Flash-Preview, MiniMax-M2.7-highspeed, ... — the retired v1
   # plugin config referenced the -Preview id everywhere; same class of bug as
   # the kimi-for-coding incident described in R1.x).
-  modelFast = "opencode-go/deepseek-v4.1-flash";
+  modelFast = "console-oqyude/MiniMax-M3.1-Flash";
 
   # nixpkgs ast-grep only ships binary `ast-grep`; omo's ast-grep skill probes
   # for `sg` (or ast-grep). Provide both via a symlink wrapper.
