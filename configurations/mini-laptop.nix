@@ -67,9 +67,14 @@
   # headless-сервер для engipy (sapphira проксирует /api/* на него).
   # Если пользователь берёт ноутбук в руки — пусть остаётся правило
   # по умолчанию (suspend); но для unattended-режима нужно ignore.
-  services.logind = {
-    lidSwitch = "ignore";
-    lidSwitchDocked = "ignore";
+  #
+  # 2026-11-01: `services.logind.lidSwitch` / `lidSwitchDocked` переименованы
+  # в nixpkgs (`services.logind.settings.Login.HandleLidSwitch{,Docked}`) —
+  # старое имя работает, но печатает предупреждение при каждой оценке.
+  # Значения те же, что и у systemd в logind.conf.
+  services.logind.settings.Login = {
+    HandleLidSwitch = "ignore";
+    HandleLidSwitchDocked = "ignore";
   };
 
   system.stateVersion = "26.05";
