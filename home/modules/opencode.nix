@@ -199,7 +199,19 @@ in
 
   # ~/.config/opencode/oh-my-opencode-slim.json — config of the enabled plugin
   # (oh-my-opencode-slim reads its own file, nothing else).
-  xdg.configFile."opencode/oh-my-opencode-slim.json".text = builtins.toJSON slimConfig;
+  #
+  # `force = true` (2026-11-02): на sapphira файл однажды положили руками
+  # (2026-11-01, правка моделей до коммита 0c3e0d5). HM отказывается затирать
+  # обычный файл и падает с "would be clobbered" — а падает он ДО применения
+  # остальных домашних изменений, поэтому `home-manager-oqyude.service` висел
+  # в failed, а объявленная конфигурация не активировалась. Содержимое
+  # ручного файла и объявленного совпадает (отличается только перевод строки),
+  # так что перезапись безопасна. Файл объявлен здесь — правки только через
+  # репозиторий, иначе они молча теряются на следующей активации.
+  xdg.configFile."opencode/oh-my-opencode-slim.json" = {
+    text = builtins.toJSON slimConfig;
+    force = true;
+  };
 
   # ~/.config/opencode/service.json — v2 background service registration.
   # The v2 CLI wants a background service; it defaults to port 4096, which is
