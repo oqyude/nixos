@@ -99,23 +99,14 @@ let
   # (MiniMax-M3.1-Flash-Preview, MiniMax-M2.7-highspeed, ... — the retired v1
   # plugin config referenced the -Preview id everywhere; same class of bug as
   # the kimi-for-coding incident described in R1.x).
-  # 2026-11-03: the model goes DIRECT to MiniMax, console accounts abandoned
-  #   console-oqyude/MiniMax-M3.1-Flash -> minimax-coding-plan/MiniMax-M3.1-Flash
-  # Reason (owner, 2026-11-03, twice): «обращение через Opencode console к
-  # minimax может прерываться, потому лучше использовать как обычно» and
-  # «теперь надо использовать как обычно использовался minimax». The console
-  # accounts are not used at all any more: console-oqyude answers
-  # provider_status_code_2062, and every oh-my-opencode-slim agent died at spawn
-  # with "Model unavailable: console-oqyude/MiniMax-M3.1-Flash" — the
-  # orchestrator could not delegate anything.
-  #
-  # This is the SAME provider/model pair the director pins its workers to
-  # (`provider_primary` / `model_primary` in director.config.toml), so one
-  # budget, one gate: the quota probe measures exactly what the agents spend.
-  # The 2026-10-26 objection to this pairing was about the console account
-  # being a SEPARATE plan from the one the probe measured — that is not the
-  # case here; after T-100 the probe measures minimax-coding-plan itself.
-  modelFast = "minimax-coding-plan/MiniMax-M3.1-Flash";
+  # 2026-11-04 (owner: «переходи с minimax на deepseek, квота кончается»):
+  #   minimax-coding-plan/MiniMax-M3.1-Flash -> opencode-go/deepseek-v4.1-flash
+  # Same move the director made the same day for its workers
+  # (provider_primary/model_primary in director.config.toml): one provider, one
+  # budget, one gate. The console accounts stay abandoned (2026-11-03:
+  # console-oqyude answers provider_status_code_2062 and every agent died at
+  # spawn with "Model unavailable").
+  modelFast = "opencode-go/deepseek-v4.1-flash";
 
   # nixpkgs ast-grep only ships binary `ast-grep`; omo's ast-grep skill probes
   # for `sg` (or ast-grep). Provide both via a symlink wrapper.
