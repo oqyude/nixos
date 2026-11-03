@@ -181,6 +181,32 @@ in
           ];
         };
       };
+
+      # Auto-approval of tool permissions (owner, 2026-11-03: "разрешать всё
+      # будет автоматически, при этом не нужно оставлять ПК с открытыми
+      # вкладками и auto-accept").
+      #
+      # WHY: every path outside the session's working directory raises the
+      # `external_directory` permission and the turn sits waiting for a human
+      # click. An agent that works on the host (`~/.local/share/metaagent`,
+      # `/etc/nixos`, another repo) therefore cannot run unattended.
+      #
+      # SHAPE: v2 `permissions` is an ORDERED ruleset of
+      # {action, resource, effect}; the deprecated `permission` object with
+      # per-tool ask|allow|deny still works but is not used here.
+      #
+      # SCOPE, stated plainly: this allows every path and every shell command
+      # (bash included) without asking. It replaces a human click, not the
+      # safety rules of the agent itself — `secrets/`, `*.env`, `*.pem` and
+      # `.ssh/` stay off-limits by policy, not by prompt.
+      permissions = [
+        { action = "external_directory"; resource = "*"; effect = "allow"; }
+        { action = "read";               resource = "*"; effect = "allow"; }
+        { action = "edit";               resource = "*"; effect = "allow"; }
+        { action = "bash";               resource = "*"; effect = "allow"; }
+        { action = "webfetch";           resource = "*"; effect = "allow"; }
+        { action = "websearch";          resource = "*"; effect = "allow"; }
+      ];
     };
 
     # ~/.config/opencode/tui.json is a v1 concept. v2 reads CLI/TUI prefs from
