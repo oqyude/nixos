@@ -177,6 +177,13 @@ in
       model = modelFast;
 
       mcp.servers = {
+        # webpage MCP is OFF (owner, 2026-11-03: «давай выключим, если
+        # browser-control хватит»). The switch is `disabled`, NOT `enabled`:
+        # `"enabled": false` does not exist in the v2 schema and is silently
+        # ignored — the server kept starting and cost ~30 s per start on lamet
+        # (49 failures in one log, 1507 s wasted). Same trap for `timeout`: it
+        # is an OBJECT {startup, catalog, execution}, a bare number is
+        # ignored.
         webpage = {
           type = "local";
           command = [
@@ -186,6 +193,7 @@ in
             "webpage-mcp@latest"
             "webpage-mcp-stdio"
           ];
+          disabled = true;
         };
       };
 
