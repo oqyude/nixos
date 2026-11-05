@@ -34,6 +34,8 @@
     "opencode_web_service": "PID 1152, runs on 0.0.0.0:4096 (--cors https://opencode.zeroq.su), uptime ~21h, ~680 МБ RSS — без изменений",
     "herdr_service": "herdr 0.9.3, PID 110779, session herdr-prod; web-ui plugin на 127.0.0.1:7317, токен ротирован 2026-10-25 (старый → 401)",
     "nginx_lamet": "lamet.opencodes.zeroq.su → http://100.106.21.39:4096 (live-конфиг nginx; 6061 больше не слушает)",
+    "nginx_etherea": "etherea.opencodes.zeroq.su → http://100.125.228.63:4096 (tailscale; live 2026-11-05, HTTP 200, LE-сертификат выпущен). Апстрим: opencode v2.1.1 `serve --service` (service.json: hostname 0.0.0.0, port 4096, пароль opencode)",
+    "nginx_dejavu": "dejavu.opencodes.zeroq.su → http://100.86.134.111:4096 (tailscale). Vhost+ACME подняты 2026-11-05, но хост ОФФЛАЙН (last seen 8h) — 502 до возврата в tailnet и запуска opencode на 4096",
     "pwsh": "powershell-7.6.6 в замыкании сборки sapphira (T59, ADR-0008), НЕ активен: /run/current-system/sw/bin/pwsh появится после nixos-rebuild switch|boot"
   },
   "closed_attempts": [

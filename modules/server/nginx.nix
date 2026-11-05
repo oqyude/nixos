@@ -485,6 +485,48 @@ in
           proxyWebsockets = true;
         };
       };
+      # etherea (Windows, tailscale 100.125.228.63) — opencode v2 в
+      # service-режиме: `opencode serve --service` (PID 16596), читает
+      # ~/.config/opencode/service.json → hostname 0.0.0.0, port 4096,
+      # username/password (OPENCODE_SERVER_USERNAME/PASSWORD). Апстрим
+      # отдаёт web-UI и API на 4096.
+      #
+      # Upstream — tailscale-адрес, а не LAN: etherea подключён к tailnet
+      # (nmilocerdova49@), и LAN-адрес хоста не зафиксирован/не известен
+      # из реестра. Tailscale-адрес стабилен.
+      #
+      # DNS: *.opencodes.zeroq.su — wildcard CNAME на home.zeroq.su
+      # (37.128.246.126), поэтому поддомен etherea.opencodes.zeroq.su
+      # резолвится без правки zone.
+      #
+      # В service.json у etherea в `cors` прописан
+      # https://prplx-pc.opencodes.zeroq.su — это отдельное имя для
+      # этой же машины. CORS применяется только к cross-origin запросам;
+      # веб-UI, отданный через этот же nginx-vhost, идёт same-origin,
+      # поэтому расхождение имён на работу не влияет.
+      "etherea.opencodes.zeroq.su" = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://100.125.228.63:4096";
+          proxyWebsockets = true;
+        };
+      };
+      # dejavu (Windows, tailscale 100.86.134.111) — по образцу lamet.
+      # ВАЖНО: на момент правки (2026-11-05) узел dejavu ОФФЛАЙН —
+      # tailscale status: "offline, last seen 8h ago"; ssh по 22 и ICMP
+      # не проходят. Апстрим 100.86.134.111:4096 не проверен, потому
+      # что хост недоступен. Vhost поднимается вместе с etherea, и
+      # отдаёт 502, пока dejavu не поднимут и не запустят на нём
+      # opencode на 4096. Это ожидаемо, а не поломка конфига.
+      "dejavu.opencodes.zeroq.su" = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://100.86.134.111:4096";
+          proxyWebsockets = true;
+        };
+      };
       # sapphira itself: opencode web runs as a systemd user service
       # (programs.opencode.web.enable in home/modules/opencode.nix) on
       # 127.0.0.1:4096 with --hostname 0.0.0.0.
