@@ -23,6 +23,14 @@
       sddm = {
         enable = true;
         theme = "WhiteSur-light";
+        # Required by the WhiteSur SDDM themes (see the note in
+        # pkgs/by-name/wh/whitesur-kde/package.nix): the greeter needs the
+        # org.kde.breeze.components QML module from plasma-desktop and qtsvg
+        # for the theme's SVG assets.
+        extraPackages = with pkgs; [
+          kdePackages.plasma-desktop
+          kdePackages.qtsvg
+        ];
         wayland = {
           enable = true;
           compositor = "kwin";
