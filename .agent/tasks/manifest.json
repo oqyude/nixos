@@ -972,12 +972,35 @@
         "24c282b"
       ],
       "notes": "НЕ развёрнуто: pwsh попадает в /run/current-system/sw/bin только после nixos-rebuild switch|boot, то есть после активации владельцем/директором (merge_allowed = false у этого репозитория). powershell в lib/ci-tools.nix оставлен намеренно: PATH джобы раннера и системный PATH — разные контракты, джоба не должна зависеть от активации системного пакета. Второй эффект правки — возможность, а не сам набор: прогон ps1-тестов остаётся задачей репозитория metaagent-director."
+    },
+    {
+      "id": "T60",
+      "title": "OpenCode на rydiwo — desktop-адаптация + vhost rydiwo.opencodes.zeroq.su",
+      "type": "feature",
+      "status": "in_progress",
+      "origin": "user:direct 2026-11-06",
+      "depends_on": [],
+      "files": [
+        "home/modules/opencode-desktop.nix",
+        "home/secondary.nix",
+        "modules/server/nginx.nix"
+      ],
+      "description": "Запрос владельца: «адаптируй opencode под rydiwo, размести его под vhost rydiwo.opencodes.zeroq.su; по плагинам всё так же, как на vetymae — sapphira уже адаптировано, но там headless». Sapphira — единственный opencode, описанный в Nix, и он headless (только web-UI через nginx, GUI-инструменты бессмысленны). vetymae — эталон конфигурации, но он Windows и в Nix не описан. План: новый модуль home/modules/opencode-desktop.nix (импорт в home/secondary.nix → только rydiwo) с плагином oh-my-opencode-slim@3.0.5, конфигом slim и permissions как на vetymae, плюс browser-control MCP (@opencode-ai/browser-control@0.8.4 через npx с прогревом кэша) — единственный GUI-MCP, переносимый на NixOS; opencode serve как systemd user service на 0.0.0.0:4096 с --cors https://rydiwo.opencodes.zeroq.su и паролем из sops-окружения; vhost на sapphira проксирует на tailscale-адрес rydiwo 100.92.238.19 (LAN 192.168.1.102 — DHCP-lease, уже уезжал на LAMET). computer-use MCP (только Windows: pywinauto/comtypes/UIA) и genoffice MCP (Windows-поставка Electron-приложения, npm-пакета нет) не переносятся — зафиксировано в ADR-0009.",
+      "acceptance_criteria": [
+        "nix eval .#nixosConfigurations.rydiwo.config.system.build.toplevel — вычисляется; .#nixosConfigurations.sapphira не сломан",
+        "на rydiwo: systemctl --user status opencode-web → active, слушает 0.0.0.0:4096",
+        "на rydiwo: opencode plugin list → oh-my-opencode-slim 3.0.5 (не пусто)",
+        "https://rydiwo.opencodes.zeroq.su отдаёт web-UI opencode (basic-auth: opencode / пароль из sops)",
+        "DNS: rydiwo.opencodes.zeroq.su → 37.128.246.126 (wildcard CNAME *.opencodes.zeroq.su), без правки zone"
+      ],
+      "adr": "ADR-0009",
+      "notes": "Egress-прокси на rydiwo НЕ нужен (на sapphira opencode.ai недоступен напрямую ⇒ 3x-ui host-egress 127.0.0.1:10808; на rydiwo маршрут есть, проверено 2026-11-06). Рабочий opencode на sapphira (home/modules/opencode.nix) намеренно не рефакторился: правка нового хоста не должна ломать агента владельца. Chromium добавлен в home.packages rydiwo — без браузера browser-control мёртв; расширение подгружается пользователем вручную (unpacked)."
     }
   ],
-  "backlog_count": 37,
+  "backlog_count": 38,
   "backlog_count_breakdown": {
     "f_questions_waiting_owner": 22,
-    "pending_tasks": 15
+    "pending_tasks": 16
   },
-  "backlog_note": "Обновлено 2026-10-25: 22 F-вопроса владельцу + 14 pending задач. Pending: T10, T28, T29, T30, T31, T37, T47, T49, T50, T51, T53, T54, T55, T56. Закрыты: T3 (посылка опровергнута runtime-проверкой nftables), T4/T52 (guard → [Unit], vds исключён), T20 (CI execute-bit), T38 (ротация токена), T57 (синхронизация метаданных)."
+  "backlog_note": "Обновлено 2026-11-06: 22 F-вопроса владельцу + 16 pending задач. Pending: T10, T28, T29, T30, T31, T37, T47, T49, T50, T51, T53, T54, T55, T56, T60. Закрыты: T3 (посылка опровергнута runtime-проверкой nftables), T4/T52 (guard → [Unit], vds исключён), T20 (CI execute-bit), T38 (ротация токена), T57 (синхронизация метаданных)."
 }

@@ -527,6 +527,27 @@ in
           proxyWebsockets = true;
         };
       };
+      # rydiwo (Chuwi MiniBook, device: secondary) — opencode v2 как
+      # systemd user service на 0.0.0.0:4096 (home/modules/opencode-desktop.nix).
+      # Это desktop-адаптация: тот же плагин oh-my-opencode-slim@3.0.5 и тот
+      # же конфиг, что на vetymae, плюс browser-control MCP (видимый браузер).
+      #
+      # Upstream — tailscale-адрес 100.92.238.19, а НЕ LAN 192.168.1.102:
+      # LAN-адрес rydiwo — DHCP-lease, и он уже один раз уезжал на другую
+      # машину (LAMET, см. ~/.ssh/config на vetymae). Tailscale-адрес стабилен;
+      # проверено с sapphira 2026-11-06: `tailscale ping 100.92.238.19` →
+      # direct, 26 ms.
+      #
+      # DNS: *.opencodes.zeroq.su — wildcard CNAME на home.zeroq.su
+      # (37.128.246.126), отдельная запись в zone не нужна.
+      "rydiwo.opencodes.zeroq.su" = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://100.92.238.19:4096";
+          proxyWebsockets = true;
+        };
+      };
       # sapphira itself: opencode web runs as a systemd user service
       # (programs.opencode.web.enable in home/modules/opencode.nix) on
       # 127.0.0.1:4096 with --hostname 0.0.0.0.
