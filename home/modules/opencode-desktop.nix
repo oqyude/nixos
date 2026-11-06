@@ -326,8 +326,14 @@ in
   # Nix-управляемом opencode.json, команда отвечает "already configured" и
   # только ставит пакет. Ошибки игнорируются осознанно: сорванный прогрев не
   # должен ломать активацию — сервер работает и без плагина.
+  #
+  # timeout — страховка от ЗАВИСШЕЙ активации: команда ходит в сеть
+  # (npm-реестр + console opencode), и на ноутбуке с мобильным Wi-Fi
+  # зависший npx/opencode держит всю активацию home-manager, а значит и
+  # пересборку, намертво. Отсутствие плагина — известное и лечимое
+  # состояние (см. R1.19), зависшая активация — нет.
   home.activation.installOpencodePlugin = lib.hm.dag.entryAfter [ ] ''
-    ${opencodeV2}/bin/opencode plugin add ${pluginSpec} >/dev/null 2>&1 || true
+    timeout 600 ${opencodeV2}/bin/opencode plugin add ${pluginSpec} >/dev/null 2>&1 || true
   '';
 
   # Прогрев npx-кеша для browser-control MCP.
@@ -338,8 +344,11 @@ in
   # ~/.npm/_npx, Nix им не управляет, поэтому после каждой чистки кэша
   # проблема возвращается. Прогрев на активации делает первый реальный
   # спавн мгновенным. Ошибка игнорируется осознанно.
+  #
+  # timeout — по той же причине, что и в installOpencodePlugin: зависшая
+  # загрузка npm-пакета не должна держать активацию (и пересборку).
   home.activation.warmBrowserControlMcp = lib.hm.dag.entryAfter [ ] ''
-    ${pkgs.nodejs_22}/bin/npx -y -p ${browserControlSpec} true >/dev/null 2>&1 || true
+    timeout 900 ${pkgs.nodejs_22}/bin/npx -y -p ${browserControlSpec} true >/dev/null 2>&1 || true
   '';
 
   # Ассеты browser-control из npm-пакета: SKILL.md (чтобы агент знал, как

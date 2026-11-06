@@ -90,6 +90,43 @@ in
     };
   };
 
+  # Каталоги-родители секретов opencode должны принадлежать ПОЛЬЗОВАТЕЛЮ.
+  #
+  # sops-nix создаёт отсутствующие каталоги-родители секретов от root
+  # (0755 root:root) и НЕ меняет владельца уже существующих. На rydiwo
+  # секреты opencode появились раньше, чем home-manager (13.10 против
+  # 06.11), поэтому ~/.config/opencode и ~/.local/share/opencode остались
+  # root:root — и home-manager не смог создать в них свои файлы:
+  #   ln: failed to create symbolic link
+  #     '/home/oqyude/.config/opencode/opencode.json': Permission denied
+  # → home-manager-oqyude.service падал (status=1/FAILURE), домашняя
+  # активация не применялась. На sapphira те же каталоги создал
+  # home-manager (как пользователь) — там sops-nix ничего не сломал, но
+  # тот же класс граблей повторится, если каталог когда-нибудь удалят.
+  #
+  # sops-nix не умеет менять владельца каталога-родителя, поэтому делаем
+  # это в активации системы (root). Порядок неважен: каталог либо уже
+  # создан sops-никсом (тогда chown его чинит), либо создаётся здесь
+  # (тогда sops-nix увидит существующий каталог и не станет менять
+  # владельца). Snippet идёт после "users" — до старта
+  # home-manager-<user>.service, который запускает switch-to-configuration.
+  #
+  # chown/install идут через `|| echo`: activate скрипт имеет ERR-trap и
+  # завершился бы с `_status=1` (активация объявлена проваленной), хотя
+  # система уже переключена.
+  system.activationScripts.opencodeSecretDirs = {
+    text = ''
+      for dir in \
+        ${xlib.dirs.user-home}/.config/opencode \
+        ${xlib.dirs.user-home}/.local/share/opencode
+      do
+        install -d -m 0755 "$dir" || echo "warning: не удалось создать $dir" >&2
+        chown ${user}:${userGroup} "$dir" || echo "warning: не удалось сменить владельца $dir" >&2
+      done
+    '';
+    deps = [ "users" ];
+  };
+
   sops = {
     age = {
       sshKeyPaths = [
