@@ -84,6 +84,55 @@ Windows и в Nix не описан.
 rydiwo — полноценная нода наравне с sapphira (opencode web + свой vhost),
 а не «полу-DNS-запись».
 
+**Инцидент на первой пересборке rydiwo (2026-11-06, 15:11).**
+
+`home-manager-oqyude.service` упал:
+
+```
+ln: failed to create symbolic link
+  '/home/oqyude/.config/opencode/opencode.json': Permission denied
+→ home-manager-oqyude.service: status=1/FAILURE
+```
+
+Причина — **не** в модуле opencode, а в общем механизме sops-nix: он
+создаёт отсутствующие каталоги-родители секретов **от root** (0755
+root:root) и **не меняет владельца уже существующих**. На rydiwo секреты
+opencode появились раньше home-manager (13.10 против 06.11), поэтому
+`~/.config/opencode` и `~/.local/share/opencode` остались `root:root` —
+и home-manager не смог создать в них свои файлы (второй каталог важен и
+для самой БД `opencode.db`). На sapphira те же каталоги создал
+home-manager (как пользователь) — там sops-nix ничего не сломал, но тот
+же класс граблей повторился бы, если бы каталог когда-нибудь удалили.
+
+sops-nix не умеет менять владельца каталога-родителя, поэтому фикс —
+в активации системы: `system.activationScripts.opencodeSecretDirs` в
+`modules/users.nix` (root, снипет после `users`, то есть до старта
+`home-manager-<user>.service`). Владелец каталогов меняется на
+`<user>:<group>`; `chown`/`install` идут через `|| echo`, потому что у
+activate-скрипта ERR-trap и падение сделало бы активацию проваленной
+при уже переключённой системе.
+
+Разблокировка без пересборки (сделано вручную 15:18): `chown` двух
+каталогов + `systemctl restart home-manager-oqyude.service` → активация
+прошла, `opencode-web.service` поднялся, `opencode plugin list` показал
+`oh-my-opencode-slim 3.0.5`, web-UI отдал 200, MCP `browser-control`
+заспавнился.
+
+Плюс в этом же заходе: `timeout 600`/`timeout 900` на прогрев плагина и
+npx-кеша в `home/modules/opencode-desktop.nix` — зависшая загрузка не
+должна держать активацию (и пересборку) намертво.
+
+**Открытый пункт: провайдер `opencode-go` на rydiwo.** Реестр моделей
+берётся из `GET https://opencode.ai/console/api/v2/config`, и этот запрос
+требует OAuth-учётку интеграции `opencode` — она лежит в БД opencode
+(таблица `credential`, тип `oauth`: access/refresh/expires). На rydiwo её
+нет ⇒ реестр = только встроенный `opencode`, и агенты slim-плагина
+(`opencode-go/deepseek-v4.1-flash`) упадут с `ProviderModelNotFoundError`
+(ровно тот класс граблей, что в R1.19). Проверено: с sapphira тот же
+endpoint отдаёт 200 с OAuth-токеном и **без** прокси — то есть внешний
+доступ не при чём, нужен именно логин. На rydiwo `opencode auth list`
+→ «No authenticated integrations».
+
 **Обоснование.**
 
 - **Отдельный модуль, а не переработка `home/modules/opencode.nix`.**
