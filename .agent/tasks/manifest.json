@@ -995,12 +995,31 @@
       ],
       "adr": "ADR-0009",
       "notes": "Egress-прокси на rydiwo НЕ нужен (на sapphira opencode.ai недоступен напрямую ⇒ 3x-ui host-egress 127.0.0.1:10808; на rydiwo маршрут есть, проверено 2026-11-06). Рабочий opencode на sapphira (home/modules/opencode.nix) намеренно не рефакторился: правка нового хоста не должна ломать агента владельца. Chromium добавлен в home.packages rydiwo — без браузера browser-control мёртв; расширение подгружается пользователем вручную (unpacked). РЕШЕНИЕ ВЛАДЕЛЬЦА 2026-11-06: browser-control остаётся, computer-use и genoffice сознательно вне объёма (Windows-only) — задача закрыта по этому критерию; главное — rydiwo теперь полноценная нода наравне с sapphira. Пересборку владелец запускает сам: `deploy .#rydiwo`, затем `deploy .#sapphira` (с sapphira). ИНЦИДЕНТ 2026-11-06 15:11: пересборка rydiwo упала — home-manager-oqyude.service status=1/FAILURE, `ln: failed to create symbolic link '/home/oqyude/.config/opencode/opencode.json': Permission denied`. Причина вне модуля opencode: sops-nix создаёт каталоги-родители секретов от root (0755 root:root) и не меняет владельца существующих; на rydiwo секреты opencode (13.10) появились раньше home-manager (06.11) ⇒ ~/.config/opencode и ~/.local/share/opencode остались root:root. Фикс: system.activationScripts.opencodeSecretDirs в modules/users.nix (root, снипет после 'users', chown через '|| echo' из-за ERR-trap у activate-скрипта) + timeout 600/900 на прогрев плагина и npx-кеша в home/modules/opencode-desktop.nix (зависшая загрузка не должна держать активацию). Разблокировано без пересборки: chown каталогов + systemctl restart home-manager-oqyude.service → активация прошла, opencode-web active на 0.0.0.0:4096, `opencode plugin list` → oh-my-opencode-slim 3.0.5, web-UI 200, MCP browser-control заспавнился, с sapphira апстрим 100.92.238.19:4096 отвечает (API 200 с паролем / 401 без). ОТКРЫТО: провайдера `opencode-go` в реестре rydiwo нет — реестр берётся из GET https://opencode.ai/console/api/v2/config, который требует OAuth-учётку интеграции `opencode` (в БД opencode, таблица credential, тип oauth); на rydiwo её нет ⇒ агенты slim-плагина упадут с ProviderModelNotFoundError. Внешний доступ не при чём: с sapphira тот же endpoint отдаёт 200 с OAuth-токеном и без прокси. Нужен `opencode auth login` на rydiwo (действие владельца) либо перенос учётки в sops-секрет (правка secrets/ — только со слов владельца)."
+    },
+    {
+      "id": "T61",
+      "title": "vetymae.webmux.zeroq.su — публикация webmux через sapphira",
+      "type": "feature",
+      "status": "in_progress",
+      "origin": "user:direct 2026-11-06",
+      "depends_on": [],
+      "files": [
+        "modules/server/nginx.nix"
+      ],
+      "description": "Запрос владельца: «на текущем хосте должен подняться webmux, на порту 8083; нужен реверс прокси через sapphira; vetymae.webmux.zeroq.su — vhost». Проверено на живом хосте: webmux (github.com/samoylenkodmitry/webmux — веб-терминал к tmux-сессиям, НЕ npm-пакет webmux от windmill-labs) уже поднят на vetymae как scheduled task WebmuxServe (run-service.ps1: HOST=0.0.0.0 PORT=8083 TMUX_BIN=psmux), отвечает 200 на 127.0.0.1:8083 и на 192.168.1.100:8083. Не хватало только входа снаружи. Vhost в modules/server/nginx.nix: proxyPass на LAN-адрес 192.168.1.100:8083 (tailscaled на vetymae в NoState — пакетов не принимает, как и у vetymae.opencodes.zeroq.su), proxyWebsockets + proxy_read/send_timeout 3600s (терминал стримится по WS /ws/session/<name>), вход — Authelia forward-auth по образцу tty.zeroq.su.",
+      "acceptance_criteria": [
+        "nix eval .#nixosConfigurations.sapphira.config.system.build.toplevel — вычисляется; vhost vetymae.webmux.zeroq.su присутствует в services.nginx.virtualHosts",
+        "после deploy .#sapphira: https://vetymae.webmux.zeroq.su отдаёт 302 на authelia.zeroq.su (без сессии) и страницу терминала (с сессией)",
+        "ACME-сертификат для vetymae.webmux.zeroq.su получен (wildcard *.webmux.zeroq.su в DNS уже есть)"
+      ],
+      "adr": "ADR-0010",
+      "notes": "БЕЗ Authelia это был бы публичный шелл: у webmux нет своей аутентификации («кто достучался до порта — получил шелл твоим пользователем»), а его README прямо запрещает 0.0.0.0 и публичный интернет; на vetymae 0.0.0.0 нужен, чтобы nginx с другого хоста достучался по LAN. Поэтому вход — Authelia (wildcard *.zeroq.su в access_control покрывает домен, правки политики не нужно). LAN-экспозиция 0.0.0.0:8083 остаётся: любой в домашней сети получает шелл без пароля — осознанно. Не развёрнуто: активация = deploy .#sapphira на sapphira."
     }
   ],
-  "backlog_count": 38,
+  "backlog_count": 39,
   "backlog_count_breakdown": {
     "f_questions_waiting_owner": 22,
-    "pending_tasks": 16
+    "pending_tasks": 17
   },
-  "backlog_note": "Обновлено 2026-11-06: 22 F-вопроса владельцу + 16 pending задач. Pending: T10, T28, T29, T30, T31, T37, T47, T49, T50, T51, T53, T54, T55, T56, T60. Закрыты: T3 (посылка опровергнута runtime-проверкой nftables), T4/T52 (guard → [Unit], vds исключён), T20 (CI execute-bit), T38 (ротация токена), T57 (синхронизация метаданных)."
+  "backlog_note": "Обновлено 2026-11-06: 22 F-вопроса владельцу + 17 pending задач. Pending: T10, T28, T29, T30, T31, T37, T47, T49, T50, T51, T53, T54, T55, T56, T60, T61. Закрыты: T3 (посылка опровергнута runtime-проверкой nftables), T4/T52 (guard → [Unit], vds исключён), T20 (CI execute-bit), T38 (ротация токена), T57 (синхронизация метаданных)."
 }

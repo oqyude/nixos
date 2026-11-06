@@ -267,6 +267,69 @@ in
           };
         };
       };
+      # vetymae.webmux.zeroq.su — webmux (github.com/samoylenkodmitry/webmux):
+      # веб-терминал к tmux-сессиям на vetymae (Windows 11, 192.168.1.100).
+      # На хосте поднято scheduled task'ом "WebmuxServe" (run-service.ps1:
+      # HOST=0.0.0.0, PORT=8083, TMUX_BIN=psmux), слушает 0.0.0.0:8083.
+      #
+      # Upstream — LAN-адрес vetymae (192.168.1.100), а не tailscale
+      # 100.86.62.4: tailscaled на vetymae застрял в NoState с обнулённым
+      # PrivateNodeKey — узел виден в tailnet, но не принимает ни одного
+      # пакета (тот же аргумент, что у vetymae.opencodes.zeroq.su выше).
+      #
+      # БЕЗ Authelia это был бы ПУБЛИЧНЫЙ ШЕЛЛ: у webmux нет своей
+      # аутентификации («кто достучался до порта — получил шелл твоим
+      # пользователем»), а его README прямо запрещает 0.0.0.0 и публичный
+      # интернет. Поэтому вход — Authelia forward-auth, ровно как на
+      # tty.zeroq.su (ttyd — тоже веб-терминал). Wildcard `*.zeroq.su` в
+      # access_control покрывает домен, правки политики не нужны.
+      #
+      # proxyWebsockets обязателен: терминал стримится по WS
+      # (/ws/session/<name>), без апгрейда вкладка не получит ни байта.
+      "vetymae.webmux.zeroq.su" = {
+        forceSSL = true;
+        enableACME = true;
+        locations = {
+          "/" = {
+            proxyPass = "http://192.168.1.100:8083";
+            proxyWebsockets = true;
+            extraConfig = ''
+              auth_request /authelia;
+              auth_request_set $authelia_user $upstream_http_remote_user;
+              # Тот же 401→302-трюк, что на tty.zeroq.su и vtimeline.zeroq.su:
+              # auth_request считает только 2xx/4xx, а Authelia на анонимном
+              # запросе отдаёт 302 + Location → nginx показал бы 500 «auth
+              # request unexpected status». Редирект ведёт на логин с
+              # абсолютным rd, чтобы после входа вернуться именно сюда.
+              error_page 401 =302 https://authelia.zeroq.su/?rd=$scheme://$host$request_uri;
+              # Долгоживущие WS-соединения терминала: дефолтные 60 с
+              # read/send-timeout рвут простаивающую вкладку.
+              proxy_read_timeout 3600s;
+              proxy_send_timeout 3600s;
+            '';
+          };
+          "= /authelia" = {
+            extraConfig = ''
+              internal;
+              proxy_pass http://127.0.0.1:9091/api/authz/forward-auth;
+              # Тело запроса в subrequest не отправляем: Authelia решает по
+              # заголовкам, а без этого он ждёт байты, которых не будет, и
+              # отвечает 408 — статус, который auth_request не классифицирует
+              # (подробный комментарий у vtimeline.zeroq.su).
+              proxy_pass_request_body off;
+              proxy_set_header Content-Length "";
+              proxy_set_header X-Original-URL $request_uri;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header X-Forwarded-Host $host;
+              proxy_set_header X-Forwarded-Method $request_method;
+              proxy_set_header X-Forwarded-Uri $request_uri;
+              proxy_set_header X-Forwarded-For $remote_addr;
+              # Форсируем 401 вместо 302 + Location — см. комментарий выше.
+              proxy_set_header Accept "application/json";
+            '';
+          };
+        };
+      };
       # engipy.zeroq.su — FastAPI + SBERT webapp (подбор ГЭСН по ВОР).
       #
       # Vhost был вынесен в modules/server/engipy-frontend.nix

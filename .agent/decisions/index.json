@@ -185,6 +185,27 @@
       "task": "T60",
       "resolution": "Новый модуль home/modules/opencode-desktop.nix (импорт в home/secondary.nix → только rydiwo) + vhost rydiwo.opencodes.zeroq.su в modules/server/nginx.nix (sapphira). Плагин и конфиг — как на vetymae: oh-my-opencode-slim@3.0.5, 5 агентов на opencode-go/deepseek-v4.1-flash, дефолт модели, те же 6 правил permissions, webpage-MCP выключен. Плюс browser-control MCP (@opencode-ai/browser-control@0.8.4, npx + прогрев кэша на активации, SKILL.md и распакованное расширение копируются из npm-пакета) — в отличие от headless sapphira. opencode serve — systemd user service на 0.0.0.0:4096, --cors https://rydiwo.opencodes.zeroq.su, пароль из sops-окружения (~/.config/opencode/server.env), фоновый сервис v2 выключен, CLI через обёртку oc. Upstream в vhost'е — tailscale-адрес 100.92.238.19, а не LAN 192.168.1.102 (DHCP-lease уже уезжал на LAMET). Egress-прокси не нужен: на rydiwo opencode.ai достижим напрямую (проверено 2026-11-06), 3x-ui на хосте нет. НЕ перенесены: computer-use MCP (инструмент только под Windows — pywinauto/comtypes/UIA) и genoffice MCP (CLI из Windows-поставки Electron-приложения, публичного npm-пакета нет). Рабочий opencode на sapphira (home/modules/opencode.nix) не тронут — правка нового хоста не может его сломать.",
       "moot_unless": "Владелец требует полного паритета с vetymae по MCP (тогда нужен Linux-порт computer-use и сборка GenOffice под Linux) или решает, что browser-control на rydiwo не нужен."
+    },
+    {
+      "id": "0010",
+      "title": "vetymae.webmux.zeroq.su — публикация webmux через sapphira, вход через Authelia",
+      "status": "accepted",
+      "date": "2026-11-06",
+      "file": ".agent/decisions/0010-webmux-vhost.md",
+      "tags": [
+        "nginx",
+        "webmux",
+        "vetymae",
+        "authelia",
+        "websocket",
+        "tmux",
+        "security",
+        "invariant",
+        "T61"
+      ],
+      "task": "T61",
+      "resolution": "Vhost vetymae.webmux.zeroq.su в modules/server/nginx.nix (sapphira): proxyPass http://192.168.1.100:8083 (LAN-адрес vetymae — tailscaled на vetymae в NoState и пакетов не принимает, как и у vetymae.opencodes.zeroq.su), proxyWebsockets + proxy_read/send_timeout 3600s (терминал стримится по WS /ws/session/<name>), вход — Authelia forward-auth по образцу tty.zeroq.su (wildcard *.zeroq.su в access_control покрывает домен, правки политики не нужно). ГЛАВНОЕ: у webmux (github.com/samoylenkodmitry/webmux) НЕТ аутентификации — README прямо запрещает 0.0.0.0 и публичный интернет, а на vetymae он слушает 0.0.0.0:8083 (нужно, чтобы nginx с другого хоста достучался по LAN) ⇒ голый прокси дал бы публичный шелл на Windows-машину владельца. webmux на vetymae уже поднят владельцем: git-клон, scheduled task WebmuxServe (run-service.ps1: HOST=0.0.0.0 PORT=8083 TMUX_BIN=psmux), 200 на 127.0.0.1:8083 и на 192.168.1.100:8083. DNS: wildcard *.webmux.zeroq.su уже есть (→ 37.128.246.126), сертификат — ACME-01 на switch'е sapphira.",
+      "moot_unless": "Владелец решает публиковать webmux без SSO (тогда webmux сам получает пароль/токен — сейчас у него нет никакой аутентификации) или переносит терминал на tailnet-only доступ."
     }
   ],
   "proposals": [
