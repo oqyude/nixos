@@ -994,7 +994,7 @@
         "DNS: rydiwo.opencodes.zeroq.su → 37.128.246.126 (wildcard CNAME *.opencodes.zeroq.su), без правки zone"
       ],
       "adr": "ADR-0009",
-      "notes": "Egress-прокси на rydiwo НЕ нужен (на sapphira opencode.ai недоступен напрямую ⇒ 3x-ui host-egress 127.0.0.1:10808; на rydiwo маршрут есть, проверено 2026-11-06). Рабочий opencode на sapphira (home/modules/opencode.nix) намеренно не рефакторился: правка нового хоста не должна ломать агента владельца. Chromium добавлен в home.packages rydiwo — без браузера browser-control мёртв; расширение подгружается пользователем вручную (unpacked)."
+      "notes": "Egress-прокси на rydiwo НЕ нужен (на sapphira opencode.ai недоступен напрямую ⇒ 3x-ui host-egress 127.0.0.1:10808; на rydiwo маршрут есть, проверено 2026-11-06). Рабочий opencode на sapphira (home/modules/opencode.nix) намеренно не рефакторился: правка нового хоста не должна ломать агента владельца. Chromium добавлен в home.packages rydiwo — без браузера browser-control мёртв; расширение подгружается пользователем вручную (unpacked). РЕШЕНИЕ ВЛАДЕЛЬЦА 2026-11-06: browser-control остаётся, computer-use и genoffice сознательно вне объёма (Windows-only) — задача закрыта по этому критерию; главное — rydiwo теперь полноценная нода наравне с sapphira. Пересборку владелец запускает сам: `deploy .#rydiwo`, затем `deploy .#sapphira` (с sapphira). Код доставлен: gitea dev 4fdd933 (merge agent/opencode-rydiwo), /etc/nixos на sapphira и rydiwo — на 4fdd933; обе конфигурации вычисляются (drvPath) на sapphira."
     }
   ],
   "backlog_count": 38,
