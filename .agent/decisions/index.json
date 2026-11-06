@@ -1,6 +1,6 @@
 {
   "version": "3.0.0",
-  "updated_at": "2026-10-27T01:55",
+  "updated_at": "2026-11-06T11:45",
   "decisions": [
     {
       "id": "0001",
@@ -161,6 +161,30 @@
       "resolution": "environment.systemPackages = [ pkgs.powershell ] в configurations/server.nix (тело модуля только sapphira, configurations/default.nix:31-34). Причина: без pwsh в системном PATH ps1-ветка metaagent-director (director.ps1 + её тесты) на хосте всегда уходит в skip и проверяется только чтением. Не в modules/essentials/packages.nix — тот список общий для всех NixOS-хостов флейка, включая 1-vCPU vds otreca; замыкание powershell — 300.2 MiB. powershell в lib/ci-tools.nix остаётся: это PATH джобы раннера и devshell, а не системный PATH. Проверено: сборка nixos-rebuild build --flake .#sapphira успешна, pwsh 7.6.6 в собранной системе, у otreca/atoridu/rydiwo/wsl PowerShell отсутствует.",
       "moot_unless": "ps1-твин директора перестаёт поддерживаться (остаётся одна реализация) или ps1-тесты переезжают в CI-джобу, где PATH раннера уже содержит powershell.",
       "resolved_at": "2026-10-27"
+    },
+    {
+      "id": "0009",
+      "title": "OpenCode на rydiwo — desktop-адаптация под vhost rydiwo.opencodes.zeroq.su",
+      "status": "accepted",
+      "date": "2026-11-06",
+      "file": ".agent/decisions/0009-opencode-rydiwo.md",
+      "tags": [
+        "opencode",
+        "v2",
+        "rydiwo",
+        "desktop",
+        "nginx",
+        "tailscale",
+        "plugin",
+        "mcp",
+        "browser-control",
+        "invariant",
+        "R1.19",
+        "T60"
+      ],
+      "task": "T60",
+      "resolution": "Новый модуль home/modules/opencode-desktop.nix (импорт в home/secondary.nix → только rydiwo) + vhost rydiwo.opencodes.zeroq.su в modules/server/nginx.nix (sapphira). Плагин и конфиг — как на vetymae: oh-my-opencode-slim@3.0.5, 5 агентов на opencode-go/deepseek-v4.1-flash, дефолт модели, те же 6 правил permissions, webpage-MCP выключен. Плюс browser-control MCP (@opencode-ai/browser-control@0.8.4, npx + прогрев кэша на активации, SKILL.md и распакованное расширение копируются из npm-пакета) — в отличие от headless sapphira. opencode serve — systemd user service на 0.0.0.0:4096, --cors https://rydiwo.opencodes.zeroq.su, пароль из sops-окружения (~/.config/opencode/server.env), фоновый сервис v2 выключен, CLI через обёртку oc. Upstream в vhost'е — tailscale-адрес 100.92.238.19, а не LAN 192.168.1.102 (DHCP-lease уже уезжал на LAMET). Egress-прокси не нужен: на rydiwo opencode.ai достижим напрямую (проверено 2026-11-06), 3x-ui на хосте нет. НЕ перенесены: computer-use MCP (инструмент только под Windows — pywinauto/comtypes/UIA) и genoffice MCP (CLI из Windows-поставки Electron-приложения, публичного npm-пакета нет). Рабочий opencode на sapphira (home/modules/opencode.nix) не тронут — правка нового хоста не может его сломать.",
+      "moot_unless": "Владелец требует полного паритета с vetymae по MCP (тогда нужен Linux-порт computer-use и сборка GenOffice под Linux) или решает, что browser-control на rydiwo не нужен."
     }
   ],
   "proposals": [

@@ -29,6 +29,9 @@ in
     ./modules/plasma-manager.nix
     ./modules/herdr.nix
     ./modules/herdr-runtime.nix
+    # opencode v2 + oh-my-opencode-slim (desktop-адаптация, зеркало vetymae).
+    # vhost: https://rydiwo.opencodes.zeroq.su (nginx на sapphira).
+    ./modules/opencode-desktop.nix
     # ./modules/noctalia.nix
   ];
   xdg = {
