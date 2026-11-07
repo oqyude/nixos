@@ -120,11 +120,21 @@ let
   # ~/.config/opencode/oh-my-opencode-slim.json
   slimConfig = {
     agents = {
-      orchestrator = { model = modelFast; };
-      explorer = { model = modelFast; };
-      oracle = { model = modelFast; };
-      designer = { model = modelFast; };
-      fixer = { model = modelFast; };
+      orchestrator = {
+        model = modelFast;
+      };
+      explorer = {
+        model = modelFast;
+      };
+      oracle = {
+        model = modelFast;
+      };
+      designer = {
+        model = modelFast;
+      };
+      fixer = {
+        model = modelFast;
+      };
     };
   };
 in
@@ -215,12 +225,36 @@ in
       # safety rules of the agent itself — `secrets/`, `*.env`, `*.pem` and
       # `.ssh/` stay off-limits by policy, not by prompt.
       permissions = [
-        { action = "external_directory"; resource = "*"; effect = "allow"; }
-        { action = "read";               resource = "*"; effect = "allow"; }
-        { action = "edit";               resource = "*"; effect = "allow"; }
-        { action = "bash";               resource = "*"; effect = "allow"; }
-        { action = "webfetch";           resource = "*"; effect = "allow"; }
-        { action = "websearch";          resource = "*"; effect = "allow"; }
+        {
+          action = "external_directory";
+          resource = "*";
+          effect = "allow";
+        }
+        {
+          action = "read";
+          resource = "*";
+          effect = "allow";
+        }
+        {
+          action = "edit";
+          resource = "*";
+          effect = "allow";
+        }
+        {
+          action = "bash";
+          resource = "*";
+          effect = "allow";
+        }
+        {
+          action = "webfetch";
+          resource = "*";
+          effect = "allow";
+        }
+        {
+          action = "websearch";
+          resource = "*";
+          effect = "allow";
+        }
       ];
     };
 

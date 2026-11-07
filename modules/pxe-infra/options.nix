@@ -282,7 +282,10 @@
         '';
       };
       bootMode = lib.mkOption {
-        type = lib.types.enum [ "direct" "pxe" ];
+        type = lib.types.enum [
+          "direct"
+          "pxe"
+        ];
         default = "direct";
         description = ''
           How the guest obtains its boot image.

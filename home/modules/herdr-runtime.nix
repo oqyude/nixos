@@ -30,5 +30,8 @@
   # node < 18 отсутствует («herdr web ui needs Node 18 or newer for its
   # terminal sidecar»). На sapphira node уже был через opencode.nix, на
   # rydiwo нет — добавляем сюда, чтобы plugin-install прошёл preflight.
-  home.packages = with pkgs; [ bun nodejs_22 ];
+  home.packages = with pkgs; [
+    bun
+    nodejs_22
+  ];
 }

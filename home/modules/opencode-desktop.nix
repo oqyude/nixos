@@ -100,11 +100,21 @@ let
   # Конфиг slim-плагина — зеркало vetymae (~/.config/opencode/oh-my-opencode-slim.json).
   slimConfig = {
     agents = {
-      orchestrator = { model = modelFast; };
-      explorer = { model = modelFast; };
-      oracle = { model = modelFast; };
-      designer = { model = modelFast; };
-      fixer = { model = modelFast; };
+      orchestrator = {
+        model = modelFast;
+      };
+      explorer = {
+        model = modelFast;
+      };
+      oracle = {
+        model = modelFast;
+      };
+      designer = {
+        model = modelFast;
+      };
+      fixer = {
+        model = modelFast;
+      };
     };
   };
 
@@ -210,12 +220,36 @@ in
       # Границы: это заменяет клик мышью, а не правила безопасности агента —
       # secrets/, *.env, *.pem и .ssh/ остаются вне зоны по политике.
       permissions = [
-        { action = "external_directory"; resource = "*"; effect = "allow"; }
-        { action = "read";               resource = "*"; effect = "allow"; }
-        { action = "edit";               resource = "*"; effect = "allow"; }
-        { action = "bash";               resource = "*"; effect = "allow"; }
-        { action = "webfetch";           resource = "*"; effect = "allow"; }
-        { action = "websearch";          resource = "*"; effect = "allow"; }
+        {
+          action = "external_directory";
+          resource = "*";
+          effect = "allow";
+        }
+        {
+          action = "read";
+          resource = "*";
+          effect = "allow";
+        }
+        {
+          action = "edit";
+          resource = "*";
+          effect = "allow";
+        }
+        {
+          action = "bash";
+          resource = "*";
+          effect = "allow";
+        }
+        {
+          action = "webfetch";
+          resource = "*";
+          effect = "allow";
+        }
+        {
+          action = "websearch";
+          resource = "*";
+          effect = "allow";
+        }
       ];
     };
   };

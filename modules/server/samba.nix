@@ -58,7 +58,7 @@ in
           "force group" = "root";
         };
         "${xlib.device.username}" = {
-          "path" = "${xlib.dirs.server-home}";
+          "path" = "${xlib.dirs.user-home}";
           "browseable" = "yes";
           "read only" = "no";
           "valid users" = "${xlib.device.username}";

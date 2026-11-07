@@ -91,8 +91,7 @@
   # В otreca аналогичный юнит определён в `modules/vds/default.nix` с
   # другим `PANEL_URL`/`apiToken`.
   systemd.services."3xui-reconfig" = {
-    description =
-      "Перегенерировать config.json 3x-ui из БД и рестартнуть xray (R1.18).";
+    description = "Перегенерировать config.json 3x-ui из БД и рестартнуть xray (R1.18).";
     serviceConfig = {
       Type = "oneshot";
       ExecStart = lib.getExe config.modules."3x-ui".reconfig;

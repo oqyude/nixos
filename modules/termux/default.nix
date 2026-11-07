@@ -41,39 +41,39 @@ in
   # Generate the host key on first activation (idempotent).
   build.activation = {
     sshd = ''
-    if [[ ! -d "${sshdDir}" ]]; then
-      $DRY_RUN_CMD rm -rf "${sshdTmpDir}"
-      $DRY_RUN_CMD mkdir -p "${sshdTmpDir}"
-      $VERBOSE_ECHO "Generating sshd host key..."
-      $DRY_RUN_CMD ${pkgs.openssh}/bin/ssh-keygen -t ed25519 -f "${sshdTmpDir}/ssh_host_ed25519_key" -N ""
-      $DRY_RUN_CMD mv "${sshdTmpDir}" "${sshdDir}"
-    fi
-  '';
+      if [[ ! -d "${sshdDir}" ]]; then
+        $DRY_RUN_CMD rm -rf "${sshdTmpDir}"
+        $DRY_RUN_CMD mkdir -p "${sshdTmpDir}"
+        $VERBOSE_ECHO "Generating sshd host key..."
+        $DRY_RUN_CMD ${pkgs.openssh}/bin/ssh-keygen -t ed25519 -f "${sshdTmpDir}/ssh_host_ed25519_key" -N ""
+        $DRY_RUN_CMD mv "${sshdTmpDir}" "${sshdDir}"
+      fi
+    '';
 
-  # nix-on-droid's session-init adds ~/.nix-defexpr/channels to NIX_PATH
-  # unconditionally; nix warns about the missing dir on every invocation.
-  # Making it exist silences the warning. Must be done in activation (not
-  # home-manager): ~/.nix-defexpr/channels is a symlink into
-  # ~/.local/state/nix/profiles/channels (dangling until it exists), which
-  # home-manager cannot link into. mkdir -p refuses to traverse a dangling
-  # symlink, so create the real target dir instead.
+    # nix-on-droid's session-init adds ~/.nix-defexpr/channels to NIX_PATH
+    # unconditionally; nix warns about the missing dir on every invocation.
+    # Making it exist silences the warning. Must be done in activation (not
+    # home-manager): ~/.nix-defexpr/channels is a symlink into
+    # ~/.local/state/nix/profiles/channels (dangling until it exists), which
+    # home-manager cannot link into. mkdir -p refuses to traverse a dangling
+    # symlink, so create the real target dir instead.
     nixdefexpr = ''
-    $DRY_RUN_CMD mkdir -p "${config.user.home}/.local/state/nix/profiles/channels/nixpkgs"
-    $DRY_RUN_CMD touch "${config.user.home}/.local/state/nix/profiles/channels/nixpkgs/.keep"
-  '';
+      $DRY_RUN_CMD mkdir -p "${config.user.home}/.local/state/nix/profiles/channels/nixpkgs"
+      $DRY_RUN_CMD touch "${config.user.home}/.local/state/nix/profiles/channels/nixpkgs/.keep"
+    '';
 
-  # runit service tree: ~/service/<name>/{run,log/run}. run/ and log/run are
-  # symlinks into the nix store (read-only is fine; runsvdir writes only to
-  # the <name>/supervise dirs). /etc/service is symlinked for `sv status`.
-  # NOTE: tailscaled was removed — nixpkgs' linux build cannot run inside
-  # proot (SELinux blocks netlink; needs GOOS=android or root). Re-add only
-  # if that gets solved.
+    # runit service tree: ~/service/<name>/{run,log/run}. run/ and log/run are
+    # symlinks into the nix store (read-only is fine; runsvdir writes only to
+    # the <name>/supervise dirs). /etc/service is symlinked for `sv status`.
+    # NOTE: tailscaled was removed — nixpkgs' linux build cannot run inside
+    # proot (SELinux blocks netlink; needs GOOS=android or root). Re-add only
+    # if that gets solved.
     services = ''
-    $DRY_RUN_CMD rm -rf ${serviceDir}/tailscaled
-    $DRY_RUN_CMD mkdir -p ${serviceDir}/sshd/log
-    $DRY_RUN_CMD ln -sfn ${sshdRun}/bin/sshd-run ${serviceDir}/sshd/run
-    $DRY_RUN_CMD ln -sfn ${svLogRun}/bin/sv-log-run ${serviceDir}/sshd/log/run
-    $DRY_RUN_CMD ln -sfn ${serviceDir} /etc/service
+      $DRY_RUN_CMD rm -rf ${serviceDir}/tailscaled
+      $DRY_RUN_CMD mkdir -p ${serviceDir}/sshd/log
+      $DRY_RUN_CMD ln -sfn ${sshdRun}/bin/sshd-run ${serviceDir}/sshd/run
+      $DRY_RUN_CMD ln -sfn ${svLogRun}/bin/sv-log-run ${serviceDir}/sshd/log/run
+      $DRY_RUN_CMD ln -sfn ${serviceDir} /etc/service
     '';
   };
 

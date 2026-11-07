@@ -205,7 +205,8 @@ in
   # The unit name must be the REAL unit of the service (e.g. `samba-smbd`,
   # `phpfpm-nextcloud`, `immich-server`) — see ADR-0004: a wrong key renders a
   # phantom unit with no ExecStart, and systemd refuses to start it.
-  mkStorageGuard = xlib:
+  mkStorageGuard =
+    xlib:
     lib.optionalAttrs (xlib.device.type != "vds") {
       # Guard via ConditionPathIsMountPoint ONLY — see (b) above for why
       # RequiresMountsFor must NOT be added.

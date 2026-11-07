@@ -38,8 +38,7 @@
   # их по очереди; один из них адресует локальную панель, другой — удалённую,
   # и оба лечат одно и то же «сервер крутит старое».)
   systemd.services."3xui-reconfig" = {
-    description =
-      "Перегенерировать config.json 3x-ui из БД и рестартнуть xray (R1.18) — вариант для Otreca (публичный домен).";
+    description = "Перегенерировать config.json 3x-ui из БД и рестартнуть xray (R1.18) — вариант для Otreca (публичный домен).";
     serviceConfig = {
       Type = "oneshot";
       ExecStart = lib.getExe config.modules."3x-ui".reconfig;

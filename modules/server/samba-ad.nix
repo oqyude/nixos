@@ -137,8 +137,20 @@ let
   #   realm     = AD.ZEROQ.SU   (realm Kerberos, верхний регистр)
   #   dnsDomain = ad.zeroq.su   (AD DNS-зона, нижний регистр)
   # Можно задать любой один, второй выводится.
-  realm = if cfg.realm != null then lib.strings.toUpper cfg.realm else if cfg.dnsDomain != null then lib.strings.toUpper cfg.dnsDomain else null;
-  dnsDomain = if cfg.dnsDomain != null then lib.strings.toLower cfg.dnsDomain else if cfg.realm != null then lib.strings.toLower cfg.realm else null;
+  realm =
+    if cfg.realm != null then
+      lib.strings.toUpper cfg.realm
+    else if cfg.dnsDomain != null then
+      lib.strings.toUpper cfg.dnsDomain
+    else
+      null;
+  dnsDomain =
+    if cfg.dnsDomain != null then
+      lib.strings.toLower cfg.dnsDomain
+    else if cfg.realm != null then
+      lib.strings.toLower cfg.realm
+    else
+      null;
 
   # Заглушки на случай, когда не задано ни то, ни другое (закрыто assertion'ом).
   realmValue = if realm != null then realm else "<unset>";
@@ -162,16 +174,22 @@ let
     	cache directory = ${stateDir}/cache
     	binddns dir = ${stateDir}/bind-dns
     	idmap_ldb:use rfc2307 = yes
-    ${lib.optionalString (cfg.dnsBackend == "SAMBA_INTERNAL") ''
-    	dns port = ${toString cfg.dnsPort}
-    ''}${lib.optionalString (cfg.dnsForwarder != null) ''
-    	dns forwarder = ${cfg.dnsForwarder}
-    ''}${lib.optionalString (cfg.dnsBackend == "NONE") ''
-    	# dnsBackend = NONE: DC не поднимает DNS-сервер вовсе, порт 53 он
-    	# не трогает. Тогда AD-зоны должны обслуживать кто-то другой —
-    	# см. note-файл.
-    	server services = -dns
-    ''}
+    ${
+      lib.optionalString (cfg.dnsBackend == "SAMBA_INTERNAL") ''
+        	dns port = ${toString cfg.dnsPort}
+      ''
+    }${
+      lib.optionalString (cfg.dnsForwarder != null) ''
+        	dns forwarder = ${cfg.dnsForwarder}
+      ''
+    }${
+      lib.optionalString (cfg.dnsBackend == "NONE") ''
+        	# dnsBackend = NONE: DC не поднимает DNS-сервер вовсе, порт 53 он
+        	# не трогает. Тогда AD-зоны должны обслуживать кто-то другой —
+        	# см. note-файл.
+        	server services = -dns
+      ''
+    }
     [sysvol]
     	path = ${sysvolPath}
     	read only = no
@@ -430,9 +448,7 @@ in
       }
       {
         assertion =
-          cfg.dnsBackend != "SAMBA_INTERNAL"
-          || cfg.dnsPort != 53
-          || !config.services.coredns.enable;
+          cfg.dnsBackend != "SAMBA_INTERNAL" || cfg.dnsPort != 53 || !config.services.coredns.enable;
         message = ''
           host.samba-ad: КОНФЛИКТ ПОРТА 53. Встроенный DNS AD DC
           (dnsBackend = "SAMBA_INTERNAL", dnsPort = 53) и coredns оба хотят
@@ -451,8 +467,7 @@ in
         '';
       }
       {
-        assertion =
-          !(config.services.samba.enable && config.services.samba.smbd.enable);
+        assertion = !(config.services.samba.enable && config.services.samba.smbd.enable);
         message = ''
           host.samba-ad: КОНФЛИКТ ПОРТА 445. AD DC обязан отдавать sysvol по
           SMB (без этого не работает групповая политика), поэтому DC занимает

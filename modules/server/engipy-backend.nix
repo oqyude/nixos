@@ -208,11 +208,14 @@ in
       documentation = [ "https://github.com/oqyude/engipy" ];
       wantedBy = [ "multi-user.target" ];
 
-      after = [ "network-online.target" "engipy-install.service" ];
+      after = [
+        "network-online.target"
+        "engipy-install.service"
+      ];
       wants = [ "network-online.target" ];
       requires = [ "engipy-install.service" ];
 
-environment = {
+      environment = {
         PYTHONUNBUFFERED = "1";
         PYTHONDONTWRITEBYTECODE = "1";
         VIRTUAL_ENV = "${cfg.dataDir}/venv";
@@ -261,7 +264,8 @@ environment = {
         User = cfg.user;
         Group = cfg.user;
         WorkingDirectory = cfg.dataDir;
-        ExecStart = "${cfg.dataDir}/venv/bin/uvicorn --factory app.main:create_app"
+        ExecStart =
+          "${cfg.dataDir}/venv/bin/uvicorn --factory app.main:create_app"
           + " --host ${cfg.bindAddress} --port ${toString cfg.port} --no-access-log";
         Restart = "on-failure";
         RestartSec = "5s";
@@ -279,7 +283,11 @@ environment = {
         RestrictRealtime = true;
         LockPersonality = true;
         ProtectControlGroups = true;
-        RestrictAddressFamilies = [ "AF_INET" "AF_INET6" "AF_UNIX" ];
+        RestrictAddressFamilies = [
+          "AF_INET"
+          "AF_INET6"
+          "AF_UNIX"
+        ];
       };
     };
   };

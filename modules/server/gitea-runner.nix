@@ -18,9 +18,9 @@ in
   # ----- Static user for the runner ----------------------------------------
   users.users.gitea-runner = {
     isSystemUser = true;
-    group        = "gitea-runner";
-    home         = "/var/lib/gitea-runner";
-    description  = "Gitea Actions Runner (sapphira host executor)";
+    group = "gitea-runner";
+    home = "/var/lib/gitea-runner";
+    description = "Gitea Actions Runner (sapphira host executor)";
   };
   users.groups.gitea-runner = { };
 
@@ -39,21 +39,21 @@ in
     # decoded to a YAML body that EnvironmentFile could not parse, so
     # the runner received no $TOKEN at all and Gitea replied
     # "runner registration token not found".
-    path     = "/var/lib/gitea-runner/registration-token";
-    format   = "dotenv";
+    path = "/var/lib/gitea-runner/registration-token";
+    format = "dotenv";
     sopsFile = ../../secrets/gitea-runner-registration.env;
-    owner    = "gitea-runner";
-    group    = "gitea-runner";
-    mode     = "0440";
+    owner = "gitea-runner";
+    group = "gitea-runner";
+    mode = "0440";
   };
 
   # ----- The runner itself -------------------------------------------------
   services.gitea-actions-runner.instances."${name}" = {
-    enable    = true;
-    name      = name;
-    url       = "https://git.zeroq.su/"; # matches modules/server/gitea.nix ROOT_URL
+    enable = true;
+    name = name;
+    url = "https://git.zeroq.su/"; # matches modules/server/gitea.nix ROOT_URL
     tokenFile = config.sops.secrets.gitea-runner-registration.path;
-    labels    = [ "native:host" ]; # only host-executor; no docker required
+    labels = [ "native:host" ]; # only host-executor; no docker required
 
     settings = {
       runner = {
@@ -112,9 +112,9 @@ in
   # tmpfiles setup. We still add a tmpfiles rule for /tmp/gitea-runner-work
   # so successive deployments don't briefly see an empty target.
   systemd.tmpfiles.rules = xlib.helpers.mkTmpDirs {
-    dir   = "/tmp/gitea-runner-work";
-    mode  = "1777";          # sticky so different runner invocations don't clobber
-    user  = "root";
+    dir = "/tmp/gitea-runner-work";
+    mode = "1777"; # sticky so different runner invocations don't clobber
+    user = "root";
     group = "root";
   };
 

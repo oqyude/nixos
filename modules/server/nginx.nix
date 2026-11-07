@@ -374,7 +374,7 @@ in
       # patch that reads X-Forwarded-Host (fork + plugin link) — the
       # same-origin check assumes direct loopback or Tailscale serve,
       # both of which give request.url a host that matches the browser.
-          "herdr.zeroq.su" = {
+      "herdr.zeroq.su" = {
         forceSSL = true;
         enableACME = true;
         locations = {

@@ -15,8 +15,16 @@
 # Keep the list sorted by purpose: the first group is the default set the
 # runner has always had, the rest are tools a specific workflow needs.
 { pkgs }:
-with pkgs; [
-  bash coreutils curl gawk gitMinimal gnused nodejs wget
+with pkgs;
+[
+  bash
+  coreutils
+  curl
+  gawk
+  gitMinimal
+  gnused
+  nodejs
+  wget
   nix
   python3
   cacert

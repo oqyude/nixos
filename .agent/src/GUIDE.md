@@ -109,7 +109,7 @@ MetaAgent — набор инструкций для AI-агента. Задач
     COMMANDS/
     TEMPLATES/
     VERSION
-    install.sh / install.ps1
+    install.sh
 
   rules/
     project-rules.md                # ваши правила — читать перед каждой фазой
