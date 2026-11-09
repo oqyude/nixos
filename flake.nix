@@ -4,6 +4,14 @@
     # nixpkgs
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
+
+    # fresh-editor 0.5.4 в текущем пине nixpkgs (f4a03c0) не собирается:
+    # cargo-setup-hook безусловно ставит RUSTONIG_SYSTEM_LIBONIG=1, а пакет
+    # не тянет oniguruma -> onig_sys падает на pkg-config. В master на
+    # 2026-11-09 то же самое. Пин на последний rev nixos-unstable, где
+    # fresh-editor = 0.5.3 и собирается; см. overlays/pkgs.nix.
+    # Убрать, когда пин nixpkgs переедет на rev с исправленным пакетом.
+    nixpkgs-fresh.url = "github:NixOS/nixpkgs/31ecbaca1bdefa45dffc409f0250bd8039ea0010";
     # nixpkgs-last-unstable.url = "github:NixOS/nixpkgs/3497aa5c9457a9d88d71fa93a4a8368816fbeeba";
     # nixpkgs-fingerprint.url = "github:NixOS/nixpkgs/nixos-24.11";
 

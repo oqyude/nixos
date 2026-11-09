@@ -43,7 +43,7 @@
 #   ~/.local/share/opencode/browser-control-extension/   <- из npm-пакета
 #
 # Ловушки v2 (те же, что на sapphira — см. R1.19 / ADR-0006):
-#   * v2 есть только в nixpkgs master ⇒ package из inputs.nixpkgs-master;
+#   * пакет — из обычного nixpkgs (с 2026-11-09; раньше был nixpkgs-master);
 #   * дефолт `opencode serve` в v2 — 4097 ⇒ --port 4096 задан явно;
 #   * `opencode web` в v2 удалён ⇒ serve отдаёт и API, и web-UI;
 #   * v2 НЕ ставит npm-пакеты плагинов сам ⇒ home.activation.installOpencodePlugin;
@@ -61,12 +61,9 @@
   ...
 }:
 let
-  # OpenCode v2 (2.0.32) живёт только в nixpkgs master — тот же приём, что
-  # в home/modules/opencode.nix (sapphira) и modules/server/nextcloud.nix.
-  masterPkgs = import inputs.nixpkgs-master {
-    system = pkgs.stdenv.hostPlatform.system;
-  };
-  opencodeV2 = masterPkgs.opencode;
+  # 2026-11-09: пакет из обычного nixpkgs (nixos-unstable), без nixpkgs-master —
+  # то же решение, что в home/modules/opencode.nix (sapphira).
+  opencodeV2 = pkgs.opencode;
 
   # Версия плагина зафиксирована: v2 обновляет только незапиненные спеки,
   # а на vetymae/sapphira стоит ровно эта.

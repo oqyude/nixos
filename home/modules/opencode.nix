@@ -11,6 +11,9 @@
 #                   already wired into this flake. `nix flake update
 #                   nixpkgs-master` is what moves the pin onto a rev that has
 #                   v2 — the lock must be updated together with this file.
+#                   2026-11-09: устарело. v2 давно есть в nixos-unstable, и по
+#                   слову владельца пакет снова берётся из обычного nixpkgs
+#                   (`pkgs.opencode`); `nixpkgs-master` в этой ветке не нужен.
 #   * config keys — v1: `plugin` (singular) + `mcp` (flat map).
 #                   v2: `plugins` (plural) + `mcp.servers` (nested).
 #   * tui.json    — v1 wrote CLI/TUI prefs to `tui.json`; v2 reads them from
@@ -60,14 +63,14 @@
   ...
 }:
 let
-  # OpenCode v2 only exists in nixpkgs master for now. Import it the same way
-  # modules/server/nextcloud.nix already imports `nixpkgs-master`.
-  masterPkgs = import inputs.nixpkgs-master {
-    system = pkgs.stdenv.hostPlatform.system;
-  };
-
-  # 2.0.32 — same version as the workstation (vetymae) runs.
-  opencodeV2 = masterPkgs.opencode;
+  # 2026-11-09: пакет берётся из обычного nixpkgs (nixos-unstable), без
+  # `nixpkgs-master` — решение владельца: «пусть будет дефолтно». Осторожно:
+  # в ЗАМОРОЖЕННОМ ревизии флейка (flake.lock, nixpkgs 31ecbaca, 2026-10-27)
+  # лежит opencode 2.1.4, тогда как из master приходил 2.2.6, а живой сервер
+  # сейчас 2.2.5. То есть пересборка БЕЗ `nix flake update nixpkgs` откатит
+  # версию на три минора. `nixpkgs-master` остаётся в flake ради
+  # nextcloud/onlyoffice и opencode больше не трогает.
+  opencodeV2 = pkgs.opencode;
 
   # Plugin spec. Pinned exactly (no @latest): v2 auto-updates only unpinned
   # specs, and the workstation is pinned to the same version.
@@ -155,7 +158,7 @@ in
   programs.opencode = {
     enable = true;
 
-    # OpenCode 2.0.32 from nixpkgs master (nixos-unstable still ships 1.19.0).
+    # OpenCode из обычного nixpkgs (до 2026-11-09 — из nixpkgs-master).
     package = opencodeV2;
 
     # Extras available to opencode-wrapped (via --suffix PATH on the wrapper).
