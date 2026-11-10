@@ -20,6 +20,15 @@ self: super: {
   # (nixpkgs-fresh) этой зависимости нет. Убрать вместе с fresh-editor.
   mcat = inputs.nixpkgs-fresh.legacyPackages.${super.stdenv.hostPlatform.system}.mcat;
 
+  # brave убрали из nixpkgs: в пине (f4a03c0, 2026-11-07) атрибут не пакет, а
+  # `throw "brave has been removed from nixpkgs, as there were no committers
+  # among its maintainers to unblock security issues"` (# Added 2026-11-03).
+  # Из-за этого падает любая конфигурация с `brave` в
+  # home/modules/packages.nix. В inputs.nixpkgs-master (26c3411, 2026-11-09)
+  # пакет ещё есть — brave-1.99.55; берём его оттуда, вход уже подключён в
+  # flake.nix. Убрать, когда пин nixpkgs снова начнёт отдавать brave.
+  brave = inputs.nixpkgs-master.legacyPackages.${super.stdenv.hostPlatform.system}.brave;
+
   # The SDDM themes shipped by whitesur-kde (2024-11-18) are forks of the
   # breeze greeter theme and still instantiate `VirtualKeyboardLoader`, a type
   # that plasma-workspace >= 6.6 removed from org.kde.breeze.components in
