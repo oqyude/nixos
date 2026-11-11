@@ -79,6 +79,25 @@
 
   system.stateVersion = "26.05";
 
+  # Measured 2026-11-11: a 6 GiB /swapfile exists and is active, but only
+  # because somebody ran `swapon` by hand — there is no swapDevices in the
+  # config and no swap line in the generated /etc/fstab, so a reboot loses
+  # swap. On this 11 GiB box (it runs qemu VMs) that turned a build into an
+  # OOM kill.
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 6144;
+    }
+  ];
+
+  # Measured 2026-11-11: nixos-prebuild.service (daily 04:00 nix build of the
+  # whole toplevel, Nice 10, CPUQuota 20% — defined in
+  # modules/essentials/systemd-routines.nix, shared by every host, so no cap
+  # there) had no memory bound and was what got killed when memory ran out.
+  # Host-scoped bound: 6 GiB of the 11 GiB box stays for engipy/the VMs.
+  systemd.services.nixos-prebuild.serviceConfig.MemoryMax = "6G";
+
   # --------------------------------------------------------------------------
   # PXE infrastructure rig (L2 of docs/ARCHITECTURE.md).
   # The rig gives rydiwo an isolated Linux bridge
