@@ -19,7 +19,19 @@
   ];
 
   boot = {
-    kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
+    # Measured 2026-11-12: with the nixpkgs revision the flake now points at,
+    # `linuxPackages_xanmod_stable` does not build at all —
+    #   linux-config-7.3.3: applying tools-add-128-bit-integer-types-for-aarch64.patch
+    #   patching file tools/include/linux/types.h
+    #   Reversed (or previously applied) patch detected!  Assume -R? [n]
+    #   1 out of 1 hunk ignored -- saving rejects to file tools/include/linux/types.h.rej
+    #   error: builder failed with exit code 1
+    # — and the failure cascades the whole way up:
+    #   linux-xanmod-7.3.3 -> linux-xanmod-7.3.3-modules -> initrd ->
+    #   boot.json -> activate -> toplevel,
+    # so NO `nixos-rebuild` can succeed while this host is on xanmod. Mainline
+    # kernel instead, by the owner's decision (2026-11-12).
+    kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
     loader = {
       systemd-boot.enable = lib.mkDefault true;
       efi.canTouchEfiVariables = lib.mkDefault true;
@@ -79,15 +91,21 @@
 
   system.stateVersion = "26.05";
 
-  # Measured 2026-11-11: a 6 GiB /swapfile exists and is active, but only
-  # because somebody ran `swapon` by hand — there is no swapDevices in the
-  # config and no swap line in the generated /etc/fstab, so a reboot loses
-  # swap. On this 11 GiB box (it runs qemu VMs) that turned a build into an
-  # OOM kill.
+  # Measured 2026-11-11: swap has to be declared here at all — the 6 GiB
+  # /swapfile existed and was active, but only because somebody ran `swapon`
+  # by hand: there was no swapDevices in the config and no swap line in the
+  # generated /etc/fstab, so a reboot lost swap. On this 11 GiB box (it runs
+  # qemu VMs) that turned a build into an OOM kill.
+  #
+  # 2026-11-12: size = 2048 REPLACES the 6144 value. The pending switch needs
+  # ~22 GiB unpacked on a 62 GiB root that already carries a 20 GiB store, so
+  # the swap file is 2 GiB — and that is the value it stays at, not a one-off
+  # shrink: `nixos-prebuild` is now capped at MemoryMax=6G (below), and
+  # 11 GiB of RAM plus 2 GiB of swap absorbs a build spike.
   swapDevices = [
     {
       device = "/swapfile";
-      size = 6144;
+      size = 2048;
     }
   ];
 
