@@ -79,10 +79,6 @@
 
   system.stateVersion = "26.05";
 
-  # TEMPORARY 2026-11-12: the box has 20 GiB free and the pending
-  # `nixos-rebuild switch` needs 22.2 GiB unpacked, so the 6 GiB swap file is
-  # shrunk to 0.5 GiB to make the build fit; it goes back to 6144 after the
-  # switch and the garbage collection that follows. Not a permanent choice.
   # Measured 2026-11-11: a 6 GiB /swapfile exists and is active, but only
   # because somebody ran `swapon` by hand — there is no swapDevices in the
   # config and no swap line in the generated /etc/fstab, so a reboot loses
@@ -91,7 +87,7 @@
   swapDevices = [
     {
       device = "/swapfile";
-      size = 512;
+      size = 6144;
     }
   ];
 
