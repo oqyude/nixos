@@ -18,19 +18,34 @@
 #       2026-10-20, R1.5/ADR-0007)
 #   #8  every import reference resolves (no dangling imports) — added 2026-10-24
 #   #9  .agent JSON artefacts validate against their schemas — added 2026-10-25
+#   #10 CoreDNS records and nginx vhosts agree — added 2026-11-15
+#   #11 `listen.addr` names an interface, not a network — added 2026-11-15
+#   #12 AGENTS.md / manifest.md / manifest.json / decisions index agree
+#       — added 2026-11-15
+#
+# Every python check below is also a standalone script, so it can be run
+# directly: `python3 .ci/tests/<script>.py .`. They deliberately are NOT
+# exposed as `checks.*` flake outputs: on the pinned nixpkgs, `nix flake
+# check` fails with "'outPath' is not a valid system type" on any
+# derivation output built from it (see the note in flake.nix).
 #
 # Not yet implemented (candidates from analysis-report.md §5):
 #   #3  coredns domains ↔ nginx vhosts bidirectional match
+#        (PARTIALLY implemented as #10: the "DNS record without a vhost"
+#        direction is enforced; the reverse direction is informational)
 #   #4  mkStorageGuard consumers have an existing External dir
 #       (lib/xlib/helpers.nix — note the helper is mkStorageGuard, not
 #       mkServiceStorage; the two names referred to the same idea historically.
 #       The helper now returns a `unitConfig` fragment, and vds hosts are
-#       excluded: otreca has no External, its 3x-ui data lives on the root fs)
+#       excluded: otreca has no External, its 3x-ui data lives on the root fs.
+#       The runtime half lives in .ci/verify/runtime-drift.sh, which needs a
+#       live host and therefore cannot run in CI)
 #   #5  nftables policy (T3 CLOSED 2026-10-25: no check needed — the generated
 #       `inet nixos-fw` chain already has `policy drop`; the hand-written
 #       `inet filter` chain is policy accept on purpose and must NOT get a drop,
 #       because a drop in any base chain is final and would blackhole the VDS)
 #   #6  listen.addr is interface, not network (e.g. 0.0.0.0 is OK, 192.168.0.0/24 is not)
+#        — IMPLEMENTED as #11
 
 set -euo pipefail
 
@@ -186,12 +201,61 @@ check_metadata_schemas() {
   fi
 }
 
+check_domains() {
+  echo "Check #10: CoreDNS records and nginx vhosts agree ..."
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "  SKIP: python3 not in PATH"
+    return 0
+  fi
+  if python3 .ci/tests/check-domains.py . ; then
+    report 0 "coredns/nginx domains"
+  else
+    report 1 "coredns/nginx domains"
+  fi
+}
+
+check_listen_addrs() {
+  echo "Check #11: listen.addr names an interface, not a network ..."
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "  SKIP: python3 not in PATH"
+    return 0
+  fi
+  # The self-test first: it proves the classifier still rejects the cases it
+  # is supposed to reject. A check that cannot fail is not a check.
+  if ! python3 .ci/tests/self-test-listen-addrs.py; then
+    echo "  FAIL: the listen.addr classifier no longer behaves as expected" >&2
+    report 1 "listen.addr classifier self-test"
+    return 0
+  fi
+  if python3 .ci/tests/check-listen-addrs.py . ; then
+    report 0 "listen.addr values"
+  else
+    report 1 "listen.addr values"
+  fi
+}
+
+check_agent_consistency() {
+  echo "Check #12: AGENTS.md / manifest.md / manifest.json / decisions index agree ..."
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "  SKIP: python3 not in PATH"
+    return 0
+  fi
+  if python3 .ci/tests/check-agent-consistency.py . ; then
+    report 0 "agent metadata consistency"
+  else
+    report 1 "agent metadata consistency"
+  fi
+}
+
 echo "=== nixos flake checks ==="
 check_nix_flake_check
 check_sops_path_regex
 check_no_latest_images
 check_import_graph
 check_metadata_schemas
+check_domains
+check_listen_addrs
+check_agent_consistency
 echo "==="
 echo "PASS: $PASS    FAIL: $FAIL"
 if [ "$FAIL" -gt 0 ]; then

@@ -1,0 +1,34 @@
+# Known CoreDNS→nginx gaps (pre-existing debt, not a regression).
+#
+# A name listed here has a DNS record in the `zeroq.su` zone but no nginx
+# vhost. The check `.ci/tests/check-domains.py` treats these as warnings and
+# fails only when a NEW gap appears — so removing a vhost without touching
+# CoreDNS is caught, while this pre-existing debt does not block the pipeline.
+#
+# Format: one name per line, `#` starts a comment.
+
+# The CoreDNS server's own name. Served by coredns on :53, never by nginx.
+dns.zeroq.su
+
+# netdata/glances: disabled 2026-10-30 (modules/server/default.nix). The DNS
+# record was deliberately left behind — it points at a closed port.
+glances.zeroq.su
+
+# uptime-kuma: disabled 2026-10-30 (the unit timed out). Vhost removed,
+# DNS record left behind.
+kuma.zeroq.su
+
+# Open WebUI: container removed 2026-10-30 (4.69 GiB image, the container
+# kept crashing). Vhost commented out in modules/server/nginx.nix:494.
+open.zeroq.su
+
+# Syncthing is deployed (modules/server/syncthing.nix) but has never been
+# published through nginx — its web UI is reached directly on its port.
+syncthing.zeroq.su
+
+# No Matrix/talk service exists in this repo; the record is a leftover.
+talk.zeroq.su
+
+# TURN server: the coturn module lives in archive/server-modules/ (disabled).
+# modules/server/nextcloud.nix:50 still points the client at turn.zeroq.su.
+turn.zeroq.su
