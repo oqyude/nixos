@@ -151,7 +151,7 @@ nix build .#nixosConfigurations.<host>.config.system.build.toplevel
 
 # форматирование и ShellCheck (devshell .#fmt — вывода `formatter` у флейка нет,
 # см. ADR-0011: nix 2.34.9 роняет `nix flake check` на этом выводе)
-nix develop .#fmt --command treefmt -- --fail-on-change .
+nix develop .#fmt --command treefmt --fail-on-change .
 
 # nixOnDroid
 nix build .#nixOnDroidConfigurations.epral.config.system.build.toplevel

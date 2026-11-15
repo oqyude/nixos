@@ -47,6 +47,9 @@ nix build .#nixosConfigurations.sapphira.config.system.build.toplevel
 
 # форматирование
 nix develop .#fmt --command treefmt
+
+# гейт «ничего не должно поменяться» (как в CI)
+nix develop .#fmt --command treefmt --fail-on-change .
 ```
 
 Проверки, которые закрывают реальные классы поломок, а не стиль:

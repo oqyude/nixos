@@ -2,7 +2,12 @@
 #
 # How to use it:
 #   nix develop .#fmt --command treefmt                       # apply the style
-#   nix develop .#fmt --command treefmt -- --fail-on-change .  # CI-style gate
+#   nix develop .#fmt --command treefmt --fail-on-change .   # CI-style gate
+#
+# Лишний `--` перед флагами НЕ нужен: `nix develop --command` передаёт его
+# treefmt'у как позиционный аргумент, и тот падает с
+# "failed to create walker: path .../--fail-on-change not found".
+# Проверено 2026-11-15.
 #
 # There is deliberately NO `formatter` output in flake.nix: on the pinned
 # nixpkgs `nix flake check` fails with "'outPath' is not a valid system type"

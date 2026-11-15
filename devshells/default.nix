@@ -48,7 +48,12 @@ in
     # treefmt + nixfmt + shfmt + shellcheck. Конфиг — treefmt.toml в корне.
     #
     #   nix develop .#fmt --command treefmt          # применить стиль
-    #   nix develop .#fmt --command treefmt -- --fail-on-change .
+    #   nix develop .#fmt --command treefmt --fail-on-change .
+    #
+    # Лишний `--` перед флагами НЕ нужен и ломает команду: `nix develop
+    # --command` передаёт его treefmt'у как позиционный аргумент, и тот
+    # пытается обойти каталог с именем "--fail-on-change"
+    # ("failed to create walker"). Проверено 2026-11-15.
     #
     # Почему devshell, а не output `formatter` флейка (который дал бы
     # `nix fmt`): на закреплённом nixpkgs `nix flake check` падает с
