@@ -1,0 +1,52 @@
+name: evaluate all hosts
+
+# The everyday workflow (.gitea/workflows/nix-checks.yml) evaluates ONE host —
+# sapphira — because the runner *is* sapphira: evaluating all seven
+# configurations there took 40+ minutes and pushed the production host into
+# swap. That left the other six hosts unevaluated by CI, and it was not a
+# theoretical gap: `configurations/mobile.nix:12` once imported a
+# non-existent `lib/xlib.nix` and epral silently stopped building
+# (AGENTS.md invariant 1).
+#
+# This workflow closes that gap. It is MANUAL on purpose: on the self-hosted
+# runner it is a heavy, slow sweep, so it runs when someone asks for it, not
+# on every push.
+#
+# What it does: evaluates every configuration (no build). Evaluation is
+# enough to catch the class of breakage above — a broken import, a missing
+# attribute, a type error — and it needs no store write access, which the
+# runner user does not have (see the sapphira workflow for that constraint).
+#
+# To run it: push → Actions → "evaluate all hosts" → Run workflow.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  evaluate-all:
+    runs-on: native
+    # Seven configurations on a 2-core / 5.6 GiB host. Generous: the point is
+    # to finish, not to be fast.
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: toolchain probe
+        run: |
+          nix --version
+          git --version
+
+      - name: evaluate every NixOS configuration
+        run: |
+          set -euo pipefail
+          for host in atoridu rydiwo otreca sapphira wsl default; do
+            echo "== ${host} =="
+            nix --extra-experimental-features "nix-command flakes" eval --raw \
+              ".#nixosConfigurations.${host}.config.system.build.toplevel.drvPath"
+            echo
+          done
+
+      - name: evaluate the nix-on-droid configuration
+        run: |
+          nix --extra-experimental-features "nix-command flakes" eval --raw \
+            '.#nixOnDroidConfigurations.epral.config.system.build.toplevel.drvPath'
