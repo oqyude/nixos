@@ -24,6 +24,23 @@
 #   .ci/verify/config-fingerprint.sh /tmp/after
 #   diff -r /tmp/before /tmp/after && echo "no behavioural change"
 #
+# IMPORTANT — materialise both revisions the same way, or the diff lies.
+# Store paths are part of the snapshot, and a store path depends on the
+# executable bit of the file it was copied from. A checkout made on Windows
+# (/mnt/c, drvfs) reports every file as executable, a `git archive` on Linux
+# restores the mode recorded in the git index. Compare a Windows working copy
+# against a `git archive` export and `overlays/patch-whitesur-sddm.pl` comes
+# out with two different store paths — which changes the `system-path`
+# derivation, which changes `XDG_DATA_DIRS` in accounts-daemon.service, which
+# changes the `X-Restart-Triggers` files of dbus-broker and polkit. None of
+# that is a behavioural change; it is the same bytes in a different wrapper.
+#
+#   git archive dev   | tar -x -C /tmp/dev
+#   git archive agent | tar -x -C /tmp/agent
+#   (cd /tmp/dev   && .ci/verify/config-fingerprint.sh /tmp/fp-dev)
+#   (cd /tmp/agent && .ci/verify/config-fingerprint.sh /tmp/fp-agent)
+#   diff -r /tmp/fp-dev /tmp/fp-agent
+#
 # Exit code: 0 when every requested host evaluated, 1 otherwise.
 set -euo pipefail
 
@@ -134,7 +151,7 @@ for host in $HOSTS; do
   echo "fingerprint: evaluating ${host} ..."
   if nix --extra-experimental-features "nix-command flakes" eval \
     --json ".#nixosConfigurations.${host}.config" \
-    --apply "$FINGERPRINT_EXPR" > "${OUT_DIR}/${host}.json" 2>"${OUT_DIR}/${host}.err"; then
+    --apply "$FINGERPRINT_EXPR" >"${OUT_DIR}/${host}.json" 2>"${OUT_DIR}/${host}.err"; then
     echo "  ok: ${OUT_DIR}/${host}.json"
   else
     echo "  FAIL: ${host}" >&2

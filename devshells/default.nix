@@ -45,7 +45,7 @@ in
     };
 
     # `nix develop .#fmt` -> инструменты форматирования репозитория:
-    # treefmt + nixfmt + shfmt. Конфиг — treefmt.toml в корне репозитория.
+    # treefmt + nixfmt + shfmt + shellcheck. Конфиг — treefmt.toml в корне.
     #
     #   nix develop .#fmt --command treefmt          # применить стиль
     #   nix develop .#fmt --command treefmt -- --fail-on-change .
@@ -61,13 +61,15 @@ in
         treefmt
         nixfmt
         shfmt
+        shellcheck
       ];
 
       shellHook = ''
-        echo "[fmt-devshell] treefmt: $(command -v treefmt)" >&2
-        echo "[fmt-devshell] nixfmt:  $(command -v nixfmt)" >&2
-        echo "[fmt-devshell] shfmt:   $(command -v shfmt)" >&2
-        echo "[fmt-devshell] конфиг:  treefmt.toml в корне репозитория" >&2
+        echo "[fmt-devshell] treefmt:   $(command -v treefmt)" >&2
+        echo "[fmt-devshell] nixfmt:    $(command -v nixfmt)" >&2
+        echo "[fmt-devshell] shfmt:     $(command -v shfmt)" >&2
+        echo "[fmt-devshell] shellcheck: $(command -v shellcheck)" >&2
+        echo "[fmt-devshell] конфиг:    treefmt.toml в корне репозитория" >&2
       '';
     };
 

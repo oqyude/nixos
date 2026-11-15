@@ -22,6 +22,7 @@
 #   #11 `listen.addr` names an interface, not a network — added 2026-11-15
 #   #12 AGENTS.md / manifest.md / manifest.json / decisions index agree
 #       — added 2026-11-15
+#   #13 shell scripts pass ShellCheck — added 2026-11-15
 #
 # Every python check below is also a standalone script, so it can be run
 # directly: `python3 .ci/tests/<script>.py .`. They deliberately are NOT
@@ -66,7 +67,10 @@ SKIP_BUILD=false
 for arg in "$@"; do
   case "$arg" in
     --no-build) SKIP_BUILD=true ;;
-    *) echo "Unknown arg: $arg" >&2; exit 2 ;;
+    *)
+      echo "Unknown arg: $arg" >&2
+      exit 2
+      ;;
   esac
 done
 
@@ -164,7 +168,7 @@ check_no_latest_images() {
     if [ "$allowed" = false ]; then
       violations+=("$img")
     fi
-  done <<< "$latest_images"
+  done <<<"$latest_images"
   if [ "${#violations[@]}" -eq 0 ]; then
     report 0 "no :latest images (whitelist honoured)"
   else
@@ -181,7 +185,7 @@ check_import_graph() {
     echo "  SKIP: python3 not in PATH"
     return 0
   fi
-  if python3 .ci/tests/import-graph.py . ; then
+  if python3 .ci/tests/import-graph.py .; then
     report 0 "import graph"
   else
     report 1 "import graph"
@@ -194,7 +198,7 @@ check_metadata_schemas() {
     echo "  SKIP: python3 not in PATH"
     return 0
   fi
-  if python3 .ci/tests/validate-metadata.py . ; then
+  if python3 .ci/tests/validate-metadata.py .; then
     report 0 "metadata schemas"
   else
     report 1 "metadata schemas"
@@ -207,7 +211,7 @@ check_domains() {
     echo "  SKIP: python3 not in PATH"
     return 0
   fi
-  if python3 .ci/tests/check-domains.py . ; then
+  if python3 .ci/tests/check-domains.py .; then
     report 0 "coredns/nginx domains"
   else
     report 1 "coredns/nginx domains"
@@ -227,7 +231,7 @@ check_listen_addrs() {
     report 1 "listen.addr classifier self-test"
     return 0
   fi
-  if python3 .ci/tests/check-listen-addrs.py . ; then
+  if python3 .ci/tests/check-listen-addrs.py .; then
     report 0 "listen.addr values"
   else
     report 1 "listen.addr values"
@@ -240,10 +244,32 @@ check_agent_consistency() {
     echo "  SKIP: python3 not in PATH"
     return 0
   fi
-  if python3 .ci/tests/check-agent-consistency.py . ; then
+  if python3 .ci/tests/check-agent-consistency.py .; then
     report 0 "agent metadata consistency"
   else
     report 1 "agent metadata consistency"
+  fi
+}
+
+check_shellcheck() {
+  echo "Check #13: shell scripts pass ShellCheck ..."
+  if ! command -v shellcheck >/dev/null 2>&1; then
+    echo "  SKIP: shellcheck not in PATH (available via 'nix develop .#fmt')"
+    return 0
+  fi
+  local scripts=()
+  while IFS= read -r f; do
+    scripts+=("$f")
+  done < <(find . -type f -name '*.sh' -not -path './.git/*' | sort)
+  if [ "${#scripts[@]}" -eq 0 ]; then
+    echo "  SKIP: no shell scripts found"
+    return 0
+  fi
+  # -S warning: style/info-level findings are noise, warnings and errors are not.
+  if shellcheck -S warning "${scripts[@]}"; then
+    report 0 "shellcheck (${#scripts[@]} script(s))"
+  else
+    report 1 "shellcheck (${#scripts[@]} script(s))"
   fi
 }
 
@@ -256,6 +282,7 @@ check_metadata_schemas
 check_domains
 check_listen_addrs
 check_agent_consistency
+check_shellcheck
 echo "==="
 echo "PASS: $PASS    FAIL: $FAIL"
 if [ "$FAIL" -gt 0 ]; then

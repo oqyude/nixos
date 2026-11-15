@@ -1,19 +1,26 @@
 # treefmt configuration — one entry point for every formatter in the repo.
 #
-# `nix fmt` runs this (see the `formatter` output in flake.nix; the wrapper
-# puts nixfmt and shfmt on PATH next to treefmt).
+# How to use it:
+#   nix develop .#fmt --command treefmt                       # apply the style
+#   nix develop .#fmt --command treefmt -- --fail-on-change .  # CI-style gate
+#
+# There is deliberately NO `formatter` output in flake.nix: on the pinned
+# nixpkgs `nix flake check` fails with "'outPath' is not a valid system type"
+# on any derivation output, so the formatter lives in a devshell instead
+# (see the note in flake.nix and ADR-0011).
 #
 # Current state (measured 2026-11-15):
-#   * all 137 tracked .nix files are already nixfmt-clean — the formatter is a
-#     guard against future drift, not a mass reformat;
-#   * the three tracked .sh files are NOT shfmt-clean, so `nix fmt` will
-#     rewrite them. That is deliberate and safe: they are scripts, not
-#     behaviour. Nothing is formatted automatically on commit.
+#   * all 138 tracked .nix files are nixfmt-clean — the formatter guards
+#     against future drift, it does not reformat the repository;
+#   * the repository's own shell scripts are shfmt-clean;
+#   * .agent/src/install.sh is EXCLUDED below: it predates the formatter and
+#     was never shfmt-formatted (487 diff lines). Reformatting somebody
+#     else's installer is the owner's call, not the formatter's.
 #
 # Deliberately absent: a JSON/YAML formatter. The .agent artefacts are
 # hand-written and reformatting them would bury every real diff in noise.
-# ShellCheck is a linter, not a formatter — it runs as a CI check
-# (.ci/flake-checks.nix), not here.
+# ShellCheck is a linter, not a formatter — it runs as its own check
+# (see check #13 in .ci/checks.sh).
 
 [global]
 # A formatter that fails must not stop the others: report and continue.
@@ -27,3 +34,4 @@ includes = ["**/*.nix"]
 command = "shfmt"
 args = ["-i", "2", "-ci", "-w"]
 includes = ["**/*.sh"]
+excludes = [".agent/src/install.sh"]

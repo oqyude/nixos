@@ -55,7 +55,10 @@ else
       --nginx) DO_NGINX=1 ;;
       --podman) DO_PODMAN=1 ;;
       --systemd) DO_SYSTEMD=1 ;;
-      *) echo "Unknown arg: $arg" >&2; exit 2 ;;
+      *)
+        echo "Unknown arg: $arg" >&2
+        exit 2
+        ;;
     esac
   done
 fi
@@ -72,11 +75,11 @@ if [ "$DO_NGINX" -eq 1 ]; then
   else
     rendered=$(mktemp)
     loaded=$(mktemp)
-    grep -hoE '^[[:space:]]*server_name[[:space:]]+[^;]+;' "$NGINX_CONF" \
-      | sed -E 's/.*server_name[[:space:]]+//; s/;//' | tr ' ' '\n' | sort -u > "$rendered"
-    nginx -T 2>/dev/null \
-      | grep -hoE '^[[:space:]]*server_name[[:space:]]+[^;]+;' \
-      | sed -E 's/.*server_name[[:space:]]+//; s/;//' | tr ' ' '\n' | sort -u > "$loaded"
+    grep -hoE '^[[:space:]]*server_name[[:space:]]+[^;]+;' "$NGINX_CONF" |
+      sed -E 's/.*server_name[[:space:]]+//; s/;//' | tr ' ' '\n' | sort -u >"$rendered"
+    nginx -T 2>/dev/null |
+      grep -hoE '^[[:space:]]*server_name[[:space:]]+[^;]+;' |
+      sed -E 's/.*server_name[[:space:]]+//; s/;//' | tr ' ' '\n' | sort -u >"$loaded"
     if diff -u "$rendered" "$loaded" >/dev/null 2>&1; then
       echo "  OK: nginx serves the same server_name set as the rendered config"
     else
@@ -95,8 +98,8 @@ if [ "$DO_PODMAN" -eq 1 ]; then
   if ! command -v podman >/dev/null 2>&1; then
     echo "  SKIP: podman not in PATH"
   else
-    for unit in $(systemctl list-units --type=service --all --no-legend 2>/dev/null \
-      | awk '$1 ~ /^podman-/ {print $1}'); do
+    for unit in $(systemctl list-units --type=service --all --no-legend 2>/dev/null |
+      awk '$1 ~ /^podman-/ {print $1}'); do
       unit_file="/etc/systemd/system/${unit}.service"
       [ -f "$unit_file" ] || continue
       container=$(sed -nE 's/.*--name[= ]"?([^" ]+)"?.*/\1/p' "$unit_file" | head -1)
@@ -106,8 +109,8 @@ if [ "$DO_PODMAN" -eq 1 ]; then
         DRIFT=1
         continue
       fi
-      declared=$(sed -nE 's/.*(-p|--publish)[= ]"?([^" ]+)"?.*/\2/p' "$unit_file" \
-        | tr ',' '\n' | sed 's/^[[:space:]]*//' | sort -u)
+      declared=$(sed -nE 's/.*(-p|--publish)[= ]"?([^" ]+)"?.*/\2/p' "$unit_file" |
+        tr ',' '\n' | sed 's/^[[:space:]]*//' | sort -u)
       published=$(podman inspect "$container" --format '{{json .NetworkSettings.Ports}}' 2>/dev/null)
       for entry in $declared; do
         host_port="${entry%%:*}"
