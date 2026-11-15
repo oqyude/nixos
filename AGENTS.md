@@ -186,6 +186,8 @@ INIT → ANALYSE → ROADMAP → [DESIGN] → DECOMPOSITION → EXECUTION → ME
 `phases.decomposition = completed`, `phases.execution = completed`,
 `phases.metastate = completed`, `phases.handoff = in_progress`). High-severity
 задач больше нет: T4 (mount-guard) и T20 (CI execute-bit) закрыты 2026-10-25.
-Открытые задачи — non-high (T10, T28–T31, T37) и заблокированные T47, T49–T56.
+Открытые задачи — non-high (T10, T28–T31, T37, T58) и заблокированные
+T47, T49–T51, T53–T56; в работе — T60, T61.
 Список задач — только в `.agent/tasks/manifest.json`; `checkpoints.json` —
-состояние сессии, не задач.
+состояние сессии, не задач. Согласованность этой сводки с манифестом
+проверяется автоматически: `.ci/tests/check-agent-consistency.py` (check #12).

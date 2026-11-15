@@ -858,7 +858,7 @@
       "depends_on": [
         "T46"
       ],
-      "description": "Заблокировано: нужен полный `nix flake check` после выноса реестра."
+      "description": "ЧАСТИЧНО закрыто 2026-11-15 (ветка `agent`): создан реестр адресов флота `lib/xlib/net.nix` (хосты, публичные DNS, сети, общие порты), и все хардкоды адресов флота переведены на него — 192.168.1.20 (41 вхождение), 100.64.0.0, 109.248.161.5, 217.60.3.12, 100.64.1.0, 192.168.1.102, 192.168.1.100, 192.168.1.101, 192.168.1.1, 1.1.1.1, 8.8.8.8. Остатки сознательные: 127.0.0.1/0.0.0.0 — константы языка, не топология флота; сеть 10.66.0.0/24 — у PXE-инфраструктуры своя опционная поверхность (modules/pxe-infra/options.nix); home/modules/opencode.nix — рабочая конфигурация агента владельца, её рефакторинг запрещён (ADR-0009). Поведение проверено: .ci/verify/config-fingerprint.sh — снимок конфигурации всех хостов до/после идентичен."
     },
     {
       "id": "T51",
@@ -1014,12 +1014,59 @@
       ],
       "adr": "ADR-0010",
       "notes": "БЕЗ Authelia это был бы публичный шелл: у webmux нет своей аутентификации («кто достучался до порта — получил шелл твоим пользователем»), а его README прямо запрещает 0.0.0.0 и публичный интернет; на vetymae 0.0.0.0 нужен, чтобы nginx с другого хоста достучался по LAN. Поэтому вход — Authelia (wildcard *.zeroq.su в access_control покрывает домен, правки политики не нужно). LAN-экспозиция 0.0.0.0:8083 остаётся: любой в домашней сети получает шелл без пароля — осознанно. Не развёрнуто: активация = deploy .#sapphira на sapphira."
+    },
+    {
+      "id": "T62",
+      "title": "Гигиена репозитория: статические проверки, реестр адресов, форматтер, README",
+      "type": "refactor",
+      "status": "completed",
+      "origin": "user:direct 2026-11-15",
+      "depends_on": [
+        "T50"
+      ],
+      "files": [
+        "flake.nix",
+        "flake.lock",
+        "treefmt.toml",
+        "devshells/default.nix",
+        ".ci/checks.sh",
+        ".ci/tests/check-domains.py",
+        ".ci/tests/check-listen-addrs.py",
+        ".ci/tests/check-agent-consistency.py",
+        ".ci/tests/known-domain-gaps.txt",
+        ".ci/tests/self-test-listen-addrs.py",
+        ".ci/verify/config-fingerprint.sh",
+        ".ci/verify/runtime-drift.sh",
+        ".gitea/workflows/evaluate-all-hosts.yml",
+        "lib/xlib/net.nix",
+        "lib/xlib/default.nix",
+        "modules/server/coredns.nix",
+        "modules/server/nginx.nix",
+        "modules/server/nextcloud.nix",
+        "modules/server/engipy-frontend.nix",
+        "modules/containers/tape-rotation.nix",
+        "modules/vds/systemd.nix",
+        "configurations/server.nix",
+        "configurations/vds.nix",
+        "home/termux.nix",
+        "README.md"
+      ],
+      "description": "Ревью репозитория без изменения функционала. Сделано: (1) три новые статические проверки — CoreDNS↔nginx (check #10), listen.addr (#11), согласованность .agent (#12); (2) реестр адресов флота lib/xlib/net.nix — все хардкоды адресов переведены на него; (3) .ci/verify/config-fingerprint.sh — снимок поведения всех хостов для доказательства «функционал не изменился»; (4) .ci/verify/runtime-drift.sh — сверка декларации с работающим хостом (nginx -T / podman inspect / systemctl show); (5) workflow «evaluate all hosts» — вычисление всех 7 конфигураций (CI до этого проверял только sapphira); (6) treefmt.toml и devshell `nix develop .#fmt`; (7) README вместо одной строки шаблона GitHub; (8) починены откаченные схемы .agent — регресс d6d64d2, из-за которого check #9 был красным с 2026-11-07. ОГРАНИЧЕНИЕ (измерено): output'ы `formatter` и `checks` во флейке невозможны — на закреплённом nixpkgs (f4a03c0) `nix flake check` падает с \"'outPath' is not a valid system type\" на любом derivation-выводе, включая `formatter = pkgs.hello`; воспроизводится на минимальном флейке с одним инпутом nixpkgs.",
+      "acceptance_criteria": [
+        "bash .ci/checks.sh --no-build → PASS, FAIL 0",
+        "config-fingerprint для всех 6 хостов совпадает до/после",
+        "nix flake check проходит (как на dev-ветке до правок)",
+        "в репозитории не осталось хардкодов адресов флота (кроме намеренных)"
+      ],
+      "completed_in_session": "hygiene-2026-11-15"
     }
   ],
   "backlog_count": 39,
   "backlog_count_breakdown": {
     "f_questions_waiting_owner": 22,
-    "pending_tasks": 17
+    "pending_tasks": 15,
+    "in_progress_tasks": 2
   },
-  "backlog_note": "Обновлено 2026-11-06: 22 F-вопроса владельцу + 17 pending задач. Pending: T10, T28, T29, T30, T31, T37, T47, T49, T50, T51, T53, T54, T55, T56, T60, T61. Закрыты: T3 (посылка опровергнута runtime-проверкой nftables), T4/T52 (guard → [Unit], vds исключён), T20 (CI execute-bit), T38 (ротация токена), T57 (синхронизация метаданных)."
+  "backlog_note": "Обновлено 2026-11-15 (ветка `agent`): 22 F-вопроса владельцу + 15 pending + 2 in_progress. Pending: T10, T28, T29, T30, T31, T37, T47, T49, T50, T51, T53, T54, T55, T56, T58. В работе: T60, T61. Закрыты: T3 (преmise опровергнут runtime-проверкой nftables), T4/T52 (guard → [Unit], vds исключён), T20 (CI execute-bit), T38 (ротация токена), T57 (синхронизация метаданных), T62 (гигиена репозитория).",
+  "last_updated": "2026-11-15"
 }

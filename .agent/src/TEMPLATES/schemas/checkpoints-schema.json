@@ -19,25 +19,108 @@
       "description": "Path to the target repository"
     },
     "goal": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "Session goal (set by user, may be null until first task)"
     },
     "project_type": {
-      "type": ["string", "null"],
-      "enum": [null, "existing", "greenfield", "scaffold"],
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "existing",
+        "greenfield",
+        "scaffold"
+      ],
       "description": "Type of the target project (set in ANALYSE phase)"
     },
     "phases": {
       "type": "object",
       "properties": {
-        "init":         { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "skipped"] },
-        "analyse":      { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "skipped"] },
-        "roadmap":      { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "skipped"] },
-        "design":       { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "skipped"] },
-        "decomposition": { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "skipped"] },
-        "execution":    { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "skipped"] },
-        "metastate":    { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "skipped"] },
-        "handoff":      { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "skipped"] }
+        "init": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "in_progress",
+            "completed",
+            "failed",
+            "skipped"
+          ]
+        },
+        "analyse": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "in_progress",
+            "completed",
+            "failed",
+            "skipped"
+          ]
+        },
+        "roadmap": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "in_progress",
+            "completed",
+            "failed",
+            "skipped"
+          ]
+        },
+        "design": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "in_progress",
+            "completed",
+            "failed",
+            "skipped"
+          ]
+        },
+        "decomposition": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "in_progress",
+            "completed",
+            "failed",
+            "skipped"
+          ]
+        },
+        "execution": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "in_progress",
+            "completed",
+            "failed",
+            "skipped"
+          ]
+        },
+        "metastate": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "in_progress",
+            "completed",
+            "failed",
+            "skipped"
+          ]
+        },
+        "handoff": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "in_progress",
+            "completed",
+            "failed",
+            "skipped"
+          ]
+        }
       },
       "additionalProperties": false
     },
@@ -47,11 +130,28 @@
       "items": {
         "type": "object",
         "properties": {
-          "id":     { "type": "string" },
-          "title":  { "type": "string" },
-          "status": { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "archived"] }
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "in_progress",
+              "completed",
+              "failed",
+              "archived"
+            ]
+          }
         },
-        "required": ["id", "title", "status"],
+        "required": [
+          "id",
+          "title",
+          "status"
+        ],
         "additionalProperties": false
       }
     },
@@ -59,8 +159,46 @@
       "type": "string",
       "format": "date-time",
       "description": "ISO 8601 timestamp of last update"
+    },
+    "source_of_truth": {
+      "type": "object"
+    },
+    "uncommitted_work": {
+      "type": "object"
+    },
+    "host_state": {
+      "type": "object"
+    },
+    "closed_attempts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "resolved_doc_drift": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "protocol_deviations": {
+      "type": "object"
+    },
+    "corrections_this_session": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "session_chain": {
+      "type": "object"
     }
   },
-  "required": ["metaagent_version", "session_id", "phases", "last_updated"],
+  "required": [
+    "metaagent_version",
+    "session_id",
+    "phases",
+    "last_updated"
+  ],
   "additionalProperties": false
 }

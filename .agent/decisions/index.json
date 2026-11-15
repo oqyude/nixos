@@ -1,6 +1,6 @@
 {
   "version": "3.0.0",
-  "updated_at": "2026-11-06T11:45",
+  "updated_at": "2026-11-15T06:40",
   "decisions": [
     {
       "id": "0001",
@@ -206,6 +206,26 @@
       "task": "T61",
       "resolution": "Vhost vetymae.webmux.zeroq.su в modules/server/nginx.nix (sapphira): proxyPass http://192.168.1.100:8083 (LAN-адрес vetymae — tailscaled на vetymae в NoState и пакетов не принимает, как и у vetymae.opencodes.zeroq.su), proxyWebsockets + proxy_read/send_timeout 3600s (терминал стримится по WS /ws/session/<name>), вход — Authelia forward-auth по образцу tty.zeroq.su (wildcard *.zeroq.su в access_control покрывает домен, правки политики не нужно). ГЛАВНОЕ: у webmux (github.com/samoylenkodmitry/webmux) НЕТ аутентификации — README прямо запрещает 0.0.0.0 и публичный интернет, а на vetymae он слушает 0.0.0.0:8083 (нужно, чтобы nginx с другого хоста достучался по LAN) ⇒ голый прокси дал бы публичный шелл на Windows-машину владельца. webmux на vetymae уже поднят владельцем: git-клон, scheduled task WebmuxServe (run-service.ps1: HOST=0.0.0.0 PORT=8083 TMUX_BIN=psmux), 200 на 127.0.0.1:8083 и на 192.168.1.100:8083. DNS: wildcard *.webmux.zeroq.su уже есть (→ 37.128.246.126), сертификат — ACME-01 на switch'е sapphira.",
       "moot_unless": "Владелец решает публиковать webmux без SSO (тогда webmux сам получает пароль/токен — сейчас у него нет никакой аутентификации) или переносит терминал на tailnet-only доступ."
+    },
+    {
+      "id": "0011",
+      "title": "Проверки и форматтер — в CI-скрипте и devshell, а не в output'ах флейка",
+      "status": "accepted",
+      "date": "2026-11-15",
+      "file": ".agent/decisions/0011-flake-outputs-vs-ci-script.md",
+      "tags": [
+        "ci",
+        "flake",
+        "checks",
+        "formatter",
+        "treefmt",
+        "nixpkgs",
+        "constraint",
+        "T62"
+      ],
+      "task": "T62",
+      "resolution": "Измерено: на закреплённом nixpkgs (f4a03c0) `nix flake check` падает с \"'outPath' is not a valid system type\" на ЛЮБОМ derivation-выводе флейка — включая `formatter = pkgs.hello`; `legacyPackages` и `import nixpkgs {}` одинаковы, ветка/pinned rev/lock не влияют, воспроизводится на минимальном флейке с одним инпутом nixpkgs, при этом `nix build .#formatter` работает. Добавить свои output'ы `formatter`/`checks` значит сломать CI-инвариант #2 (`nix flake check`) у владельца. Решение: output'ов нет — форматтер живёт в devshell `nix develop .#fmt` (treefmt+nixfmt+shfmt, конфиг treefmt.toml), проверки — в `.ci/checks.sh` как standalone python-скрипты (их гоняют CI и pre-commit). Побочно: `checks` из deploy/default.nix уже занимает это имя, и `//` в flake.nix отдал бы приоритет более позднему операнду — мои проверки молча вытеснялись бы. Вернуться к output'ам можно после обновления nixpkgs.",
+      "moot_unless": "nixpkgs переедет на ревизию, где `nix flake check` умеет проверять derivation-выводы (проверяется тривиально: `formatter = pkgs.hello` на минимальном флейке)."
     }
   ],
   "proposals": [
