@@ -44,6 +44,33 @@ in
       '';
     };
 
+    # `nix develop .#fmt` -> инструменты форматирования репозитория:
+    # treefmt + nixfmt + shfmt. Конфиг — treefmt.toml в корне репозитория.
+    #
+    #   nix develop .#fmt --command treefmt          # применить стиль
+    #   nix develop .#fmt --command treefmt -- --fail-on-change .
+    #
+    # Почему devshell, а не output `formatter` флейка (который дал бы
+    # `nix fmt`): на закреплённом nixpkgs `nix flake check` падает с
+    # "'outPath' is not a valid system type" на любом derivation-выводе,
+    # включая `formatter = pkgs.hello`. Подробности — в flake.nix и README.
+    fmt = pkgs.mkShell {
+      name = "nixos-fmt-devshell";
+
+      buildInputs = with pkgs; [
+        treefmt
+        nixfmt
+        shfmt
+      ];
+
+      shellHook = ''
+        echo "[fmt-devshell] treefmt: $(command -v treefmt)" >&2
+        echo "[fmt-devshell] nixfmt:  $(command -v nixfmt)" >&2
+        echo "[fmt-devshell] shfmt:   $(command -v shfmt)" >&2
+        echo "[fmt-devshell] конфиг:  treefmt.toml в корне репозитория" >&2
+      '';
+    };
+
     # `nix develop .#vtimeline` -> shell for testing the VeeamTimelineView
     # project (Playwright + ESLint + Prettier over a vanilla-JS frontend).
     vtimeline = pkgs.mkShell {

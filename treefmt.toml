@@ -1,0 +1,29 @@
+# treefmt configuration — one entry point for every formatter in the repo.
+#
+# `nix fmt` runs this (see the `formatter` output in flake.nix; the wrapper
+# puts nixfmt and shfmt on PATH next to treefmt).
+#
+# Current state (measured 2026-11-15):
+#   * all 137 tracked .nix files are already nixfmt-clean — the formatter is a
+#     guard against future drift, not a mass reformat;
+#   * the three tracked .sh files are NOT shfmt-clean, so `nix fmt` will
+#     rewrite them. That is deliberate and safe: they are scripts, not
+#     behaviour. Nothing is formatted automatically on commit.
+#
+# Deliberately absent: a JSON/YAML formatter. The .agent artefacts are
+# hand-written and reformatting them would bury every real diff in noise.
+# ShellCheck is a linter, not a formatter — it runs as a CI check
+# (.ci/flake-checks.nix), not here.
+
+[global]
+# A formatter that fails must not stop the others: report and continue.
+onfail = "append"
+
+[formatter.nixfmt]
+command = "nixfmt"
+includes = ["**/*.nix"]
+
+[formatter.shfmt]
+command = "shfmt"
+args = ["-i", "2", "-ci", "-w"]
+includes = ["**/*.sh"]
