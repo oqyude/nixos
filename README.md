@@ -88,6 +88,22 @@ diff -r /tmp/before /tmp/after && echo "поведение не изменило
 (юниты, порты, vhost'ы, зона DNS, пакеты, монтирования, контейнеры) и не
 содержит значений секретов.
 
+**Обе ревизии материализуй одинаково.** Store path — часть снимка, а он
+зависит от исполняемого бита файла, из которого сделан. Копия с Windows
+(`/mnt/c`) считает всё исполняемым, `git archive` восстанавливает режим из
+git-индекса. Сравнишь рабочую копию с архивом — получишь «разницу» в
+`overlays/patch-whitesur-sddm.pl`, а за ней потянется `system-path`,
+`XDG_DATA_DIRS` в `accounts-daemon.service` и `X-Restart-Triggers` у
+`dbus-broker` и `polkit`. Байты те же — обёртка другая:
+
+```bash
+git archive dev   | tar -x -C /tmp/dev
+git archive agent | tar -x -C /tmp/agent
+(cd /tmp/dev   && .ci/verify/config-fingerprint.sh /tmp/fp-dev)
+(cd /tmp/agent && .ci/verify/config-fingerprint.sh /tmp/fp-agent)
+diff -r /tmp/fp-dev /tmp/fp-agent
+```
+
 Отдельно — сверка декларации с работающим хостом (`podman inspect`,
 `systemctl show`, `nginx -T`):
 
