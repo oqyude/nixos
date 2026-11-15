@@ -26,9 +26,11 @@
 #
 # Every python check below is also a standalone script, so it can be run
 # directly: `python3 .ci/tests/<script>.py .`. They deliberately are NOT
-# exposed as `checks.*` flake outputs: on the pinned nixpkgs, `nix flake
-# check` fails with "'outPath' is not a valid system type" on any
-# derivation output built from it (see the note in flake.nix).
+# exposed as `checks.*` flake outputs: a derivation there would only see the
+# committed flake source (not the working tree a pre-commit hook needs), and
+# the `checks` name is already taken by the deploy-rs checks. The `formatter`
+# output is impossible for a different reason: nix 2.34.9 breaks on it
+# ("'outPath' is not a valid system type") — see ADR-0011.
 #
 # Not yet implemented (candidates from analysis-report.md §5):
 #   #3  coredns domains ↔ nginx vhosts bidirectional match

@@ -19,7 +19,7 @@
 ## Структура
 
 ```
-flake.nix                 флейк: inputs, formatter, checks
+flake.nix                 флейк: inputs, outputs (конфигурации, пакеты, devshell'ы)
 configurations/           реестр хостов (1 запись = 1 машина) + тело модулей
   default.nix             сам реестр: аттрибут = hostname
   hardware/ disko/        железо и разметка по хостам
@@ -60,19 +60,25 @@ nix develop .#fmt --command treefmt
 | #10 | DNS-запись без vhost (и наоборот) | `.ci/tests/check-domains.py` |
 | #11 | `listen.addr` — сеть вместо интерфейса | `.ci/tests/check-listen-addrs.py` |
 | #12 | расхождение статусов задач в `.agent` | `.ci/tests/check-agent-consistency.py` |
+| #13 | shell-скрипт с предупреждениями ShellCheck | `.ci/checks.sh` |
 
 Проверки #8–#12 — обычные python-скрипты без зависимостей; они запускаются
-из `.ci/checks.sh`, а тот — и в CI, и в pre-commit хуке.
+из `.ci/checks.sh`, а тот — и в CI, и в pre-commit хуке. #13 (ShellCheck)
+пропускается, если `shellcheck` нет в PATH — он есть в devshell `.#fmt`.
 
-> **Почему нет `checks.*` во флейке.** Идея была — собрать те же проверки
-> деривациями, чтобы `nix flake check` гонял их сам. На закреплённом nixpkgs
-> (`f4a03c0`) `nix flake check` падает с `"'outPath' is not a valid system
-> type"` на **любом** derivation-выводе — воспроизводится даже на
-> минимальном флейке с `formatter = pkgs.hello`; `legacyPackages` и
-> `import nixpkgs {}` ведут себя одинаково. Поэтому форматтер живёт в
-> devshell `nix develop .#fmt` (treefmt + nixfmt + shfmt), а проверки — в
-> `.ci/checks.sh`. Вернуться к output'ам можно, когда nixpkgs переедет на
-> ревизию без этой поломки.
+> **Почему нет `formatter` во флейке и почему проверки не в `checks.*`.**
+> `formatter` невозможен из-за бага nix 2.34.9: при проверке этого вывода nix
+> перебирает **имена атрибутов** derivation'а и трактует каждый как системный
+> тип — `"'outPath' is not a valid system type"`. Воспроизводится даже на
+> флейке без инпутов, с hand-written derivation'ом, — nixpkgs тут ни при чём.
+> Поэтому форматтер живёт в devshell `nix develop .#fmt`
+> (treefmt + nixfmt + shfmt).
+>
+> Вывод `checks` при этом работает (checks deploy-rs уже есть во флейке и
+> проходят), но python-проверки оставлены в `.ci/checks.sh` по двум
+> причинам: derivation видит только закоммиченный flake source, а не рабочее
+> дерево, которое нужно pre-commit'у; и имя `checks` уже занято проверками
+> deploy-rs. Подробности — ADR-0011.
 
 ## Доказательство «функционал не изменился»
 

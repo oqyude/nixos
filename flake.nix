@@ -141,20 +141,24 @@
       flakeContext = { inherit inputs; };
     in
     {
-      # NOTE (2026-11-15): у флейка НЕТ output'ов `formatter` и `checks`.
+      # NOTE (2026-11-15): у флейка НЕТ output'а `formatter`, а python-проверки
+      # живут в `.ci/checks.sh`, а не в output'е `checks`.
       #
-      # Проверено на закреплённом nixpkgs (f4a03c0): `nix flake check`
-      # падает с "'outPath' is not a valid system type" на ЛЮБОМ
-      # derivation-выводе, собранном из этого nixpkgs — включая
-      # `formatter = pkgs.hello`. Воспроизводится на минимальном флейке с
-      # одним инпутом nixpkgs; `legacyPackages` и `import nixpkgs {}` ведут
-      # себя одинаково. Поэтому:
-      #   * проверки живут в `.ci/checks.sh` (их гоняют CI и pre-commit);
+      # `formatter` невозможен не из-за nixpkgs, а из-за бага nix 2.34.9:
+      # при проверке вывода `formatter` nix перебирает ИМЕНА атрибутов
+      # derivation'а и трактует каждый как системный тип — "'outPath' is not a
+      # valid system type". Воспроизводится даже на флейке без инпутов, с
+      # hand-written derivation'ом. Вывод `checks` при этом работает
+      # (checks.deploy-schema / checks.deploy-activate из deploy-rs проходят).
+      #
       #   * форматтер доступен как devshell `nix develop .#fmt`
-      #     (treefmt + nixfmt + shfmt, конфиг — treefmt.toml).
+      #     (treefmt + nixfmt + shfmt, конфиг — treefmt.toml);
+      #   * проверки — `.ci/checks.sh`: derivation-вывод в `checks` технически
+      #     возможен, но он видит только закоммиченный flake source (а не
+      #     рабочее дерево, нужное pre-commit'у) и вытеснил бы проверки
+      #     deploy-rs, занявшие имя `checks`.
       #
-      # Вернуться к output'ам `formatter`/`checks` можно, когда nixpkgs
-      # переедет на ревизию, где эта проверка derivation-выводов работает.
+      # Подробности и воспроизведение — ADR-0011.
     }
     // (import ./configurations flakeContext)
     // (import ./deploy flakeContext)
