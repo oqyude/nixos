@@ -70,7 +70,7 @@ in
             "--network=taperotation_default"
             # Static IP the frontend reaches "backend" at (see --add-host
             # in the frontend container; network DNS is disabled).
-            "--ip=10.89.0.10"
+            "--ip=${xlib.net.containerHosts.tapeRotationBackend}"
           ];
         };
         "taperotation-frontend" = {
@@ -83,7 +83,7 @@ in
             "--network=taperotation_default"
             # Baked-in nginx upstream is http://backend:8001; resolve it via
             # /etc/hosts since the network has no DNS plugin.
-            "--add-host=backend:10.89.0.10"
+            "--add-host=backend:${xlib.net.containerHosts.tapeRotationBackend}"
           ];
         };
       };
@@ -144,7 +144,7 @@ in
           # backend's static IP. Recreate-on-start also self-heals after a
           # `podman system prune` removed the (temporarily unused) network.
           podman network rm -f taperotation_default >/dev/null 2>&1 || true
-          podman network create --disable-dns --subnet=10.89.0.0/24 taperotation_default
+          podman network create --disable-dns --subnet=${xlib.net.networks.podmanTapeRotation} taperotation_default
         '';
         partOf = [ "podman-compose-tape-rotation-root.target" ];
         wantedBy = [ "podman-compose-tape-rotation-root.target" ];

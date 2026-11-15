@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  xlib,
   ...
 }:
 # engipy — frontend-only nginx vhost для sapphira.
@@ -54,12 +55,12 @@ in
 
     backendHost = lib.mkOption {
       type = lib.types.str;
-      default = "192.168.1.102";
+      default = xlib.net.hosts.rydiwo.lan;
       example = "rydiwo.lan";
       description = ''
         Хост, где крутится uvicorn (engipy-backend). По умолчанию
-        rydiwo — 192.168.1.102 в LAN. По этому адресу nginx проксирует
-        /api/* внутри vhost'а.
+        rydiwo — его LAN-адрес из реестра флота (lib/xlib/net.nix).
+        По этому адресу nginx проксирует /api/* внутри vhost'а.
       '';
     };
 

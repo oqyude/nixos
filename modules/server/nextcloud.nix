@@ -78,9 +78,9 @@ in
       settings = {
         log_type = "file";
         trusted_domains = [
-          "100.64.0.0"
-          "192.168.1.20"
-          "37.128.246.126"
+          xlib.net.hosts.sapphira.tailscale
+          xlib.net.hosts.sapphira.lan
+          xlib.net.hosts.router.public
           "localhost"
           "nextcloud.home.arpa"
           "nextcloud.private"
@@ -89,10 +89,10 @@ in
           "office.zeroq.su"
         ];
         trusted_proxies = [
-          "100.64.1.0"
-          "109.248.161.5"
-          "192.168.1.20"
-          "37.128.246.126"
+          xlib.net.hosts.otreca.tailscale
+          xlib.net.hosts.otreca.public
+          xlib.net.hosts.sapphira.lan
+          xlib.net.hosts.router.public
         ];
         overwriteprotocol = "https"; # maybe no
       };

@@ -9,7 +9,9 @@
 # x.zeroq.su is the 3x-ui controller panel — see 3x-ui.nix for the
 # /subs/, /subsjs/, /clash/ routing logic.
 let
-  server = "192.168.1.20";
+  # Upstream host for the `sites` list below — the LAN address of the home
+  # server, from the fleet registry (lib/xlib/net.nix).
+  server = xlib.net.hosts.sapphira.lan;
 
   mkProxy =
     {
@@ -113,11 +115,11 @@ in
         enableACME = false;
         listen = [
           {
-            addr = "100.64.0.0";
+            addr = xlib.net.hosts.sapphira.tailscale;
             port = 10000;
           }
           {
-            addr = "192.168.1.20";
+            addr = xlib.net.hosts.sapphira.lan;
             port = 10000;
           }
           {
@@ -174,7 +176,7 @@ in
           "= /authelia" = {
             extraConfig = ''
               internal;
-              proxy_pass http://127.0.0.1:9091/api/authz/forward-auth;
+              proxy_pass http://127.0.0.1:${toString xlib.net.ports.authelia}/api/authz/forward-auth;
               # Never forward the client request body to the auth
               # subrequest. nginx relays the original Content-Length to
               # /authelia but does not relay the body itself, so Authelia
@@ -236,7 +238,7 @@ in
           "= /authelia" = {
             extraConfig = ''
               internal;
-              proxy_pass http://127.0.0.1:9091/api/authz/forward-auth;
+              proxy_pass http://127.0.0.1:${toString xlib.net.ports.authelia}/api/authz/forward-auth;
               # Never forward the client request body to the auth
               # subrequest. nginx relays the original Content-Length to
               # /authelia but does not relay the body itself, so Authelia
@@ -291,7 +293,7 @@ in
         enableACME = true;
         locations = {
           "/" = {
-            proxyPass = "http://192.168.1.100:8083";
+            proxyPass = "http://${xlib.net.hosts.vetymae.lan}:8083";
             proxyWebsockets = true;
             extraConfig = ''
               auth_request /authelia;
@@ -311,7 +313,7 @@ in
           "= /authelia" = {
             extraConfig = ''
               internal;
-              proxy_pass http://127.0.0.1:9091/api/authz/forward-auth;
+              proxy_pass http://127.0.0.1:${toString xlib.net.ports.authelia}/api/authz/forward-auth;
               # Тело запроса в subrequest не отправляем: Authelia решает по
               # заголовкам, а без этого он ждёт байты, которых не будет, и
               # отвечает 408 — статус, который auth_request не классифицирует
@@ -432,7 +434,7 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/" = {
-          proxyPass = "http://127.0.0.1:9091";
+          proxyPass = "http://127.0.0.1:${toString xlib.net.ports.authelia}";
           proxyWebsockets = true;
         };
       };
@@ -445,11 +447,11 @@ in
             port = 80;
           }
           {
-            addr = "100.64.0.0";
+            addr = xlib.net.hosts.sapphira.tailscale;
             port = 8446;
           }
           {
-            addr = "192.168.1.20";
+            addr = xlib.net.hosts.sapphira.lan;
             port = 8446;
           }
           {
@@ -536,7 +538,7 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/" = {
-          proxyPass = "http://192.168.1.100:4096";
+          proxyPass = "http://${xlib.net.hosts.vetymae.lan}:${toString xlib.net.ports.opencode}";
           proxyWebsockets = true;
         };
       };
@@ -544,7 +546,7 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/" = {
-          proxyPass = "http://100.106.21.39:4096";
+          proxyPass = "http://${xlib.net.hosts.lamet.tailscale}:${toString xlib.net.ports.opencode}";
           proxyWebsockets = true;
         };
       };
@@ -571,7 +573,7 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/" = {
-          proxyPass = "http://100.125.228.63:4096";
+          proxyPass = "http://${xlib.net.hosts.etherea.tailscale}:${toString xlib.net.ports.opencode}";
           proxyWebsockets = true;
         };
       };
@@ -586,7 +588,7 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/" = {
-          proxyPass = "http://100.86.134.111:4096";
+          proxyPass = "http://${xlib.net.hosts.dejavu.tailscale}:${toString xlib.net.ports.opencode}";
           proxyWebsockets = true;
         };
       };
@@ -607,7 +609,7 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/" = {
-          proxyPass = "http://100.92.238.19:4096";
+          proxyPass = "http://${xlib.net.hosts.rydiwo.tailscale}:${toString xlib.net.ports.opencode}";
           proxyWebsockets = true;
         };
       };
@@ -618,7 +620,7 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/" = {
-          proxyPass = "http://127.0.0.1:4096";
+          proxyPass = "http://127.0.0.1:${toString xlib.net.ports.opencode}";
           proxyWebsockets = true;
         };
       };

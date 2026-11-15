@@ -55,8 +55,8 @@
   networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
   networking = {
     nameservers = [
-      "1.1.1.1"
-      "8.8.8.8"
+      xlib.net.dns.cloudflare
+      xlib.net.dns.google
     ];
     networkmanager.enable = true;
     tempAddresses = "disabled";

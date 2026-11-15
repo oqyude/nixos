@@ -249,31 +249,31 @@
           ControlPersist = "no";
         };
         sapphira = {
-          HostName = "192.168.1.20";
+          HostName = xlib.net.hosts.sapphira.lan;
           User = xlib.device.username;
         };
         sapphira-tailscale = {
-          HostName = "100.64.0.0";
+          HostName = xlib.net.hosts.sapphira.tailscale;
           User = xlib.device.username;
         };
         otreca-old = {
-          HostName = "217.60.3.12";
+          HostName = xlib.net.hosts.otreca.publicOld;
           User = xlib.device.username;
         };
         otreca = {
-          HostName = "109.248.161.5";
+          HostName = xlib.net.hosts.otreca.public;
           User = xlib.device.username;
         };
         otreca-tailscale = {
-          HostName = "100.64.1.0";
+          HostName = xlib.net.hosts.otreca.tailscale;
           User = xlib.device.username;
         };
         rydiwo = {
-          HostName = "192.168.1.102";
+          HostName = xlib.net.hosts.rydiwo.lan;
           User = xlib.device.username;
         };
         epral = {
-          HostName = "192.168.1.101";
+          HostName = xlib.net.hosts.epral.lan;
           User = xlib.device.username;
           Port = 8022;
         };

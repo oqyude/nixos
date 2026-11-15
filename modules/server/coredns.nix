@@ -1,34 +1,41 @@
 {
   config,
   pkgs,
+  xlib,
   ...
 }:
+# CoreDNS — the authoritative server for the `zeroq.su` (public) and
+# `home.arpa` (LAN-only) zones.
+#
+# Every address here comes from the fleet registry (lib/xlib/net.nix): the
+# zone and the nginx vhosts have to agree, and a DHCP lease that moved must
+# not leave half of the zone pointing at the old machine.
 {
   services.coredns = {
     enable = true;
     config = ''
       zeroq.su:53 {
           hosts {
-              109.248.161.5 x.zeroq.su
-              192.168.1.20 authelia.zeroq.su
-              192.168.1.20 calibre.zeroq.su
-              192.168.1.20 dns.zeroq.su
-              192.168.1.20 flux.zeroq.su
-              192.168.1.20 git.zeroq.su
-              192.168.1.20 glances.zeroq.su
-              192.168.1.20 herdr.zeroq.su
-              192.168.1.20 homebox.zeroq.su
-              192.168.1.20 immich.zeroq.su
-              192.168.1.20 kuma.zeroq.su
-              192.168.1.20 navidrome.zeroq.su
-              192.168.1.20 nextcloud.zeroq.su
-              192.168.1.20 open.zeroq.su
-              192.168.1.20 office.zeroq.su
-              192.168.1.20 pdf.zeroq.su
-              192.168.1.20 syncthing.zeroq.su
-              192.168.1.20 talk.zeroq.su
-              192.168.1.20 turn.zeroq.su
-              192.168.1.20 vtimeline.zeroq.su
+              ${xlib.net.hosts.otreca.public} x.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} authelia.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} calibre.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} dns.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} flux.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} git.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} glances.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} herdr.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} homebox.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} immich.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} kuma.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} navidrome.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} nextcloud.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} open.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} office.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} pdf.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} syncthing.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} talk.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} turn.zeroq.su
+              ${xlib.net.hosts.sapphira.lan} vtimeline.zeroq.su
               fallthrough
           }
           cache 300
@@ -36,30 +43,30 @@
       }
       home.arpa:53 {
           hosts {
-              192.168.1.100 vetymae.home.arpa
-              192.168.1.20 ca.home.arpa
-              192.168.1.20 calibre.home.arpa
-              192.168.1.20 dns.home.arpa
-              192.168.1.20 flux.home.arpa
-              192.168.1.20 git.home.arpa
-              192.168.1.20 glances.home.arpa
-              192.168.1.20 home.arpa
-              192.168.1.20 homebox.home.arpa
-              192.168.1.20 immich.home.arpa
-              192.168.1.20 kuma.home.arpa
-              192.168.1.20 navidrome.home.arpa
-              192.168.1.20 nextcloud.home.arpa
-              192.168.1.20 office.home.arpa
-              192.168.1.20 pdf.home.arpa
-              192.168.1.20 sapphira.home.arpa
-              192.168.1.20 syncthing.home.arpa
+              ${xlib.net.hosts.vetymae.lan} vetymae.home.arpa
+              ${xlib.net.hosts.sapphira.lan} ca.home.arpa
+              ${xlib.net.hosts.sapphira.lan} calibre.home.arpa
+              ${xlib.net.hosts.sapphira.lan} dns.home.arpa
+              ${xlib.net.hosts.sapphira.lan} flux.home.arpa
+              ${xlib.net.hosts.sapphira.lan} git.home.arpa
+              ${xlib.net.hosts.sapphira.lan} glances.home.arpa
+              ${xlib.net.hosts.sapphira.lan} home.arpa
+              ${xlib.net.hosts.sapphira.lan} homebox.home.arpa
+              ${xlib.net.hosts.sapphira.lan} immich.home.arpa
+              ${xlib.net.hosts.sapphira.lan} kuma.home.arpa
+              ${xlib.net.hosts.sapphira.lan} navidrome.home.arpa
+              ${xlib.net.hosts.sapphira.lan} nextcloud.home.arpa
+              ${xlib.net.hosts.sapphira.lan} office.home.arpa
+              ${xlib.net.hosts.sapphira.lan} pdf.home.arpa
+              ${xlib.net.hosts.sapphira.lan} sapphira.home.arpa
+              ${xlib.net.hosts.sapphira.lan} syncthing.home.arpa
               fallthrough
           }
           cache 300
           log
       }
       .:53 {
-          forward . 192.168.1.1 1.1.1.1
+          forward . ${xlib.net.hosts.router.lan} ${xlib.net.dns.cloudflare}
           cache 300
       }
     '';

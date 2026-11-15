@@ -4,6 +4,7 @@
 #   device.nix   identity + capability flags from the device type
 #   dirs.nix     well-known paths, derived from username
 #   helpers.nix  pure helper functions shared by modules
+#   net.nix      registry of fleet addresses and shared ports
 #
 # `mkXlib` is called in flake-level code (configurations/default.nix) and
 # handed to every module as the `xlib` argument via lib/mkSystem.nix, so
@@ -24,6 +25,10 @@ let
   mkDirs = import ./dirs.nix;
 
   helpers = (import ./helpers.nix { inherit lib; });
+
+  # Fleet topology: addresses and shared ports. The same for every host —
+  # the fleet is the fleet.
+  net = import ./net.nix;
 in
 {
   inherit
@@ -31,6 +36,7 @@ in
     helpers
     mkDevice
     mkDirs
+    net
     ;
 
   # Full host record: identity + capability flags + well-known paths +
@@ -67,6 +73,8 @@ in
       isDesktop = device.isDesktop;
       isHeadless = device.isHeadless;
       dirs = mkDirs username;
+      # Fleet addresses and shared ports — see lib/xlib/net.nix.
+      inherit net;
       # Bind the host's ids into the mount helpers, so ntfs3/exfat options
       # carry the same uid/gid the primary user actually has.
       helpers = import ./helpers.nix {

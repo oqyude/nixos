@@ -7,7 +7,7 @@
 }:
 let
   serviceName = "rsync-services-sync";
-  serverAddress = "${xlib.device.username}@100.64.0.0";
+  serverAddress = "${xlib.device.username}@${xlib.net.hosts.sapphira.tailscale}";
   serverDir = "${xlib.dirs.services-nodes-folder}/${xlib.device.hostname}";
   nodeDir = "${xlib.dirs.services-mnt-folder}";
 in

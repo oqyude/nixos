@@ -154,9 +154,9 @@
   # (см. configurations/mini-laptop.nix).
   host.engipy-frontend = {
     enable = true;
-    # По умолчанию backendHost = "192.168.1.102" (rydiwo LAN IP).
-    # Если rydiwo переедет на другой адрес — переопределить здесь.
-    backendHost = "192.168.1.102";
+    # По умолчанию — LAN-адрес rydiwo из реестра флота (lib/xlib/net.nix).
+    # Если rydiwo переедет на другой адрес — менять нужно там, а не здесь.
+    backendHost = xlib.net.hosts.rydiwo.lan;
   };
 
   system = {
