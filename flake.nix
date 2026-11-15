@@ -81,10 +81,6 @@
         home-manager.follows = "home-manager";
       };
     };
-    proxy-suite = {
-      url = "github:FUFSoB/proxy-suite-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -94,6 +90,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-minecraft = {
+      # Только для архивного модуля archive/server-modules/minecraft.nix,
+      # который не импортируется ни одним хостом. Инпут оставлен: удаление
+      # потребовало бы перегенерации lock-файла и правки архива ради нулевой
+      # выгоды. Мёртвый proxy-suite удалён 2026-11-15 (T54) — он не
+      # использовался ни одним модулем.
       url = "github:Infinidoge/nix-minecraft";
       inputs = {
         flake-compat.follows = "flake-compat";
@@ -140,6 +141,20 @@
       flakeContext = { inherit inputs; };
     in
     {
+      # NOTE (2026-11-15): у флейка НЕТ output'ов `formatter` и `checks`.
+      #
+      # Проверено на закреплённом nixpkgs (f4a03c0): `nix flake check`
+      # падает с "'outPath' is not a valid system type" на ЛЮБОМ
+      # derivation-выводе, собранном из этого nixpkgs — включая
+      # `formatter = pkgs.hello`. Воспроизводится на минимальном флейке с
+      # одним инпутом nixpkgs; `legacyPackages` и `import nixpkgs {}` ведут
+      # себя одинаково. Поэтому:
+      #   * проверки живут в `.ci/checks.sh` (их гоняют CI и pre-commit);
+      #   * форматтер доступен как devshell `nix develop .#fmt`
+      #     (treefmt + nixfmt + shfmt, конфиг — treefmt.toml).
+      #
+      # Вернуться к output'ам `formatter`/`checks` можно, когда nixpkgs
+      # переедет на ревизию, где эта проверка derivation-выводов работает.
     }
     // (import ./configurations flakeContext)
     // (import ./deploy flakeContext)

@@ -46,27 +46,6 @@
         "type": "github"
       }
     },
-    "disko_2": {
-      "inputs": {
-        "nixpkgs": [
-          "proxy-suite",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1792526520,
-        "narHash": "sha256-3hSJlv8mUVnZPMWK2+CM7a9O+nR6Z4mCh27NfLCmTPc=",
-        "owner": "nix-community",
-        "repo": "disko",
-        "rev": "cedd626e11b635470fa6f9fdb8ad79b0075dd7f9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "disko",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "locked": {
         "lastModified": 1767039857,
@@ -160,22 +139,6 @@
       "original": {
         "owner": "luynrs",
         "repo": "justray",
-        "type": "github"
-      }
-    },
-    "nfqws2-keenetic": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1792580667,
-        "narHash": "sha256-EIFeXN0/VOpvbPoS80IQ59U1C9MuVWNKSL0lvySLq8g=",
-        "owner": "nfqws",
-        "repo": "nfqws2-keenetic",
-        "rev": "5d155f33ab00f3a4879c485c1094e8ec1e014586",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nfqws",
-        "repo": "nfqws2-keenetic",
         "type": "github"
       }
     },
@@ -475,30 +438,6 @@
         "type": "github"
       }
     },
-    "proxy-suite": {
-      "inputs": {
-        "disko": "disko_2",
-        "nfqws2-keenetic": "nfqws2-keenetic",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "z2k": "z2k",
-        "zapret": "zapret"
-      },
-      "locked": {
-        "lastModified": 1793949475,
-        "narHash": "sha256-bss6DuqBSaoV5o4Z+eT7x9+vzZmqmL2O2bKEPwg5Mqw=",
-        "owner": "FUFSoB",
-        "repo": "proxy-suite-flake",
-        "rev": "541f3a7cd06abf8283bf359a0b834b7bb809bc46",
-        "type": "github"
-      },
-      "original": {
-        "owner": "FUFSoB",
-        "repo": "proxy-suite-flake",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "deploy-rs": "deploy-rs",
@@ -517,7 +456,6 @@
         "nixpkgs-fresh": "nixpkgs-fresh",
         "nixpkgs-master": "nixpkgs-master",
         "plasma-manager": "plasma-manager",
-        "proxy-suite": "proxy-suite",
         "sops-nix": "sops-nix",
         "utils": "utils"
       }
@@ -575,61 +513,6 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "z2k": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1792995712,
-        "narHash": "sha256-U9e48Au1HnlMsu56KEAXs5VNFOBfg38E28RGVio+/tk=",
-        "owner": "necronicle",
-        "repo": "z2k",
-        "rev": "9fafc758d48e52a845efd48c839d1051e5c60b78",
-        "type": "github"
-      },
-      "original": {
-        "owner": "necronicle",
-        "ref": "z2k-enhanced",
-        "repo": "z2k",
-        "type": "github"
-      }
-    },
-    "zapret": {
-      "inputs": {
-        "nixpkgs": [
-          "proxy-suite",
-          "nixpkgs"
-        ],
-        "zapret-flowseal": "zapret-flowseal"
-      },
-      "locked": {
-        "lastModified": 1792766281,
-        "narHash": "sha256-BINuXtsjaDVOTwq6Fks+2H1lRYFRCq+U/tE01skhNp0=",
-        "owner": "kartavkun",
-        "repo": "zapret-discord-youtube",
-        "rev": "d67ca34f067fadcb80e9d716ab506ee92d4fba5a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kartavkun",
-        "repo": "zapret-discord-youtube",
-        "type": "github"
-      }
-    },
-    "zapret-flowseal": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1792471264,
-        "narHash": "sha256-5qKg2BvW4XcjY+Az9ocvwACcfsfBpG4I3Xh6SCPksIM=",
-        "owner": "Flowseal",
-        "repo": "zapret-discord-youtube",
-        "rev": "176f56dc3f11ce5915c26abcdde903f93d835b64",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Flowseal",
-        "repo": "zapret-discord-youtube",
         "type": "github"
       }
     }
