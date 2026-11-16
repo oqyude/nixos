@@ -39,7 +39,61 @@
 been successfully relaunched."}`, `Result=success`. `config.json` после
 рестарта **побайтово не изменился** (sha256 совпал) ⇒ ключи REALITY те же.
 Токен в журнале — 0 совпадений. `nixos-rebuild switch` **не выполнялся** —
-это решение владельца (пересборка перезапускает контейнер панели).
+это решение владельца.
+
+### Как применить (выполняет владелец; имена конфигураций — из `configurations/default.nix`, имя атрибута = имя хоста: `otreca`, `sapphira` → `.#nixosConfigurations.<имя>`)
+
+Правка уже на gitea: ветка `gitea/3xui-reconfig-fix` (коммит `17897f7`); тот
+же коммит лежит в лейн-ветке `gitea/agent`. На otreca репозиторий надо
+догнать до этого коммита:
+
+```bash
+cd /etc/nixos
+git fetch gitea 3xui-reconfig-fix
+git checkout 3xui-reconfig-fix      # либо: git pull
+```
+
+Пересборка и переключение — **отдельно на каждом хосте**:
+
+```bash
+# sapphira
+sudo nixos-rebuild switch --flake /etc/nixos#sapphira
+
+# otreca
+sudo nixos-rebuild switch --flake /etc/nixos#otreca
+```
+
+**Что перезапускается.** Для этой правки меняется только systemd-юнит
+`3xui-reconfig.service` (новый файл) и два скрипта в store. Юнит контейнера
+`podman-3xui_app.service` отрендерен **побайтово идентично** установленному
+(store-путь `v43fjpmqdy8wgfk6al7fwhvszgppvymw-unit-podman-3xui_app.service`
+совпал с тем, что лежит в `/etc/systemd/system`) ⇒ compose-юнит не меняется,
+поэтому `switch` **не пересоздаёт и не перезапускает контейнер панели
+`3xui_app`** и не трогает nginx. `xray` внутри контейнера перезапускается
+только в момент ручного `systemctl start 3xui-reconfig.service` (POST
+`restartXrayService`): секундный рестарт, клиенты переподключаются сами, а
+ключи REALITY/shortIds **не меняются** (`config.json` перегенерируется из БД —
+проверено: sha256 до/после совпал). Если кроме этой правки в дереве есть
+другие изменения (например, ветка `agent` несёт правки `nginx`/`coredns`/
+`nextcloud`), `switch` перезапустит и их — это отдельные юниты.
+
+**Проверка после switch:**
+
+```bash
+sudo systemctl start 3xui-reconfig.service
+sudo journalctl -u 3xui-reconfig --no-pager | tail
+```
+
+Ожидаемо в журнале (на sapphira):
+
+```
+[reconfig] panel database: webBasePath='/pubray/' apiToken received (48 chars)
+[reconfig] POST https://x.zeroq.su/pubray/panel/api/server/restartXrayService
+[reconfig] OK: xray regenerated and restarted
+{"success":true,"msg":"Xray has been successfully relaunched.","obj":null}
+```
+
+На otreca — то же, но `POST https://pubray1.zeroq.su/pubray/panel/api/server/restartXrayService`.
 
 ## Session cleanup-2026-10-25 — закрытие открытых high-severity и дрейфа метаданных
 
