@@ -114,10 +114,29 @@
   # другим `PANEL_URL` (публичный домен otreca).
   systemd.services."3xui-reconfig" = {
     description = "Перегенерировать config.json 3x-ui из БД и рестартнуть xray (R1.18).";
-    # Порядок запуска: панель должна быть поднята (БД панели читается из
-    # контейнера). `After=` не тянет контейнер за собой — если панель не
-    # запущена, юнит упадёт с внятным сообщением.
-    unitConfig.After = [ "podman-3xui_app.service" ];
+    # АВТОЗАПУСК (2026-11-16, требование владельца).
+    #
+    # `wantedBy` создаёт symlink
+    # `podman-3xui_app.service.wants/3xui-reconfig.service`, поэтому юнит
+    # стартует ДВАЖДЫ по нужным поводам:
+    #   (а) при загрузке хоста — контейнер панели тянется из multi-user.target
+    #       через podman-compose-3x-ui-root.target;
+    #   (б) при каждом старте/перезапуске контейнера панели — после него
+    #       `config.json` заново может разойтись с БД (R1.18).
+    # Это ровно тот Wants, который systemd разворачивает в «юнит X тянет Y»:
+    # никакого ExecStartPost с `systemctl start` и никакого OnSuccess= —
+    # `podman-3xui_app.service` это Type=notify (долгоживущий), OnSuccess=
+    # на нём не срабатывает никогда.
+    #
+    # Порядок (`after`): контейнер панели уже поднят, nginx (публичный
+    # домен) уже слушает. Панель может подняться чуть позже своего юнита —
+    # тогда обёртка ждёт готовности (PANEL_WAIT_SECONDS) и падает с внятным
+    # сообщением, не ломая загрузку (юнит только Wants, не Requires).
+    wantedBy = [ "podman-3xui_app.service" ];
+    after = [
+      "podman-3xui_app.service"
+      "nginx.service"
+    ];
     serviceConfig = {
       Type = "oneshot";
       ExecStart = lib.getExe config.modules."3x-ui".reconfigRunner;

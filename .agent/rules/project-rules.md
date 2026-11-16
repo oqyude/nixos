@@ -389,6 +389,18 @@ nix build .#nixosConfigurations.<хост>.config.system.build.toplevel --dry-ru
     чужим — 401, с верным — 200; `config.json` после `restartXrayService`
     **побайтово не изменился** (sha256 совпал) => ключи REALITY не
     меняются, клиентские ссылки не рвутся.
+    С 2026-11-16 юнит `3xui-reconfig.service` **автоматический**:
+    `wantedBy = [ "podman-3xui_app.service" ]` (nixpkgs создаёт symlink
+    `podman-3xui_app.service.wants/3xui-reconfig.service`) => юнит
+    стартует (а) при загрузке хоста и (б) при каждом старте/перезапуске
+    контейнера панели; `after = [ "podman-3xui_app.service" "nginx.service" ]`
+    задаёт порядок. `OnSuccess=` на контейнерном юните НЕЛЬЗЯ: он
+    `Type=notify` (долгоживущий) и `OnSuccess=` на нём не срабатывает
+    никогда — только `Wants`/`.wants`-symlink. Ручной
+    `systemctl start 3xui-reconfig.service` остаётся для сценария «панель
+    показывает новое, сервер крутит старое»; он идемпотентен (второй POST
+    на свежем конфиге `config.json` не меняет). Отсутствие ordering-цикла
+    проверено `systemd-analyze verify` по собранному дереву юнитов.
 
 ## Ловушки (выглядит сломанным, намеренно)
 

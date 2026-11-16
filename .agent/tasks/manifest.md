@@ -94,8 +94,16 @@ curl уходил на `https://pubray1.zeroq.su@base/panel/api/server/restartXr
 и `apiToken` из таблицы `settings` БД панели в рантайме и отдаёт их скрипту
 `reconfig` через `PANEL_BASE`/`PANEL_TOKEN`; токен не попадает ни в nix store,
 ни в журнал, ни в argv), `ExecStart` юнитов → обёртка, `PANEL_URL` =
-публичный домен хоста, `After=podman-3xui_app.service`, комментарии
-переписаны. Проверено вживую на sapphira: энд-знд прогон →
+публичный домен хоста, комментарии переписаны.
+
+Дополнение владельца (2026-11-16): юнит сделан **автоматическим** —
+`wantedBy = [ "podman-3xui_app.service" ]` (symlink
+`podman-3xui_app.service.wants/3xui-reconfig.service`) ⇒ старт при загрузке
+хоста и при каждом старте/перезапуске контейнера панели;
+`after = [ "podman-3xui_app.service" "nginx.service" ]`. `OnSuccess=` на
+контейнерном юните невозможен (`Type=notify`, срабатывает только при
+завершении — никогда). Цикл ordering'а исключён и доказан
+`systemd-analyze verify` по собранному дереву юнитов обоих хостов. Проверено вживую на sapphira: энд-знд прогон →
 `{"success":true,"msg":"Xray has been successfully relaunched."}`,
 `config.json` после рестарта **побайтово не изменился** (ключи REALITY те
 же), токен в журнале — 0 совпадений. `nixos-rebuild switch` не выполнялся —

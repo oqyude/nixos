@@ -94,7 +94,11 @@ in
       description = "Обёртка юнита `3xui-reconfig`: читает `webBasePath` и `apiToken` из БД панели 3x-ui в рантайме и передаёт их скрипту `reconfig` через PANEL_BASE/PANEL_TOKEN. Секретов в nix store нет, в журнал токен не пишется (только длина). R1.18.";
       default = pkgs.writeShellApplication {
         name = "reconfig-runner";
-        runtimeInputs = [ pkgs.podman ];
+        runtimeInputs = [
+          pkgs.coreutils
+          pkgs.curl
+          pkgs.podman
+        ];
         text = ''
           # Обёртка юнита 3xui-reconfig: достаёт из БД панели 3x-ui значения
           # `webBasePath` и `apiToken` и передаёт их скрипту `reconfig` через
@@ -112,6 +116,11 @@ in
           #
           # Токен живёт только в рантайме: в nix store его нет, в журнал
           # не пишется (в журнал уходит только длина), в argv не попадает.
+          #
+          # Юнит автозапускается (а) при загрузке хоста и (б) при каждом
+          # старте контейнера панели — поэтому к моменту POST панель может
+          # ещё не слушать: ждём готовности (PANEL_WAIT_SECONDS, по умолчанию
+          # 90 c) и только потом шлём запрос.
 
           CONTAINER="${panelContainer}"
           DB_URI="${panelDbUri}"
@@ -119,6 +128,8 @@ in
           log() {
               printf '[reconfig] %s\n' "$*" >&2
           }
+
+          : "''${PANEL_URL:?PANEL_URL is required (e.g. https://pubray1.zeroq.su or https://x.zeroq.su)}"
 
           if ! podman container exists "$CONTAINER" >/dev/null 2>&1; then
               log "ERROR: container '$CONTAINER' not found — the 3x-ui panel is not running, or it is not visible to this podman instance (podman ps -a)"
@@ -146,6 +157,27 @@ in
 
           TOKEN_LEN=''${#PANEL_TOKEN}
           log "panel database: webBasePath='$PANEL_BASE' apiToken received ($TOKEN_LEN chars)"
+
+          # Ждём, пока панель начнёт отвечать. При автозапуске контейнер панели
+          # и nginx поднимаются параллельно, а HTTP-сервер панели может
+          # начать слушать не сразу. Проба — GET без токена: любой HTTP-ответ
+          # (404/401) значит «сервер панели жив», 000 — не отвечает.
+          BASE="''${PANEL_BASE%/}"
+          PROBE_URL="''${PANEL_URL%/}''${BASE}/panel/api/server/restartXrayService"
+          WAIT_SECONDS="''${PANEL_WAIT_SECONDS:-90}"
+          deadline=$(( SECONDS + WAIT_SECONDS ))
+          while :; do
+              code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 "$PROBE_URL" 2>/dev/null)" || code="000"
+              if [ "$code" != "000" ]; then
+                  break
+              fi
+              if [ "$SECONDS" -ge "$deadline" ]; then
+                  log "ERROR: the panel does not answer at $PROBE_URL after ''${WAIT_SECONDS}s — xray was NOT restarted"
+                  exit 1
+              fi
+              log "waiting for the panel at $PROBE_URL ..."
+              sleep 3
+          done
 
           export PANEL_BASE PANEL_TOKEN
           exec ${lib.getExe cfg.reconfig}

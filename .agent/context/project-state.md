@@ -32,14 +32,48 @@
 4. Метасостояние: R1.20 в `.agent/rules/project-rules.md`, инвариант 19 и
    строка «Ловушек» в `AGENTS.md`, находка в `.agent/tasks/manifest.md`
    (в реестр задач не внесена: `manifest.json` в этой сессии не трогается).
+5. **Автозапуск (дополнение владельца, 2026-11-16).** Юнит стал
+   автоматическим: `wantedBy = [ "podman-3xui_app.service" ]` (nixpkgs
+   создаёт symlink `podman-3xui_app.service.wants/3xui-reconfig.service`)
+   ⇒ юнит стартует (а) при загрузке хоста и (б) при каждом
+   старте/перезапуске контейнера панели; `after = [ "podman-3xui_app.service"
+   "nginx.service" ]` задаёт порядок (контейнер и nginx уже подняты).
+   `OnSuccess=` не годится: `podman-3xui_app.service` — `Type=notify`
+   (долгоживущий), на нём `OnSuccess=` не срабатывает никогда. Никакого
+   `ExecStartPost` с `systemctl start` тоже: только декларативный Wants.
+   В обёртку добавлено ожидание готовности панели (`PANEL_WAIT_SECONDS`,
+   по умолчанию 90 c): при автозапуске контейнер и nginx поднимаются
+   параллельно, и HTTP-сервер панели может начать слушать позже — без
+   ожидания юнит падал бы на загрузке.
 
 ### Проверено (sapphira, живой хост)
 
 Энд-знд прогон обёртки через `systemd-run`: `{"success":true,"msg":"Xray has
 been successfully relaunched."}`, `Result=success`. `config.json` после
-рестарта **побайтово не изменился** (sha256 совпал) ⇒ ключи REALITY те же.
-Токен в журнале — 0 совпадений. `nixos-rebuild switch` **не выполнялся** —
-это решение владельца.
+рестарта **побайтово не изменился** (sha256 совпал) ⇒ ключи REALITY те же,
+повторный POST идемпотентен. Токен в журнале — 0 совпадений. Ветка «панель
+не отвечает» — ждёт и падает с внятным текстом (`the panel does not answer
+at ... after 6s — xray was NOT restarted`, exit 1). `nixos-rebuild switch`
+**не выполнялся** — это решение владельца.
+
+**Отсутствие ordering-цикла доказано** (требование владельца):
+
+- собраны реальные деревья юнитов обоих хостов
+  (`.#nixosConfigurations.<host>.config.environment.etc."systemd/system".source`):
+  symlink `podman-3xui_app.service.wants/3xui-reconfig.service` присутствует
+  на обоих;
+- `systemd-analyze verify` по **всем** юнитам (404 на sapphira, 357 на
+  otreca) через `SYSTEMD_UNIT_PATH=<собранное дерево>:/usr/lib/systemd/system`:
+  **0 упоминаний «ordering cycle»**; вывод **побайтово совпадает** с выводом
+  для состояния до автозапуска (базовая ревизия e9bc6f6) — правка не
+  добавила ни одной новой находки;
+- сфокусированная проверка 3x-ui-кластера
+  (`3xui-reconfig.service podman-3xui_app.service
+  podman-compose-3x-ui-root.target nginx.service`) — exit 0, без вывода;
+- живая проверка механики Wants на самой машине (синтетическая пара юнитов
+  в `/run/systemd/system`, без касания панели): старт «контейнерного» юнита
+  → зависимый юнит выполнился; `systemctl restart` «контейнерного» юнита →
+  зависимый выполнился снова. Временные юниты удалены.
 
 ### Как применить (выполняет владелец; имена конфигураций — из `configurations/default.nix`, имя атрибута = имя хоста: `otreca`, `sapphira` → `.#nixosConfigurations.<имя>`)
 
@@ -62,6 +96,15 @@ sudo nixos-rebuild switch --flake /etc/nixos#sapphira
 # otreca
 sudo nixos-rebuild switch --flake /etc/nixos#otreca
 ```
+
+**Что происходит после switch.** Юнит становится автоматическим: активация
+создаёт symlink `podman-3xui_app.service.wants/3xui-reconfig.service`, и с
+этого момента он стартует сам (а) при загрузке хоста и (б) при каждом
+старте/перезапуске контейнера панели. Сам `switch` его не запускает
+(контейнер панели не пересоздаётся → его старт не происходит). Ручной
+`systemctl start 3xui-reconfig.service` остаётся для сценария «панель
+показывает новое, сервер крутит старое» (после правки инбаунда в UI) —
+он безопасен и идемпотентен.
 
 **Что перезапускается.** Для этой правки меняется только systemd-юнит
 `3xui-reconfig.service` (новый файл) и два скрипта в store. Юнит контейнера
