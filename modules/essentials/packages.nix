@@ -23,9 +23,6 @@
       nix-diff
       nix-tree
       nixfmt-tree
-      nvd
-      nix-du
-      nix-prefetch-scripts
       deploy-rs
 
       # Lazy
@@ -35,10 +32,8 @@
       systemctl-tui
 
       # IDE
-      yaml-language-server
       nil
       fresh-editor
-      #flow-control
 
       # Base
       curl
@@ -48,14 +43,12 @@
       fzf
       gdu
       lsof
-      mc
       pciutils
       usbutils
       rsync
       wget
       tree
       dust
-      tuckr
 
       # Net Diagnostic
       mtr
@@ -87,16 +80,11 @@
       openssl
 
       # To save
-      tuios
       bluetui
-      speedtest-cli
-      # jocalsend
-      tlrc
       lazyssh
       mcat
       snitch
       whosthere
-      devenv
 
       # Test
       rgx
@@ -107,6 +95,15 @@
       # lazydocker
       # dtop
       # framework-tool-tui
+
+      # Archived
+      # nix-prefetch-scripts
+      # jocalsend
+      # tuios
+      # nvd
+      # nix-du
+      # mc
+      # tlrc
     ];
   };
   environment.variables.EDITOR = "fresh";
