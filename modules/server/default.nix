@@ -77,10 +77,11 @@
   };
 
   # ──────────────────────────────────────────────────────────────────────
-  # 3x-ui reconfig (R1.18, 2026-10-21).
+  # 3x-ui reconfig (R1.18, 2026-10-21; починен 2026-11-16).
   #
-  # На server (sapphira) контроллер-панель 3x-ui сидит в контейнере, доступна
-  # через nginx → `https://x.zeroq.su`. Юнит ниже ровно эту панель и будит:
+  # На server (sapphira) контроллер-панель 3x-ui сидит в контейнере
+  # `3xui_app`, доступна через nginx → `https://x.zeroq.su`. Юнит ниже
+  # ровно эту панель и будит:
   #   sudo systemctl start 3xui-reconfig.service
   # POST'ит `/panel/api/server/restartXrayService` через apiToken владельца.
   # Сценарий, который лечит: «панель показывает новое, сервер крутит старое».
@@ -88,17 +89,40 @@
   # переписывается — без этого юнита (или `restartXrayService` руками) ссылки
   # у клиентов тихо ломаются.
   #
+  # ПОЧЕМУ ИМЕННО ПУБЛИЧНЫЙ ДОМЕН (2026-11-16, живая проверка на sapphira).
+  # Прежний `PANEL_URL=https://127.0.0.1:2049` не мог работать по двум
+  # причинам, и обе проверены вживую:
+  #   * панель внутри контейнера говорит по **HTTP** (`webCertFile` пуст, TLS
+  #     терминирует nginx) → `https://127.0.0.1:2049` отдаёт
+  #     «SSL routines::wrong version number»;
+  #   * панель отвечает только на свой `webDomain` (`x.zeroq.su`): запрос с
+  #     чужим Host (127.0.0.1:2049) → **403** с пустым телом, тот же запрос
+  #     с `Host: x.zeroq.su` → 200. Это защита панели от DNS-rebinding.
+  # Рабочий путь: `https://x.zeroq.su` (nginx → 127.0.0.1:2049, Host
+  # сохраняется) + база `webBasePath` из БД.
+  #
+  # PANEL_BASE и PANEL_TOKEN — НЕ константы. Это состояние панели: база
+  # веб-панели (`webBasePath` в таблице `settings` БД) и её API-токен
+  # (`apiToken` там же). Раньше в юните стояли литералы «@base» и
+  # «@api_token», которые никто не подставлял: curl уходил на
+  # «https://127.0.0.1:2049@base/panel/api/...» и падал с
+  # «Could not resolve host: base» — юнит не работал НИКОГДА. Теперь их
+  # вычисляет обёртка `reconfigRunner` в рантайме (токен не попадает ни в
+  # nix store, ни в журнал).
+  #
   # В otreca аналогичный юнит определён в `modules/vds/default.nix` с
-  # другим `PANEL_URL`/`apiToken`.
+  # другим `PANEL_URL` (публичный домен otreca).
   systemd.services."3xui-reconfig" = {
     description = "Перегенерировать config.json 3x-ui из БД и рестартнуть xray (R1.18).";
+    # Порядок запуска: панель должна быть поднята (БД панели читается из
+    # контейнера). `After=` не тянет контейнер за собой — если панель не
+    # запущена, юнит упадёт с внятным сообщением.
+    unitConfig.After = [ "podman-3xui_app.service" ];
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = lib.getExe config.modules."3x-ui".reconfig;
+      ExecStart = lib.getExe config.modules."3x-ui".reconfigRunner;
       Environment = [
-        "PANEL_URL=https://127.0.0.1:2049"
-        "PANEL_BASE=@base"
-        "PANEL_TOKEN=@api_token"
+        "PANEL_URL=https://x.zeroq.su"
       ];
     };
   };

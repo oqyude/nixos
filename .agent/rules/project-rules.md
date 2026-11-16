@@ -366,6 +366,30 @@ nix build .#nixosConfigurations.<хост>.config.system.build.toplevel --dry-ru
     в БД, `config.json` остался от 23:51 -> трафика нет; после
     `restartXrayService` на ноде -> 5/5 успешных попыток.
 
+19. **(R1.20) Панель 3x-ui отвечает только на свой `webDomain`, а внутри
+    контейнера говорит по HTTP.** В таблице `settings` БД панели
+    (`x-ui.db`; контейнер `3xui_app`, путь внутри контейнера
+    `/etc/x-ui/x-ui.db`, bind-mount
+    `${services-nodes}/<host>/3x-ui/db` -> `/etc/x-ui`) лежат `webDomain`
+    (otrecа: `pubray1.zeroq.su`, sapphira: `x.zeroq.su`), `webPort` (2049),
+    `webBasePath` (`/pubray/`) и `webCertFile` (пусто => TLS терминирует
+    nginx). Запрос к панели с чужим Host (например
+    `http://127.0.0.1:2049/pubray/...`) -> **403 с пустым телом**; тот же
+    запрос с `Host: <webDomain>` -> 200. `https://127.0.0.1:2049` ->
+    «SSL routines::wrong version number» (внутри HTTP, а не HTTPS).
+    Значит: рабочий путь к панели — **публичный домен** (nginx ->
+    127.0.0.1:2049, Host сохраняется), а `webBasePath` и `apiToken` надо
+    брать **из БД в рантайме**, а не хранить константой в Nix.
+    Юнит `3xui-reconfig.service` (modules/server/default.nix — sapphira,
+    modules/vds/default.nix — otreca) читает их обёрткой
+    `modules."3x-ui".reconfigRunner` (`podman exec 3xui_app python3 -c ...`)
+    и отдаёт скрипту `modules."3x-ui".reconfig` через PANEL_BASE/PANEL_TOKEN;
+    токен не попадает ни в nix store, ни в журнал, ни в argv.
+    Проверено 2026-11-16 на sapphira: без токена панель отвечает 404, с
+    чужим — 401, с верным — 200; `config.json` после `restartXrayService`
+    **побайтово не изменился** (sha256 совпал) => ключи REALITY не
+    меняются, клиентские ссылки не рвутся.
+
 ## Ловушки (выглядит сломанным, намеренно)
 
 Прежде чем чинить — проверить этот список. Здесь лежат решения, которые

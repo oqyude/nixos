@@ -117,9 +117,12 @@ in
         # via Nix.
       };
       # 3xui-reconfig.service определён в:
-      #   - modules/server/default.nix (sapphira, панель на 127.0.0.1:2049)
-      #   - modules/vds/default.nix    (otrecа/публичный домен)
-      # Скрипт-обёртка: modules/3x-ui/scripts/reconfig.sh.
+      #   - modules/server/default.nix (sapphira, панель через x.zeroq.su)
+      #   - modules/vds/default.nix    (otrecа, панель через pubray1.zeroq.su)
+      # Скрипт и обёртка: modules/3x-ui/default.nix — опции
+      # modules."3x-ui".reconfig (POST restartXrayService) и
+      # modules."3x-ui".reconfigRunner (читает webBasePath/apiToken из БД
+      # этого контейнера в рантайме и отдаёт их скрипту через окружение).
       # См. R1.18 в .agent/rules/project-rules.md.
       # Starts/stops together with all 3x-ui compose resources.
       targets."podman-compose-3x-ui-root" = {

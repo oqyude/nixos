@@ -1,8 +1,45 @@
 # Project State
 # Auto-generated — updated by ANALYSE (initial) and METASTATE (on updates)
 
-**Last updated:** 2026-10-25
-**Session:** cleanup-2026-10-25 (закрытие T3/T20/T38/T57 + T4)
+**Last updated:** 2026-11-16
+**Session:** fix-3xui-reconfig-2026-11-16 (юнит `3xui-reconfig.service`)
+
+## Session fix-3xui-reconfig-2026-11-16 — юнит `3xui-reconfig.service`
+
+### Что было
+
+Юнит `3xui-reconfig.service` (`modules/vds/default.nix` — otreca,
+`modules/server/default.nix` — sapphira) **не работал никогда**: в
+`serviceConfig.Environment` стояли литералы `PANEL_BASE=@base` и
+`PANEL_TOKEN=@api_token`, которые никто не подставлял → curl уходил на
+`https://pubray1.zeroq.su@base/panel/api/...` и падал с
+`Could not resolve host: base` (прогон владельца на otreca, 2026-11-16).
+
+### Что сделано
+
+1. `modules/3x-ui/default.nix`: новая опция `modules."3x-ui".reconfigRunner` —
+   обёртка читает `webBasePath` и `apiToken` из таблицы `settings` БД панели
+   (`podman exec 3xui_app python3 -c …`) в рантайме и отдаёт их скрипту
+   `reconfig` через `PANEL_BASE`/`PANEL_TOKEN`. Токен не попадает ни в nix
+   store, ни в журнал (только длина), ни в argv curl.
+2. Оба юнита: `ExecStart` → обёртка; в `Environment` остался только
+   `PANEL_URL` (sapphira `https://x.zeroq.su`, otreca
+   `https://pubray1.zeroq.su`); `After=podman-3xui_app.service`; комментарии
+   переписаны (локальный адрес не работает: HTTP вместо HTTPS + проверка
+   `webDomain` → 403; `PANEL_BASE` = `webBasePath` из БД, а не константа).
+3. `modules/containers/3x-ui.nix`: исправлен протухший комментарий про
+   несуществующий `modules/3x-ui/scripts/reconfig.sh`.
+4. Метасостояние: R1.20 в `.agent/rules/project-rules.md`, инвариант 19 и
+   строка «Ловушек» в `AGENTS.md`, находка в `.agent/tasks/manifest.md`
+   (в реестр задач не внесена: `manifest.json` в этой сессии не трогается).
+
+### Проверено (sapphira, живой хост)
+
+Энд-знд прогон обёртки через `systemd-run`: `{"success":true,"msg":"Xray has
+been successfully relaunched."}`, `Result=success`. `config.json` после
+рестарта **побайтово не изменился** (sha256 совпал) ⇒ ключи REALITY те же.
+Токен в журнале — 0 совпадений. `nixos-rebuild switch` **не выполнялся** —
+это решение владельца (пересборка перезапускает контейнер панели).
 
 ## Session cleanup-2026-10-25 — закрытие открытых high-severity и дрейфа метаданных
 

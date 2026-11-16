@@ -62,6 +62,11 @@
 > «добавь на текущий хост (sapphira) powershell в системное окружение, после
 > чего появится возможность прогонять ps1-тесты здесь». Задача попала в эту
 > таблицу, потому что ведётся в том же реестре; источник — `user:direct`.
+>
+> T62 — тоже прямая задача владельца (`user:direct`, 2026-11-16): «починить
+> юнит `3xui-reconfig.service` на обоих хостах». В `manifest.json` T62 **не
+> внесена** — регистрация в JSON (как и для T38+ ранее) требует отдельной
+> авторизованной правки; здесь MD остаётся источником для этой задачи.
 
 ### Отдельная находка сессии (не входила в план)
 
@@ -72,6 +77,33 @@
 вычисляться. Исправлено в `39e1887` (параллельная сессия добавила `config,`).
 Это подтверждает, что `nix flake check` в CI никогда не выполнялся: он бы
 это поймал.
+
+**2026-11-16 — `3xui-reconfig.service` не работал НИКОГДА (запрос владельца).**
+В `serviceConfig.Environment` обоих юнитов (`modules/vds/default.nix` —
+otreca, `modules/server/default.nix` — sapphira) стояли **литералы**
+`PANEL_BASE=@base` и `PANEL_TOKEN=@api_token`, которые никто не подставлял:
+curl уходил на `https://pubray1.zeroq.su@base/panel/api/server/restartXrayService`
+и падал с `curl: (6) Could not resolve host: base`. Дополнительно (проверено
+вживую на sapphira): `PANEL_URL=https://127.0.0.1:2049` тоже не мог работать —
+панель внутри контейнера говорит по **HTTP** (`webCertFile` пуст ⇒ TLS
+терминирует nginx) и отвечает только на свой `webDomain` (`x.zeroq.su`),
+поэтому локальный адрес даёт 403 с пустым телом (R1.20, инв. 19 в
+`AGENTS.md`).
+
+Починено: новая опция `modules."3x-ui".reconfigRunner` (читает `webBasePath`
+и `apiToken` из таблицы `settings` БД панели в рантайме и отдаёт их скрипту
+`reconfig` через `PANEL_BASE`/`PANEL_TOKEN`; токен не попадает ни в nix store,
+ни в журнал, ни в argv), `ExecStart` юнитов → обёртка, `PANEL_URL` =
+публичный домен хоста, `After=podman-3xui_app.service`, комментарии
+переписаны. Проверено вживую на sapphira: энд-знд прогон →
+`{"success":true,"msg":"Xray has been successfully relaunched."}`,
+`config.json` после рестарта **побайтово не изменился** (ключи REALITY те
+же), токен в журнале — 0 совпадений. `nixos-rebuild switch` не выполнялся —
+это решение владельца.
+
+Задача в реестр **не внесена**: `manifest.json` в этой сессии не трогается,
+а check #12 (`.ci/tests/check-agent-consistency.py`) требует, чтобы любая
+строка таблицы T38+ была зарегистрирована и в JSON.
 
 
 > **Определения «риск» и «польза»:** *риск* — вероятность сломать прод или
