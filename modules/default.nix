@@ -18,6 +18,7 @@ let
         [
           ./essentials
           ./options.nix
+          ./nginx-mainline.nix
           ./users.nix
 
           home-manager.nixosModules.home-manager # home-manager module
@@ -47,6 +48,7 @@ let
         # ./essentials
         # ./users.nix
         ./options.nix
+        ./nginx-mainline.nix
         (./. + "/${xlib.device.type}")
         # sops-nix.nixosModules.sops
       ];
