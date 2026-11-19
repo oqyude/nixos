@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   xlib,
   ...
 }:
@@ -105,6 +106,10 @@ in
 {
   services.nginx = {
     enable = true;
+    # CVE-2026-123007 (HTTP/2 flow control, heap overflow): наш пин nixpkgs
+    # отдаёт 1.31.8, а исправлена только 1.31.9 — она есть в master-инпуте.
+    # Пакет берём оттуда, пока фикс не доедет до nixos-unstable.
+    package = inputs.nixpkgs-master.legacyPackages.${pkgs.stdenv.hostPlatform.system}.nginxMainline;
     recommendedGzipSettings = true;
     recommendedOptimisation = true;
     recommendedProxySettings = true;
