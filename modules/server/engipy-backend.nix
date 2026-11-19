@@ -73,7 +73,11 @@ let
     set -e
     cd ${cfg.dataDir}
 
-    if [ ! -f venv/.engipy-venv-installed ]; then
+    # Маркер — не доказательство живости: при обновлении nixpkgs python из
+    # `pyvenv.cfg` уезжает в GC, venv выглядит целым, но exec падает с
+    # 203/EXEC «No such file or directory» (так встал engipy 2026-11-19).
+    # Поэтому проверяем сам интерпретатор, а не только файл-маркер.
+    if [ ! -f venv/.engipy-venv-installed ] || ! venv/bin/python -c "import sys" >/dev/null 2>&1; then
       echo "[engipy-install] creating venv…"
       ${pkgs.python311}/bin/python -m venv venv
 
@@ -157,6 +161,21 @@ in
       type = lib.types.str;
       default = "0.0.0.0";
       description = "Адрес, на котором uvicorn слушает.";
+    };
+
+    enableAbModels = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Показать в реестре legacy-модели (`cointegrated/rubert-tiny2`,
+        `intfloat/multilingual-e5-large`) — прокидывается как
+        `ENGIPY_ENABLE_AB_MODELS=1`.
+
+        Флаг только ДОБАВЛЯЕТ спектры в каталог: дефолтную модель он не
+        меняет (её выбирает `model`/`ENGIPY_MODEL`), а спека без чекпойнта
+        или матрицы остаётся `available = false` — то есть врать про
+        доступность модели он не заставляет.
+      '';
     };
   };
 
@@ -257,6 +276,9 @@ in
         OMP_NUM_THREADS = "1";
         OPENBLAS_NUM_THREADS = "1";
         TOKENIZERS_PARALLELISM = "false";
+      } // lib.optionalAttrs cfg.enableAbModels {
+        # Dev/AB-инструмент: legacy-модели в реестре (rubert-tiny2, e5-large).
+        ENGIPY_ENABLE_AB_MODELS = "1";
       };
 
       serviceConfig = {

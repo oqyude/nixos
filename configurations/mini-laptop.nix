@@ -68,10 +68,19 @@
   host.engipy-backend = {
     enable = true;
     bindAddress = "0.0.0.0";
-    # Default ONNX-чекпойнт rubert-tiny2 теперь лежит на /mnt/lamet/
-    # (в ENGIPY_MODELS_DIR — см. engipy-backend.nix). Имя подпапки
-    # фиксировано в `app/services/models.py:build_default_registry`.
-    model = "/mnt/lamet/engipy-models/rubert-tiny2";
+    # 2026-11-19: прод-модель — `BAAI/bge-m3` (решение владельца, ветка
+    # feat/model-select-default, 02ed6aa). `model` — КАТАЛОЖНЫЙ id, а не путь:
+    # `app/services/models.py:build_default_registry` знает id каталога и сам
+    # выводит путь к чекпойнту как `<modelsDir>/bge-m3`. Прежнее значение
+    # (`/mnt/lamet/engipy-models/rubert-tiny2`) после мержа падало на старте:
+    # legacy-спека без флага AB в каталог не попадает.
+    model = "BAAI/bge-m3";
+    # Матрица дефолтной модели в dataDir (1024-dim, GPU fp32, batch sweep).
+    embeddingsStem = "gesn_baai_bge_m3";
+    # Селектор моделей во фронте: rubert-tiny2 и e5-large попадают в реестр
+    # только с ENGIPY_ENABLE_AB_MODELS=1. e5 останется `available = false` —
+    # чекпойнта нет, и это честный ответ, а не тихий матчинг по чужой матрице.
+    enableAbModels = true;
     # `modelsDir` остаётся дефолтным (/mnt/lamet/engipy-models).
   };
 
